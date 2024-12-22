@@ -1,0 +1,49 @@
+{
+  "name": "shadcn-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "description": "React monorepo template",
+  "author": "Tri Rizeki Rifandani",
+  "engines": {
+    "node": ">=22"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "scripts": {
+    "next:dev": "pnpm --filter @workspace/web dev",
+    "next:typecheck": "pnpm --filter @workspace/web typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:inspector": "eslint --inspect-config",
+    "typecheck": "run-p next:typecheck",
+    "regression": "run-p lint next:typecheck",
+    "clean": "find . \\( -name node_modules -type d -o -name dev-dist -type d -o -name dist -type d -o -name html -type d -o -name playwright -type d -o -name playwright-report -type d -o -name playwright-test-results -type d -name pnpm-lock.json -type f \\) | xargs rm -rf && pnpm install",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "3.12.0",
+    "@commitlint/cli": "19.6.0",
+    "@commitlint/config-conventional": "19.6.0",
+    "@eslint-react/eslint-plugin": "1.19.0",
+    "@eslint/compat": "1.2.4",
+    "@eslint/eslintrc": "3.2.0",
+    "@next/eslint-plugin-next": "15.1.2",
+    "@prettier/plugin-xml": "3.4.1",
+    "@workspace/typescript-config": "workspace:*",
+    "eslint": "9.17.0",
+    "eslint-plugin-depend": "0.12.0",
+    "eslint-plugin-format": "0.1.3",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "eslint-plugin-react-refresh": "0.4.16",
+    "eslint-plugin-tailwindcss": "3.17.5",
+    "globals": "15.13.0",
+    "husky": "9.1.7",
+    "npm-run-all2": "7.0.2",
+    "typescript": "5.7.2"
+  }
+}
