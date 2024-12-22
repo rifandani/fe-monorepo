@@ -1,8 +1,8 @@
 'use client'
 
 import { Icon } from '@iconify/react'
-import { Button } from '@workspace/ui/components/button'
-import { Menu, MenuItem, MenuPopover, MenuTrigger } from '@workspace/ui/components/menu'
+import { Button } from '@workspace/core/components/button'
+import { Menu, MenuItem, MenuPopover, MenuTrigger } from '@workspace/core/components/menu'
 import { useTheme } from 'next-themes'
 
 export function ThemeToggle() {
