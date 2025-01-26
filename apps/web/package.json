@@ -12,7 +12,8 @@
     "test:ui": "playwright test --ui --headed",
     "test:report": "playwright show-report",
     "test:install": "playwright install --with-deps chromium",
-    "dev": "cp .env.development .env.local && next dev --turbopack --port 3002",
+    "dev": "cp .env.development .env.local && next dev --port 3002",
+    "dev:turbo": "cp .env.development .env.local && next dev --turbopack --port 3002",
     "build": "cp .env.production .env.local && next build",
     "start": "next start"
   },

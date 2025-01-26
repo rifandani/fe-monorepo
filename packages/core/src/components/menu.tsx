@@ -21,16 +21,12 @@ import {
   MenuItem as AriaMenuItem,
   MenuTrigger as AriaMenuTrigger,
   Separator as AriaSeparator,
-  SubmenuTrigger as AriaSubmenuTrigger,
   composeRenderProps,
+  SubmenuTrigger,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 
 const MenuTrigger = AriaMenuTrigger
-
-const MenuSubTrigger = AriaSubmenuTrigger
-
-const MenuSection = ListBoxSection
 
 const MenuCollection = ListBoxCollection
 
@@ -176,9 +172,9 @@ export {
   MenuItem,
   MenuKeyboard,
   MenuPopover,
-  MenuSection,
+  ListBoxSection as MenuSection,
   MenuSeparator,
-  MenuSubTrigger,
+  SubmenuTrigger as MenuSubTrigger,
   MenuTrigger,
 }
 export type { JollyMenuProps, MenuHeaderProps }

@@ -105,7 +105,7 @@ export default antfu(
     settings: {
       tailwindcss: {
         callees: ['classnames', 'clsx', 'ctl', 'cn', 'twMerge', 'twJoin'],
-        // config: path.join(import.meta.dirname, './apps/rrouter/tailwind.config.cjs'),
+        // config: path.join(import.meta.dirname, './apps/spa/tailwind.config.cjs'),
       },
     },
   },

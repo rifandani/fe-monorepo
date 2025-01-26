@@ -15,17 +15,14 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4.1.1
 
-      - name: Install node
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: lts/*
-          cache: npm
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Clean install
-        run: npm run clean
+      - name: Install deps
+        run: bun i
 
       - name: Lint
-        run: npm run lint
+        run: bun lint
 
   # typecheck:
   #   runs-on: ubuntu-latest
@@ -33,20 +30,14 @@ jobs:
   #     - name: Checkout branch
   #       uses: actions/checkout@v4.1.1
 
-  #     - name: Install pnpm
-  #       uses: pnpm/action-setup@v3
+  #     - name: Install bun
+  #       uses: oven-sh/setup-bun@v2
 
-  #     - name: Install node
-  #       uses: actions/setup-node@v4.0.2
-  #       with:
-  #         node-version: lts/*
-  #         cache: pnpm # Package manager should be pre-installed
-
-  #     - name: Clean install
-  #       run: pnpm i --frozen-lockfile
+  #     - name: Install deps
+  #       run: bun i
 
   #     - name: Typecheck
-  #       run: pnpm typecheck
+  #       run: bun typecheck
 
   # e2e:
   #   timeout-minutes: 30
@@ -55,23 +46,18 @@ jobs:
   #     - name: Checkout branch
   #       uses: actions/checkout@v4.1.1
 
-  #     - name: Install pnpm
-  #       uses: pnpm/action-setup@v3
+  #     - name: Install bun
+  #       uses: oven-sh/setup-bun@v2
 
-  #     - name: Install node
-  #       uses: actions/setup-node@v4.0.2
-  #       with:
-  #         node-version: 18
-
-  #     - name: Clean install
-  #       run: pnpm i --frozen-lockfile
+  #     - name: Install deps
+  #       run: bun i
 
   #     - name: Install playwright browsers
   #       # since we are installing dependencies beforehand, we can `exec` the binaries directly, instead of `dlx`
-  #       run: pnpm test:install
+  #       run: bun test:install
 
   #     - name: Run playwright tests
-  #       run: pnpm test
+  #       run: bun test
 
   #     - name: Save playwright report as artifact
   #       uses: actions/upload-artifact@v4.3.1
@@ -89,18 +75,13 @@ jobs:
   #     - name: Checkout branch
   #       uses: actions/checkout@v4.1.1
 
-  #     - name: Install pnpm
-  #       uses: pnpm/action-setup@v3
-
-  #     - name: Install node
-  #       uses: actions/setup-node@v4.0.2
-  #       with:
-  #         node-version: lts/*
+  #     - name: Install bun
+  #       uses: oven-sh/setup-bun@v2
 
   #     - name: Clean install
-  #       run: pnpm i --frozen-lockfile
+  #       run: bun i
 
   #     - name: Run playwright tests
-  #       run: pnpm test
+  #       run: bun test
   #       env:
   #         HOME: /root

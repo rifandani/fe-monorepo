@@ -1,7 +1,7 @@
 'use client'
 
-import type * as React from 'react'
 import { Icon } from '@iconify/react'
+import * as React from 'react'
 import {
   Button,
   type ButtonProps,
@@ -13,7 +13,6 @@ import {
   type ListBoxProps,
   Popover,
   type PopoverProps,
-  Section,
   Select,
   SelectValue,
   type SelectValueProps,
@@ -21,10 +20,6 @@ import {
   type SeparatorProps,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-
-const _Select = Select
-
-const SelectSection = Section
 
 const SelectCollection = Collection
 
@@ -145,13 +140,12 @@ function SelectContent<T extends object>({
 }
 
 export {
-  _Select as Select,
+  Select,
   SelectCollection,
   SelectContent,
   SelectHeader,
   SelectItem,
   SelectPopover,
-  SelectSection,
   SelectSeparator,
   SelectTrigger,
   _SelectValue as SelectValue,

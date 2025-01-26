@@ -1,8 +1,8 @@
 'use client'
 
-import type * as React from 'react'
 import { Icon } from '@iconify/react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react'
 import {
   Button,
   Dialog,
