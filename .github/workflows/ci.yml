@@ -24,48 +24,52 @@ jobs:
       - name: Lint
         run: bun lint
 
-  # typecheck:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4.1.1
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4.1.1
 
-  #     - name: Install bun
-  #       uses: oven-sh/setup-bun@v2
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
-  #     - name: Install deps
-  #       run: bun i
+      - name: Install deps
+        run: bun i
 
-  #     - name: Typecheck
-  #       run: bun typecheck
+      - name: Typecheck
+        run: bun typecheck
 
-  # e2e:
-  #   timeout-minutes: 30
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4.1.1
+  e2e:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4.1.1
 
-  #     - name: Install bun
-  #       uses: oven-sh/setup-bun@v2
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
 
-  #     - name: Install deps
-  #       run: bun i
+      - name: Install deps
+        run: bun i
 
-  #     - name: Install playwright browsers
-  #       # since we are installing dependencies beforehand, we can `exec` the binaries directly, instead of `dlx`
-  #       run: bun test:install
+      - name: Install playwright browsers
+        run: bun spa:test:install
 
-  #     - name: Run playwright tests
-  #       run: bun test
+      - name: Run playwright tests
+        run: bun spa:test:ci
 
-  #     - name: Save playwright report as artifact
-  #       uses: actions/upload-artifact@v4.3.1
-  #       if: always()
-  #       with:
-  #         name: playwright-report
-  #         path: playwright-report/
-  #         retention-days: 30
+      - name: Save playwright report as artifact
+        uses: actions/upload-artifact@v4.3.1
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.shardIndex }}
+          path: playwright-report
+          retention-days: 7
 
   # e2e:
   #   runs-on: ubuntu-latest

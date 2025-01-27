@@ -1,4 +1,3 @@
-/* eslint-disable react/no-forward-ref */
 'use client'
 
 import * as React from 'react'

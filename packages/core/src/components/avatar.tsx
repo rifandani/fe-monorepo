@@ -1,5 +1,4 @@
 // FIXME: Remove this once we upgrade to react 19
-/* eslint-disable react/no-forward-ref */
 'use client'
 
 import * as AvatarPrimitive from '@radix-ui/react-avatar'

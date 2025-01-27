@@ -2,6 +2,7 @@ import url from 'node:url'
 import antfu from '@antfu/eslint-config'
 import { fixupConfigRules } from '@eslint/compat'
 import { FlatCompat } from '@eslint/eslintrc'
+import pluginRouter from '@tanstack/eslint-plugin-router'
 import depend from 'eslint-plugin-depend'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tailwind from 'eslint-plugin-tailwindcss'
@@ -72,6 +73,7 @@ export default antfu(
       'babel.config.js',
       '**/jest.config.js',
       '**/tailwind.config.js',
+      '**/routeTree.gen.ts',
       'commitlint.config.js',
     ],
   },
@@ -118,5 +120,10 @@ export default antfu(
     name: 'next/core-web-vitals',
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...nextCoreWebVitals,
+  },
+  {
+    name: '@tanstack/router',
+    files: ['apps/spa/*.{ts,tsx}'],
+    ...pluginRouter.configs['flat/recommended'][0],
   },
 )

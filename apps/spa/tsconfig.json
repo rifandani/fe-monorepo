@@ -1,0 +1,34 @@
+{
+  "extends": "@workspace/typescript-config/react.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "react": [
+        "./node_modules/@types/react"
+      ],
+      "@/*": ["./src/*"],
+      "@workspace/core/*": ["../../packages/core/src/*"]
+    },
+    "types": [
+      "vite/client"
+    ]
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dev-dist",
+    "dist",
+    "vite.config.*",
+    "playwright.config.*"
+  ]
+}

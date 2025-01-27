@@ -3,8 +3,8 @@ import forms from '@tailwindcss/forms'
 import typography from '@tailwindcss/typography'
 import animate from 'tailwindcss-animate'
 import rac from 'tailwindcss-react-aria-components'
-import { fontFamily } from 'tailwindcss/defaultTheme'
-import plugin from 'tailwindcss/plugin'
+import { fontFamily } from 'tailwindcss/defaultTheme.js'
+import plugin from 'tailwindcss/plugin.js'
 
 const config = {
   darkMode: ['class'],

@@ -64,7 +64,7 @@ const COLOR_SCHEME_QUERY = '(prefers-color-scheme: dark)'
  * Reactive color mode with auto data persistence.
  */
 export function useColorMode<T extends string = BasicColorMode>(
-  options: UseColorModeOptions<T>,
+  options: UseColorModeOptions<T> = {},
 ) {
   const {
     selector = 'html',

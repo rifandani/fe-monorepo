@@ -1,5 +1,5 @@
 {
-  "name": "next-monorepo",
+  "name": "fe-monorepo",
   "version": "1.0.0",
   "private": true,
   "description": "React, nextjs monorepo template",
@@ -27,7 +27,9 @@
     "web:dev": "bun --filter @workspace/web dev",
     "web:typecheck": "bun --filter @workspace/web typecheck",
     "spa:dev": "bun --filter @workspace/spa dev",
-    "spa:typecheck": "bun --filter @workspace/spa typecheck"
+    "spa:typecheck": "bun --filter @workspace/spa typecheck",
+    "spa:test:install": "bun --filter @workspace/spa test:install",
+    "spa:test": "bun --filter @workspace/spa test"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.12.0",
@@ -38,6 +40,7 @@
     "@eslint/eslintrc": "3.2.0",
     "@next/eslint-plugin-next": "15.1.2",
     "@prettier/plugin-xml": "3.4.1",
+    "@tanstack/eslint-plugin-router": "1.97.19",
     "@workspace/typescript-config": "workspace:*",
     "eslint": "9.17.0",
     "eslint-plugin-depend": "0.12.0",
