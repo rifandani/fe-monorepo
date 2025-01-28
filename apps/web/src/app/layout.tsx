@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { Providers } from '@/components/providers.client'
+import { Providers } from '@/core/components/providers.client'
 import { Geist, Geist_Mono } from 'next/font/google'
-import '@workspace/core/styles/globals.css'
+import '@/core/styles/globals.css'
 
 const fontSans = Geist({
   subsets: ['latin'],
