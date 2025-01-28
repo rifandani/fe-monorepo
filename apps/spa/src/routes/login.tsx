@@ -2,6 +2,9 @@ import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login.hook'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { TextField } from '@/core/components/ui'
+import { Button } from '@/core/components/ui/button'
+import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import { checkAuthUser } from '@/core/utils/checker.util'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,11 +12,6 @@ import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import reactjs from '@workspace/core/assets/images/reactjs.svg'
-import { Button } from '@workspace/core/components/button'
-import { Input } from '@workspace/core/components/input'
-import { Label } from '@workspace/core/components/label'
-import { Link } from '@workspace/core/components/link'
-import { FieldError, TextField } from 'react-aria-components'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -55,7 +53,6 @@ function LoginRoute() {
             aria-label={t('registerHere')}
             className="hover:underline"
             href="/"
-            variant="link"
           >
             {t('registerHere')}
           </Link>
@@ -110,22 +107,22 @@ function LoginForm() {
         name="username"
         control={form.control}
         render={({
-          field: { ref, ...field },
+          field: { disabled, ...field },
           fieldState: { invalid, error },
         }) => (
           <TextField
             className="group/username pt-4"
             // let RHF handle validation instead of the browser.
             validationBehavior="aria"
+            label={t('username')}
+            placeholder={t('usernamePlaceholder')}
             {...field}
-            isInvalid={invalid}
             isRequired
+            isInvalid={invalid}
+            isDisabled={disabled}
+            errorMessage={error?.message}
           >
-            <Label>{t('username')}</Label>
-            <Input placeholder={t('usernamePlaceholder')} ref={ref} />
-            <FieldError className="text-destructive">
-              {error?.message}
-            </FieldError>
+            {/* <Input ref={ref} /> */}
           </TextField>
         )}
       />
@@ -135,26 +132,24 @@ function LoginForm() {
         control={form.control}
         name="password"
         render={({
-          field: { ref, ...field },
+          field: { disabled, ...field },
           fieldState: { invalid, error },
         }) => (
           <TextField
             className="group/password pt-4"
             // Let React Hook Form handle validation instead of the browser.
             validationBehavior="aria"
+            label={t('password')}
+            placeholder={t('passwordPlaceholder')}
+            type="password"
             {...field}
-            isInvalid={invalid}
+            isRevealable
             isRequired
+            isInvalid={invalid}
+            isDisabled={disabled}
+            errorMessage={error?.message}
           >
-            <Label>{t('password')}</Label>
-            <Input
-              type="password"
-              placeholder={t('passwordPlaceholder')}
-              ref={ref}
-            />
-            <FieldError className="text-destructive">
-              {error?.message}
-            </FieldError>
+            {/* <Input ref={ref} /> */}
           </TextField>
         )}
       />

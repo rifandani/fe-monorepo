@@ -3,10 +3,11 @@ import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
+// replaced dynamically
+const buildDate = '__DATE__' as '__DATE__' | Omit<string, '__DATE__'>
+const reloadSW = '__RELOAD_SW__' as '__RELOAD_SW__' | 'true'
+
 export function ReloadPromptSw() {
-  // replaced dynamically
-  const buildDate = '__DATE__' as '__DATE__' | Omit<string, '__DATE__'>
-  const reloadSW = '__RELOAD_SW__' as '__RELOAD_SW__' | 'true'
 
   const onRegisteredSW = useCallback(
     (_swUrl: string, registration: ServiceWorkerRegistration | undefined) => {

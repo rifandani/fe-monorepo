@@ -4,22 +4,25 @@ import { AppQueryProvider } from '@/core/providers/query/provider'
 import { ReloadPromptSw } from '@/core/providers/reload-prompt-sw'
 import { AppRouterProvider } from '@/core/providers/router/provider'
 import { AppToastProvider } from '@/core/providers/toast/provider'
+import React from 'react'
 
 export function Entry() {
   return (
-    <AppQueryProvider>
-      <AppI18nProvider>
-        <AppToastProvider>
-          {/* Router entry point */}
-          <AppRouterProvider />
+    <React.StrictMode>
+      <AppQueryProvider>
+        <AppI18nProvider>
+          <AppToastProvider>
+            {/* Router entry point */}
+            <AppRouterProvider />
 
-          {/* PWA */}
-          <ReloadPromptSw />
+            {/* PWA */}
+            <ReloadPromptSw />
 
-          {/* All devtools */}
-          <Devtools />
-        </AppToastProvider>
-      </AppI18nProvider>
-    </AppQueryProvider>
+            {/* All devtools */}
+            <Devtools />
+          </AppToastProvider>
+        </AppI18nProvider>
+      </AppQueryProvider>
+    </React.StrictMode>
   )
 }

@@ -1,6 +1,6 @@
 import { Entry } from '@/core/entry'
 import { createRoot } from 'react-dom/client'
-import '@/core/styles/globals-lato.css'
+import '@/core/styles/globals.css'
 
 const root = document.getElementById('root')
 

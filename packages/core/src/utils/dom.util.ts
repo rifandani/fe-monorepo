@@ -1,5 +1,4 @@
 import type { URLSearchParamsInit } from '@workspace/core/types/core.type'
-import { extendTailwindMerge } from 'tailwind-merge'
 
 /**
  * Check if we are in browser, not server
@@ -23,27 +22,6 @@ export function doDownload(url: string) {
   document.body.removeChild(link)
 }
 
-/**
- * create merge function with custom config which extends the default config.
- * Use this if you use the default Tailwind config and just extend it in some places.
- */
-export const tw = extendTailwindMerge<'alert'>({
-  extend: {
-    classGroups: {
-      // ↓ The `foo` key here is the class group ID
-      //   ↓ Creates group of classes which have conflicting styles
-      //     Classes here: 'alert-info', 'alert-success', 'alert-warning', 'alert-error'
-      alert: ['alert-info', 'alert-success', 'alert-warning', 'alert-error'],
-    },
-    // ↓ Here you can define additional conflicts across different groups
-    conflictingClassGroups: {
-      // ↓ ID of class group which creates a conflict with…
-      //     ↓ …classes from groups with these IDs
-      // In this case `tw('alert-success alert-error') → 'alert-error'`
-      alert: ['alert'],
-    },
-  },
-})
 
 /**
  * Creates a URLSearchParams object using the given initializer.

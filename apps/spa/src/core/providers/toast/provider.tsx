@@ -6,10 +6,9 @@ export function AppToastProvider({ children }: PropsWithChildren) {
   const value = useCreateToastContext()
 
   return (
-    // FIXME: Remove this once we upgrade to react 19
-    <ToastContext.Provider value={value}>
+    <ToastContext value={value}>
       {children}
       <Toaster {...value[0]} />
-    </ToastContext.Provider>
+    </ToastContext>
   )
 }

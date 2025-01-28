@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import {
   createRootRouteWithContext,
@@ -9,7 +10,6 @@ import {
   type ToPathOption,
   useRouter,
 } from '@tanstack/react-router'
-import { Link } from '@workspace/core/components/link'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
 
@@ -31,8 +31,8 @@ function RootRoute() {
   const router = useRouter()
 
   return (
-  // RAC such as Link, Menu, Tabs, Table, and many others support rendering elements as links that perform navigation when the user interacts with them.
-  // It needs to be wrapped by RAC RouterProvider component.
+    // RAC such as Link, Menu, Tabs, Table, and many others support rendering elements as links that perform navigation when the user interacts with them.
+    // It needs to be wrapped by RAC RouterProvider component.
     <RACRouterProvider
       navigate={(to, options) =>
         router.navigate({

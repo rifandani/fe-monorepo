@@ -1,12 +1,12 @@
 import type { Formatter } from '@workspace/core/locales/locale.type'
 import { I18nContext } from '@/core/providers/i18n/context'
 import { localeDict } from '@workspace/core/locales'
-import React, { useContext } from 'react'
+import React from 'react'
 import { useMessageFormatter } from 'react-aria'
 
 export function useI18n() {
   const formatter: Formatter = useMessageFormatter(localeDict)
-  const context = useContext(I18nContext)
+  const context = React.use(I18nContext)
 
   if (!context)
     throw new Error('useI18n: cannot find the I18nContext')

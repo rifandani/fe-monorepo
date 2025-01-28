@@ -6,9 +6,8 @@ export function AppI18nProvider({ children }: PropsWithChildren) {
   const value = useI18nContext()
 
   return (
-    // FIXME: Remove this once we upgrade to react 19
-    <I18nContext.Provider value={value}>
+    <I18nContext value={value}>
       <AriaI18nProvider locale={value[0]}>{children}</AriaI18nProvider>
-    </I18nContext.Provider>
+    </I18nContext>
   )
 }

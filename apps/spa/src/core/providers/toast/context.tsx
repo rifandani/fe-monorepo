@@ -2,7 +2,6 @@ import type { Toaster } from 'sonner'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import { useResetState } from '@workspace/core/hooks/use-reset-state.hook'
 import React from 'react'
-import { twMerge } from 'tailwind-merge'
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>
 type ToasterProps = React.ComponentPropsWithoutRef<typeof Toaster>
@@ -13,7 +12,6 @@ export function useCreateToastContext() {
   const [toastConfig, setToastConfig, resetToastConfig] = useResetState<ToasterProps>({
     duration: 3_000,
     position: 'bottom-right',
-    cn: twMerge,
     theme: theme === 'auto' ? 'system' : theme,
     className: 'toaster group',
     toastOptions: {

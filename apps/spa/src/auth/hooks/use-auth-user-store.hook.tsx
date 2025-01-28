@@ -82,9 +82,9 @@ export const UserContext = React.createContext<ReturnType<
 > | null>(null)
 
 export function useUserContext<T>(selector: (_store: UserStore) => T): T {
-  const store = React.useContext(UserContext)
+  const store = React.use(UserContext)
   if (!store)
-    throw new Error('Missing UserContext.Provider in the tree')
+    throw new Error('useUserContext: cannot find the UserContext')
 
   return useStore(store, selector)
 }
@@ -100,7 +100,7 @@ export function UserProvider({
 }: {
   children:
     | React.ReactNode
-    | ((context: ReturnType<typeof createUserStore>) => JSX.Element)
+    | ((context: ReturnType<typeof createUserStore>) => React.ReactNode)
   initialState?: Parameters<typeof createUserStore>[0]
 }) {
   const storeRef = React.useRef<ReturnType<typeof createUserStore> | null>(
@@ -111,9 +111,8 @@ export function UserProvider({
   }
 
   return (
-    // FIXME: Remove this once we upgrade to react 19
-    <UserContext.Provider value={storeRef.current}>
+    <UserContext value={storeRef.current}>
       {isFunction(children) ? children(storeRef.current) : children}
-    </UserContext.Provider>
+    </UserContext>
   )
 }

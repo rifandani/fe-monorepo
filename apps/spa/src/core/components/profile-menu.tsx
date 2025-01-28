@@ -1,10 +1,9 @@
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { Avatar } from '@/core/components/ui/avatar'
+import { Menu } from '@/core/components/ui/menu'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import { Icon } from '@iconify/react'
 import { useNavigate } from '@tanstack/react-router'
-import { Avatar, AvatarFallback } from '@workspace/core/components/avatar'
-import { Button } from '@workspace/core/components/button'
-import { Menu, MenuHeader, MenuItem, MenuPopover, MenuSection, MenuSeparator, MenuTrigger } from '@workspace/core/components/menu'
 
 export function ProfileMenu() {
   const [t] = useI18n()
@@ -12,51 +11,45 @@ export function ProfileMenu() {
   const { user, clearUser } = useAuthUserStore()
 
   return (
-    <MenuTrigger>
-      <Button size="icon" variant="ghost" className="rounded-full">
-        <Avatar>
-          <AvatarFallback>
-            {user?.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </Button>
+    <Menu>
+      <Menu.Trigger>
+        <Avatar initials={user?.username.slice(0, 2).toUpperCase()} />
+      </Menu.Trigger>
 
-      <MenuPopover>
-        <Menu
-          onAction={(key) => {
-            const currentKey = key as 'profile' | 'settings' | 'logout'
+      <Menu.Content
+        onAction={(key) => {
+          const currentKey = key as 'profile' | 'settings' | 'logout'
 
-            if (currentKey === 'logout') {
-              clearUser()
-              navigate({
-                to: '/login',
-              })
-            }
-          }}
-        >
-          <MenuSection>
-            <MenuHeader separator>{t('account')}</MenuHeader>
+          if (currentKey === 'logout') {
+            clearUser()
+            navigate({
+              to: '/login',
+            })
+          }
+        }}
+      >
+        <Menu.Section>
+          <Menu.Header separator>{t('account')}</Menu.Header>
 
-            <MenuItem id="profile" className="gap-x-2">
-              <Icon icon="lucide:user" />
-              <span>{t('profile')}</span>
-            </MenuItem>
-            <MenuItem id="settings" className="gap-x-2">
-              <Icon icon="lucide:settings" />
-              <span>{t('settings')}</span>
-            </MenuItem>
-          </MenuSection>
+          <Menu.Item id="profile" className="gap-x-2">
+            <Icon icon="lucide:user" />
+            <span>{t('profile')}</span>
+          </Menu.Item>
+          <Menu.Item id="settings" className="gap-x-2">
+            <Icon icon="lucide:settings" />
+            <span>{t('settings')}</span>
+          </Menu.Item>
+        </Menu.Section>
 
-          <MenuSeparator />
+        <Menu.Separator />
 
-          <MenuSection>
-            <MenuItem id="logout" className="gap-x-2">
-              <Icon icon="lucide:log-out" />
-              <p>{t('logout')}</p>
-            </MenuItem>
-          </MenuSection>
-        </Menu>
-      </MenuPopover>
-    </MenuTrigger>
+        <Menu.Section>
+          <Menu.Item id="logout" className="gap-x-2">
+            <Icon icon="lucide:log-out" />
+            <p>{t('logout')}</p>
+          </Menu.Item>
+        </Menu.Section>
+      </Menu.Content>
+    </Menu>
   )
 }

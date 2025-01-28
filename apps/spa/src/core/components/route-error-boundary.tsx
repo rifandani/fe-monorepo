@@ -1,4 +1,4 @@
-import { Button } from '@workspace/core/components/button'
+import { Button } from '@/core/components/ui/button'
 
 export function RouteErrorBoundary() {
   return (
