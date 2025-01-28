@@ -1,9 +1,11 @@
 import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
+import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login.hook'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import { checkAuthUser } from '@/core/utils/checker.util'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import reactjs from '@workspace/core/assets/images/reactjs.svg'
@@ -156,6 +158,17 @@ function LoginForm() {
           </TextField>
         )}
       />
+
+      {loginMutation.error && (
+        <div
+          data-testid="mutation-error"
+          aria-label="Mutation error alert"
+          className="bg-destructive text-destructive-foreground mt-2 flex w-full items-center gap-x-2 rounded-md p-2 shadow-md"
+        >
+          <Icon icon="lucide:alert-circle" />
+          <p>{(loginMutation.error as ErrorResponseSchema).message}</p>
+        </div>
+      )}
 
       <Button
         type="submit"
