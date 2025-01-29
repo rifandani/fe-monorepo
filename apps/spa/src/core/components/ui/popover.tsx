@@ -25,7 +25,6 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { Dialog } from './dialog'
 
 type PopoverProps = DialogTriggerProps

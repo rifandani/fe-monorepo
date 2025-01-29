@@ -4,7 +4,6 @@ import type { GridListItemProps, GridListProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
 import { composeRenderProps, GridList, GridListItem } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Checkbox } from './checkbox'
 import { Description, Label } from './field'
 import { focusStyles } from './primitive'

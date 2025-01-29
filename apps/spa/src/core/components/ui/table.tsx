@@ -27,7 +27,6 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { Checkbox } from './checkbox'
 
 const table = tv({

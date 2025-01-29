@@ -4,9 +4,7 @@ import type { ProgressBarProps as ProgressBarPrimitiveProps } from 'react-aria-c
 import { motion } from 'motion/react'
 import {
   ProgressBar as ProgressBarPrimitive,
-
 } from 'react-aria-components'
-
 import { Label } from './field'
 import { composeTailwindRenderProps } from './primitive'
 

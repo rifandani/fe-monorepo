@@ -2,7 +2,6 @@
 
 import { composeRenderProps, Text, ToggleButton } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { buttonStyles } from './button'
 
 const showMoreStyles = tv({

@@ -4,10 +4,8 @@ import type { SearchFieldProps as SearchFieldPrimitiveProps, ValidationResult } 
 import { Icon } from '@iconify/react'
 import {
   SearchField as SearchFieldPrimitive,
-
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Button } from './button'
 import { Description, FieldError, FieldGroup, Input, Label } from './field'
 import { Loader } from './loader'

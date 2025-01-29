@@ -5,10 +5,8 @@ import type { Placement } from '@react-types/overlays'
 import type { DateRangePickerProps as DateRangePickerPrimitiveProps, DateValue, ValidationResult } from 'react-aria-components'
 import {
   DateRangePicker as DateRangePickerPrimitive,
-
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { DateInput } from './date-field'
 import { DatePickerIcon, DatePickerOverlay } from './date-picker'
 import { Description, FieldError, FieldGroup, Label } from './field'

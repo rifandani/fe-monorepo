@@ -6,11 +6,9 @@ import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-c
 import {
   Button,
   ColorPicker as ColorPickerPrimitive,
-
   Dialog,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { ColorArea } from './color-area'
 import { ColorField } from './color-field'
 import { ColorSlider } from './color-slider'

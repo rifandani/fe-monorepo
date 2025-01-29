@@ -17,7 +17,6 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { composeTailwindRenderProps } from './primitive'
 
 const tabsStyles = tv({

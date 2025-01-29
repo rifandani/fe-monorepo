@@ -5,9 +5,7 @@ import type { ButtonProps, DialogProps } from 'react-aria-components'
 import {
   animate,
   AnimatePresence,
-
   motion,
-
   useMotionTemplate,
   useMotionValue,
   useMotionValueEvent,
@@ -16,7 +14,6 @@ import {
 import { createContext, use, useCallback, useMemo, useState } from 'react'
 import { Modal, ModalOverlay } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-
 import { Dialog } from './dialog'
 
 const inertiaTransition: Inertia = {

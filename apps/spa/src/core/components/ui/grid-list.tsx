@@ -1,7 +1,6 @@
 'use client'
 
 import type React from 'react'
-
 import type { GridListItemProps, GridListProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
@@ -12,7 +11,6 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { Checkbox } from './checkbox'
 import { composeTailwindRenderProps } from './primitive'
 

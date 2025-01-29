@@ -13,7 +13,6 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { buttonStyles } from './button'
 
 const paginationStyles = tv({

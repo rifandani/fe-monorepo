@@ -5,7 +5,6 @@ import type { ButtonProps } from './button'
 import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
 import { useEffect, useRef } from 'react'
-
 import {
   Button as ButtonPrimitive,
   Dialog as DialogPrimitive,

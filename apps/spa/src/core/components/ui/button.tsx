@@ -3,11 +3,9 @@
 import type { ButtonProps as ButtonPrimitiveProps } from 'react-aria-components'
 import {
   Button as ButtonPrimitive,
-
   composeRenderProps,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { focusButtonStyles } from './primitive'
 
 const buttonStyles = tv({

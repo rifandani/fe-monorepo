@@ -6,15 +6,11 @@ import {
   composeRenderProps,
   SliderOutput,
   Slider as SliderPrimitive,
-
   SliderStateContext,
   SliderThumb,
-
   SliderTrack,
-
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Description, Label } from './field'
 import { Tooltip } from './tooltip'
 

@@ -6,7 +6,6 @@ import type { FieldProps } from './field'
 import type { RestrictedIntent, TagGroupProps } from './tag-group'
 import { useCallback, useState } from 'react'
 import { Group, TextField } from 'react-aria-components'
-
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { Description, Input, Label } from './field'

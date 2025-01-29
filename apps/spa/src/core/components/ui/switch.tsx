@@ -3,7 +3,6 @@
 import type { SwitchProps as SwitchPrimitiveProps } from 'react-aria-components'
 import {
   Switch as SwitchPrimitive,
-
 } from 'react-aria-components'
 
 import { composeTailwindRenderProps } from './primitive'

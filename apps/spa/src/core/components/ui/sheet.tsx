@@ -4,7 +4,6 @@ import type { DialogProps, DialogTriggerProps, ModalOverlayProps } from 'react-a
 import type { VariantProps } from 'tailwind-variants'
 import { composeRenderProps, DialogTrigger, Modal, ModalOverlay } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Dialog } from './dialog'
 
 const overlayStyles = tv({

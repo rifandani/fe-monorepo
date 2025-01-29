@@ -10,7 +10,6 @@ import {
   UNSTABLE_Tree as TreePrimitive,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Checkbox } from './checkbox'
 
 const treeStyles = tv({

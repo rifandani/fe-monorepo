@@ -5,7 +5,6 @@ import { Icon } from '@iconify/react'
 import { createContext, use } from 'react'
 import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-
 import { Link } from './link'
 import { composeTailwindRenderProps } from './primitive'
 

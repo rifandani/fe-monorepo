@@ -6,7 +6,6 @@ import {
   ColorSwatchPicker as ColorSwatchPickerPrimitive,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { ColorSwatch } from './color-swatch'
 import { composeTailwindRenderProps, focusRing } from './primitive'
 

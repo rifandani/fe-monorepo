@@ -16,7 +16,6 @@ import {
   Heading,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { composeTailwindRenderProps } from './primitive'
 
 interface DisclosureGroupProps extends AccordionProps {

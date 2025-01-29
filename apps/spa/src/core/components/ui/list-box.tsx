@@ -8,7 +8,6 @@ import { Icon } from '@iconify/react'
 import { composeRenderProps, ListBoxItem, ListBox as ListBoxPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { DropdownItemDetails, DropdownSection } from './dropdown'
 import { composeTailwindRenderProps } from './primitive'
 

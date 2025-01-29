@@ -5,9 +5,7 @@ import { Icon } from '@iconify/react'
 import { motion } from 'motion/react'
 import {
   Meter as MeterPrimitive,
-
 } from 'react-aria-components'
-
 import { Label } from './field'
 import { composeTailwindRenderProps } from './primitive'
 

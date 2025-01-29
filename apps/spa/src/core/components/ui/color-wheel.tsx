@@ -3,10 +3,8 @@
 import type { ColorWheelProps as ColorWheelPrimitiveProps } from 'react-aria-components'
 import {
   ColorWheel as ColorWheelPrimitive,
-
   ColorWheelTrack,
 } from 'react-aria-components'
-
 import { ColorThumb } from './color-thumb'
 
 type ColorWheelProps = Omit<ColorWheelPrimitiveProps, 'outerRadius' | 'innerRadius'>

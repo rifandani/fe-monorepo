@@ -7,17 +7,12 @@ import {
   composeRenderProps,
   Header,
   ListBoxItem as ListBoxItemPrimitive,
-
   ListBoxSection,
-
   Separator,
-
   Text,
-
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-
 import { Keyboard } from './keyboard'
 
 const dropdownItemStyles = tv({

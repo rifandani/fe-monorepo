@@ -2,7 +2,6 @@
 
 import type { MenuContentProps } from './menu'
 import { createContext, use, useMemo, useRef, useState } from 'react'
-
 import { tv } from 'tailwind-variants'
 import { Menu } from './menu'
 import { focusButtonStyles } from './primitive'

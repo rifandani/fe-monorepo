@@ -18,7 +18,6 @@ import {
   Text,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { composeTailwindRenderProps, focusStyles } from './primitive'
 
 interface FieldProps {

@@ -5,7 +5,6 @@ import type {
   ValidationResult,
 } from 'react-aria-components'
 import { ColorField as ColorFieldPrimitive } from 'react-aria-components'
-
 import { ColorPicker } from './color-picker'
 import { ColorSwatch } from './color-swatch'
 import { Description, FieldError, FieldGroup, Input, Label } from './field'

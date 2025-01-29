@@ -9,7 +9,6 @@ import {
   Modal as ModalPrimitive,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { Dialog } from './dialog'
 
 const overlay = tv({

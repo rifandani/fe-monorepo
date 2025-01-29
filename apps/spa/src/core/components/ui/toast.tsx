@@ -7,7 +7,6 @@ import {
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import { Toaster as ToasterPrimitive } from 'sonner'
 import { twMerge } from 'tailwind-merge'
-
 import { buttonStyles } from './button'
 import { Loader } from './loader'
 

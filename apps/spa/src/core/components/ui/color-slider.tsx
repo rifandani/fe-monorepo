@@ -3,13 +3,11 @@
 import type { ColorSliderProps as ColorSliderPrimitiveProps } from 'react-aria-components'
 import {
   ColorSlider as ColorSliderPrimitive,
-
   composeRenderProps,
   SliderOutput,
   SliderTrack,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { ColorThumb } from './color-thumb'
 import { Label } from './field'
 

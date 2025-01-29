@@ -1,5 +1,4 @@
 import { tv } from 'tailwind-variants'
-
 import { Heading } from './heading'
 
 const card = tv({

@@ -7,28 +7,22 @@ import { createContext, use, useEffect } from 'react'
 import { useFilter } from 'react-aria'
 import {
   UNSTABLE_Autocomplete as Autocomplete,
-
   Button,
   Collection,
-
   UNSTABLE_CollectionRendererContext as CollectionRendererContext,
   UNSTABLE_DefaultCollectionRenderer as DefaultCollectionRenderer,
   Dialog,
   Header,
   Input,
   Menu as MenuPrimitive,
-
   MenuSection,
-
   Modal,
   ModalContext,
   ModalOverlay,
   OverlayTriggerStateContext,
   SearchField,
-
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-
 import { tv } from 'tailwind-variants'
 import { DropdownKeyboard } from './dropdown'
 import { Loader } from './loader'

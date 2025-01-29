@@ -5,7 +5,6 @@ import type { ToggleProps } from './toggle'
 import { createContext, use, useMemo } from 'react'
 import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-
 import { tv } from 'tailwind-variants'
 import { composeTailwindRenderProps } from './primitive'
 import { Separator } from './separator'
