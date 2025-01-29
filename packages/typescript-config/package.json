@@ -2,7 +2,9 @@
   "name": "@workspace/typescript-config",
   "version": "1.0.0",
   "private": true,
-  "license": "PROPRIETARY",
+  "description": "Shared TypeScript configuration for React Monorepo",
+  "author": "Tri Rizeki Rifandani",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   }
