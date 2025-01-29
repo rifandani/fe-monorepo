@@ -16,11 +16,21 @@
     "typecheck": "run-p web:typecheck spa:typecheck",
     "regression": "run-p lint web:typecheck spa:typecheck",
     "web:dev": "bun --filter @workspace/web dev",
+    "web:dev:turbo": "bun --filter @workspace/web dev:turbo",
+    "web:build": "bun --filter @workspace/web build",
     "web:typecheck": "bun --filter @workspace/web typecheck",
+    "web:test:install": "bun --filter @workspace/web test:install",
+    "web:test:report": "bun --filter @workspace/web test:report",
+    "web:test": "bun --filter @workspace/web test",
+    "web:test:ui": "bun --filter @workspace/web test:ui",
+    "web:test:ci": "bun --filter @workspace/web test:ci",
     "spa:dev": "bun --filter @workspace/spa dev",
+    "spa:build": "bun --filter @workspace/spa build",
     "spa:typecheck": "bun --filter @workspace/spa typecheck",
     "spa:test:install": "bun --filter @workspace/spa test:install",
-    "spa:test": "bun --filter @workspace/spa test"
+    "spa:test": "bun --filter @workspace/spa test",
+    "spa:test:ui": "bun --filter @workspace/spa test:ui",
+    "spa:test:ci": "bun --filter @workspace/spa test:ci"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.1.0",
