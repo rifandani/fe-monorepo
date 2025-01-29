@@ -48,7 +48,7 @@ function clearRafTimeout(handle: Handle) {
  */
 export function useRafTimeout(fn: () => void, delay: number | undefined) {
   const fnRef = useLatest(fn)
-  const timerRef = useRef<Handle>()
+  const timerRef = useRef<Handle>(null)
 
   useEffect(() => {
     if (!isNumber(delay) || delay < 0)

@@ -67,10 +67,4 @@ export const enLocale = {
   // #region PLAYGROUND
   playgroundTitle: 'Playground',
   // #endregion PLAYGROUND
-
-  // #region TODO
-  todoPlaceholder: 'What should you do next...',
-  limit: 'Limit',
-  selectTodoLimit: 'Select todo limit',
-  // #endregion TODO
 } as const

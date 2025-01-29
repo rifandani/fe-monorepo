@@ -65,10 +65,4 @@ export const idLocale = {
   // #region PLAYGROUND
   playgroundTitle: 'Taman Bermain',
   // #endregion PLAYGROUND
-
-  // #region TODO
-  todoPlaceholder: 'Apa yang akan anda lakukan selanjutnya...',
-  limit: 'Batas',
-  selectTodoLimit: 'Pilih batasan todo',
-  // #endregion TODO
 } as const

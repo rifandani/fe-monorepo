@@ -39,22 +39,37 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
 
   const selectedSet = useMemo(() => new Set(selected), [selected])
 
-  // Whether item is selected
+  /**
+   * Check if an item is selected
+   * @param item The item to check
+   * @returns True if the item is selected, false otherwise
+   */
   const isSelected = (item: T) => selectedSet.has(item)
 
-  // Select item
+  /**
+   * Select an item
+   * @param item The item to select
+   * @returns The updated selected items
+   */
   const select = (item: T) => {
     selectedSet.add(item)
     return setSelected(Array.from(selectedSet))
   }
 
-  // UnSelect item
+  /**
+   * UnSelect an item
+   * @param item The item to unselect
+   * @returns The updated selected items
+   */
   const unSelect = (item: T) => {
     selectedSet.delete(item)
     return setSelected(Array.from(selectedSet))
   }
 
-  // Toggle item select status
+  /**
+   * Toggle the select status of an item
+   * @param item The item to toggle
+   */
   const toggle = (item: T) => {
     if (isSelected(item)) {
       unSelect(item)
@@ -64,7 +79,9 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
     }
   }
 
-  // Select all items
+  /**
+   * Select all items in the list
+   */
   const selectAll = () => {
     items.forEach((o) => {
       selectedSet.add(o)
@@ -72,7 +89,9 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
     setSelected(Array.from(selectedSet))
   }
 
-  // UnSelect all items
+  /**
+   * UnSelect all items in the list
+   */
   const unSelectAll = () => {
     items.forEach((o) => {
       selectedSet.delete(o)
@@ -80,25 +99,33 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
     setSelected(Array.from(selectedSet))
   }
 
-  // Is no item selected
+  /**
+   * Check if no item is selected
+   */
   const noneSelected = useMemo(
     () => items.every(o => !selectedSet.has(o)),
     [items, selectedSet],
   )
 
-  // Is all items selected
+  /**
+   * Check if all items are selected
+   */
   const allSelected = useMemo(
     () => items.every(o => selectedSet.has(o)) && !noneSelected,
     [items, selectedSet, noneSelected],
   )
 
-  // Is partially items selected
+  /**
+   * Check if partially items are selected
+   */
   const partiallySelected = useMemo(
     () => !noneSelected && !allSelected,
     [noneSelected, allSelected],
   )
 
-  // Toggle select all items
+  /**
+   * Toggle select all items
+   */
   const toggleAll = () => (allSelected ? unSelectAll() : selectAll())
 
   return {

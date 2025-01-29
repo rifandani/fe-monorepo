@@ -60,7 +60,7 @@ export function useRafInterval(
   const immediate = options?.immediate
 
   const fnRef = useLatest(fn)
-  const timerRef = useRef<Handle>()
+  const timerRef = useRef<Handle>(null)
 
   useEffect(() => {
     if (!isNumber(delay) || delay < 0)

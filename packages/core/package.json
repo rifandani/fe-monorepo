@@ -7,15 +7,12 @@
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
   "exports": {
-    "./postcss.config": "./postcss.config.mjs",
-    "./tailwind.config": "./tailwind.config.ts",
     "./apis/*": "./src/apis/*.ts",
     "./assets/*": "./src/assets/*",
     "./constants/*": "./src/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./locales/*": "./src/locales/*.ts",
     "./services/*": "./src/services/*.ts",
-    "./styles/*": "./src/styles/*.css",
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },

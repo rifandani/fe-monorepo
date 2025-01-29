@@ -2,7 +2,14 @@ import { useLocalStorageState } from '@workspace/core/hooks/use-local-storage-st
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
 import { useCallback, useEffect, useMemo } from 'react'
 
+/**
+ * Basic color schema types - either a direct mode or 'auto' for system preference
+ */
 export type BasicColorSchema = BasicColorMode | 'auto'
+
+/**
+ * Available color mode values
+ */
 export type BasicColorMode = 'light' | 'dark'
 
 export interface UseColorModeOptions<T extends string = BasicColorMode> {
@@ -58,10 +65,25 @@ export interface UseColorModeOptions<T extends string = BasicColorMode> {
   disableTransition?: boolean
 }
 
+/**
+ * Media query for detecting system dark mode preference
+ */
 const COLOR_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
 /**
  * Reactive color mode with auto data persistence.
+ * Manages color scheme switching with DOM updates and storage persistence.
+ *
+ * @template T Custom color mode type extending string
+ * @param options Configuration options for color mode behavior
+ * @returns [colorMode, setColorMode] tuple for reading/writing the current color mode
+ *
+ * @example
+ * ```ts
+ * const [colorMode, setColorMode] = useColorMode()
+ * // Change to dark mode
+ * setColorMode('dark')
+ * ```
  */
 export function useColorMode<T extends string = BasicColorMode>(
   options: UseColorModeOptions<T> = {},
@@ -74,11 +96,21 @@ export function useColorMode<T extends string = BasicColorMode>(
     disableTransition = true,
   } = options
 
+  /**
+   * Persisted color mode state in localStorage
+   */
   const store = useLocalStorageState(storageKey, {
     defaultValue: initialValue,
   })
+
+  /**
+   * System dark mode preference from media query
+   */
   const preferredDark = useMediaQuery(COLOR_SCHEME_QUERY)
 
+  /**
+   * Combined color modes including custom modes from options
+   */
   const modes = useMemo(
     () =>
       ({
@@ -89,16 +121,32 @@ export function useColorMode<T extends string = BasicColorMode>(
       }) as Record<BasicColorSchema | T, string>,
     [options.modes],
   )
+
+  /**
+   * Current system color mode based on preference
+   */
   const system = useMemo(
     () => (preferredDark ? 'dark' : 'light'),
     [preferredDark],
   )
+
+  /**
+   * Active color mode - either from storage or system preference if set to 'auto'
+   */
   const state = useMemo(
     () => (store[0] === 'auto' ? system : store[0]) as 'light' | 'dark' | T,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store[0], system],
   )
 
+  /**
+   * Updates HTML attributes to apply the color mode
+   * Handles class-based and attribute-based color modes with transition disabling
+   *
+   * @param _selector DOM selector for target element
+   * @param _attribute Attribute to modify ('class' or custom)
+   * @param _mode Color mode value to apply
+   */
   const updateHTMLAttrs = useCallback(
     (_selector: string, _attribute: string, _mode = '') => {
       const el = window.document.querySelector(_selector)
@@ -141,6 +189,7 @@ export function useColorMode<T extends string = BasicColorMode>(
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: intended
   useEffect(() => {
+    // Apply color mode changes to DOM
     if (options.onChanged) {
       options.onChanged(state, (mode: T | BasicColorMode) => {
         updateHTMLAttrs(selector, attribute, modes[mode])
