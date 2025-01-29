@@ -29,7 +29,7 @@
     "radashi": "12.3.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "sonner": "1.7.1",
+    "sonner": "1.7.2",
     "type-fest": "4.33.0",
     "zod": "3.24.1"
   },
@@ -38,6 +38,6 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   }
 }
