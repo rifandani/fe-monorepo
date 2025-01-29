@@ -1,10 +1,10 @@
 'use client'
 
+import type { SearchFieldProps as SearchFieldPrimitiveProps, ValidationResult } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
   SearchField as SearchFieldPrimitive,
-  type SearchFieldProps as SearchFieldPrimitiveProps,
-  type ValidationResult,
+
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 

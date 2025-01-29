@@ -1,12 +1,13 @@
 'use client'
 
+import type { Inertia, PanInfo } from 'motion/react'
 import type { ButtonProps, DialogProps } from 'react-aria-components'
 import {
   animate,
   AnimatePresence,
-  type Inertia,
+
   motion,
-  type PanInfo,
+
   useMotionTemplate,
   useMotionValue,
   useMotionValueEvent,
@@ -236,9 +237,9 @@ function Drawer({
   }
 
   return (
-    <DrawerContext.Provider value={value}>
+    <DrawerContext value={value}>
       {children}
-    </DrawerContext.Provider>
+    </DrawerContext>
   )
 }
 

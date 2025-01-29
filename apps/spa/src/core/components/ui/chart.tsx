@@ -50,7 +50,7 @@ function Chart({
   const value = useMemo(() => ({ config }), [config])
 
   return (
-    <ChartContext.Provider value={value}>
+    <ChartContext value={value}>
       <div
         data-chart={chartId}
         ref={ref}
@@ -75,7 +75,7 @@ function Chart({
         <ChartStyle id={chartId} config={config} />
         <ResponsiveContainer>{children}</ResponsiveContainer>
       </div>
-    </ChartContext.Provider>
+    </ChartContext>
   )
 }
 
@@ -87,8 +87,8 @@ function ChartStyle({ id, config }: { id: string, config: ChartConfig }) {
   }
 
   return (
-    // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
     <style
+      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(

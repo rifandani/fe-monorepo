@@ -1,18 +1,19 @@
 'use client'
 
 import type { HeadingProps } from 'react-aria-components'
+import type { ButtonProps } from './button'
 import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
 import { useEffect, useRef } from 'react'
+
 import {
   Button as ButtonPrimitive,
   Dialog as DialogPrimitive,
   Heading,
   Text,
 } from 'react-aria-components'
-
 import { tv } from 'tailwind-variants'
-import { Button, type ButtonProps } from './button'
+import { Button } from './button'
 
 const dialogStyles = tv({
   slots: {
@@ -70,7 +71,10 @@ function Header({ className, ...props }: DialogHeaderProps) {
     })
 
     observer.observe(header)
-    return () => observer.unobserve(header)
+    return () => {
+      observer.unobserve(header)
+      observer.disconnect()
+    }
   }, [])
 
   return (
@@ -141,10 +145,13 @@ function Footer({ className, ...props }: DialogFooterProps) {
     })
 
     observer.observe(footer)
+
     return () => {
       observer.unobserve(footer)
+      observer.disconnect()
     }
   }, [])
+
   return (
     <div ref={footerRef} data-slot="dialog-footer" className={footer({ className })} {...props} />
   )

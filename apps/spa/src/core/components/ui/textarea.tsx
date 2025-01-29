@@ -1,11 +1,11 @@
 'use client'
 
+import type { TextFieldProps as TextFieldPrimitiveProps, ValidationResult } from 'react-aria-components'
 import {
   composeRenderProps,
   TextArea as TextAreaPrimitive,
   TextField as TextFieldPrimitive,
-  type TextFieldProps as TextFieldPrimitiveProps,
-  type ValidationResult,
+
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 

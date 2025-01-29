@@ -1,9 +1,10 @@
 'use client'
 
+import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
   FileTrigger as FileTriggerPrimitive,
-  type FileTriggerProps as FileTriggerPrimitiveProps,
+
 } from 'react-aria-components'
 
 import { Button } from './button'

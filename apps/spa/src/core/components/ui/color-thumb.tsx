@@ -1,6 +1,7 @@
 'use client'
 
-import { ColorThumb as ColorThumbPrimitive, type ColorThumbProps } from 'react-aria-components'
+import type { ColorThumbProps } from 'react-aria-components'
+import { ColorThumb as ColorThumbPrimitive } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 
 const thumbStyles = tv({

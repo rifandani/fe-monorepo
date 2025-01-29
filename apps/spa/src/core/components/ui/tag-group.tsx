@@ -111,11 +111,11 @@ function TagGroup({ children, ref, ...props }: TagGroupProps) {
       className={twMerge('flex flex-col flex-wrap', props.className)}
       {...props}
     >
-      <TagGroupContext.Provider value={value}>
+      <TagGroupContext value={value}>
         {props.label && <Label className="mb-1">{props.label}</Label>}
         {children}
         {props.description && <Description>{props.description}</Description>}
-      </TagGroupContext.Provider>
+      </TagGroupContext>
     </TagGroupPrimitive>
   )
 }
@@ -146,7 +146,7 @@ interface TagProps extends TagPrimitiveProps {
 
 function Tag({ className, intent, shape, ...props }: TagProps) {
   const textValue = typeof props.children === 'string' ? props.children : undefined
-  const groupContext = React.useContext(TagGroupContext)
+  const groupContext = React.use(TagGroupContext)
 
   return (
     <TagPrimitive

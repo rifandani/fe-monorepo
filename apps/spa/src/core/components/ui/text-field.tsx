@@ -1,13 +1,14 @@
 'use client'
 
 import type { TextInputDOMProps } from '@react-types/shared'
+import type { TextFieldProps as TextFieldPrimitiveProps } from 'react-aria-components'
 import type { FieldProps } from './field'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import {
   Button as ButtonPrimitive,
   TextField as TextFieldPrimitive,
-  type TextFieldProps as TextFieldPrimitiveProps,
+
 } from 'react-aria-components'
 
 import { twJoin } from 'tailwind-merge'

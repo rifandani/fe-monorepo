@@ -1,18 +1,19 @@
 'use client'
 
+import type { ListBoxItemProps, SectionProps, SeparatorProps, TextProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
   Collection,
   composeRenderProps,
   Header,
   ListBoxItem as ListBoxItemPrimitive,
-  type ListBoxItemProps,
+
   ListBoxSection,
-  type SectionProps,
+
   Separator,
-  type SeparatorProps,
+
   Text,
-  type TextProps,
+
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'

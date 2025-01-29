@@ -1,36 +1,38 @@
 'use client'
 
+import type { AutocompleteProps, CollectionRenderer, MenuProps, MenuTriggerProps, SearchFieldProps } from 'react-aria-components'
+import type { MenuSectionProps } from './menu'
 import { Icon } from '@iconify/react'
 import { createContext, use, useEffect } from 'react'
 import { useFilter } from 'react-aria'
 import {
   UNSTABLE_Autocomplete as Autocomplete,
-  type AutocompleteProps,
+
   Button,
   Collection,
-  type CollectionRenderer,
+
   UNSTABLE_CollectionRendererContext as CollectionRendererContext,
   UNSTABLE_DefaultCollectionRenderer as DefaultCollectionRenderer,
   Dialog,
   Header,
   Input,
   Menu as MenuPrimitive,
-  type MenuProps,
+
   MenuSection,
-  type MenuTriggerProps,
+
   Modal,
   ModalContext,
   ModalOverlay,
   OverlayTriggerStateContext,
   SearchField,
-  type SearchFieldProps,
+
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
 
+import { tv } from 'tailwind-variants'
 import { DropdownKeyboard } from './dropdown'
 import { Loader } from './loader'
-import { Menu, type MenuSectionProps } from './menu'
+import { Menu } from './menu'
 import { composeTailwindRenderProps } from './primitive'
 
 interface CommandMenuProviderProps {
@@ -180,7 +182,7 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
 
 function CommandMenuList<T extends object>({ className, ...props }: MenuProps<T>) {
   return (
-    <CollectionRendererContext.Provider value={renderer}>
+    <CollectionRendererContext value={renderer}>
       <MenuPrimitive
         className={twMerge(
           'sm:max-h-110 *:[[role=group]]:mb-6 *:[[role=group]]:last:mb-0 grid max-h-full grid-cols-[auto_1fr] overflow-y-auto p-2',
@@ -188,7 +190,7 @@ function CommandMenuList<T extends object>({ className, ...props }: MenuProps<T>
         )}
         {...props}
       />
-    </CollectionRendererContext.Provider>
+    </CollectionRendererContext>
   )
 }
 

@@ -5,9 +5,10 @@ import { FlatCompat } from '@eslint/eslintrc'
 import pluginRouter from '@tanstack/eslint-plugin-router'
 import depend from 'eslint-plugin-depend'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
-import tailwind from 'eslint-plugin-tailwindcss'
+// import tailwind from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
 
+// console.log(`🐱 ~ "eslint.config.mjs" at line 8: tailwind -> `, tailwind)
 const __dirname = url.fileURLToPath(new URL('apps/web', import.meta.url))
 const flatCompat = new FlatCompat({
   baseDirectory: __dirname, // optional; default: process.cwd()
@@ -94,20 +95,20 @@ export default antfu(
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...depend.configs['flat/recommended'],
   },
-  tailwind.configs['flat/recommended'][0],
-  {
-    name: 'tailwindcss:rules',
-    rules: {
-      ...tailwind.configs['flat/recommended'][1].rules,
-      'tailwindcss/no-custom-classname': 'off',
-    },
-  },
+  // v4 not yet supported: https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/381
+  // tailwind.configs['flat/recommended'][0],
+  // {
+  //   name: 'tailwindcss:rules',
+  //   rules: {
+  //     ...tailwind.configs['flat/recommended'][1].rules,
+  //     'tailwindcss/no-custom-classname': 'off',
+  //   },
+  // },
   {
     name: 'tailwindcss:settings',
     settings: {
       tailwindcss: {
         callees: ['classnames', 'clsx', 'ctl', 'cn', 'twMerge', 'twJoin'],
-        // config: path.join(import.meta.dirname, './apps/spa/tailwind.config.cjs'),
       },
     },
   },

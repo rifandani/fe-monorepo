@@ -8,7 +8,6 @@ const buildDate = '__DATE__' as '__DATE__' | Omit<string, '__DATE__'>
 const reloadSW = '__RELOAD_SW__' as '__RELOAD_SW__' | 'true'
 
 export function ReloadPromptSw() {
-
   const onRegisteredSW = useCallback(
     (_swUrl: string, registration: ServiceWorkerRegistration | undefined) => {
       // in `vite.config.ts`, the `reloadSW` could be `'true'` if `process.env.RELOAD_SW === 'true'`

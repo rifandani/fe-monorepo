@@ -1,5 +1,6 @@
 'use client'
 
+import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
   CalendarCell,
@@ -8,9 +9,9 @@ import {
   CalendarGridHeader as CalendarGridHeaderPrimitive,
   CalendarHeaderCell,
   Calendar as CalendarPrimitive,
-  type CalendarProps as CalendarPrimitiveProps,
+
   composeRenderProps,
-  type DateValue,
+
   Heading,
   Text,
   useLocale,

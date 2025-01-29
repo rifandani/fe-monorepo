@@ -1,5 +1,6 @@
+import type { VariantProps } from 'tailwind-variants'
 import { Icon } from '@iconify/react'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 import { match } from 'ts-pattern'
 
 const noteStyles = tv({

@@ -1,5 +1,6 @@
+import type { VariantProps } from 'tailwind-variants'
 import { twMerge } from 'tailwind-merge'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 const gridStyles = tv(
   {

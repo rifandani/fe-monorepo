@@ -1,4 +1,5 @@
 import type { RollupReplaceOptions } from '@rollup/plugin-replace'
+import type { PluginOption } from 'vite'
 import type { ManifestOptions, VitePWAOptions } from 'vite-plugin-pwa'
 import path from 'node:path'
 import process from 'node:process'
@@ -7,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig, type PluginOption } from 'vite'
+import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const pwaOptions: Partial<VitePWAOptions> = {

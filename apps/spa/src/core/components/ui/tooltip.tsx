@@ -1,6 +1,7 @@
 'use client'
 
 import type { TooltipProps as TooltipPrimitiveProps } from 'react-aria-components'
+import type { VariantProps } from 'tailwind-variants'
 import {
   Button,
   composeRenderProps,
@@ -8,7 +9,7 @@ import {
   Tooltip as TooltipPrimitive,
   TooltipTrigger,
 } from 'react-aria-components'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 const tooltipStyles = tv({
   base: [

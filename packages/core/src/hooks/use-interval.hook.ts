@@ -23,7 +23,11 @@ export function useInterval(
       timerCallback()
 
     timerRef.current = setInterval(timerCallback, delay) as unknown as number
-    return clear
+
+    return () => {
+      if (timerRef.current)
+        clearInterval(timerRef.current)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay, options.immediate])
 

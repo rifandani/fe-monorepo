@@ -45,9 +45,9 @@ function ContextMenu({ children }: ContextMenuProps) {
   ])
 
   return (
-    <ContextMenuTriggerContext.Provider value={value}>
+    <ContextMenuTriggerContext value={value}>
       {children}
-    </ContextMenuTriggerContext.Provider>
+    </ContextMenuTriggerContext>
   )
 }
 

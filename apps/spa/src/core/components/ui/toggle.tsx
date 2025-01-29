@@ -91,7 +91,7 @@ function ToggleGroup({
   ])
 
   return (
-    <ToggleGroupContext.Provider value={value}>
+    <ToggleGroupContext value={value}>
       <ToggleButtonGroup
         ref={ref}
         orientation={orientation}
@@ -104,7 +104,7 @@ function ToggleGroup({
           }))}
         {...props}
       />
-    </ToggleGroupContext.Provider>
+    </ToggleGroupContext>
   )
 }
 
@@ -170,6 +170,7 @@ function Toggle({ className, appearance, ref, ...props }: ToggleProps) {
     size,
     isDisabled: isGroupDisabled,
   } = use(ToggleGroupContext)
+
   return (
     <ToggleButton
       ref={ref}

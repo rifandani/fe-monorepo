@@ -22,7 +22,6 @@ export function doDownload(url: string) {
   document.body.removeChild(link)
 }
 
-
 /**
  * Creates a URLSearchParams object using the given initializer.
  *

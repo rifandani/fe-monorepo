@@ -55,11 +55,11 @@ const TableContext = React.createContext<TableProps>({
   allowResize: false,
 })
 
-const useTableContext = () => React.useContext(TableContext)
+const useTableContext = () => React.use(TableContext)
 
 function Table({ children, className, ...props }: TableProps) {
   return (
-    <TableContext.Provider value={props}>
+    <TableContext value={props}>
       <div className="relative w-full overflow-auto">
         {props.allowResize
           ? (
@@ -75,7 +75,7 @@ function Table({ children, className, ...props }: TableProps) {
               </TablePrimitive>
             )}
       </div>
-    </TableContext.Provider>
+    </TableContext>
   )
 }
 

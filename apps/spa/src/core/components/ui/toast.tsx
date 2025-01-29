@@ -1,10 +1,11 @@
 'use client'
 
+import type { ToasterProps } from 'sonner'
 import {
   Icon,
 } from '@iconify/react'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
-import { Toaster as ToasterPrimitive, type ToasterProps } from 'sonner'
+import { Toaster as ToasterPrimitive } from 'sonner'
 import { twMerge } from 'tailwind-merge'
 
 import { buttonStyles } from './button'

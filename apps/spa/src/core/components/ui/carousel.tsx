@@ -1,17 +1,19 @@
 'use client'
 
+import type { UseEmblaCarouselType } from 'embla-carousel-react'
 import type { HTMLAttributes } from 'react'
+import type { ListBoxItemProps, ListBoxSectionProps } from 'react-aria-components'
 import type { ButtonProps } from './button'
 import { Icon } from '@iconify/react'
-import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
+import useEmblaCarousel from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
 import {
   composeRenderProps,
   ListBox,
   ListBoxItem,
-  type ListBoxItemProps,
+
   ListBoxSection,
-  type ListBoxSectionProps,
+
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 
@@ -143,7 +145,7 @@ function Carousel({
   }, [api, onSelect])
 
   return (
-    <CarouselContext.Provider
+    <CarouselContext
       value={value}
     >
       <div
@@ -155,7 +157,7 @@ function Carousel({
       >
         {children}
       </div>
-    </CarouselContext.Provider>
+    </CarouselContext>
   )
 }
 

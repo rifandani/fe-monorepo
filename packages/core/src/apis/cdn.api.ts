@@ -1,4 +1,5 @@
-import ky, { type KyResponse, type Options } from 'ky'
+import type { KyResponse, Options } from 'ky'
+import ky from 'ky'
 
 export interface GetCdnFileRequestSchema {
   url: string

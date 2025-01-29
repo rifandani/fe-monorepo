@@ -1,16 +1,17 @@
 'use client'
 
+import type { SliderProps as SliderPrimitiveProps, SliderThumbProps, SliderTrackProps } from 'react-aria-components'
 import React, { useState } from 'react'
 import {
   composeRenderProps,
   SliderOutput,
   Slider as SliderPrimitive,
-  type SliderProps as SliderPrimitiveProps,
+
   SliderStateContext,
   SliderThumb,
-  type SliderThumbProps,
+
   SliderTrack,
-  type SliderTrackProps,
+
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 

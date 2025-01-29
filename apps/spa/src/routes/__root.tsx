@@ -1,13 +1,13 @@
 import type { QueryClient } from '@tanstack/react-query'
+import type { NavigateOptions, RegisteredRouter, ToPathOption } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
 import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import {
   createRootRouteWithContext,
-  type NavigateOptions,
+
   Outlet,
-  type RegisteredRouter,
-  type ToPathOption,
+
   useRouter,
 } from '@tanstack/react-router'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'

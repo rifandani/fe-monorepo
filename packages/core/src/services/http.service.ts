@@ -1,4 +1,5 @@
-import ky, { type Options } from 'ky'
+import type { Options } from 'ky'
+import ky from 'ky'
 
 export class Http {
   /**

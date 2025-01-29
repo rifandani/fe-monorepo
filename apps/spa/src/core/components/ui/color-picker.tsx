@@ -2,10 +2,11 @@
 
 import type { Placement } from '@react-types/overlays'
 import type React from 'react'
+import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
 import {
   Button,
   ColorPicker as ColorPickerPrimitive,
-  type ColorPickerProps as ColorPickerPrimitiveProps,
+
   Dialog,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
