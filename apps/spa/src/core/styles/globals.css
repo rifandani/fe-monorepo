@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 @import 'tailwindcss';
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin 'tailwindcss-animate';
@@ -68,6 +71,20 @@
   body {
     background-color: var(--bg);
     color: var(--fg);
+  }
+}
+
+@layer base {
+  * {
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 850;
+    text-rendering: optimizeLegibility;
+
+    /*
+     * Scrollbar
+     */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
   }
 }
 

@@ -33,7 +33,8 @@ function HomeRoute() {
     <div
       className="container mx-auto flex flex-col items-center gap-y-2 py-24 duration-300"
     >
-      <h1 className="text-3xl sm:text-4xl">{t('welcome')}</h1>
+      <h1 className="text-3xl sm:text-4xl">{t('title')}</h1>
+      <h2 className="font-mono text-xl sm:text-2xl">{t('welcome')}</h2>
 
       <div className="flex items-center gap-x-2">
         <ThemeToggle />

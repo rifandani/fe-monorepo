@@ -1,6 +1,6 @@
 import type { LocaleDictLanguage } from '@workspace/core/locales/locale.type'
 import type { Selection } from 'react-stately'
-import { Menu } from '@/core/components/ui/menu'
+import { Button, Menu } from '@/core/components/ui'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import { Icon } from '@iconify/react'
 import { useLocale } from 'react-aria'
@@ -11,12 +11,12 @@ export function LanguageToggle() {
 
   return (
     <Menu>
-      <Menu.Trigger>
+      <Button appearance="plain">
         <Icon
           icon={locale === 'en-US' ? 'flag:us-1x1' : 'flag:id-1x1'}
           className="size-6"
         />
-      </Menu.Trigger>
+      </Button>
 
       <Menu.Content
         selectionMode="single"

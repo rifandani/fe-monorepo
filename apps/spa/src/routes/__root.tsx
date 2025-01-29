@@ -5,9 +5,7 @@ import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import {
   createRootRouteWithContext,
-
   Outlet,
-
   useRouter,
 } from '@tanstack/react-router'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'

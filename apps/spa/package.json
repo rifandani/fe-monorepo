@@ -115,5 +115,8 @@
     "workbox-precaching": "7.3.0",
     "workbox-routing": "7.3.0",
     "workbox-window": "7.3.0"
+  },
+  "overrides": {
+    "react-is": "^19.0.0"
   }
 }

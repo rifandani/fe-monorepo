@@ -95,7 +95,7 @@ export default antfu(
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...depend.configs['flat/recommended'],
   },
-  // v4 not yet supported: https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/381
+  // FIXME: v4 not yet supported: https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/381
   // tailwind.configs['flat/recommended'][0],
   // {
   //   name: 'tailwindcss:rules',

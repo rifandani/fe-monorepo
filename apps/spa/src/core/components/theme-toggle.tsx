@@ -2,7 +2,7 @@
 
 import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import type { Selection } from 'react-stately'
-import { Menu } from '@/core/components/ui/menu'
+import { Button, Menu } from '@/core/components/ui'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
 import { useToaster } from '@/core/hooks/use-toaster.hook'
 import { Icon } from '@iconify/react'
@@ -15,7 +15,7 @@ export function ThemeToggle() {
 
   return (
     <Menu>
-      <Menu.Trigger>
+      <Button appearance="outline">
         <Icon
           icon={
             theme === 'auto'
@@ -26,7 +26,7 @@ export function ThemeToggle() {
           }
           className="size-6"
         />
-      </Menu.Trigger>
+      </Button>
 
       <Menu.Content
         selectionMode="single"
