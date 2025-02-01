@@ -4,7 +4,9 @@
 
 Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-Fixes # (issue)
+## Related Issue
+
+Fixes #<issue_number>
 
 ## Type of change
 
@@ -15,7 +17,7 @@ Please delete options that are not relevant.
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] This change requires a documentation update
 
-## Checklist:
+## Checklist
 
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
@@ -26,3 +28,11 @@ Please delete options that are not relevant.
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published in downstream modules
 - [ ] I have checked my code and corrected any misspellings
+
+## Screenshots (if applicable)
+
+<!-- Add screenshots to help explain your changes, especially if this is a UI-related PR. -->
+
+## Additional Notes (if necessary)
+
+<!-- Add any additional information or context about the pull request here. -->

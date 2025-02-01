@@ -3,7 +3,6 @@
 Todo
 
 - [ ] Make sure CI/CD works
-- [ ] SEO
 
 ## @workspace/web
 

@@ -2,11 +2,12 @@ import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
 import { ImageResponse } from 'next/og'
 
+// NOTE: vercel-related
 export const runtime = 'edge'
 
-const interSemiBold = fetch(
-  new URL('./Inter-SemiBold.ttf', import.meta.url),
-).then(res => res.arrayBuffer())
+// const interSemiBold = fetch(
+//   new URL('./Inter-SemiBold.ttf', import.meta.url),
+// ).then(res => res.arrayBuffer())
 
 export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
   try {
@@ -53,14 +54,14 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
       {
         width: 843,
         height: 441,
-        fonts: [
-          {
-            name: 'Inter',
-            data: await interSemiBold,
-            style: 'normal',
-            weight: 400,
-          },
-        ],
+        // fonts: [
+        //   {
+        //     name: 'Inter',
+        //     data: await interSemiBold,
+        //     style: 'normal',
+        //     weight: 400,
+        //   },
+        // ],
       },
     )
   }
