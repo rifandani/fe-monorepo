@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { Thing, WithContext } from 'schema-dts'
 import { assign } from 'radashi'
 
 type MetadataGenerator = Omit<Metadata, 'description' | 'title'> & {
@@ -15,6 +16,18 @@ const author = {
 const publisher = 'Rizeki Rifandani'
 const twitterHandle = '@tri_rizeki'
 
+/**
+ * Creates metadata for SEO optimization and social sharing.
+ *
+ * @returns {Metadata} The complete metadata object
+ *
+ * @example
+ * const metadata = createMetadata({
+ *   title: 'Home Page',
+ *   description: 'Welcome to our site',
+ *   image: '/images/og-image.jpg'
+ * })
+ */
 export function createMetadata({
   title,
   description,
@@ -52,8 +65,11 @@ export function createMetadata({
     icons: '/favicon.ico',
   }
 
+  // Merge the default metadata with any additional properties passed in
   const metadata = assign(defaultMetadata, properties)
 
+  // If an image URL was provided and OpenGraph metadata exists,
+  // override the default OG image with the provided image details
   if (image && metadata.openGraph) {
     metadata.openGraph.images = [
       {
@@ -65,5 +81,25 @@ export function createMetadata({
     ]
   }
 
+  // Return the final merged metadata object
   return metadata
 }
+
+interface JsonLdProps {
+  code: WithContext<Thing>
+}
+
+/**
+ * designed to create fully validated Google structured data, making your content more likely to be featured in Google Search results
+ */
+export function JsonLd({ code }: JsonLdProps) {
+  return (
+    <script
+      type="application/ld+json"
+      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(code) }}
+    />
+  )
+}
+
+export * from 'schema-dts'
