@@ -4,13 +4,11 @@ import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import type { Selection } from 'react-stately'
 import { Button, Menu } from '@/core/components/ui'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
-import { useToaster } from '@/core/hooks/use-toaster.hook'
 import { Icon } from '@iconify/react'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 
 export function ThemeToggle() {
   const [t] = useI18n()
-  const [, { setToastConfig }] = useToaster()
   const [theme, setTheme] = useColorMode()
 
   return (
@@ -36,13 +34,6 @@ export function ThemeToggle() {
             currentKey: 'auto' | BasicColorMode
           }
           setTheme(selection.currentKey)
-          setToastConfig(prev => ({
-            ...prev,
-            theme:
-                selection.currentKey === 'auto'
-                  ? 'system'
-                  : selection.currentKey,
-          }))
         }}
       >
         <Menu.Section>

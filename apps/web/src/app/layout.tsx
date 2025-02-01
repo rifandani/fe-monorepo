@@ -1,6 +1,11 @@
-import type { Metadata } from 'next'
-import { Providers } from '@/core/components/providers.client'
+import { AppProviders } from '@/core/providers/providers.client'
+import { createMetadata } from '@/core/utils/seo'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages } from 'next-intl/server'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { connection } from 'next/server'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import '@/core/styles/globals.css'
 
 const fontSans = Geist({
@@ -13,32 +18,25 @@ const fontMono = Geist_Mono({
   variable: '--font-mono',
 })
 
-export const metadata: Metadata = {
-  title: {
-    default: 'SSR',
-    template: '%s | SSR',
-  },
-  applicationName: 'SSR',
-  description: 'Bulletproof nextjs 15 template',
-  openGraph: {
-    title: 'SSR',
-    description:
-      'Bulletproof nextjs 15 template',
-    images: [`/api/og?title=Bulletproof+nextjs+15+template`],
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-  icons: '/favicon.ico',
-}
+export const metadata = createMetadata({
+  title: 'SSR',
+  description: 'Bulletproof Next.js 15 Template',
+})
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Opt-out of static generation for every page so the CSP nonce can be applied
+  await connection()
+
+  const locale = await getLocale()
+  const messages = await getMessages()
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    // suppressHydrationWarning for next-themes
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-svh`}
       >
@@ -55,7 +53,19 @@ export default function RootLayout({
           </defs>
         </svg>
 
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider messages={messages}>
+          <NextThemesProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            enableColorScheme
+          >
+            <NuqsAdapter>
+              <AppProviders locale={locale}>{children}</AppProviders>
+            </NuqsAdapter>
+          </NextThemesProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

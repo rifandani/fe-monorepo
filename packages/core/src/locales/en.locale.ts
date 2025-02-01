@@ -56,15 +56,5 @@ export const enLocale = {
 
   // #region HOME
   title: 'Home',
-  sortButtons: 'Sort Buttons',
-  clock: 'Clock',
-  toggleClock: 'Toggle Clock',
-  clickToggleClock: 'Click toggle clock to restart the clock',
-  changeLanguage: 'Change Language',
-  getStarted: 'Get Started',
   // #endregion HOME
-
-  // #region PLAYGROUND
-  playgroundTitle: 'Playground',
-  // #endregion PLAYGROUND
 } as const

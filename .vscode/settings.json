@@ -153,4 +153,8 @@
   "veco.colorize.enabled": true,
   "veco.colorize.namedColor": false,
   "veco.colorize.decorationType": "underline",
+  "i18n-ally.localesPaths": [
+    "./apps/web/src/core/i18n/messages"
+  ],
+  "i18n-ally.keystyle": "nested"
 }

@@ -37,6 +37,7 @@ export function authRepositories(http: InstanceType<typeof Http>) {
     /**
      * @access public
      * @url POST ${env.apiBaseUrl}/auth/login
+     * @throws HTTPError | TimeoutError | ZodError
      */
     login: async (
       { json }: { json: AuthLoginRequestSchema },
@@ -52,7 +53,7 @@ export function authRepositories(http: InstanceType<typeof Http>) {
                   const data = (await response.json()) as AuthLoginResponseSchema
 
                   if ('accessToken' in data) {
-                  // set 'Authorization' headers
+                    // set 'Authorization' headers
                     request.headers.set(
                       'Authorization',
                       `Bearer ${data.accessToken}`,

@@ -3,9 +3,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      // "react": [
-      //   "./node_modules/@types/react"
-      // ],
       "@/*": ["./src/*"],
       "@workspace/core/*": ["../../packages/core/src/*"]
     },

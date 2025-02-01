@@ -1,27 +1,49 @@
 'use client'
 
+import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode.hook'
+import type { Selection } from 'react-stately'
+import { Button, Menu } from '@/core/components/ui'
 import { Icon } from '@iconify/react'
-import { Button } from '@workspace/core/components/button'
-import { Menu, MenuItem, MenuPopover, MenuTrigger } from '@workspace/core/components/menu'
+import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme()
+  const t = useTranslations('core')
+  const { theme, setTheme } = useTheme()
 
   return (
-    <MenuTrigger>
-      <Button aria-label="Menu" size="icon" variant="outline">
-        <Icon icon="lucide:sun" className="size-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Icon icon="lucide:moon" className="absolute size-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
+    <Menu>
+      <Button appearance="outline" data-slot="menu-trigger">
+        <Icon
+          icon={
+            theme === 'system'
+              ? 'lucide:computer'
+              : theme === 'light'
+                ? 'lucide:sun'
+                : 'lucide:moon'
+          }
+          className="size-6"
+        />
       </Button>
-      <MenuPopover>
-        <Menu>
-          <MenuItem onAction={() => setTheme('system')}>System</MenuItem>
-          <MenuItem onAction={() => setTheme('light')}>Light</MenuItem>
-          <MenuItem onAction={() => setTheme('dark')}>Dark</MenuItem>
-        </Menu>
-      </MenuPopover>
-    </MenuTrigger>
+
+      <Menu.Content
+        selectionMode="single"
+        selectedKeys={new Set([theme as string])}
+        onSelectionChange={(_selection) => {
+          const selection = _selection as Exclude<Selection, 'all'> & {
+            currentKey: 'system' | BasicColorMode
+          }
+          setTheme(selection.currentKey)
+        }}
+      >
+        <Menu.Section>
+          <Menu.Header separator>{t('theme')}</Menu.Header>
+
+          <Menu.Item id="system">{t('system')}</Menu.Item>
+          <Menu.Item id="light">{t('light')}</Menu.Item>
+          <Menu.Item id="dark">{t('dark')}</Menu.Item>
+        </Menu.Section>
+      </Menu.Content>
+    </Menu>
   )
 }

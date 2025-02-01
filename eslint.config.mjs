@@ -123,6 +123,21 @@ export default antfu(
     ...nextCoreWebVitals,
   },
   {
+    name: 'web/overrides',
+    files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+    rules: {
+      // Consistently import locale from `next-intl`
+      'no-restricted-imports': [
+        'error',
+        {
+          name: 'react-aria',
+          importNames: ['useLocale'],
+          message: 'Please import from `next-intl` instead.',
+        },
+      ],
+    },
+  },
+  {
     name: '@tanstack/router',
     files: ['apps/spa/*.{ts,tsx}'],
     ...pluginRouter.configs['flat/recommended'][0],

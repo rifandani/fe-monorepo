@@ -36,8 +36,6 @@
 
 @import 'tailwindcss';
 
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
 @plugin 'tailwindcss-animate';
 @plugin 'tailwindcss-react-aria-components';
 

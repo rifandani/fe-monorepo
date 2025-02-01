@@ -54,15 +54,5 @@ export const idLocale = {
 
   // #region HOME
   title: 'Home',
-  sortButtons: 'Urutkan Tombol',
-  clock: 'Jam',
-  toggleClock: 'Toggle Jam',
-  clickToggleClock: 'Klik beralih jam untuk mengulang kalkulasi jam',
-  changeLanguage: 'Ganti Bahasa',
-  getStarted: 'Mulai Sekarang',
   // #endregion HOME
-
-  // #region PLAYGROUND
-  playgroundTitle: 'Taman Bermain',
-  // #endregion PLAYGROUND
 } as const

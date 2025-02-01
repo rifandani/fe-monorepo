@@ -26,7 +26,8 @@ export function cdnRepositories() {
   return {
     /**
      * @access public
-     * @note could throw error in the shape of `HTTPError` error
+     * @url GET ${env.apiBaseUrl}/${url}
+     * @throws HTTPError | TimeoutError | ZodError
      */
     async getCdnFile({ url }: { url: string }, options?: Options) {
       const response = await ky.get(url, options)
