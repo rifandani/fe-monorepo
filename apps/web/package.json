@@ -16,11 +16,13 @@
     "dev": "cp .env.development .env.local && next dev --port 3002",
     "dev:turbo": "cp .env.development .env.local && next dev --turbopack --port 3002",
     "build": "cp .env.production .env.local && next build",
+    "build:analyze": "cp .env.production .env.local && ANALYZE=true next build",
     "start": "next start"
   },
   "dependencies": {
     "@iconify/react": "5.2.0",
     "@internationalized/date": "3.7.0",
+    "@next/bundle-analyzer": "15.1.6",
     "@nosecone/next": "1.0.0-beta.1",
     "@t3-oss/env-nextjs": "0.12.0",
     "@vercel/flags": "3.1.0",

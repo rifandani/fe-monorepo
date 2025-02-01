@@ -18,6 +18,7 @@
     "web:dev": "bun --filter @workspace/web dev",
     "web:dev:turbo": "bun --filter @workspace/web dev:turbo",
     "web:build": "bun --filter @workspace/web build",
+    "web:build:analyze": "bun --filter @workspace/web build:analyze",
     "web:typecheck": "bun --filter @workspace/web typecheck",
     "web:test:install": "bun --filter @workspace/web test:install",
     "web:test:report": "bun --filter @workspace/web test:report",
