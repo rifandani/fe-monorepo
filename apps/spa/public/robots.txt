@@ -1,2 +1,3 @@
-User-agent: *
+User-Agent: *
 Allow: /
+Sitemap: https://rifandani.com/sitemap.xml

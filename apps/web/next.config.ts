@@ -7,6 +7,7 @@ const withNextIntl = createNextIntlPlugin('./src/core/i18n/request.ts')
 // eslint-disable-next-line import/no-mutable-exports
 let config: NextConfig = withNextIntl({
   output: 'standalone', // for deploying
+  /** Enables hot reloading for local packages without a build step */
   transpilePackages: [
     '@workspace/core',
     '@t3-oss/env-nextjs',
@@ -17,6 +18,7 @@ let config: NextConfig = withNextIntl({
   },
   experimental: {
     // testProxy: true, // need to enable for e2e testing
+    optimizePackageImports: ['@workspace/core'],
   },
 })
 
