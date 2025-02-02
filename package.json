@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" && bun install",
+    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" && bun install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
