@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
+import { logger } from '@workspace/core/utils/logger.util'
 import { ImageResponse } from 'next/og'
 
 // NOTE: vercel-related
@@ -69,8 +70,7 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
     if (!(e instanceof Error))
       throw e
 
-    // eslint-disable-next-line no-console
-    console.log(e.message)
+    logger.error(e.message, 'Failed to generate the image')
     return new Response(`Failed to generate the image`, {
       status: 500,
     })

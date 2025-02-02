@@ -8,7 +8,6 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 // import tailwind from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
 
-// console.log(`🐱 ~ "eslint.config.mjs" at line 8: tailwind -> `, tailwind)
 const __dirname = url.fileURLToPath(new URL('apps/web', import.meta.url))
 const flatCompat = new FlatCompat({
   baseDirectory: __dirname, // optional; default: process.cwd()

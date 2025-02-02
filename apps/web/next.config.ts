@@ -13,6 +13,7 @@ let config: NextConfig = withNextIntl({
     '@t3-oss/env-nextjs',
     '@t3-oss/env-core',
   ],
+  serverExternalPackages: ['pino', 'pino-pretty'],
   images: {
     formats: ['image/avif', 'image/webp'],
   },
