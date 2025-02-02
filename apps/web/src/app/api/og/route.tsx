@@ -16,7 +16,7 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
 
     const title = searchParams.has('title')
       ? searchParams.get('title')
-      : 'SSR OG'
+      : '@workspace/web OG'
 
     return new ImageResponse(
       (

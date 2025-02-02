@@ -62,6 +62,6 @@ export const config: MiddlewareConfig = {
    * - favicon.ico, sitemap.xml, robots.txt (metadata files)
    */
   matcher: [
-    '/((?!api|_next/static|_next/image|ingest|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!api|_next/static|_next/image|ingest|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|sitemap.xml|robots.txt).*)',
   ],
 }
