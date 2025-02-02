@@ -16,7 +16,7 @@
     "dev": "cp .env.development .env.local && next dev --port 3002",
     "dev:turbo": "cp .env.development .env.local && next dev --turbopack --port 3002",
     "build": "cp .env.production .env.local && next build",
-    "build:analyze": "cp .env.production .env.local && ANALYZE=true next build",
+    "build:analyze": "cp .env.production .env.local && cross-env ANALYZE=true next build",
     "start": "next start"
   },
   "dependencies": {
@@ -57,6 +57,7 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@workspace/typescript-config": "workspace:*",
+    "cross-env": "7.0.3",
     "postcss": "8.5.1",
     "tailwindcss": "4.0.0",
     "tailwindcss-animate": "1.0.7",
