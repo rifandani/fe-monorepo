@@ -9,7 +9,8 @@
     "account": "Account",
     "profile": "Profile",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "backTo": "Back to {target} page"
   },
   "home": {
     "title": "Home"

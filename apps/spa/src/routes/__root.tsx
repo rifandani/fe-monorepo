@@ -50,18 +50,26 @@ function NotFoundRoute() {
   useColorMode()
 
   return (
-    // bg-[0_0_,10px_10px]
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[radial-gradient(hsl(var(--primary))_0.5px_,transparent_0.5px),radial-gradient(hsl(var(--primary))_0.5px_,hsl(var(--background))_0.5px)] bg-[length:20px_20px] font-mono opacity-80">
-      <h1 className="text-primary text-8xl font-bold tracking-wider">404</h1>
-      <h2 className="my-3 text-2xl font-semibold">{t('notFound')}</h2>
-      <p className="">{t('gone')}</p>
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <div className="max-w-md space-y-8 text-center">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <h1 className="text-8xl font-bold text-primary">404</h1>
+          <h2 className="text-2xl font-semibold">{t('notFound')}</h2>
+          <p className="text-muted-foreground">
+            {t('gone')}
+          </p>
+        </div>
 
-      <Link
-        href={userStore.user ? '/' : '/login'}
-        className="mt-10 transition duration-300 hover:skew-x-12"
-      >
-        {t('backTo', { target: userStore.user ? 'home' : 'login' })}
-      </Link>
+        {/* Quick Actions */}
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <Link intent="primary" href={userStore.user ? '/' : '/login'} className="flex items-center">
+            {t('backTo', {
+              target: userStore.user ? 'Home' : 'Login',
+            })}
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

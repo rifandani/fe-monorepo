@@ -9,7 +9,8 @@
     "account": "Akun",
     "profile": "Profil",
     "settings": "Pengaturan",
-    "logout": "Keluar"
+    "logout": "Keluar",
+    "backTo": "Kembali ke halaman {target}"
   },
   "home": {
     "title": "Beranda"

@@ -1,15 +1,6 @@
 export const idLocale = {
   // #region COMMON
-  loading: 'Menunggu...',
-  xList: 'Daftar {feature}',
-  xDetail: 'Detail {feature}',
-  xCreateSuccess: '{feature} berhasil dibuat',
-  xCreateError: '{feature} gagal dibuat',
-  xUpdateSuccess: '{feature} berhasil diubah',
-  xUpdateError: '{feature} gagal diubah',
-  xDeleteSuccess: '{feature} berhasil dihapus',
-  xDeleteError: '{feature} gagal dihapus',
-  backTo: 'Kembali ke {target}',
+  backTo: 'Kembali ke halaman {target}',
   errorMinLength: '{field} harus memiliki minimal {length} karakter',
   error: '{module} eror',
   theme: 'Tema',

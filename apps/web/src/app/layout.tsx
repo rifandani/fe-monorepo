@@ -19,7 +19,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata = createMetadata({
-  title: '@workspace/web',
+  title: 'Layout',
   description: 'Bulletproof Next.js 15 Template',
 })
 

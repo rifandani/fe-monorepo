@@ -10,26 +10,25 @@ export const metadata = createMetadata({
 })
 
 export default function LoginPage() {
-  const t = useTranslations('core')
-  const tAuth = useTranslations('auth')
+  const t = useTranslations()
 
   return (
     <div className="flex min-h-screen w-full">
       {/* form */}
       <section className="flex min-h-screen w-full flex-col justify-center px-10 md:w-1/2 xl:px-20">
-        <h1 className="text-primary text-center text-3xl">{t('welcome')}</h1>
+        <h1 className="text-primary text-center text-3xl">{t('core.welcome')}</h1>
 
         <LoginForm />
 
         <p className="py-12 text-center">
-          {tAuth('noAccount')}
+          {t('auth.noAccount')}
           {' '}
           <Link
-            aria-label={tAuth('registerHere')}
+            aria-label={t('auth.registerHere')}
             className="hover:underline"
             href="/"
           >
-            {tAuth('registerHere')}
+            {t('auth.registerHere')}
           </Link>
         </p>
       </section>

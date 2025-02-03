@@ -1,15 +1,6 @@
 export const enLocale = {
   // #region COMMON
-  loading: 'Loading...',
-  xList: '{feature} List',
-  xDetail: '{feature} Detail',
-  xCreateSuccess: '{feature} successfully created',
-  xCreateError: '{feature} failed to create',
-  xUpdateSuccess: '{feature} successfully updated',
-  xUpdateError: '{feature} failed to update',
-  xDeleteSuccess: '{feature} successfully deleted',
-  xDeleteError: '{feature} failed to delete',
-  backTo: 'Back to {target}',
+  backTo: 'Back to {target} page',
   todoUpdateError: 'Todo failed to update',
   errorMinLength: '{field} must contain at least {length} characters',
   error: '{module} error',
