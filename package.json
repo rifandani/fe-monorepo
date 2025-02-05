@@ -2,6 +2,7 @@
   "name": "fe-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "bun@1.2.2",
   "description": "React, nextjs monorepo template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
@@ -13,8 +14,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
-    "typecheck": "run-p web:typecheck spa:typecheck",
-    "regression": "run-p lint web:typecheck spa:typecheck",
+    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck",
+    "regression": "run-p lint web:typecheck spa:typecheck expo:typecheck",
     "web:dev": "bun --filter @workspace/web dev",
     "web:dev:turbo": "bun --filter @workspace/web dev:turbo",
     "web:build": "bun --filter @workspace/web build",
@@ -31,7 +32,17 @@
     "spa:test:install": "bun --filter @workspace/spa test:install",
     "spa:test": "bun --filter @workspace/spa test",
     "spa:test:ui": "bun --filter @workspace/spa test:ui",
-    "spa:test:ci": "bun --filter @workspace/spa test:ci"
+    "spa:test:ci": "bun --filter @workspace/spa test:ci",
+    "expo:prebuild": "bun --filter @workspace/expo prebuild",
+    "expo:prebuild:clean": "bun --filter @workspace/expo prebuild:clean",
+    "expo:dev": "bun --filter @workspace/expo dev",
+    "expo:dev:clean": "bun --filter @workspace/expo dev:clean",
+    "expo:build:android": "bun --filter @workspace/expo build:android",
+    "expo:build:android:local": "bun --filter @workspace/expo build:android:local",
+    "expo:build:ios": "bun --filter @workspace/expo build:ios",
+    "expo:build:ios:local": "bun --filter @workspace/expo build:ios:local",
+    "expo:android": "bun --filter @workspace/expo android",
+    "expo:ios": "bun --filter @workspace/expo ios"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.1.0",
@@ -44,6 +55,7 @@
     "@prettier/plugin-xml": "3.4.1",
     "@tanstack/eslint-plugin-router": "1.98.0",
     "@workspace/typescript-config": "workspace:*",
+    "bumpp": "10.0.1",
     "eslint": "9.19.0",
     "eslint-plugin-depend": "0.12.0",
     "eslint-plugin-format": "1.0.1",
@@ -65,5 +77,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
+  ],
+  "trustedDependencies": [
+    "@swc/core"
   ]
 }

@@ -31,6 +31,14 @@
         "uriFormat": "%s",
         "webRoot": "${workspaceFolder}"
       }
+    },
+    {
+      "type": "expo",
+      "request": "attach",
+      "name": "Debug Expo app",
+      "projectRoot": "${workspaceFolder}/apps/expo",
+      "bundlerPort": "8081",
+      "bundlerHost": "127.0.0.1"
     }
   ]
 }

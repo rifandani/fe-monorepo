@@ -2,6 +2,7 @@
   "name": "@workspace/spa",
   "type": "module",
   "version": "1.0.0",
+  "private": true,
   "description": "Bulletproof react 18 SPA template with tanstack router",
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
@@ -55,8 +56,7 @@
     "start:sw-claims-destroy": "run-s bun build:sw-claims-destroy serve",
     "start:sw-reloadsw-claims-destroy": "run-s bun build:sw-reloadsw-claims-destroy serve",
     "preview": "vite preview",
-    "build-and-preview": "run-s build preview",
-    "release": "bumpp"
+    "build-and-preview": "run-s build preview"
   },
   "dependencies": {
     "@formkit/auto-animate": "0.8.2",
@@ -100,7 +100,6 @@
     "@vite-pwa/assets-generator": "0.2.6",
     "@vitejs/plugin-react": "4.3.4",
     "@workspace/typescript-config": "workspace:*",
-    "bumpp": "10.0.1",
     "cross-env": "7.0.3",
     "dotenv": "16.4.7",
     "https-localhost": "4.7.1",

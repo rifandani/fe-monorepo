@@ -1,0 +1,52 @@
+{
+  "cli": {
+    "version": ">=7.0.0",
+    "requireCommit": true
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      /**
+       * Environment variables defined in your eas.json build profile will be used when evaluating your app.config.js
+       * when running eas build and will be available to all steps of the build process on the EAS Build server
+       */
+      "env": {
+        "APP_VARIANT": "development",
+        "EXPO_PUBLIC_APP_TITLE": "Expo App (Dev)",
+        "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "distribution": "store",
+      "env": {
+        "APP_VARIANT": "production",
+        "EXPO_PUBLIC_APP_TITLE": "Expo App",
+        "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      // "android": {
+      //   "serviceAccountKeyPath": "./" // git ignored generatedservice account from google cloud
+      // }
+    }
+  }
+}
