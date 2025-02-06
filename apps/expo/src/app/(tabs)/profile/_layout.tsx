@@ -5,7 +5,7 @@ import { styled } from 'tamagui'
 
 const SAV = styled(SafeAreaView, {
   name: 'SAV',
-  f: 1,
+  flex: 1,
 })
 
 export default function ProfileLayout() {

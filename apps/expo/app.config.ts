@@ -11,7 +11,7 @@ const bundleId
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    // newArchEnabled: true,
+    newArchEnabled: true,
     jsEngine: 'hermes',
     owner: 'rifandani',
     name: 'expoapp',
@@ -73,12 +73,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-font',
         {
           fonts: [
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_300Light.ttf',
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_400Regular.ttf',
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_500Medium.ttf',
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_600SemiBold.ttf',
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_700Bold.ttf',
-            'node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_700Bold.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_300Light.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_400Regular.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_500Medium.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_600SemiBold.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_700Bold.ttf',
           ],
         },
       ],

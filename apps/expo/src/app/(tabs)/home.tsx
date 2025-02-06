@@ -5,15 +5,15 @@ import { H1, styled, YStack } from 'tamagui'
 
 const SAV = styled(SafeAreaView, {
   name: 'SAV',
-  f: 1,
-  jc: 'center',
+  flex: 1,
+  justify: 'center',
 })
 
 export default function TabsHomeScreen() {
   return (
     <SAV>
       <CheckAuthWrapper>
-        <YStack f={1} p="$3">
+        <YStack flex={1} p="$3">
           <H1>{translate('home:title')}</H1>
         </YStack>
       </CheckAuthWrapper>

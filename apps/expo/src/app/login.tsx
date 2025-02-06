@@ -20,7 +20,7 @@ export default function LoginScreen() {
 
       <LoginForm />
 
-      <Paragraph verticalAlign="center" marginTop="$2">
+      <Paragraph verticalAlign="center" marginEnd="$2">
         <WrapTranslation message={translate('auth:registerHere')}>
           {infix => (
             <Link href="/register">

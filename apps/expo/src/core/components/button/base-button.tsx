@@ -1,4 +1,4 @@
-import { Button, styled } from 'tamagui';
+import { Button, styled } from 'tamagui'
 
 /**
  * includes `bg`, `color`, `pressStyle.bg`, `pressStyle.borderColor`
@@ -89,12 +89,11 @@ const baseButtonVariants = {
       color: '$color',
     },
   },
-} as const;
+} as const
 
 export const BaseButton = styled(Button, {
   name: 'BaseButton',
   variants: baseButtonVariants,
   defaultVariants: {
-    preset: 'default',
   },
-});
+})

@@ -20,8 +20,8 @@ export default function TabsProfileScreen() {
   })
 
   return (
-    <YStack f={1} p="$3">
-      <XStack mb="$3" h="$10" gap="$5">
+    <YStack flex={1} p="$3">
+      <XStack mb="$3" height="$10" gap="$5">
         <Image
           source={data?.image}
           placeholder={BLURHASH}
@@ -30,11 +30,11 @@ export default function TabsProfileScreen() {
           style={{ width: 100, borderRadius: 1_000 }}
         />
 
-        <YStack f={1}>
+        <YStack flex={1}>
           <H6 background="$backgroundTransparent">{data?.username}</H6>
           <Paragraph>{data?.email}</Paragraph>
 
-          <BaseButton mt="auto" p="$2" w="$12" preset="primary" icon={<Feather name="edit" />}>
+          <BaseButton mt="auto" p="$2" width="$12" icon={<Feather name="edit" />}>
             {translate('user:editProfile')}
           </BaseButton>
         </YStack>
@@ -57,8 +57,7 @@ export default function TabsProfileScreen() {
       <ProfileListItem title="Clear history" icon={<Feather name="file" />} />
       <ProfileListItem
         pressStyle={{
-          borderRadius: '$5',
-          backgroundColor: '$red1Dark',
+          background: '$red2',
         }}
         icon={<Feather name="log-out" color={getTokenValue('$color.10')} />}
         iconAfter={<Feather name="chevron-right" color={getTokenValue('$color.10')} />}
@@ -66,10 +65,10 @@ export default function TabsProfileScreen() {
           push('/login')
         }}
       >
-        <ListItem.Text color="$red10Dark">Logout</ListItem.Text>
+        <ListItem.Text color="$red10">Logout</ListItem.Text>
       </ProfileListItem>
 
-      <Paragraph textAlign="center" marginTop="auto" color="slategray">
+      <Paragraph text="center" marginEnd="auto" color="slategray">
         {translate('common:appVersion')}
         {' '}
         {nativeApplicationVersion}
