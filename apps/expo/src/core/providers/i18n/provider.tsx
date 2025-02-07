@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { AppState } from 'react-native'
 import { fallbackLocale, initI18n, pickSupportedLocale } from '@/core/providers/i18n/client'
-import { useTranslation } from 'react-i18next'
 import { useLocales } from 'expo-localization'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { AppState } from 'react-native'
 
 function AppStateLanguageListener({ children }: PropsWithChildren) {
   const locale = useLocale()
@@ -26,7 +26,7 @@ function AppStateLanguageListener({ children }: PropsWithChildren) {
       // unsubscribe from the change event listener
       subscription.remove()
     }
-  }, [locale])
+  }, [locale, i18n])
 
   return children
 }

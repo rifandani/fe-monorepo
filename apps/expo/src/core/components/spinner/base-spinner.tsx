@@ -1,6 +1,6 @@
-import { Spinner, styled } from 'tamagui';
+import { presetVariantColor } from '@/core/constants/theme'
 
-import { presetVariantColor } from '@/core/constants/theme';
+import { Spinner, styled } from 'tamagui'
 
 export const BaseSpinner = styled(Spinner, {
   name: 'BaseSpinner',
@@ -8,4 +8,4 @@ export const BaseSpinner = styled(Spinner, {
   defaultVariants: {
     preset: 'default',
   },
-});
+})

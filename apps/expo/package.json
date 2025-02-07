@@ -8,17 +8,18 @@
   "main": "expo-router/entry",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "config:introspect": "expo config --type introspect",
     "install:fix": "expo install --fix",
     "prebuild": "expo prebuild",
     "prebuild:clean": "expo prebuild --clean",
     "dev": "expo start --dev-client",
-    "dev:clean": "expo start -c",
+    "dev:clean": "expo start --dev-client -c",
     "build:android": "eas build --profile development --platform android",
     "build:android:local": "eas build --profile development --platform android --local",
     "build:ios": "eas build --profile development-simulator --platform ios",
     "build:ios:local": "eas build --profile development-simulator --platform ios --local",
     "android": "expo run:android",
+    "android:debug": "expo run:android --variant debug",
+    "android:release": "expo run:android --variant release",
     "ios": "expo run:ios"
   },
   "dependencies": {
@@ -52,6 +53,7 @@
     "i18next": "24.2.2",
     "intl-pluralrules": "2.0.1",
     "ky": "1.7.4",
+    "radashi": "12.3.4",
     "react": "18.3.1",
     "react-hook-form": "7.54.2",
     "react-i18next": "15.4.0",

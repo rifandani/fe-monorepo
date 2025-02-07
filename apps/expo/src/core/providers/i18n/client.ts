@@ -30,7 +30,7 @@ function systemTagMatchesSupportedTags(deviceTag: string) {
  *
  * @returns supported locale or undefined if no supported locale is found
  */
-export const pickSupportedLocale = (locales: Localization.Locale[]) => {
+export function pickSupportedLocale(locales: Localization.Locale[]) {
   return locales.find(locale => systemTagMatchesSupportedTags(locale.languageTag))
 }
 

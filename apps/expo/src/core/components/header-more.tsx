@@ -1,7 +1,7 @@
 import type { HeaderButtonProps } from '@/core/types/navigation'
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
-import { isEmptyChildren } from '@/core/utils/helper'
 import Feather from '@expo/vector-icons/Feather'
+import { isFunction } from 'radashi'
 import React from 'react'
 import { Button, Sheet } from 'tamagui'
 
@@ -57,12 +57,10 @@ export function HeaderMore({ children }: HeaderMoreProps) {
 
         <Sheet.Handle />
 
-        <Sheet.Frame padding="$2" jc="center" ai="center">
+        <Sheet.Frame paddingStart="$2" justify="center" items="center">
           {isFunction(children)
             ? children({ state, setState })
-            : !isEmptyChildren(children)
-                ? children
-                : null}
+            : null}
         </Sheet.Frame>
       </Sheet>
     </>

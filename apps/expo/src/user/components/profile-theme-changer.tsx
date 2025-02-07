@@ -1,18 +1,17 @@
-import Feather from '@expo/vector-icons/Feather';
-import React, { useState } from 'react';
-import { ListItem, Separator, YGroup } from 'tamagui';
-
-import { useI18nContext } from '@/core/i18n/i18n-react';
-import { BaseSheet } from '@/core/components/sheet/base-sheet';
-import { BaseSheetState } from '@/core/components/sheet/types';
-import { useAppStore } from '@/core/hooks/use-app-store';
-import { ProfileListItem } from '@/user/components/profile-list-item';
+import type { BaseSheetState } from '@/core/components/sheet/types'
+import { BaseSheet } from '@/core/components/sheet/base-sheet'
+import { useAppStore } from '@/core/hooks/use-app-store'
+import { useI18nContext } from '@/core/i18n/i18n-react'
+import { ProfileListItem } from '@/user/components/profile-list-item'
+import Feather from '@expo/vector-icons/Feather'
+import React, { useState } from 'react'
+import { ListItem, Separator, YGroup } from 'tamagui'
 
 export function ProfileThemeChanger() {
-  const { LL } = useI18nContext();
-  const theme = useAppStore((state) => state.theme);
-  const setTheme = useAppStore((state) => state.setTheme);
-  const [state, setState] = useState<BaseSheetState>({ open: false, position: 0 });
+  const { LL } = useI18nContext()
+  const theme = useAppStore(state => state.theme)
+  const setTheme = useAppStore(state => state.setTheme)
+  const [state, setState] = useState<BaseSheetState>({ open: false, position: 0 })
 
   return (
     <>
@@ -20,7 +19,7 @@ export function ProfileThemeChanger() {
         title={LL.common.theme()}
         icon={<Feather name="moon" />}
         onPress={() => {
-          setState({ ...state, open: true });
+          setState({ ...state, open: true })
         }}
       />
 
@@ -28,7 +27,8 @@ export function ProfileThemeChanger() {
         state={state}
         setState={setState}
         sheetProps={{ snapPointsMode: 'fit', snapPoints: undefined }}
-        frameProps={{ p: '$5' }}>
+        frameProps={{ p: '$5' }}
+      >
         <YGroup als="center" bordered separator={<Separator />}>
           <YGroup.Item>
             <ListItem
@@ -62,5 +62,5 @@ export function ProfileThemeChanger() {
         </YGroup>
       </BaseSheet>
     </>
-  );
+  )
 }

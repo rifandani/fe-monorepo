@@ -2,8 +2,8 @@ import type {
   LoginApiResponseSchema,
   LoginApiSuccessResponseSchema,
   LoginSchema,
-} from '@/auth/schemas/login';
-import { http } from '@/core/services/http';
+} from '@/auth/schemas/login'
+import { http } from '@/core/services/http'
 
 export const authApi = {
   login: async (creds: LoginSchema) => {
@@ -15,19 +15,19 @@ export const authApi = {
           afterResponse: [
             async (request, _options, response) => {
               if (response.status === 200) {
-                const data = (await response.json()) as LoginApiSuccessResponseSchema;
+                const data = (await response.json()) as LoginApiSuccessResponseSchema
                 // set 'Authorization' headers
-                request.headers.set('Authorization', `Bearer ${data.token}`);
+                request.headers.set('Authorization', `Bearer ${data.token}`)
               }
             },
           ],
         },
       })
-      .json<LoginApiResponseSchema>();
+      .json<LoginApiResponseSchema>()
 
     // `parse` will throw if `resp.data` is not correct, and therefore can render expo-router `ErrorBoundaries` if specified
     // const loginApiResponse = loginApiResponseSchema.parse(resp.data);
 
-    return resp;
+    return resp
   },
-} as const;
+} as const

@@ -12,7 +12,7 @@ SplashScreen.setOptions({
   fade: true,
 })
 
-function App() {
+function _App() {
   return (
     <Stack initialRouteName="(tabs)">
       <Stack.Screen

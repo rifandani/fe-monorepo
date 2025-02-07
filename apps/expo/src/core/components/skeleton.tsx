@@ -1,16 +1,17 @@
-import React, { ComponentPropsWithoutRef } from 'react';
-import { View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import type { ComponentPropsWithoutRef } from 'react'
+import { useSkeletonAnimation } from '@/core/hooks/use-animate-skeleton'
+import React from 'react'
+import { View } from 'react-native'
 
-import { useSkeletonAnimation } from '@/core/hooks/use-animate-skeleton';
+import Animated from 'react-native-reanimated'
 
-type Props = {
-  loaderStyle?: ComponentPropsWithoutRef<typeof Animated.View>['style'];
-  numberOfItems?: number;
-  direction?: 'row' | 'column';
-  speed?: number;
-  targetOpacityValue?: number;
-};
+interface Props {
+  loaderStyle?: ComponentPropsWithoutRef<typeof Animated.View>['style']
+  numberOfItems?: number
+  direction?: 'row' | 'column'
+  speed?: number
+  targetOpacityValue?: number
+}
 
 /**
  * @example
@@ -20,13 +21,13 @@ type Props = {
  * }
  */
 export function Skeleton({
-  loaderStyle = {},
+  loaderStyle,
   numberOfItems = 3,
   direction = 'row',
   speed = 1_000,
   targetOpacityValue = 0.2,
 }: Props) {
-  const animatedStyle = useSkeletonAnimation({ speed, targetOpacityValue });
+  const animatedStyle = useSkeletonAnimation({ speed, targetOpacityValue })
 
   return (
     <View style={{ flexDirection: direction }}>
@@ -34,5 +35,5 @@ export function Skeleton({
         <Animated.View key={`animated-view-${idx}`} style={[loaderStyle, animatedStyle]} />
       ))}
     </View>
-  );
+  )
 }

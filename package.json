@@ -79,6 +79,8 @@
     "packages/*"
   ],
   "trustedDependencies": [
-    "@swc/core"
+    "@swc/core",
+    "sharp",
+    "esbuild"
   ]
 }

@@ -23,7 +23,7 @@ export const presetVariantColor = {
       color: '$blue11',
     },
   },
-} as const;
+} as const
 
 /**
  * includes `bg`
@@ -50,4 +50,4 @@ export const presetVariantBg = {
       bg: '$blue5',
     },
   },
-} as const;
+} as const

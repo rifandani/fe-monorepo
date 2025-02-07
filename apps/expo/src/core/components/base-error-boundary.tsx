@@ -8,17 +8,17 @@ import { H1, Paragraph, YStack } from 'tamagui'
 /**
  * to catch expo-router route error
  */
-export function BaseErrorBoundary(props: ErrorBoundaryProps) {
+export function BaseErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <YStack f={1} jc="center" gap="$5" p="$5">
+      <YStack flex={1} justify="center" gap="$5" paddingStart="$5">
         <H1 color="$red10">
           Error:
-          {props.error.name}
+          {error.name}
         </H1>
-        <Paragraph fontStyle="italic">{props.error.message}</Paragraph>
+        <Paragraph fontStyle="italic">{error.message}</Paragraph>
 
-        <BaseButton preset="error" icon={<Feather name="repeat" />} onPress={props.retry}>
+        <BaseButton icon={<Feather name="repeat" />} onPress={retry}>
           Try Again
         </BaseButton>
       </YStack>

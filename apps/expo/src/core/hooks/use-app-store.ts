@@ -5,7 +5,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 export type AppStoreState = z.infer<typeof appStoreStateSchema>
-type AppStore = z.infer<typeof appStoreSchema>
+type AppStore = z.infer<typeof _appStoreSchema>
 
 const appStoreStateSchema = z.object({
   user: loginApiSuccessResponseSchema.nullable(),
@@ -17,7 +17,7 @@ const appStoreActionSchema = z.object({
   setUser: z.function().args(loginApiSuccessResponseSchema).returns(z.void()),
   setTheme: z.function().args(appStoreStateSchema.shape.theme).returns(z.void()),
 })
-const appStoreSchema = appStoreStateSchema.merge(appStoreActionSchema)
+const _appStoreSchema = appStoreStateSchema.merge(appStoreActionSchema)
 
 /**
  * app store state default values

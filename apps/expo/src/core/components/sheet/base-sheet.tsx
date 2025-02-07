@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import { Sheet } from 'tamagui';
+import type { BaseSheetProps, BaseSheetState } from '@/core/components/sheet/types'
+import { useCallback } from 'react'
 
-import { BaseSheetProps, BaseSheetState } from '@/core/components/sheet/types';
+import { Sheet } from 'tamagui'
 
 export function BaseSheet<T extends BaseSheetState>({
   state,
@@ -12,16 +12,16 @@ export function BaseSheet<T extends BaseSheetState>({
 }: BaseSheetProps<T>) {
   const onOpenChange = useCallback(
     (open: boolean) => {
-      setState({ ...state, open });
+      setState({ ...state, open })
     },
-    [setState, state]
-  );
+    [setState, state],
+  )
   const onPositionChange = useCallback(
     (position: number) => {
-      setState({ ...state, position });
+      setState({ ...state, position })
     },
-    [setState, state]
-  );
+    [setState, state],
+  )
 
   return (
     <Sheet
@@ -36,12 +36,13 @@ export function BaseSheet<T extends BaseSheetState>({
       onOpenChange={onOpenChange}
       onPositionChange={onPositionChange}
       animation="medium"
-      {...sheetProps}>
+      {...sheetProps}
+    >
       <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
 
       <Sheet.Handle />
 
       <Sheet.Frame {...frameProps}>{children}</Sheet.Frame>
     </Sheet>
-  );
+  )
 }

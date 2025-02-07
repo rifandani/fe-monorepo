@@ -11,8 +11,6 @@ const bundleId
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    newArchEnabled: true,
-    jsEngine: 'hermes',
     owner: 'rifandani',
     name: 'expoapp',
     slug: 'expoapp',

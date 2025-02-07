@@ -1,5 +1,5 @@
-import Feather from '@expo/vector-icons/Feather';
-import { Tabs } from 'expo-router';
+import Feather from '@expo/vector-icons/Feather'
+import { Tabs } from 'expo-router'
 
 export default function TabsLayout() {
   return (
@@ -32,5 +32,5 @@ export default function TabsLayout() {
         }}
       />
     </Tabs>
-  );
+  )
 }
