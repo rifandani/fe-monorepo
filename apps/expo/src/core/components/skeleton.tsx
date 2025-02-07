@@ -2,7 +2,6 @@ import type { ComponentPropsWithoutRef } from 'react'
 import { useSkeletonAnimation } from '@/core/hooks/use-animate-skeleton'
 import React from 'react'
 import { View } from 'react-native'
-
 import Animated from 'react-native-reanimated'
 
 interface Props {

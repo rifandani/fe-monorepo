@@ -1,14 +1,13 @@
 import type { BaseSheetState } from '@/core/components/sheet/types'
 import { BaseSheet } from '@/core/components/sheet/base-sheet'
 import { useAppStore } from '@/core/hooks/use-app-store'
-import { useI18nContext } from '@/core/i18n/i18n-react'
+import { translate } from '@/core/providers/i18n/translate'
 import { ProfileListItem } from '@/user/components/profile-list-item'
 import Feather from '@expo/vector-icons/Feather'
 import React, { useState } from 'react'
 import { ListItem, Separator, YGroup } from 'tamagui'
 
 export function ProfileThemeChanger() {
-  const { LL } = useI18nContext()
   const theme = useAppStore(state => state.theme)
   const setTheme = useAppStore(state => state.setTheme)
   const [state, setState] = useState<BaseSheetState>({ open: false, position: 0 })
@@ -16,7 +15,7 @@ export function ProfileThemeChanger() {
   return (
     <>
       <ProfileListItem
-        title={LL.common.theme()}
+        title={translate('common:theme')}
         icon={<Feather name="moon" />}
         onPress={() => {
           setState({ ...state, open: true })
@@ -29,11 +28,11 @@ export function ProfileThemeChanger() {
         sheetProps={{ snapPointsMode: 'fit', snapPoints: undefined }}
         frameProps={{ p: '$5' }}
       >
-        <YGroup als="center" bordered separator={<Separator />}>
+        <YGroup verticalAlign="center" bordered separator={<Separator />}>
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={LL.common.light()}
+              title={translate('common:light')}
               icon={<Feather name="sun" size={20} />}
               iconAfter={theme === 'light' ? <Feather name="check-circle" size={20} /> : undefined}
               onPress={() => setTheme('light')}
@@ -42,19 +41,19 @@ export function ProfileThemeChanger() {
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={LL.common.dark()}
+              title={translate('common:dark')}
               icon={<Feather name="moon" size={20} />}
-              iconAfter={theme === 'dark' ? <Feather name="check-circle" size={20} r /> : undefined}
+              iconAfter={theme === 'dark' ? <Feather name="check-circle" size={20} /> : undefined}
               onPress={() => setTheme('dark')}
             />
           </YGroup.Item>
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={LL.common.system()}
+              title={translate('common:system')}
               icon={<Feather name="tablet" size={20} />}
               iconAfter={
-                theme === 'system' ? <Feather name="check-circle" size={20} r /> : undefined
+                theme === 'system' ? <Feather name="check-circle" size={20} /> : undefined
               }
               onPress={() => setTheme('system')}
             />

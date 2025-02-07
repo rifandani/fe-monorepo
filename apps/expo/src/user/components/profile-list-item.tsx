@@ -10,7 +10,7 @@ export function ProfileListItem(props: ComponentPropsWithoutRef<typeof ListItem>
       transparent
       iconAfter={<Feather name="chevron-right" />}
       pressStyle={{
-        br: '$5',
+        radiused: true,
       }}
       {...props}
     />

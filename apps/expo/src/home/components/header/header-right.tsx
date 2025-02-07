@@ -2,17 +2,16 @@ import type { BaseSheetState } from '@/core/components/sheet/types'
 import type { HeaderButtonProps } from '@/core/types/navigation'
 import { BaseButton } from '@/core/components/button/base-button'
 import { BaseSheet } from '@/core/components/sheet/base-sheet'
-
 import { useAppStore } from '@/core/hooks/use-app-store'
 import Feather from '@expo/vector-icons/Feather'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
-import { getTokenValue, ListItem, Separator, YGroup } from 'tamagui'
+import React from 'react'
+import { ListItem, Separator, YGroup } from 'tamagui'
 
 export function HeaderRight(_: HeaderButtonProps) {
   const router = useRouter()
   const resetUser = useAppStore(state => state.resetUser)
-  const [state, setState] = useState<BaseSheetState>({ open: false, position: 0 })
+  const [state, setState] = React.useState<BaseSheetState>({ open: false, position: 0 })
 
   return (
     <>
@@ -32,7 +31,7 @@ export function HeaderRight(_: HeaderButtonProps) {
         sheetProps={{ snapPointsMode: 'fit', snapPoints: undefined }}
         frameProps={{ p: '$5' }}
       >
-        <YGroup als="center" bordered separator={<Separator />}>
+        <YGroup verticalAlign="center" bordered separator={<Separator />}>
           <YGroup.Item>
             <ListItem
               pressTheme
@@ -49,14 +48,14 @@ export function HeaderRight(_: HeaderButtonProps) {
           <YGroup.Item>
             <ListItem
               pressStyle={{ bg: '$red5' }}
-              icon={<Feather name="log-out" size={20} color={getTokenValue('$red10Dark')} />}
+              icon={<Feather name="log-out" size={20} color="$red10" />}
               onPress={() => {
                 setState({ ...state, open: false })
                 resetUser()
                 router.push('/login')
               }}
             >
-              <ListItem.Text color="$red10Dark">Logout</ListItem.Text>
+              <ListItem.Text color="$red10">Logout</ListItem.Text>
             </ListItem>
           </YGroup.Item>
         </YGroup>

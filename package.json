@@ -33,6 +33,7 @@
     "spa:test": "bun --filter @workspace/spa test",
     "spa:test:ui": "bun --filter @workspace/spa test:ui",
     "spa:test:ci": "bun --filter @workspace/spa test:ci",
+    "expo:typecheck": "bun --filter @workspace/expo typecheck",
     "expo:prebuild": "bun --filter @workspace/expo prebuild",
     "expo:prebuild:clean": "bun --filter @workspace/expo prebuild:clean",
     "expo:dev": "bun --filter @workspace/expo dev",

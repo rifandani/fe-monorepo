@@ -5,8 +5,7 @@ import { loginSchema } from '@/auth/schemas/login'
 import { BaseButton } from '@/core/components/button/base-button'
 import { BaseSpinner } from '@/core/components/spinner/base-spinner'
 import { useAppStore } from '@/core/hooks/use-app-store'
-import { useI18nContext } from '@/core/i18n/i18n-react'
-
+import { translate } from '@/core/providers/i18n/translate'
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useToastController } from '@tamagui/toast'
@@ -17,11 +16,10 @@ import { Checkbox, Form, Input, Label, Paragraph, XStack } from 'tamagui'
 import { fromZodError } from 'zod-validation-error'
 
 function RememberMeCheckbox() {
-  const { LL } = useI18nContext()
   const [state, setState] = useState({ rememberMe: false })
 
   return (
-    <XStack my="$2" ai="center" space="$2">
+    <XStack my="$2" verticalAlign="center" space="$2">
       <Checkbox
         id="rememberMe"
         checked={state.rememberMe}
@@ -34,13 +32,12 @@ function RememberMeCheckbox() {
         </Checkbox.Indicator>
       </Checkbox>
 
-      <Label htmlFor="rememberMe">{LL.forms.rememberMe()}</Label>
+      <Label htmlFor="rememberMe">{translate('forms:rememberMe')}</Label>
     </XStack>
   )
 }
 
 export function LoginForm() {
-  const { LL } = useI18nContext()
   const router = useRouter()
   const toast = useToastController()
   const setUser = useAppStore(state => state.setUser)
@@ -88,7 +85,7 @@ export function LoginForm() {
   return (
     <Form mt="$5" onSubmit={onSubmit}>
       <Label htmlFor="username" mb="$2">
-        {LL.forms.username()}
+        {translate('forms:username')}
       </Label>
       <Controller
         name="username"
@@ -99,7 +96,7 @@ export function LoginForm() {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
-            placeholder={LL.forms.usernamePlaceholder()}
+            placeholder={translate('forms:usernamePlaceholder')}
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}
@@ -109,7 +106,7 @@ export function LoginForm() {
       {errors.username ? <Paragraph color="$red10">{errors.username.message}</Paragraph> : null}
 
       <Label htmlFor="password" my="$2">
-        {LL.forms.password()}
+        {translate('forms:password')}
       </Label>
       <Controller
         name="password"
@@ -121,7 +118,7 @@ export function LoginForm() {
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
             secureTextEntry
-            placeholder={LL.forms.passwordPlaceholder()}
+            placeholder={translate('forms:passwordPlaceholder')}
             value={value}
             onBlur={onBlur}
             onChangeText={onChange}
@@ -134,13 +131,12 @@ export function LoginForm() {
 
       <Form.Trigger asChild>
         <BaseButton
-          preset="primary"
           icon={
             isSubmitting ? <BaseSpinner size="small" preset="primary" /> : <Feather name="log-in" />
           }
           disabled={isSubmitting || !isValid}
         >
-          {isSubmitting ? LL.forms.loginLoading() : LL.forms.login()}
+          {isSubmitting ? translate('forms:loginLoading') : translate('forms:login')}
           {' '}
           (0lelplR)
         </BaseButton>

@@ -1,5 +1,4 @@
 import { errorApiResponseSchema } from '@/core/schemas/error'
-
 import { z } from 'zod'
 
 // #region SCHEMAS

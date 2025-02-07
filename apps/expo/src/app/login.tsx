@@ -1,5 +1,4 @@
 import { LoginForm } from '@/auth/components/login-form'
-import { WrapTranslation } from '@/core/components/i18n/wrap-translation'
 import { translate } from '@/core/providers/i18n/translate'
 import { Link } from 'expo-router'
 import React from 'react'
@@ -21,14 +20,8 @@ export default function LoginScreen() {
       <LoginForm />
 
       <Paragraph verticalAlign="center" marginEnd="$2">
-        <WrapTranslation message={translate('auth:registerHere')}>
-          {infix => (
-            <Link href="/register">
-              {' '}
-              {infix}
-            </Link>
-          )}
-        </WrapTranslation>
+        <Link href="/register">
+        </Link>
       </Paragraph>
     </StyledSafeAreaView>
   )

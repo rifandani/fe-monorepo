@@ -1,6 +1,5 @@
 import type { HeaderBackButtonProps } from '@/core/types/navigation'
 import { BaseButton } from '@/core/components/button/base-button'
-
 import Feather from '@expo/vector-icons/Feather'
 import { useRouter } from 'expo-router'
 

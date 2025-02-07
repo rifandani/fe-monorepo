@@ -3,7 +3,7 @@ import { Button, styled } from 'tamagui'
 /**
  * includes `bg`, `color`, `pressStyle.bg`, `pressStyle.borderColor`
  */
-const baseButtonVariants = {
+const _baseButtonVariants = {
   preset: {
     default: {}, // unstyled
     outlined: {
@@ -93,7 +93,7 @@ const baseButtonVariants = {
 
 export const BaseButton = styled(Button, {
   name: 'BaseButton',
-  variants: baseButtonVariants,
+  // variants: baseButtonVariants,
   defaultVariants: {
   },
 })

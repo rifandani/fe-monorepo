@@ -1,6 +1,5 @@
 import { useAppStore } from '@/core/hooks/use-app-store'
 import { useFocusEffect, usePathname, useRouter } from 'expo-router'
-
 import { useCallback, useState } from 'react'
 
 /**
