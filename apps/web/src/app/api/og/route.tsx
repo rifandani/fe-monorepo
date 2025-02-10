@@ -4,7 +4,7 @@ import { logger } from '@workspace/core/utils/logger.util'
 import { ImageResponse } from 'next/og'
 
 // NOTE: vercel-related
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 // const interSemiBold = fetch(
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),

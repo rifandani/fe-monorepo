@@ -12,6 +12,8 @@ const url = new URL(
   process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3002',
 )
 
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
