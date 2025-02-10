@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "bun@1.2.2",
-  "description": "React, nextjs monorepo template",
+  "description": "Hono, React, Next.js, Expo monorepo template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "prepare": "husky",
-    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" && bun install",
+    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/build\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" && bun install",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
-    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck",
+    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck hono:typecheck",
     "regression": "run-p lint web:typecheck spa:typecheck expo:typecheck",
     "web:dev": "bun --filter @workspace/web dev",
     "web:dev:prod": "bun --filter @workspace/web dev:prod",
@@ -44,7 +44,12 @@
     "expo:build:ios": "bun --filter @workspace/expo build:ios",
     "expo:build:ios:local": "bun --filter @workspace/expo build:ios:local",
     "expo:android": "bun --filter @workspace/expo android",
-    "expo:ios": "bun --filter @workspace/expo ios"
+    "expo:ios": "bun --filter @workspace/expo ios",
+    "hono:typecheck": "bun --filter @workspace/hono typecheck",
+    "hono:dev": "bun --filter @workspace/hono dev",
+    "hono:node:dev": "bun --filter @workspace/hono node:dev",
+    "hono:node:build": "bun --filter @workspace/hono node:build",
+    "hono:node:start": "bun --filter @workspace/hono node:start"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.1.0",

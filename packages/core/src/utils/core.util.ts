@@ -401,3 +401,17 @@ export function getSchemaDefaults<T extends z.ZodTypeAny>(
     }),
   )
 }
+
+/**
+ * Converts a File object to a base64 encoded string
+ * @param file - The File object to convert
+ * @returns Promise that resolves with the base64 string representation of the file
+ */
+export function toBase64(file: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+  })
+}

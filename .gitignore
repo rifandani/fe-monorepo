@@ -15,11 +15,13 @@ stats.html
 
 # misc
 .DS_Store
-.env.*
-!.env.*.example
+**/.env
+**/.env.*
+!**/.env.*.example
 node_modules
 build
 dev-dist
+build
 dist
 dist-ssr
 *.local
@@ -55,3 +57,28 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Expo
+.expo/
+dist/
+web-build/
+android/
+ios/
+# created using `npm run build:ios:local` scripts
+build-*.tar.gz
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# database
+*.db
+*.db-journal
+prisma/_sqlite/migrations

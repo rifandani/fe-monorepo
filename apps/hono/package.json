@@ -1,0 +1,48 @@
+{
+  "name": "@workspace/hono",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bulletproof Hono 4 server template",
+  "author": "Tri Rizeki Rifandani",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "bun run --hot src/bun.ts",
+    "node:dev": "tsx watch -r dotenv/config src/node.ts",
+    "node:build": "tsc -p .",
+    "node:start": "node ./dist/node.js",
+    "test": "bun test",
+    "db:migrate:up": "tsx -r dotenv/config ./src/lib/db/migrate latest",
+    "db:migrate:down": "tsx -r dotenv/config ./src/lib/db/migrate down",
+    "db:migrate:redo": "tsx -r dotenv/config ./src/lib/db/migrate redo && bun db:generate:types",
+    "db:migrate:create": "tsx -r dotenv/config ./src/lib/db/migrate create initial",
+    "db:seed": "tsx -r dotenv/config ./src/lib/db/seed",
+    "db:reset": "bun db:migrate:redo && bun db:seed",
+    "db:generate:types": "kanel && bun db:types:prettier"
+  },
+  "dependencies": {
+    "@hono/node-server": "1.13.8",
+    "@t3-oss/env-core": "0.12.0",
+    "@workspace/core": "workspace:*",
+    "hono": "4.7.0",
+    "kysely": "0.27.5",
+    "kysely-migration-cli": "0.4.2",
+    "pg": "8.13.1",
+    "ts-pattern": "5.6.2",
+    "zod": "3.24.1",
+    "zod-form-data": "2.0.5",
+    "zod-validation-error": "3.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.2",
+    "@types/node": "22.13.1",
+    "@types/pg": "8.11.11",
+    "@workspace/typescript-config": "workspace:*",
+    "dotenv": "16.4.7",
+    "kanel": "3.11.0",
+    "kanel-kysely": "0.6.0",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3"
+  }
+}
