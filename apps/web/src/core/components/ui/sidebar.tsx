@@ -453,23 +453,23 @@ function SidebarItem({
           {typeof children === 'function' ? children({ ...values, isCollapsed }) : children}
 
           {badge
-          && (state !== 'collapsed'
-            ? (
-                <Badge
-                  shape="square"
-                  intent="primary"
-                  data-slot="sidebar-badge"
-                  className="inset-ring-1 inset-ring-primary/20 h-5.5 group-data-current:inset-ring-transparent absolute inset-y-1/2 right-1.5 w-auto -translate-y-1/2 text-[10px] transition-colors"
-                >
-                  {badge}
-                </Badge>
-              )
-            : (
-                <div
-                  aria-hidden
-                  className="bg-primary absolute right-1 top-1 size-1.5 rounded-full"
-                />
-              ))}
+            && (state !== 'collapsed'
+              ? (
+                  <Badge
+                    shape="square"
+                    intent="primary"
+                    data-slot="sidebar-badge"
+                    className="inset-ring-1 inset-ring-primary/20 h-5.5 group-data-current:inset-ring-transparent absolute inset-y-1/2 right-1.5 w-auto -translate-y-1/2 text-[10px] transition-colors"
+                  >
+                    {badge}
+                  </Badge>
+                )
+              : (
+                  <div
+                    aria-hidden
+                    className="bg-primary absolute right-1 top-1 size-1.5 rounded-full"
+                  />
+                ))}
         </>
       )}
     </Link>

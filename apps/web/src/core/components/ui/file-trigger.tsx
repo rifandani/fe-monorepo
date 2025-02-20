@@ -36,17 +36,17 @@ function FileTrigger({
         appearance={appearance}
       >
         {withIcon
-        && (props.defaultCamera
-          ? (
-              <Icon icon="ion:camera" />
-            )
-          : props.acceptDirectory
+          && (props.defaultCamera
             ? (
-                <Icon icon="ion:folder" />
+                <Icon icon="ion:camera" />
               )
-            : (
-                <Icon icon="ion:paperclip" />
-              ))}
+            : props.acceptDirectory
+              ? (
+                  <Icon icon="ion:folder" />
+                )
+              : (
+                  <Icon icon="ion:paperclip" />
+                ))}
         {props.children
           ? (
               props.children

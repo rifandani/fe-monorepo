@@ -25,24 +25,24 @@
     "@hono/node-server": "1.13.8",
     "@t3-oss/env-core": "0.12.0",
     "@workspace/core": "workspace:*",
-    "hono": "4.7.0",
+    "hono": "4.7.2",
     "kysely": "0.27.5",
     "kysely-migration-cli": "0.4.2",
-    "pg": "8.13.1",
+    "pg": "8.13.3",
     "ts-pattern": "5.6.2",
-    "zod": "3.24.1",
+    "zod": "3.24.2",
     "zod-form-data": "2.0.5",
     "zod-validation-error": "3.4.0"
   },
   "devDependencies": {
     "@types/bun": "1.2.2",
-    "@types/node": "22.13.1",
+    "@types/node": "22.13.4",
     "@types/pg": "8.11.11",
     "@workspace/typescript-config": "workspace:*",
     "dotenv": "16.4.7",
-    "kanel": "3.11.0",
+    "kanel": "3.11.1",
     "kanel-kysely": "0.6.0",
-    "tsx": "4.19.2",
+    "tsx": "4.19.3",
     "typescript": "5.7.3"
   }
 }

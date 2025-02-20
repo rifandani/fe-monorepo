@@ -2,14 +2,14 @@
 
 Boilerplate for your typescript projects using [Hono](https://hono.dev).
 
-[Project Structure](#project-structure)  
-[Tech Stack](#tech-stack)  
-[Requirements](#requirements)  
-[Run Locally](#run-locally)  
-[Manage your database using migrations](#manage-your-database-using-migrations)  
-[Run test](#run-test)  
-[FAQ](#faq)  
-[Dependencies](#dependencies)  
+[Project Structure](#project-structure)
+[Tech Stack](#tech-stack)
+[Requirements](#requirements)
+[Run Locally](#run-locally)
+[Manage your database using migrations](#manage-your-database-using-migrations)
+[Run test](#run-test)
+[FAQ](#faq)
+[Dependencies](#dependencies)
 [Extras](#extras)
 
 ## Project Structure
@@ -28,14 +28,14 @@ The main app implementation is inside of the `/app` directory where it uses basi
 
 ## Tech Stack
 
-**Geral:** [Hono](https://hono.dev), [Zod](https://zod.dev), Eslint  
-**Database:** [Kysely](https://kysely.dev) (queries, migrations, types)  
+**Geral:** [Hono](https://hono.dev), [Zod](https://zod.dev), Eslint
+**Database:** [Kysely](https://kysely.dev) (queries, migrations, types)
 **Test:** [Bun test](https://bun.sh/docs/cli/test)
 
 ## Requirements
 
-[node.js v20+](https://nodejs.org/en) or [bun](https://bun.sh)  
-[nvm](https://github.com/nvm-sh/nvm#install--update-script) installed to manage node versions  
+[node.js v20+](https://nodejs.org/en) or [bun](https://bun.sh)
+[nvm](https://github.com/nvm-sh/nvm#install--update-script) installed to manage node versions
 [pnpm](https://pnpm.io) to manage dependencies(npm install -g pnpm)
 
 ## Run Locally
@@ -46,7 +46,7 @@ The main app implementation is inside of the `/app` directory where it uses basi
 
 I recommend using [dbngin](https://dbngin.com) to spin up an local DB on your machine.
 
-> [!NOTE]  
+> [!NOTE]
 > If you prefer docker, you can use postgres service from [this docker compose](https://gist.github.com/marcosrjjunior/d5250416b5fe43d982f998c0b7744464)
 
 Create your database
@@ -163,12 +163,12 @@ This will generate a new file under `/lib/db/migrations/DATE-initial.ts`
 
 ##### DB types
 
-This project is using kanel to generate types, it handles better types and enums when using with postgres.  
+This project is using kanel to generate types, it handles better types and enums when using with postgres.
 If you need to use a different database, I recommend [kysely-codegen](https://github.com/RobinBlomberg/kysely-codegen) instead.
 
 ## Endpoints
 
-The endpoints are documented in the project under the "/endpoints" directory.  
+The endpoints are documented in the project under the "/endpoints" directory.
 To run an access you will need [Bruno API Client](https://www.usebruno.com)
 
 ## Run test
@@ -179,7 +179,7 @@ Tests are implemented using bun which follows a jest-compatible structure.
 pnpm test
 ```
 
-> Reference: https://bun.sh/docs/cli/test#run-tests
+> Reference: <https://bun.sh/docs/cli/test#run-tests>
 
 ## FAQ
 
@@ -197,7 +197,7 @@ As a personal recommendation, try not to become too attached to any one framewor
 
 Feel free to adapt these ideas to fit your needs.
 
-[Hono best practices](https://hono.dev/guides/best-practices#best-practices)  
+[Hono best practices](https://hono.dev/guides/best-practices#best-practices)
 [Hono presets](https://hono.dev/api/presets#which-preset-should-i-use)
 
 </details>
@@ -234,8 +234,8 @@ Based on my experience with Express.js and Fastify, I’ve found Hono to be powe
 
 Give it a try.
 
-Here are some basic benchmarks (though they’re not particularly significant).  
-[Requests benchmark](https://web-frameworks-benchmark.netlify.app/result?f=express,hono,fastify,hono-bun)  
+Here are some basic benchmarks (though they’re not particularly significant).
+[Requests benchmark](https://web-frameworks-benchmark.netlify.app/result?f=express,hono,fastify,hono-bun)
 [Compare benchmark](https://web-frameworks-benchmark.netlify.app/compare?f=express,hono,fastify,hono-bun)
 
 If you're still not convinced, Fastify is also an excellent option.
@@ -269,9 +269,7 @@ tsx
 The setup is basically adding the middleware on the initial file.
 
 ```ts
-...
 import { sentry } from '@hono/sentry'
-...
 
 app.use(
   '*',
