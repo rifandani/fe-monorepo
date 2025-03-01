@@ -65,7 +65,7 @@
     "react-native-screens": "4.9.1",
     "tamagui": "1.125.20",
     "ts-pattern": "5.6.2",
-    "type-fest": "4.35.0",
+    "type-fest": "4.36.0",
     "zod": "3.24.2",
     "zod-validation-error": "3.4.0",
     "zustand": "5.0.3"
