@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/bun": "1.2.4",
-    "@types/node": "22.13.7",
+    "@types/node": "22.13.8",
     "@types/pg": "8.11.11",
     "@workspace/typescript-config": "workspace:*",
     "dotenv": "16.4.7",
