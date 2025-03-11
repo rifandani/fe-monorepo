@@ -50,6 +50,8 @@ export default defineConfig({
     /* Populates context with given storage state */
     storageState: 'e2e/.auth/user.json',
   },
+  /* Capture git info in trace viewer and report */
+  captureGitInfo: { commit: true, diff: true },
 
   /* Configure projects for major browsers */
   projects: [
