@@ -2,12 +2,12 @@
 
 import type { ColorSwatchPickerItemProps, ColorSwatchPickerProps } from 'react-aria-components'
 import {
-  ColorSwatchPickerItem,
+  ColorSwatchPickerItem as ColorSwatchPickerItemPrimitive,
   ColorSwatchPicker as ColorSwatchPickerPrimitive,
 } from 'react-aria-components'
-import { tv } from 'tailwind-variants'
+import { twMerge } from 'tailwind-merge'
 import { ColorSwatch } from './color-swatch'
-import { composeTailwindRenderProps, focusRing } from './primitive'
+import { composeTailwindRenderProps } from './primitive'
 
 function ColorSwatchPicker({
   children,
@@ -18,34 +18,52 @@ function ColorSwatchPicker({
   return (
     <ColorSwatchPickerPrimitive
       layout={layout}
-      {...props}
       className={composeTailwindRenderProps(className, 'flex gap-1')}
+      {...props}
     >
       {children}
     </ColorSwatchPickerPrimitive>
   )
 }
 
-const itemStyles = tv({
-  extend: focusRing,
-  base: 'relative rounded-lg data-disabled:opacity-50',
-})
-
-function SwatchPickerItem(props: ColorSwatchPickerItemProps) {
+function ColorSwatchPickerItem({ className, children, ...props }: ColorSwatchPickerItemProps) {
   return (
-    <ColorSwatchPickerItem {...props} className={itemStyles}>
-      {({ isSelected }) => (
+    <ColorSwatchPickerItemPrimitive
+      className={composeTailwindRenderProps(
+        className,
+        'relative overflow-hidden rounded-md outline-hidden disabled:opacity-50',
+      )}
+      {...props}
+    >
+      {values => (
         <>
-          <ColorSwatch />
-          {isSelected && (
-            <div className="outline-hidden ring-fg/30 absolute left-0 top-0 size-full rounded-[calc(var(--radius-lg)-3.9px)] ring-1 ring-inset forced-color-adjust-none" />
-          )}
+          {!children
+            ? (
+                <>
+                  <ColorSwatch
+                    className={twMerge(
+                      (values.isSelected || values.isFocused || values.isPressed) && 'inset-ring-fg/30',
+                      values.isDisabled && 'opacity-50',
+                    )}
+                  />
+                  {(values.isSelected || values.isFocused || values.isPressed) && (
+                    <span aria-hidden className="absolute right-1 bottom-1 size-1 rounded-full bg-fg" />
+                  )}
+                </>
+              )
+            : typeof children === 'function'
+              ? (
+                  children(values)
+                )
+              : (
+                  children
+                )}
         </>
       )}
-    </ColorSwatchPickerItem>
+    </ColorSwatchPickerItemPrimitive>
   )
 }
 
-ColorSwatchPicker.Item = SwatchPickerItem
+ColorSwatchPicker.Item = ColorSwatchPickerItem
 
 export { ColorSwatchPicker }

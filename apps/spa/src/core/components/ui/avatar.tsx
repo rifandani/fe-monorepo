@@ -41,7 +41,7 @@ function Avatar({
     <span data-slot="avatar" {...props} className={avatar({ shape, size, className })}>
       {initials && (
         <svg
-          className="size-full select-none fill-current p-[5%] text-[48px] font-medium uppercase"
+          className="size-full select-none fill-current p-[5%] font-medium text-[48px] uppercase"
           viewBox="0 0 100 100"
           aria-hidden={alt ? undefined : 'true'}
         >

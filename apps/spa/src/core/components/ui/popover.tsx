@@ -28,11 +28,11 @@ import { tv } from 'tailwind-variants'
 import { Dialog } from './dialog'
 
 type PopoverProps = DialogTriggerProps
-function Popover({ children, ...props }: PopoverProps) {
-  return <DialogTrigger {...props}>{children}</DialogTrigger>
+function Popover(props: PopoverProps) {
+  return <DialogTrigger {...props} />
 }
 
-function Title({ level = 2, className, ...props }: DialogTitleProps) {
+function PopoverTitle({ level = 2, className, ...props }: DialogTitleProps) {
   return (
     <Dialog.Title
       className={twMerge('sm:leading-none', level === 2 && 'sm:text-lg', className)}
@@ -41,15 +41,15 @@ function Title({ level = 2, className, ...props }: DialogTitleProps) {
   )
 }
 
-function Header({ className, ...props }: DialogHeaderProps) {
+function PopoverHeader({ className, ...props }: DialogHeaderProps) {
   return <Dialog.Header className={twMerge('sm:p-4', className)} {...props} />
 }
 
-function Footer({ className, ...props }: DialogFooterProps) {
+function PopoverFooter({ className, ...props }: DialogFooterProps) {
   return <Dialog.Footer className={twMerge('sm:p-4', className)} {...props} />
 }
 
-function Body({ className, ref, ...props }: DialogBodyProps) {
+function PopoverBody({ className, ref, ...props }: DialogBodyProps) {
   return <Dialog.Body ref={ref} className={twMerge('sm:px-4 sm:pt-0', className)} {...props} />
 }
 
@@ -63,7 +63,7 @@ const content = tv({
       false: 'min-w-80',
     },
     isMenu: {
-      true: 'p-0',
+      true: '',
     },
     isEntering: {
       true: [
@@ -104,16 +104,14 @@ const drawer = tv({
 })
 
 interface PopoverContentProps
-  extends Omit<React.ComponentProps<typeof Modal>, 'children'>,
-  Omit<PopoverPrimitiveProps, 'children' | 'className'>,
-  Omit<ModalOverlayProps, 'className'> {
-  'children': React.ReactNode
-  'showArrow'?: boolean
-  'style'?: React.CSSProperties
-  'respectScreen'?: boolean
-  'aria-label'?: DialogProps['aria-label']
-  'aria-labelledby'?: DialogProps['aria-labelledby']
-  'className'?: string | ((values: { defaultClassName?: string }) => string)
+  extends Omit<PopoverPrimitiveProps, 'children' | 'className'>,
+  Omit<ModalOverlayProps, 'className'>,
+  Pick<DialogProps, 'aria-label' | 'aria-labelledby'> {
+  children: React.ReactNode
+  showArrow?: boolean
+  style?: React.CSSProperties
+  respectScreen?: boolean
+  className?: string | ((values: { defaultClassName?: string }) => string)
 }
 
 function PopoverContent({
@@ -128,12 +126,13 @@ function PopoverContent({
   const isMenuTrigger = popoverContext?.trigger === 'MenuTrigger'
   const isSubmenuTrigger = popoverContext?.trigger === 'SubmenuTrigger'
   const isMenu = isMenuTrigger || isSubmenuTrigger
+  const isComboBoxTrigger = popoverContext?.trigger === 'ComboBox'
   const offset = showArrow ? 12 : 8
   const effectiveOffset = isSubmenuTrigger ? offset - 5 : offset
   return isMobile && respectScreen
     ? (
         <ModalOverlay
-          className="h-(--visual-viewport-height) bg-overlay/10 fixed left-0 top-0 isolate z-50 w-full [--visual-viewport-vertical-padding:16px]"
+          className="fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full bg-overlay/10 [--visual-viewport-vertical-padding:16px]"
           {...props}
           isDismissable
         >
@@ -141,11 +140,7 @@ function PopoverContent({
             className={composeRenderProps(className, (className, renderProps) =>
               drawer({ ...renderProps, isMenu, className }))}
           >
-            <Dialog
-              role="dialog"
-              aria-label={props['aria-label'] || isMenu ? 'Menu' : undefined}
-              className="outline-hidden"
-            >
+            <Dialog role="dialog" aria-label={props['aria-label'] ?? 'List item'}>
               {children}
             </Dialog>
           </Modal>
@@ -154,12 +149,12 @@ function PopoverContent({
     : (
         <PopoverPrimitive
           offset={effectiveOffset}
-          {...props}
           className={composeRenderProps(className, (className, renderProps) =>
             content({
               ...renderProps,
               className,
             }))}
+          {...props}
         >
           {showArrow && (
             <OverlayArrow className="group">
@@ -167,49 +162,37 @@ function PopoverContent({
                 width={12}
                 height={12}
                 viewBox="0 0 12 12"
-                className="fill-overlay stroke-border block group-data-[placement=bottom]:rotate-180 group-data-[placement=left]:-rotate-90 group-data-[placement=right]:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
+                className="group-data-[placement=left]:-rotate-90 block fill-overlay stroke-border group-data-[placement=bottom]:rotate-180 group-data-[placement=right]:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
               >
                 <path d="M0 0 L6 6 L12 0" />
               </svg>
             </OverlayArrow>
           )}
-          <Dialog
-            role="dialog"
-            aria-label={props['aria-label'] || isMenu ? 'Menu' : undefined}
-            className="outline-hidden"
-          >
-            {children}
-          </Dialog>
+          {!isComboBoxTrigger
+            ? (
+                <Dialog role="dialog" aria-label={props['aria-label'] ?? 'List item'}>
+                  {children}
+                </Dialog>
+              )
+            : (
+                children
+              )}
         </PopoverPrimitive>
       )
 }
 
-function Picker({ children, className, ...props }: PopoverContentProps) {
-  return (
-    <PopoverPrimitive
-      {...props}
-      className={composeRenderProps(className, (className, renderProps) =>
-        content({
-          ...renderProps,
-          isPicker: true,
-          className,
-        }))}
-    >
-      {children}
-    </PopoverPrimitive>
-  )
-}
+const PopoverTrigger = Dialog.Trigger
+const PopoverClose = Dialog.Close
+const PopoverDescription = Dialog.Description
 
-Popover.Primitive = PopoverPrimitive
-Popover.Trigger = Dialog.Trigger
-Popover.Close = Dialog.Close
+Popover.Trigger = PopoverTrigger
+Popover.Close = PopoverClose
+Popover.Description = PopoverDescription
 Popover.Content = PopoverContent
-Popover.Description = Dialog.Description
-Popover.Body = Body
-Popover.Footer = Footer
-Popover.Header = Header
-Popover.Picker = Picker
-Popover.Title = Title
+Popover.Body = PopoverBody
+Popover.Footer = PopoverFooter
+Popover.Header = PopoverHeader
+Popover.Title = PopoverTitle
 
 export type { PopoverContentProps, PopoverProps }
-export { Popover }
+export { Popover, PopoverContent }

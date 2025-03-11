@@ -7,7 +7,7 @@ import {
   composeRenderProps,
   OverlayArrow,
   Tooltip as TooltipPrimitive,
-  TooltipTrigger,
+  TooltipTrigger as TooltipTriggerPrimitive,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 
@@ -39,8 +39,8 @@ const tooltipStyles = tv({
   },
 })
 
-type TooltipProps = React.ComponentProps<typeof TooltipTrigger>
-const Tooltip = (props: TooltipProps) => <TooltipTrigger {...props} />
+type TooltipProps = React.ComponentProps<typeof TooltipTriggerPrimitive>
+const Tooltip = (props: TooltipProps) => <TooltipTriggerPrimitive {...props} />
 
 interface TooltipContentProps
   extends Omit<TooltipPrimitiveProps, 'children'>,
@@ -49,7 +49,7 @@ interface TooltipContentProps
   children: React.ReactNode
 }
 
-function Content({
+function TooltipContent({
   offset = 10,
   showArrow = true,
   intent = 'default',
@@ -73,7 +73,7 @@ function Content({
             width={12}
             height={12}
             viewBox="0 0 12 12"
-            className="arx group-data-[placement=bottom]:rotate-180 group-data-[placement=left]:-rotate-90 group-data-[placement=right]:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
+            className="arx group-data-[placement=left]:-rotate-90 group-data-[placement=bottom]:rotate-180 group-data-[placement=right]:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
           >
             <path d="M0 0 L6 6 L12 0" />
           </svg>
@@ -84,8 +84,10 @@ function Content({
   )
 }
 
-Tooltip.Trigger = Button
-Tooltip.Content = Content
+const TooltipTrigger = Button
+
+Tooltip.Trigger = TooltipTrigger
+Tooltip.Content = TooltipContent
 
 export type { TooltipContentProps, TooltipProps }
 export { Tooltip }

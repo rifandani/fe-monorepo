@@ -1,25 +1,37 @@
 'use client'
 
-import type { ComboBoxProps as ComboboxPrimitiveProps, InputProps, PopoverProps as PopoverPrimitiveProps, ValidationResult } from 'react-aria-components'
+import type {
+  ComboBoxProps as ComboboxPrimitiveProps,
+  InputProps,
+  ListBoxProps,
+  ValidationResult,
+} from 'react-aria-components'
+import type { PopoverContentProps } from './popover'
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { Button as ButtonPrimitive, ComboBoxContext, ComboBox as ComboboxPrimitive, ComboBoxStateContext, useSlottedContext } from 'react-aria-components'
+import {
+  Button as ButtonPrimitive,
+  ComboBoxContext,
+  ComboBox as ComboboxPrimitive,
+  ComboBoxStateContext,
+  useSlottedContext,
+} from 'react-aria-components'
 import { tv } from 'tailwind-variants'
 import { Button } from './button'
 import { DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
 import { Description, FieldError, FieldGroup, Input, Label } from './field'
 import { ListBox } from './list-box'
-import { Popover } from './popover'
+import { PopoverContent } from './popover'
 import { composeTailwindRenderProps } from './primitive'
 
 const comboboxStyles = tv({
   slots: {
     base: 'group flex w-full flex-col gap-y-1.5',
     chevronButton:
-      'h-7 w-8 rounded outline-offset-0 active:bg-transparent data-hovered:bg-transparent data-pressed:bg-transparent **:data-[slot=icon]:data-pressed:text-fg **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:hover:text-fg',
+      'h-7 w-8 rounded pressed:bg-transparent outline-offset-0 hover:bg-transparent active:bg-transparent **:data-[slot=icon]:pressed:text-fg **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:hover:text-fg',
     chevronIcon: 'size-4 shrink-0 transition duration-200 group-open:rotate-180 group-open:text-fg',
     clearButton:
-      'absolute inset-y-0 right-0 flex items-center pr-2 text-muted-fg data-hovered:text-fg data-focused:outline-hidden',
+      'absolute inset-y-0 right-0 flex items-center pr-2 text-muted-fg hover:text-fg focus:outline-hidden',
   },
 })
 
@@ -51,19 +63,35 @@ function ComboBox<T extends object>({
   )
 }
 
-type ListBoxPickerProps<T extends object> = React.ComponentProps<typeof ListBox<T>>
-
 interface ComboBoxListProps<T extends object>
-  extends ListBoxPickerProps<T>,
-  Omit<PopoverPrimitiveProps, 'children' | 'className' | 'style'> {}
+  extends ListBoxProps<T>,
+  Pick<PopoverContentProps, 'placement'> {
+  popoverClassName?: PopoverContentProps['className']
+}
 
-function ComboBoxList<T extends object>({ children, items, ...props }: ComboBoxListProps<T>) {
+function ComboBoxList<T extends object>({
+  children,
+  items,
+  className,
+  popoverClassName,
+  ...props
+}: ComboBoxListProps<T>) {
   return (
-    <Popover.Picker trigger="ComboBox" isNonModal placement={props.placement}>
-      <ListBox.Picker items={items} {...props}>
+    <PopoverContent
+      showArrow={false}
+      respectScreen={false}
+      isNonModal
+      className={composeTailwindRenderProps(popoverClassName, 'sm:min-w-(--trigger-width)')}
+      placement={props.placement}
+    >
+      <ListBox
+        className={composeTailwindRenderProps(className, 'border-0')}
+        items={items}
+        {...props}
+      >
         {children}
-      </ListBox.Picker>
-    </Popover.Picker>
+      </ListBox>
+    </PopoverContent>
   )
 }
 
@@ -71,9 +99,9 @@ function ComboBoxInput(props: InputProps) {
   const context = useSlottedContext(ComboBoxContext)!
   return (
     <FieldGroup className="relative pl-0">
-      <Input {...props} />
-      <Button size="square-petite" appearance="plain" className={chevronButton()}>
-        {!context?.inputValue && <Icon icon="ion:chevron-down-outline" className={chevronIcon()} />}
+      <Input {...props} placeholder={props?.placeholder} />
+      <Button size="square-petite" intent="plain" className={chevronButton()}>
+        {!context?.inputValue && <Icon icon="mdi:chevron-down" className={chevronIcon()} />}
       </Button>
       {context?.inputValue && <ComboBoxClearButton />}
     </FieldGroup>
@@ -93,16 +121,20 @@ function ComboBoxClearButton() {
         state?.open()
       }}
     >
-      <Icon icon="ion:close-outline" className="animate-in size-4" />
+      <Icon icon="mdi:close" className="size-4 animate-in" />
     </ButtonPrimitive>
   )
 }
 
+const ComboBoxOption = DropdownItem
+const ComboBoxLabel = DropdownLabel
+const ComboBoxSection = DropdownSection
+
 ComboBox.Input = ComboBoxInput
 ComboBox.List = ComboBoxList
-ComboBox.Option = DropdownItem
-ComboBox.Label = DropdownLabel
-ComboBox.Section = DropdownSection
+ComboBox.Option = ComboBoxOption
+ComboBox.Label = ComboBoxLabel
+ComboBox.Section = ComboBoxSection
 
 export type { ComboBoxListProps, ComboBoxProps }
 export { ComboBox }

@@ -10,12 +10,12 @@ import { LayoutGroup, motion } from 'motion/react'
 import { useId } from 'react'
 import {
   composeRenderProps,
-  TabList,
-  TabPanel,
+  TabList as TabListPrimitive,
+  TabPanel as TabPanelPrimitive,
   Tab as TabPrimitive,
   Tabs as TabsPrimitive,
 } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
+import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { composeTailwindRenderProps } from './primitive'
 
@@ -59,11 +59,11 @@ const tabListStyles = tv({
 interface TabListProps<T extends object> extends TabListPrimitiveProps<T> {
   ref?: React.RefObject<HTMLDivElement>
 }
-function List<T extends object>({ className, ref, ...props }: TabListProps<T>) {
+function TabList<T extends object>({ className, ref, ...props }: TabListProps<T>) {
   const id = useId()
   return (
     <LayoutGroup id={id}>
-      <TabList
+      <TabListPrimitive
         ref={ref}
         {...props}
         className={composeRenderProps(className, (className, renderProps) =>
@@ -75,7 +75,7 @@ function List<T extends object>({ className, ref, ...props }: TabListProps<T>) {
 
 const tabStyles = tv({
   base: [
-    'relative flex cursor-default items-center whitespace-nowrap rounded-full font-medium text-sm outline-hidden transition data-hovered:text-fg *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4',
+    'relative flex cursor-default items-center whitespace-nowrap rounded-full font-medium text-sm outline-hidden transition hover:text-fg *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4',
     'group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:py-0 group-data-[orientation=vertical]/tabs:pr-2 group-data-[orientation=vertical]/tabs:pl-4',
     'group-data-[orientation=horizontal]/tabs:pb-3',
   ],
@@ -102,7 +102,7 @@ function Tab({ children, ref, ...props }: TabProps) {
       className={composeRenderProps(props.className, (_className, renderProps) =>
         tabStyles({
           ...renderProps,
-          className: twMerge('href' in props && 'cursor-pointer', _className),
+          className: twJoin('href' in props && 'cursor-pointer', _className),
         }))}
     >
       {({ isSelected }) => (
@@ -110,12 +110,13 @@ function Tab({ children, ref, ...props }: TabProps) {
           {children as React.ReactNode}
           {isSelected && (
             <motion.span
+              data-slot="selected-indicator"
               className={twMerge(
-                'bg-fg absolute rounded',
+                'absolute rounded bg-fg',
                 // horizontal
-                'group-data-[orientation=horizontal]/tabs:inset-x-0 group-data-[orientation=horizontal]/tabs:-bottom-px group-data-[orientation=horizontal]/tabs:h-0.5 group-data-[orientation=horizontal]/tabs:w-full',
+                'group-data-[orientation=horizontal]/tabs:-bottom-px group-data-[orientation=horizontal]/tabs:inset-x-0 group-data-[orientation=horizontal]/tabs:h-0.5 group-data-[orientation=horizontal]/tabs:w-full',
                 // vertical
-                'group-data-[orientation=vertical]/tabs:left-0 group-data-[orientation=vertical]/tabs:h-[calc(100%-10%)] group-data-[orientation=vertical]/tabs:w-0.5',
+                'group-data-[orientation=vertical]/tabs:left-0 group-data-[orientation=vertical]/tabs:h-[calc(100%-10%)] group-data-[orientation=vertical]/tabs:w-0.5 group-data-[orientation=vertical]/tabs:transform',
               )}
               layoutId="current-selected"
               transition={{ type: 'spring', stiffness: 500, damping: 40 }}
@@ -130,9 +131,9 @@ function Tab({ children, ref, ...props }: TabProps) {
 interface TabPanelProps extends TabPanelPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
 }
-function Panel({ className, ref, ...props }: TabPanelProps) {
+function TabPanel({ className, ref, ...props }: TabPanelProps) {
   return (
-    <TabPanel
+    <TabPanelPrimitive
       {...props}
       ref={ref}
       className={composeTailwindRenderProps(
@@ -143,9 +144,9 @@ function Panel({ className, ref, ...props }: TabPanelProps) {
   )
 }
 
-Tabs.List = List
+Tabs.List = TabList
 Tabs.Tab = Tab
-Tabs.Panel = Panel
+Tabs.Panel = TabPanel
 
 export type { TabListProps, TabPanelProps, TabProps, TabsProps }
 export { Tabs }

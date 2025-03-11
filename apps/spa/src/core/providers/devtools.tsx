@@ -1,7 +1,7 @@
 import { queryClient } from '@/core/providers/query/client'
 import { router } from '@/core/providers/router/client'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import React from 'react'
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
@@ -13,7 +13,7 @@ const ReactQueryDevtoolsProduction = React.lazy(() =>
 )
 
 const TanStackRouterDevtoolsProduction = React.lazy(() =>
-  import('@tanstack/router-devtools').then(mod => ({
+  import('@tanstack/react-router-devtools').then(mod => ({
     default: mod.TanStackRouterDevtools,
   })),
 )

@@ -5,15 +5,16 @@ import type { ButtonProps, DialogProps } from 'react-aria-components'
 import {
   animate,
   AnimatePresence,
+
   motion,
   useMotionTemplate,
   useMotionValue,
   useMotionValueEvent,
   useTransform,
 } from 'motion/react'
-import { createContext, use, useCallback, useMemo, useState } from 'react'
+import { createContext, use, useState } from 'react'
 import { Modal, ModalOverlay } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
+import { twJoin, twMerge } from 'tailwind-merge'
 import { Dialog } from './dialog'
 
 const inertiaTransition: Inertia = {
@@ -100,19 +101,16 @@ function DrawerContentPrimitive({ children, ...props }: DrawerOverlayPrimitivePr
         isDismissable
         isOpen
         onOpenChange={closeDrawer}
-        className={twMerge(
-          'h-(--visual-viewport-height) fixed left-0 top-0 isolate z-50 w-full touch-none will-change-transform',
+        className={twJoin([
+          'fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full touch-none will-change-transform',
           'flex items-end [--visual-viewport-vertical-padding:100px]',
-        )}
+        ])}
         style={{
           backgroundColor: bg as any,
         }}
       >
         <ModalPrimitive
-          className={twMerge(
-            'bg-overlay text-overlay-fg flex max-h-full w-full flex-col overflow-hidden rounded-t-2xl text-left align-middle shadow-lg sm:rounded-lg',
-            'ring-dark/5 dark:ring-light/15 ring-1',
-          )}
+          className="flex max-h-full w-full flex-col overflow-hidden rounded-t-2xl bg-overlay text-left align-middle text-overlay-fg shadow-lg ring-1 ring-dark/5 sm:rounded-lg dark:ring-light/15"
           initial={{ y: h }}
           animate={{ y: 0 }}
           exit={{ y: h }}
@@ -130,7 +128,7 @@ function DrawerContentPrimitive({ children, ...props }: DrawerOverlayPrimitivePr
         >
           <div className="overflow-hidden">
             {withNotch && (
-              <div className="notch bg-fg/20 sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full" />
+              <div className="notch sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
             )}
             <div
               className="mt-3 overflow-y-auto"
@@ -162,7 +160,7 @@ interface DrawerPrimitiveProps extends Omit<React.ComponentProps<typeof Modal>, 
   'children'?: DialogProps['children']
 }
 
-function DrawerPrimitive({ children }: DrawerPrimitiveProps) {
+function DrawerPrimitive(props: DrawerPrimitiveProps) {
   const { isOpen } = useDrawerContext()
 
   const h = window.innerHeight - drawerMargin
@@ -175,7 +173,7 @@ function DrawerPrimitive({ children }: DrawerPrimitiveProps) {
         transformOrigin: 'center 0',
       }}
     >
-      <AnimatePresence>{isOpen && (children as React.ReactNode)}</AnimatePresence>
+      <AnimatePresence>{isOpen && (props.children as React.ReactNode)}</AnimatePresence>
     </motion.div>
   )
 }
@@ -204,44 +202,37 @@ function Drawer({
   const isControlled = controlledIsOpen !== undefined
   const isOpen = isControlled ? controlledIsOpen : internalIsOpen
 
-  const openDrawer = useCallback(() => {
+  const openDrawer = () => {
     if (isControlled && onOpenChange) {
       onOpenChange(true)
     }
     else {
       setInternalIsOpen(true)
     }
-  }, [isControlled, onOpenChange])
+  }
 
-  const closeDrawer = useCallback(() => {
+  const closeDrawer = () => {
     if (isControlled && onOpenChange) {
       onOpenChange(false)
     }
     else {
       setInternalIsOpen(false)
     }
-  }, [isControlled, onOpenChange])
-
-  const value = useMemo(() => ({ isOpen, openDrawer, closeDrawer, withNotch }), [
-    isOpen,
-    openDrawer,
-    closeDrawer,
-    withNotch,
-  ])
+  }
 
   if (typeof window === 'undefined') {
     return null
   }
 
   return (
-    <DrawerContext value={value}>
+    <DrawerContext value={{ isOpen, openDrawer, closeDrawer, withNotch }}>
       {children}
     </DrawerContext>
   )
 }
 
 type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive>
-function Content({ children, ...props }: DrawerContentProps) {
+function DrawerContent({ children, ...props }: DrawerContentProps) {
   return (
     <DrawerPrimitive>
       <DrawerContentPrimitive {...props}>
@@ -286,14 +277,18 @@ function DrawerFooter({
   )
 }
 
-Drawer.Body = DrawerBody
-Drawer.Close = Dialog.Close
-Drawer.Content = Content
-Drawer.Description = Dialog.Description
-Drawer.Footer = DrawerFooter
-Drawer.Header = DrawerHeader
-Drawer.Title = Dialog.Title
+const DrawerClose = Dialog.Close
+const DrawerDescription = Dialog.Description
+const DrawerTitle = Dialog.Title
+
 Drawer.Trigger = DrawerTrigger
+Drawer.Header = DrawerHeader
+Drawer.Title = DrawerTitle
+Drawer.Description = DrawerDescription
+Drawer.Body = DrawerBody
+Drawer.Content = DrawerContent
+Drawer.Footer = DrawerFooter
+Drawer.Close = DrawerClose
 
 export type { DrawerContentProps, DrawerProps }
 export { Drawer }

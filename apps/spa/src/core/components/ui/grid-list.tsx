@@ -6,7 +6,7 @@ import { Icon } from '@iconify/react'
 import {
   Button,
   composeRenderProps,
-  GridListItem,
+  GridListItem as GridListItemPrimitive,
   GridList as GridListPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
@@ -14,13 +14,15 @@ import { tv } from 'tailwind-variants'
 import { Checkbox } from './checkbox'
 import { composeTailwindRenderProps } from './primitive'
 
-const gridListStyles = tv({
-  base: 'relative max-h-96 overflow-auto rounded-lg border [scrollbar-width:thin] *:data-drop-target:border *:data-drop-target:border-accent [&::-webkit-scrollbar]:size-0.5',
-})
-
 function GridList<T extends object>({ children, className, ...props }: GridListProps<T>) {
   return (
-    <GridListPrimitive className={composeTailwindRenderProps(className, gridListStyles())} {...props}>
+    <GridListPrimitive
+      className={composeTailwindRenderProps(
+        className,
+        'relative max-h-96 overflow-auto rounded-lg border [scrollbar-width:thin] *:data-drop-target:border *:data-drop-target:border-accent [&::-webkit-scrollbar]:size-0.5',
+      )}
+      {...props}
+    >
       {children}
     </GridListPrimitive>
   )
@@ -31,13 +33,13 @@ const itemStyles = tv({
   variants: {
     isHovered: { true: 'bg-subtle' },
     isSelected: {
-      true: 'z-20 border-border/50 bg-(--selected-item) data-hovered:bg-(--selected-item-hovered)',
+      true: 'z-20 border-border/50 bg-(--selected-item) hover:bg-(--selected-item-hovered)',
     },
     isFocused: {
       true: 'outline-hidden',
     },
     isFocusVisible: {
-      true: 'bg-(--selected-item) outline-hidden ring-1 ring-ring data-hovered:bg-(--selected-item-hovered) data-selected:bg-(--selected-item)',
+      true: 'bg-(--selected-item) selected:bg-(--selected-item) outline-hidden ring-1 ring-ring hover:bg-(--selected-item-hovered)',
     },
     isDisabled: {
       true: 'text-muted-fg/70 forced-colors:text-[GrayText]',
@@ -45,21 +47,21 @@ const itemStyles = tv({
   },
 })
 
-function Item({ className, ...props }: GridListItemProps) {
+function GridListItem({ className, ...props }: GridListItemProps) {
   const textValue = typeof props.children === 'string' ? props.children : undefined
   return (
-    <GridListItem
+    <GridListItemPrimitive
       textValue={textValue}
       {...props}
       className={composeRenderProps(className, (className, renderProps) =>
         itemStyles({ ...renderProps, className }))}
     >
-      {({ selectionMode, selectionBehavior, allowsDragging }) => (
+      {values => (
         <>
-          {allowsDragging && (
+          {values.allowsDragging && (
             <Button
               slot="drag"
-              className="data-dragging:cursor-grabbing *:data-[slot=icon]:text-muted-fg cursor-grab"
+              className="cursor-grab data-dragging:cursor-grabbing *:data-[slot=icon]:text-muted-fg"
             >
               <Icon icon="mdi:drag" />
             </Button>
@@ -67,24 +69,24 @@ function Item({ className, ...props }: GridListItemProps) {
 
           <span
             aria-hidden
-            className="bg-primary group-data-selected:block absolute inset-y-0 left-0 hidden h-full w-0.5"
+            className="absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary group-selected:block"
           />
-          {selectionMode === 'multiple' && selectionBehavior === 'toggle' && (
+          {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
             <Checkbox className="-mr-2" slot="selection" />
           )}
-          {props.children as React.ReactNode}
+          {typeof props.children === 'function' ? props.children(values) : props.children}
         </>
       )}
-    </GridListItem>
+    </GridListItemPrimitive>
   )
 }
 
-function EmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
+function GridEmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
   return <div ref={ref} className={twMerge('p-6', className)} {...props} />
 }
 
-GridList.Item = Item
-GridList.EmptyState = EmptyState
+GridList.Item = GridListItem
+GridList.EmptyState = GridEmptyState
 
 export type { GridListItemProps, GridListProps }
 export { GridList }

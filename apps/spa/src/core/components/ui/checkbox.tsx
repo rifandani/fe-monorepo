@@ -28,7 +28,7 @@ function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
       {...props}
       className={composeTailwindRenderProps(className, 'flex flex-col gap-y-2')}
     >
-      <Label>{props.label}</Label>
+      {props.label && <Label>{props.label}</Label>}
       {props.children as React.ReactNode}
       {props.description && <Description className="block">{props.description}</Description>}
       <FieldError>{props.errorMessage}</FieldError>
@@ -52,13 +52,13 @@ const boxStyles = tv({
       false: 'bg-muted',
       true: [
         'border-primary bg-primary text-primary-fg',
-        'group-data-invalid:border-danger/70 group-data-invalid:bg-danger group-data-invalid:text-danger-fg',
+        'group-invalid:border-danger/70 group-invalid:bg-danger group-invalid:text-danger-fg',
       ],
     },
     isFocused: {
       true: [
         'border-primary ring-4 ring-primary/20',
-        'group-data-invalid:border-danger/70 group-data-invalid:text-danger-fg group-data-invalid:ring-danger/20',
+        'group-invalid:border-danger/70 group-invalid:text-danger-fg group-invalid:ring-danger/20',
       ],
     },
     isInvalid: {
@@ -80,7 +80,9 @@ function Checkbox({ className, ...props }: CheckboxProps) {
         checkboxStyles({ ...renderProps, className }))}
     >
       {({ isSelected, isIndeterminate, ...renderProps }) => (
-        <div className={twMerge('flex gap-x-2', props.description ? 'items-start' : 'items-center')}>
+        <div
+          className={twMerge('flex gap-x-2', props.description ? 'items-start' : 'items-center')}
+        >
           <div
             className={boxStyles({
               ...renderProps,
@@ -94,7 +96,9 @@ function Checkbox({ className, ...props }: CheckboxProps) {
             <>
               {props.label
                 ? (
-                    <Label className={twMerge(props.description && 'text-sm/4')}>{props.label}</Label>
+                    <Label className={twMerge(props.description && 'font-normal text-sm/4')}>
+                      {props.label}
+                    </Label>
                   )
                 : (
                     (props.children as React.ReactNode)

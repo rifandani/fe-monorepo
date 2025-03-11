@@ -3,6 +3,7 @@ import type { NavigateOptions, RegisteredRouter, ToPathOption } from '@tanstack/
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
 import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { Devtools } from '@/core/providers/devtools'
 import {
   createRootRouteWithContext,
   Outlet,
@@ -29,18 +30,24 @@ function RootRoute() {
   const router = useRouter()
 
   return (
-    // RAC such as Link, Menu, Tabs, Table, and many others support rendering elements as links that perform navigation when the user interacts with them.
-    // It needs to be wrapped by RAC RouterProvider component.
-    <RACRouterProvider
-      navigate={(to, options) =>
-        router.navigate({
-          ...options,
-          to: to as ToPathOption<RegisteredRouter, '/', '/'>,
-        })}
-      useHref={to => router.buildLocation({ to }).href}
-    >
-      <Outlet />
-    </RACRouterProvider>
+    <>
+      {/*
+        * RAC such as Link, Menu, Tabs, Table, and many others support rendering elements as links that perform navigation when the user interacts with them.
+        * It needs to be wrapped by RAC RouterProvider component.
+        */}
+      <RACRouterProvider
+        navigate={(to, options) =>
+          router.navigate({
+            ...options,
+            to: to as ToPathOption<RegisteredRouter, '/', '/'>,
+          })}
+        useHref={to => router.buildLocation({ to }).href}
+      >
+        <Outlet />
+      </RACRouterProvider>
+
+      <Devtools />
+    </>
   )
 }
 

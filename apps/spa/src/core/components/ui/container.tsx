@@ -1,25 +1,22 @@
-import { tv } from 'tailwind-variants'
-
-const containerStyles = tv({
-  base: '@container mx-auto w-full max-w-7xl lg:max-w-(--breakpoint-xl) 2xl:max-w-(--breakpoint-2xl)',
-  variants: {
-    intent: {
-      'constrained': 'sm:px-6 lg:px-8',
-      'padded-content': 'px-4 sm:px-6 lg:px-8',
-    },
-  },
-  defaultVariants: {
-    intent: 'padded-content',
-  },
-})
+import { twMerge } from 'tailwind-merge'
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  intent?: 'constrained' | 'padded-content'
+  constrained?: boolean
   ref?: React.Ref<HTMLDivElement>
 }
 
-function Container({ className, intent, ref, ...props }: ContainerProps) {
-  return <div className={containerStyles({ intent, className })} {...props} ref={ref} />
+function Container({ className, constrained = false, ref, ...props }: ContainerProps) {
+  return (
+    <div
+      className={twMerge(
+        'mx-auto w-full max-w-7xl lg:max-w-(--breakpoint-xl) 2xl:max-w-(--breakpoint-2xl)',
+        constrained ? 'sm:px-6 lg:px-8' : 'px-4 sm:px-6 lg:px-8',
+        className,
+      )}
+      {...props}
+      ref={ref}
+    />
+  )
 }
 
 export type { ContainerProps }

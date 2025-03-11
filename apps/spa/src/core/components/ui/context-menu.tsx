@@ -1,10 +1,9 @@
 'use client'
 
 import type { MenuContentProps } from './menu'
-import { createContext, use, useMemo, useRef, useState } from 'react'
-import { tv } from 'tailwind-variants'
+import { createContext, use, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 import { Menu } from './menu'
-import { focusButtonStyles } from './primitive'
 
 interface ContextMenuTriggerContextType {
   buttonRef: React.RefObject<HTMLButtonElement | null>
@@ -36,30 +35,14 @@ function ContextMenu({ children }: ContextMenuProps) {
     crossOffset: number
   } | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-
-  const value = useMemo(() => ({ buttonRef, contextMenuOffset, setContextMenuOffset }), [
-    buttonRef,
-    contextMenuOffset,
-    setContextMenuOffset,
-  ])
-
   return (
-    <ContextMenuTriggerContext value={value}>
+    <ContextMenuTriggerContext
+      value={{ buttonRef, contextMenuOffset, setContextMenuOffset }}
+    >
       {children}
     </ContextMenuTriggerContext>
   )
 }
-
-const contextMenuTriggerStyles = tv({
-  extend: focusButtonStyles,
-  base: 'cursor-default data-focused:outline-hidden',
-  variants: {
-    isDisabled: {
-      false: 'forced-colors:data-disabled:text-[GrayText]',
-      true: 'cursor-default opacity-60 forced-colors:data-disabled:text-[GrayText]',
-    },
-  },
-})
 
 type ContextMenuTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement>
 
@@ -76,8 +59,10 @@ function ContextMenuTrigger({ className, ...props }: ContextMenuTriggerProps) {
   }
   return (
     <button
-      type="submit"
-      className={contextMenuTriggerStyles({ isDisabled: props.disabled, className })}
+      className={twMerge(
+        'cursor-default focus:outline-hidden disabled:opacity-60 disabled:forced-colors:disabled:text-[GrayText]',
+        className,
+      )}
       ref={buttonRef}
       aria-haspopup="menu"
       onContextMenu={onContextMenu}
@@ -110,14 +95,23 @@ function ContextMenuContent<T extends object>(props: ContextMenuContentProps<T>)
     : null
 }
 
+const ContextMenuItem = Menu.Item
+const ContextMenuSeparator = Menu.Separator
+const ContextMenuItemDetails = Menu.ItemDetails
+const ContextMenuSection = Menu.Section
+const ContextMenuHeader = Menu.Header
+const ContextMenuKeyboard = Menu.Keyboard
+const ContextMenuLabel = Menu.Label
+
 ContextMenu.Trigger = ContextMenuTrigger
 ContextMenu.Content = ContextMenuContent
-ContextMenu.Item = Menu.Item
-ContextMenu.Separator = Menu.Separator
-ContextMenu.ItemDetails = Menu.ItemDetails
-ContextMenu.Section = Menu.Section
-ContextMenu.Header = Menu.Header
-ContextMenu.Keyboard = Menu.Keyboard
+ContextMenu.Item = ContextMenuItem
+ContextMenu.Label = ContextMenuLabel
+ContextMenu.Separator = ContextMenuSeparator
+ContextMenu.ItemDetails = ContextMenuItemDetails
+ContextMenu.Section = ContextMenuSection
+ContextMenu.Header = ContextMenuHeader
+ContextMenu.Keyboard = ContextMenuKeyboard
 
 export type { ContextMenuProps }
 export { ContextMenu }

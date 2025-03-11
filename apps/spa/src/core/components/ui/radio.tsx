@@ -52,7 +52,7 @@ const radioStyles = tv({
     isFocused: {
       true: [
         'border-ring bg-primary/20 ring-4 ring-primary/20',
-        'group-data-invalid:border-danger/70 group-data-invalid:bg-danger/20 group-data-invalid:ring-danger/20',
+        'group-invalid:border-danger/70 group-invalid:bg-danger/20 group-invalid:ring-danger/20',
       ],
     },
     isInvalid: {
@@ -66,16 +66,17 @@ const radioStyles = tv({
 
 interface RadioProps extends RadioPrimitiveProps {
   description?: string
+  label?: string
   ref?: React.Ref<HTMLLabelElement>
 }
 
-function Radio({ description, ref, ...props }: RadioProps) {
+function Radio({ description, label, ref, className, ...props }: RadioProps) {
   return (
     <RadioPrimitive
       ref={ref}
       className={composeTailwindRenderProps(
-        props.className,
-        'group flex items-center gap-2 text-fg text-sm transition disabled:text-fg/50 forced-colors:data-disabled:text-[GrayText]',
+        className,
+        'group flex items-center gap-2 text-fg text-sm transition disabled:text-fg/50 forced-colors:disabled:text-[GrayText]',
       )}
       {...props}
     >
@@ -88,8 +89,16 @@ function Radio({ description, ref, ...props }: RadioProps) {
             })}
           />
           <div className="flex flex-col gap-1">
-            {props.children as React.ReactNode}
-            {description && <Description className="block">{description}</Description>}
+            {label || description
+              ? (
+                  <>
+                    {label && <Label>{label}</Label>}
+                    {description && <Description className="block">{description}</Description>}
+                  </>
+                )
+              : (
+                  (props.children as React.ReactNode)
+                )}
           </div>
         </div>
       )}

@@ -12,26 +12,16 @@ import { Description, FieldError, FieldGroup, Input, Label } from './field'
 import { composeTailwindRenderProps } from './primitive'
 
 const fieldBorderStyles = tv({
-  base: 'group-data-focused:border-primary/70 forced-colors:border-[Highlight]',
+  base: 'group-focus:border-primary/70 forced-colors:border-[Highlight]',
   variants: {
     isInvalid: {
-      true: 'group-data-focused:border-danger/70 forced-colors:border-[Mark]',
+      true: 'group-focus:border-danger/70 forced-colors:border-[Mark]',
     },
     isDisabled: {
-      true: 'group-data-focused:border-input/70',
+      true: 'group-focus:border-input/70',
     },
   },
 })
-
-const numberFieldStyles = tv({
-  slots: {
-    base: 'group flex flex-col gap-y-1.5',
-    stepperButton:
-      'h-10 cursor-default px-3 text-muted-fg data-pressed:bg-primary data-pressed:text-primary-fg group-data-disabled:bg-secondary/70 forced-colors:group-data-disabled:text-[GrayText]',
-  },
-})
-
-const { base, stepperButton } = numberFieldStyles()
 
 interface NumberFieldProps extends NumberFieldPrimitiveProps {
   label?: string
@@ -49,15 +39,17 @@ function NumberField({
   ...props
 }: NumberFieldProps) {
   const isMobile = useMediaQuery('(max-width: 768px)')
-
   return (
-    <NumberFieldPrimitive {...props} className={composeTailwindRenderProps(className, base())}>
+    <NumberFieldPrimitive
+      {...props}
+      className={composeTailwindRenderProps(className, 'group flex flex-col gap-y-1.5')}
+    >
       {label && <Label>{label}</Label>}
       <FieldGroup className="overflow-hidden">
         {renderProps => (
           <>
             {isMobile ? <StepperButton slot="decrement" className="border-r" /> : null}
-            <Input className="tabular-nums" placeholder={placeholder} />
+            <Input className="px-13 tabular-nums sm:px-2.5" placeholder={placeholder} />
             <div
               className={fieldBorderStyles({
                 ...renderProps,
@@ -107,22 +99,28 @@ function StepperButton({
       ? (
           slot === 'increment'
             ? (
-                <Icon icon="ion:chevron-up" className="size-5" />
+                <Icon icon="mdi:chevron-up" className="size-4" />
               )
             : (
-                <Icon icon="ion:chevron-down" className="size-5" />
+                <Icon icon="mdi:chevron-down" className="size-4" />
               )
         )
       : slot === 'increment'
         ? (
-            <Icon icon="ion:add" className="size-5" />
+            <Icon icon="mdi:plus" className="size-4" />
           )
         : (
-            <Icon icon="ion:remove" className="size-5" />
+            <Icon icon="mdi:minus" className="size-4" />
           )
-
   return (
-    <Button className={stepperButton({ className })} slot={slot} {...props}>
+    <Button
+      className={composeTailwindRenderProps(
+        className,
+        'h-10 cursor-default pressed:bg-primary px-3 pressed:text-primary-fg text-muted-fg group-disabled:bg-secondary/70 forced-colors:group-disabled:text-[GrayText]',
+      )}
+      slot={slot}
+      {...props}
+    >
       {icon}
     </Button>
   )

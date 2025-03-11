@@ -1,4 +1,3 @@
-import { Devtools } from '@/core/providers/devtools'
 import { AppI18nProvider } from '@/core/providers/i18n/provider'
 import { AppQueryProvider } from '@/core/providers/query/provider'
 import { ReloadPromptSw } from '@/core/providers/reload-prompt-sw'
@@ -17,9 +16,6 @@ export function Entry() {
 
             {/* PWA */}
             <ReloadPromptSw />
-
-            {/* All devtools */}
-            <Devtools />
           </AppToastProvider>
         </AppI18nProvider>
       </AppQueryProvider>

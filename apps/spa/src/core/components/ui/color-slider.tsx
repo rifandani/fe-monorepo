@@ -30,7 +30,7 @@ interface ColorSliderProps extends ColorSliderPrimitiveProps {
 }
 
 const colorSliderStyles = tv({
-  base: 'group relative gap-2',
+  base: 'group relative',
   variants: {
     orientation: {
       horizontal: 'grid min-w-56 grid-cols-[1fr_auto]',
@@ -41,7 +41,6 @@ const colorSliderStyles = tv({
     },
   },
 })
-
 function ColorSlider({ showOutput = true, label, className, ...props }: ColorSliderProps) {
   return (
     <ColorSliderPrimitive
