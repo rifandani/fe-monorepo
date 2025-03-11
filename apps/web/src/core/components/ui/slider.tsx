@@ -11,6 +11,7 @@ import {
   SliderTrack,
 } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
+
 import { Description, Label } from './field'
 import { Tooltip } from './tooltip'
 
@@ -22,7 +23,7 @@ const sliderStyles = tv({
       vertical: 'h-full min-h-56 w-1.5 items-center gap-y-2',
     },
     isDisabled: {
-      true: 'data-disabled:opacity-50',
+      true: 'disabled:opacity-50',
     },
   },
 })
@@ -104,7 +105,7 @@ function Slider({
         sliderStyles({ ...renderProps, className }))}
       {...props}
     >
-      <div className="text-fg flex">
+      <div className="flex text-fg">
         {props.label && <Label>{props.label}</Label>}
         {output === 'inline' && (
           <SliderOutput className="text-muted-fg text-sm tabular-nums data-[orientation=vertical]:mx-auto data-[orientation=horizontal]:ml-auto">
@@ -136,7 +137,7 @@ const controlsStyles = tv({
     ],
     track: [
       '[--slider:color-mix(in_oklab,var(--color-muted)_90%,black_10%)] dark:[--slider:color-mix(in_oklab,var(--color-muted)_90%,white_10%)]',
-      'group/track relative cursor-pointer rounded-full bg-(--slider) data-disabled:cursor-default data-disabled:opacity-60',
+      'group/track relative cursor-pointer rounded-full bg-(--slider) disabled:cursor-default disabled:opacity-60',
       'grow group-data-[orientation=horizontal]:h-1.5 group-data-[orientation=horizontal]:w-full group-data-[orientation=vertical]:w-1.5 group-data-[orientation=vertical]:flex-1',
     ],
   },
@@ -144,11 +145,11 @@ const controlsStyles = tv({
 
 const { track, filler } = controlsStyles()
 
-function Track({ className, ...props }: SliderTrackProps) {
+function Track(props: SliderTrackProps) {
   return (
     <SliderTrack
       {...props}
-      className={composeRenderProps(className, className => track({ className }))}
+      className={composeRenderProps(props.className, className => track({ className }))}
     />
   )
 }

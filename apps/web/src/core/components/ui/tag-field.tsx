@@ -6,7 +6,7 @@ import type { FieldProps } from './field'
 import type { RestrictedIntent, TagGroupProps } from './tag-group'
 import { useCallback, useState } from 'react'
 import { Group, TextField } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
+import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { Description, Input, Label } from './field'
 import { Tag, TagGroup, TagList } from './tag-group'
@@ -17,11 +17,11 @@ const tagFieldsStyles = tv({
     appearance: {
       outline: [
         'rounded-lg border px-1 shadow-xs',
-        'has-[input[data-focused=true]]:border-ring/70',
-        'has-[input[data-invalid=true][data-focused=true]]:border-danger has-[input[data-invalid=true]]:border-danger has-[input[data-invalid=true]]:ring-danger/20',
-        'has-[input[data-focused=true]]:ring-4 has-[input[data-focused=true]]:ring-ring/20',
+        'has-[input[focus=true]]:border-ring/70',
+        'has-[input[data-invalid=true][focus=true]]:border-danger has-[input[data-invalid=true]]:border-danger has-[input[data-invalid=true]]:ring-danger/20',
+        'has-[input[focus=true]]:ring-4 has-[input[focus=true]]:ring-ring/20',
       ],
-      plain: ['has-[input[data-focused=true]]:border-transparent'],
+      plain: ['has-[input[focus=true]]:border-transparent'],
     },
   },
 })
@@ -101,6 +101,17 @@ function TagField({
     }
   }
 
+  const onRemove = (keys: Set<Key>) => {
+    list.remove(...keys)
+
+    const firstKey = [...keys][0]
+    if (firstKey !== undefined) {
+      onItemCleared?.(list.getItem(firstKey))
+    }
+
+    clearInvalidFeedback()
+  }
+
   const popLast = useCallback(() => {
     if (list.items.length === 0) {
       return
@@ -113,17 +124,6 @@ function TagField({
       onItemCleared?.(list.getItem(endKey.id))
     }
   }, [list, onItemCleared])
-
-  const onRemove = (keys: Set<Key>) => {
-    list.remove(...keys)
-
-    const firstKey = [...keys][0]
-    if (firstKey !== undefined) {
-      onItemCleared?.(list.getItem(firstKey))
-    }
-
-    clearInvalidFeedback()
-  }
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -140,7 +140,7 @@ function TagField({
   return (
     <div className={twMerge('flex w-full flex-col gap-y-1.5', className)}>
       {props.label && <Label>{props.label}</Label>}
-      <Group className={twMerge('flex flex-col', props.isDisabled && 'opacity-50')}>
+      <Group className={twJoin('flex flex-col', props.isDisabled && 'opacity-50')}>
         <TagGroup
           intent={props.intent}
           shape={props.shape}
@@ -151,12 +151,12 @@ function TagField({
             <div className="flex flex-1 flex-wrap items-center">
               <TagList
                 items={list.items}
-                className={twMerge(
+                className={twJoin(
                   list.items.length !== 0
                     ? appearance === 'outline' && 'gap-1.5 px-1 py-1.5'
                     : 'gap-0',
                   props.shape === 'square' && '[&_.jdt3lr2x]:rounded-[calc(var(--radius-lg)-4px)]',
-                  'outline-hidden [&_.jdt3lr2x]:cursor-default [&_.jdt3lr2x]:last:-mr-1',
+                  '[&_.jdt3lr2x]:last:-mr-1 outline-hidden [&_.jdt3lr2x]:cursor-default',
                 )}
               >
                 {item => <Tag>{item.name}</Tag>}

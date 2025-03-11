@@ -1,24 +1,17 @@
-import { tv } from 'tailwind-variants'
+import { twMerge } from 'tailwind-merge'
 import { Heading } from './heading'
 
-const card = tv({
-  slots: {
-    root: [
-      'xrkr xkd2 rounded-lg border bg-bg text-fg shadow-xs has-[table]:overflow-hidden **:data-[slot=table-header]:bg-muted/50 has-[table]:**:data-[slot=card-footer]:border-t **:[table]:overflow-hidden',
-    ],
-    header: 'flex flex-col gap-y-1 px-6 py-5',
-    title: 'font-semibold leading-none tracking-tight sm:leading-6',
-    description: 'text-muted-fg text-sm',
-    content:
-      'px-6 pb-6 has-[table]:border-t has-[[data-slot=table-header]]:bg-muted/40 has-[table]:p-0 **:data-[slot=table-cell]:px-6 **:data-[slot=table-column]:px-6 [&:has(table)+[data-slot=card-footer]]:py-5',
-    footer: 'flex items-center p-6 pt-0',
-  },
-})
-
-const { root, header, title, description, content, footer } = card()
-
 function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div data-slot="card" className={root({ className })} {...props} />
+  return (
+    <div
+      data-slot="card"
+      className={twMerge(
+        className,
+        'rounded-lg border bg-bg text-fg shadow-xs has-[table]:overflow-hidden **:data-[slot=table-header]:bg-muted/50 has-[table]:**:data-[slot=card-footer]:border-t **:[table]:overflow-hidden',
+      )}
+      {...props}
+    />
+  )
 }
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -26,40 +19,69 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string
 }
 
-function Header({ className, title, description, children, ...props }: HeaderProps) {
+function CardHeader({ className, title, description, children, ...props }: HeaderProps) {
   return (
-    <div data-slot="card-header" className={header({ className })} {...props}>
-      {title && <Title>{title}</Title>}
-      {description && <Description>{description}</Description>}
-      {!title && typeof children === 'string' ? <Title>{children}</Title> : children}
+    <div
+      data-slot="card-header"
+      className={twMerge('flex flex-col gap-y-1 px-6 py-5', className)}
+      {...props}
+    >
+      {title && <CardTitle>{title}</CardTitle>}
+      {description && <CardDescription>{description}</CardDescription>}
+      {!title && typeof children === 'string' ? <CardTitle>{children}</CardTitle> : children}
     </div>
   )
 }
 
-function Title({ className, level = 3, ...props }: React.ComponentProps<typeof Heading>) {
+function CardTitle({ className, level = 3, ...props }: React.ComponentProps<typeof Heading>) {
   return (
-    <Heading data-slot="card-title" level={level} className={title({ className })} {...props} />
+    <Heading
+      data-slot="card-title"
+      level={level}
+      className={twMerge('font-semibold leading-none tracking-tight sm:leading-6', className)}
+      {...props}
+    />
   )
 }
 
-function Description({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div {...props} data-slot="description" className={description({ className })} {...props} />
+    <div
+      {...props}
+      data-slot="description"
+      className={twMerge('text-muted-fg text-sm', className)}
+      {...props}
+    />
   )
 }
 
-function Content({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div data-slot="card-content" className={content({ className })} {...props} />
+function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-slot="card-content"
+      className={twMerge(
+        'px-6 pb-6 has-[table]:border-t has-[[data-slot=table-header]]:bg-muted/40 has-[table]:p-0 **:data-[slot=table-cell]:px-6 **:data-[slot=table-column]:px-6 [&:has(table)+[data-slot=card-footer]]:py-5',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
-function Footer({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div data-slot="card-footer" className={footer({ className })} {...props} />
+function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={twMerge('flex items-center p-6 pt-0', className)}
+      {...props}
+    />
+  )
 }
 
-Card.Content = Content
-Card.Description = Description
-Card.Footer = Footer
-Card.Header = Header
-Card.Title = Title
+Card.Content = CardContent
+Card.Description = CardDescription
+Card.Footer = CardFooter
+Card.Header = CardHeader
+Card.Title = CardTitle
 
 export { Card }

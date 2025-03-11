@@ -5,30 +5,25 @@ import { Icon } from '@iconify/react'
 import {
   Button,
   composeRenderProps,
-  UNSTABLE_TreeItemContent as TreeItemContent,
-  UNSTABLE_TreeItem as TreeItemPrimitive,
-  UNSTABLE_Tree as TreePrimitive,
+  TreeItemContent as TreeItemContentPrimitive,
+  TreeItem as TreeItemPrimitive,
+  Tree as TreePrimitive,
 } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { Checkbox } from './checkbox'
-
-const treeStyles = tv({
-  base: 'flex max-h-96 min-w-72 cursor-default flex-col overflow-auto rounded-lg border py-2 outline-hidden forced-color-adjust-none [scrollbar-width:thin] sm:text-sm [&::-webkit-scrollbar]:size-0.5',
-  variants: {
-    isFocusVisible: {
-      true: 'outline-2 outline-primary outline-offset-[-1px]',
-    },
-  },
-})
+import { composeTailwindRenderProps } from './primitive'
 
 function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
   return (
     <TreePrimitive
-      className={composeRenderProps(className, (className, renderProps) =>
-        treeStyles({
-          ...renderProps,
-          className,
-        }))}
+      className={composeTailwindRenderProps(
+        className,
+        twJoin(
+          'flex max-h-96 min-w-72 cursor-default flex-col overflow-auto rounded-lg border py-2 outline-hidden forced-color-adjust-none [scrollbar-width:thin] sm:text-sm [&::-webkit-scrollbar]:size-0.5',
+          'focus-visible:outline-2 focus-visible:outline-ring/70 focus-visible:outline-offset-[-1px]',
+        ),
+      )}
       {...props}
     >
       {props.children}
@@ -47,7 +42,7 @@ const itemStyles = tv({
       true: '[&_[slot=chevron]_[data-slot=icon]]:rotate-90 [&_[slot=chevron]_[data-slot=icon]]:text-fg [&_[slot=chevron]_[data-slot=icon]]:transition [&_[slot=chevron]_[data-slot=icon]]:duration-200',
     },
     isFocusVisible: {
-      true: 'data-focused:outline-hidden data-focus-visible:ring-1 data-focus-visible:ring-primary [&_[slot=chevron]_[data-slot=icon]]:text-fg',
+      true: 'focus:outline-hidden data-focus-visible:ring-1 data-focus-visible:ring-primary [&_[slot=chevron]_[data-slot=icon]]:text-fg',
     },
     isDisabled: {
       true: 'opacity-50 forced-colors:text-[GrayText]',
@@ -70,34 +65,34 @@ function TreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
   )
 }
 
-function ItemContent({ children, ...props }: React.ComponentProps<typeof TreeItemContent>) {
+function TreeItemContent(props: React.ComponentProps<typeof TreeItemContentPrimitive>) {
   return (
-    <TreeItemContent {...props}>
-      <div className="flex items-center">{children as React.ReactNode}</div>
-    </TreeItemContent>
+    <TreeItemContentPrimitive {...props}>
+      <div className="flex items-center">{props.children as React.ReactNode}</div>
+    </TreeItemContentPrimitive>
   )
 }
 
-function Indicator() {
+function TreeIndicator() {
   return (
     <Button className="relative shrink-0" slot="chevron">
-      <Icon icon="lucide:chevron-right" className="size-5" />
+      <Icon icon="mdi:chevron-right" className="size-5" />
     </Button>
   )
 }
 
-function ItemCheckbox() {
+function TreeItemCheckbox() {
   return <Checkbox slot="selection" />
 }
 
-function ItemLabel(props: React.HtmlHTMLAttributes<HTMLSpanElement>) {
+function TreeItemLabel(props: React.ComponentProps<'span'>) {
   return <span {...props} />
 }
 
-TreeItem.Label = ItemLabel
-TreeItem.Indicator = Indicator
-TreeItem.Checkbox = ItemCheckbox
-TreeItem.Content = ItemContent
+TreeItem.Label = TreeItemLabel
+TreeItem.Indicator = TreeIndicator
+TreeItem.Checkbox = TreeItemCheckbox
+TreeItem.Content = TreeItemContent
 
 export type { TreeItemProps, TreeProps }
 export { Tree, TreeItem }

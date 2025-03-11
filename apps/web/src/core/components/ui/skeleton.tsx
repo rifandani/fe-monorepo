@@ -1,28 +1,23 @@
 import type React from 'react'
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from 'tailwind-variants'
+import { twMerge } from 'tailwind-merge'
 
-const skeletonStyles = tv({
-  base: 'shrink-0 animate-pulse',
-  variants: {
-    intent: {
-      muted: 'bg-fg/20',
-      lighter: 'bg-fg/15',
-    },
-    shape: {
-      circle: 'rounded-full',
-      square: 'rounded-lg',
-    },
-  },
-  defaultVariants: {
-    intent: 'muted',
-    shape: 'square',
-  },
-})
+interface SkeletonProps extends React.ComponentProps<'div'> {
+  soft?: boolean
+}
 
-type SkeletonProps = React.ComponentProps<'div'> & VariantProps<typeof skeletonStyles>
-function Skeleton({ shape, ref, intent, className, ...props }: SkeletonProps) {
-  return <div ref={ref} className={skeletonStyles({ shape, intent, className })} {...props} />
+function Skeleton({ ref, soft = false, className, ...props }: SkeletonProps) {
+  return (
+    <div
+      data-slot="skeleton"
+      ref={ref}
+      className={twMerge(
+        'shrink-0 animate-pulse rounded-lg',
+        soft ? 'bg-muted' : 'bg-secondary',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 export type { SkeletonProps }

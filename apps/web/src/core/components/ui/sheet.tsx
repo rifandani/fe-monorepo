@@ -4,6 +4,7 @@ import type { DialogProps, DialogTriggerProps, ModalOverlayProps } from 'react-a
 import type { VariantProps } from 'tailwind-variants'
 import { composeRenderProps, DialogTrigger, Modal, ModalOverlay } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
+
 import { Dialog } from './dialog'
 
 const overlayStyles = tv({
@@ -24,7 +25,6 @@ const overlayStyles = tv({
 })
 
 type Sides = 'top' | 'bottom' | 'left' | 'right'
-
 function generateCompoundVariants(sides: Array<Sides>) {
   return sides.map(side => ({
     side,
@@ -127,7 +127,7 @@ function SheetContent({
               {typeof children === 'function' ? children(values) : children}
               {closeButton && (
                 <Dialog.CloseIndicator
-                  className="right-2.5 top-2.5"
+                  className="top-2.5 right-2.5"
                   isDismissable={_isDismissable}
                 />
               )}
@@ -139,14 +139,22 @@ function SheetContent({
   )
 }
 
-Sheet.Trigger = Dialog.Trigger
-Sheet.Footer = Dialog.Footer
+const SheetTrigger = Dialog.Trigger
+const SheetFooter = Dialog.Footer
+const SheetHeader = Dialog.Header
+const SheetTitle = Dialog.Title
+const SheetDescription = Dialog.Description
+const SheetBody = Dialog.Body
+const SheetClose = Dialog.Close
+
+Sheet.Trigger = SheetTrigger
+Sheet.Footer = SheetFooter
+Sheet.Header = SheetHeader
+Sheet.Title = SheetTitle
+Sheet.Description = SheetDescription
+Sheet.Body = SheetBody
+Sheet.Close = SheetClose
 Sheet.Content = SheetContent
-Sheet.Header = Dialog.Header
-Sheet.Title = Dialog.Title
-Sheet.Description = Dialog.Description
-Sheet.Body = Dialog.Body
-Sheet.Close = Dialog.Close
 
 export type { SheetContentProps, SheetProps, Sides }
 export { Sheet }

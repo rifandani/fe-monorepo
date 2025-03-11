@@ -17,33 +17,18 @@ import {
   Collection,
   Column,
   ColumnResizer as ColumnResizerPrimitive,
-  composeRenderProps,
   ResizableTableContainer,
   Row,
-  TableBody,
-  TableHeader,
+  TableBody as TableBodyPrimitive,
+  TableHeader as TableHeaderPrimitive,
   Table as TablePrimitive,
   useTableOptions,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+
 import { tv } from 'tailwind-variants'
 import { Checkbox } from './checkbox'
-
-const table = tv({
-  slots: {
-    root: 'table w-full min-w-full caption-bottom border-spacing-0 text-sm outline-hidden [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)] **:data-drop-target:border **:data-drop-target:border-primary dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]',
-    header: 'x32 border-b',
-    row: 'tr group relative cursor-default border-b bg-bg text-muted-fg outline-hidden ring-primary data-selected:data-hovered:bg-(--table-selected-bg)/70 data-selected:bg-(--table-selected-bg) data-focus-visible:ring-1 data-focused:ring-0 dark:data-selected:data-hovered:bg-[color-mix(in_oklab,var(--color-primary)_40%,black_60%)] dark:data-selected:data-hovered:bg-subtle/60',
-    cellIcon:
-      'grid size-[1.15rem] flex-none shrink-0 place-content-center rounded bg-secondary text-fg *:data-[slot=icon]:size-3.5 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:transition-transform *:data-[slot=icon]:duration-200',
-    columnResizer: [
-      'absolute top-0 right-0 bottom-0 grid w-px touch-none place-content-center px-1 [&[data-resizing]>div]:bg-primary',
-      '&[data-resizable-direction=left]:cursor-e-resize &[data-resizable-direction=right]:cursor-w-resize data-[resizable-direction=both]:cursor-ew-resize',
-    ],
-  },
-})
-
-const { root, header, row, cellIcon, columnResizer } = table()
+import { composeTailwindRenderProps } from './primitive'
 
 interface TableProps extends TablePrimitiveProps {
   className?: string
@@ -54,22 +39,34 @@ const TableContext = React.createContext<TableProps>({
   allowResize: false,
 })
 
-const useTableContext = () => React.use(TableContext)
+const useTableContext = () => React.useContext(TableContext)
 
 function Table({ children, className, ...props }: TableProps) {
   return (
     <TableContext value={props}>
-      <div className="relative w-full overflow-auto">
+      <div className="relative w-full overflow-auto **:data-[slot=table-resizable-container]:overflow-auto">
         {props.allowResize
           ? (
-              <ResizableTableContainer className="overflow-auto">
-                <TablePrimitive {...props} className={root({ className })}>
+              <ResizableTableContainer>
+                <TablePrimitive
+                  {...props}
+                  className={twMerge(
+                    'table w-full min-w-full caption-bottom border-spacing-0 text-sm outline-hidden [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)] **:data-drop-target:border **:data-drop-target:border-primary dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]',
+                    className,
+                  )}
+                >
                   {children}
                 </TablePrimitive>
               </ResizableTableContainer>
             )
           : (
-              <TablePrimitive {...props} className={root({ className })}>
+              <TablePrimitive
+                {...props}
+                className={twMerge(
+                  'table w-full min-w-full caption-bottom border-spacing-0 text-sm outline-hidden [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)] **:data-drop-target:border **:data-drop-target:border-primary dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]',
+                  className,
+                )}
+              >
                 {children}
               </TablePrimitive>
             )}
@@ -82,19 +79,24 @@ function ColumnResizer({ className, ...props }: ColumnResizerProps) {
   return (
     <ColumnResizerPrimitive
       {...props}
-      className={composeRenderProps(className, (className, renderProps) =>
-        columnResizer({
-          ...renderProps,
-          className,
-        }))}
+      className={composeTailwindRenderProps(
+        className,
+        'absolute top-0 right-0 bottom-0 grid w-px &[data-resizable-direction=left]:cursor-e-resize &[data-resizable-direction=right]:cursor-w-resize touch-none place-content-center px-1 data-[resizable-direction=both]:cursor-ew-resize [&[data-resizing]>div]:bg-primary',
+      )}
     >
-      <div className="bg-border h-full w-px py-3" />
+      <div className="h-full w-px bg-border py-3" />
     </ColumnResizerPrimitive>
   )
 }
 
-function Body<T extends object>(props: TableBodyProps<T>) {
-  return <TableBody data-slot="table-body" {...props} className={twMerge('[&_.tr:last-child]:border-0')} />
+function TableBody<T extends object>(props: TableBodyProps<T>) {
+  return (
+    <TableBodyPrimitive
+      data-slot="table-body"
+      {...props}
+      className={twMerge('[&_.tr:last-child]:border-0')}
+    />
+  )
 }
 
 interface TableCellProps extends CellProps {
@@ -143,12 +145,18 @@ function TableColumn({ isResizable = false, className, ...props }: TableColumnPr
       })}
     >
       {({ allowsSorting, sortDirection, isHovered }) => (
-        <div className="**:data-[slot=icon]:shrink-0 flex items-center gap-2">
+        <div className="flex items-center gap-2 **:data-[slot=icon]:shrink-0">
           <>
             {props.children as React.ReactNode}
             {allowsSorting && (
-              <span className={cellIcon({ className: isHovered ? 'bg-secondary-fg/10' : '' })}>
-                <Icon icon="lucide:chevron-down" className={sortDirection === 'ascending' ? 'rotate-180' : ''} />
+              <span
+                className={twMerge(
+                  'grid size-[1.15rem] flex-none shrink-0 place-content-center rounded bg-secondary text-fg *:data-[slot=icon]:size-3.5 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:transition-transform *:data-[slot=icon]:duration-200',
+                  isHovered ? 'bg-secondary-fg/10' : '',
+                  className,
+                )}
+              >
+                <Icon icon="mdi:chevron-down" className={sortDirection === 'ascending' ? 'rotate-180' : ''} />
               </span>
             )}
             {isResizable && <ColumnResizer />}
@@ -164,7 +172,7 @@ interface TableHeaderProps<T extends object> extends HeaderProps<T> {
   ref?: React.Ref<HTMLTableSectionElement>
 }
 
-function Header<T extends object>({
+function TableHeader<T extends object>({
   children,
   ref,
   className,
@@ -173,7 +181,12 @@ function Header<T extends object>({
 }: TableHeaderProps<T>) {
   const { selectionBehavior, selectionMode, allowsDragging } = useTableOptions()
   return (
-    <TableHeader data-slot="table-header" ref={ref} className={header({ className })} {...props}>
+    <TableHeaderPrimitive
+      data-slot="table-header"
+      ref={ref}
+      className={twMerge('border-b', className)}
+      {...props}
+    >
       {allowsDragging && <Column className="w-0" />}
       {selectionBehavior === 'toggle' && (
         <Column className="w-0 pl-4">
@@ -181,7 +194,7 @@ function Header<T extends object>({
         </Column>
       )}
       <Collection items={columns}>{children}</Collection>
-    </TableHeader>
+    </TableHeaderPrimitive>
   )
 }
 
@@ -205,23 +218,19 @@ function TableRow<T extends object>({
       data-slot="table-row"
       id={id}
       {...props}
-      className={row({
-        className:
-          'href' in props
-            ? twMerge(
-                'data-hovered:bg-secondary/50 data-hovered:text-secondary-fg cursor-pointer',
-                className,
-              )
-            : '',
-      })}
+      className={twMerge(
+        'tr group relative cursor-default border-b bg-bg selected:bg-(--table-selected-bg) text-muted-fg outline-hidden ring-primary selected:hover:bg-(--table-selected-bg)/70 focus:ring-0 data-focus-visible:ring-1 dark:selected:hover:bg-[color-mix(in_oklab,var(--color-primary)_30%,black_70%)]',
+        'href' in props ? 'cursor-pointer hover:bg-secondary/50 hover:text-secondary-fg' : '',
+        className,
+      )}
     >
       {allowsDragging && (
-        <Cell className="ring-primary data-dragging:cursor-grabbing group cursor-grab pr-0">
+        <Cell className="group cursor-grab pr-0 ring-primary data-dragging:cursor-grabbing">
           <Button
-            className="text-muted-fg data-pressed:text-fg relative bg-transparent py-1.5 pl-3.5"
+            className="relative bg-transparent py-1.5 pl-3.5 pressed:text-fg text-muted-fg"
             slot="drag"
           >
-            <Icon icon="lucide:menu" />
+            <Icon icon="mdi:menu" className="size-4" />
           </Button>
         </Cell>
       )}
@@ -229,7 +238,7 @@ function TableRow<T extends object>({
         <Cell className="pl-4">
           <span
             aria-hidden
-            className="bg-primary group-data-selected:block absolute inset-y-0 left-0 hidden h-full w-0.5"
+            className="absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary group-selected:block"
           />
           <Checkbox slot="selection" />
         </Cell>
@@ -239,10 +248,10 @@ function TableRow<T extends object>({
   )
 }
 
-Table.Body = Body
+Table.Body = TableBody
 Table.Cell = TableCell
 Table.Column = TableColumn
-Table.Header = Header
+Table.Header = TableHeader
 Table.Row = TableRow
 
 export type { TableBodyProps, TableCellProps, TableColumnProps, TableProps, TableRowProps }

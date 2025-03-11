@@ -1,18 +1,16 @@
 import type { MutationState, UseMutationOptions } from '@tanstack/react-query'
 import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
+import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ZodError } from 'zod'
 import { http } from '@/core/services/http.service'
 import {
-
   useMutation,
-
   useMutationState,
 } from '@tanstack/react-query'
 import {
   authKeys,
-
   authRepositories,
 } from '@workspace/core/apis/auth.api'
 import { HTTPError } from 'ky'
@@ -20,7 +18,7 @@ import { toast } from 'sonner'
 
 type Params = Parameters<typeof authKeys.login>[0]
 type Success = Awaited<ReturnType<ReturnType<typeof authRepositories>['login']>>
-type Error = ErrorResponseSchema | HTTPError | ZodError
+type Error = HTTPError<ErrorResponseSchema> | TimeoutError | ZodError
 
 /**
  * @url POST ${env.apiBaseUrl}/auth/login
@@ -40,7 +38,7 @@ export function useAuthLogin(
     mutationFn: json => authRepositories(http).login({ json }),
     onError: async (error, variables, context) => {
       if (error instanceof HTTPError) {
-        const json = (await error.response.json()) as ErrorResponseSchema
+        const json = (await error.response.json())
         toast.error(json.message)
       }
       else {

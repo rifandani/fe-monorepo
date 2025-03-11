@@ -170,7 +170,11 @@ function CarouselContent<T extends object>({ className, ...props }: ListBoxSecti
       className="overflow-hidden"
     >
       <ListBoxSection
-        className={twMerge('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)}
+        className={twMerge(
+          'flex',
+          orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
+          className,
+        )}
         {...props}
       />
     </ListBox>
@@ -179,7 +183,7 @@ function CarouselContent<T extends object>({ className, ...props }: ListBoxSecti
 
 const carouselItem = tv({
   base: [
-    'xd24r min-w-0 shrink-0 grow-0 basis-full data-focus-visible:outline-hidden data-focused:outline-hidden',
+    'xd24r min-w-0 shrink-0 grow-0 basis-full focus:outline-hidden data-focus-visible:outline-hidden',
     'group relative',
   ],
   variants: {
@@ -227,8 +231,7 @@ function CarouselHandler({ ref, className, ...props }: React.ComponentProps<'div
 function CarouselButton({
   segment,
   className,
-  intent = 'secondary',
-  appearance = 'outline',
+  intent = 'outline',
   shape = 'circle',
   size = 'square-petite',
   ref,
@@ -245,7 +248,6 @@ function CarouselButton({
       data-handler={segment}
       intent={intent}
       ref={ref}
-      appearance={appearance}
       size={size}
       shape={shape}
       className={composeTailwindRenderProps(

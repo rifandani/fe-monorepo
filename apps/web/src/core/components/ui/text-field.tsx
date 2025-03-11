@@ -8,8 +8,8 @@ import { useState } from 'react'
 import {
   Button as ButtonPrimitive,
   TextField as TextFieldPrimitive,
+
 } from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
 import { Description, FieldError, FieldGroup, Input, Label } from './field'
 import { Loader } from './loader'
 import { composeTailwindRenderProps } from './primitive'
@@ -57,29 +57,24 @@ function TextField({
     <TextFieldPrimitive
       type={inputType}
       {...props}
-      className={composeTailwindRenderProps(className, 'group flex flex-col gap-y-1.5')}
+      className={composeTailwindRenderProps(className, 'group flex flex-col gap-y-1')}
     >
       {!props.children
         ? (
             <>
               {label && <Label>{label}</Label>}
               <FieldGroup
-                isInvalid={!!errorMessage}
                 isDisabled={props.isDisabled}
-                className={twJoin(
-                  '**:[button]:inset-ring-0 **:[button]:inset-shadow-none **:[button]:h-8 **:[button]:rounded-[calc(var(--radius-lg)*0.5)] **:[button]:px-3.5 **:[button]:has-data-[slot=icon]:w-8 **:[button]:has-data-[slot=icon]:p-0 dark:**:[button]:inset-ring-0',
-                  '[&>[data-slot=suffix]>button]:data-focus-visible:outline-1 [&>[data-slot=suffix]>button]:data-focus-visible:outline-offset-1 [&>[data-slot=suffix]>button]:mr-[calc(var(--spacing)*-1.7)]',
-                  '[&>[data-slot=prefix]>button]:data-focus-visible:outline-1 [&>[data-slot=prefix]>button]:data-focus-visible:outline-offset-1 [&>[data-slot=prefix]>button]:ml-[calc(var(--spacing)*-1.7)]',
-                )}
+                isInvalid={!!errorMessage}
                 data-loading={isPending ? 'true' : undefined}
               >
-                {prefix
+                {prefix && typeof prefix === 'string'
                   ? (
-                      <span data-slot="prefix" className="atrs x2e2">
-                        {prefix}
-                      </span>
+                      <span className="ml-2 text-muted-fg">{prefix}</span>
                     )
-                  : null}
+                  : (
+                      prefix
+                    )}
                 <Input placeholder={placeholder} />
                 {isRevealable
                   ? (
@@ -87,18 +82,24 @@ function TextField({
                         type="button"
                         aria-label="Toggle password visibility"
                         onPress={handleTogglePasswordVisibility}
-                        className="outline-hidden data-focus-visible:*:data-[slot=icon]:text-primary *:data-[slot=icon]:text-muted-fg relative mr-1 grid shrink-0 place-content-center rounded-sm border-transparent"
+                        className="relative mr-1 grid shrink-0 place-content-center rounded-sm border-transparent outline-hidden data-focus-visible:*:data-[slot=icon]:text-primary *:data-[slot=icon]:text-muted-fg"
                       >
-                        {isPasswordVisible ? <Icon icon="lucide:eye-off" /> : <Icon icon="lucide:eye" />}
+                        {isPasswordVisible ? <Icon icon="mdi:eye-off" className="size-4" /> : <Icon icon="mdi:eye" className="size-4" />}
                       </ButtonPrimitive>
                     )
                   : isPending
                     ? (
-                        <Loader variant="spin" data-slot="suffix" />
+                        <Loader variant="spin" />
                       )
                     : suffix
                       ? (
-                          <span data-slot="suffix">{suffix}</span>
+                          typeof suffix === 'string'
+                            ? (
+                                <span className="mr-2 text-muted-fg">{suffix}</span>
+                              )
+                            : (
+                                suffix
+                              )
                         )
                       : null}
               </FieldGroup>

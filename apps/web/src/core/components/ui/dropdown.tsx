@@ -1,6 +1,10 @@
 'use client'
-
-import type { ListBoxItemProps, SectionProps, SeparatorProps, TextProps } from 'react-aria-components'
+import type {
+  ListBoxItemProps,
+  SectionProps,
+  SeparatorProps,
+  TextProps,
+} from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import {
   Collection,
@@ -20,9 +24,9 @@ const dropdownItemStyles = tv({
     'col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] not-has-data-[slot=dropdown-item-details]:items-center has-data-[slot=dropdown-item-details]:**:data-[slot=checked-icon]:mt-[1.5px] supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
     'group relative cursor-default select-none rounded-[calc(var(--radius-lg)-1px)] px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)] forced-color:text-[Highlight] text-base text-fg outline-0 forced-color-adjust-none sm:text-sm/6 forced-colors:text-[LinkText]',
     '**:data-[slot=avatar]:*:mr-2 **:data-[slot=avatar]:*:size-6 **:data-[slot=avatar]:mr-2 **:data-[slot=avatar]:size-6 sm:**:data-[slot=avatar]:*:size-5 sm:**:data-[slot=avatar]:size-5',
-    'data-danger:**:data-[slot=icon]:text-danger/70 **:data-[slot=icon]:size-4 **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-muted-fg data-focused:data-danger:**:data-[slot=icon]:text-danger-fg',
+    'data-danger:**:data-[slot=icon]:text-danger/60 **:data-[slot=icon]:size-4 **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-muted-fg focus:data-danger:**:data-[slot=icon]:text-danger',
     'data-[slot=menu-radio]:*:data-[slot=icon]:size-3 *:data-[slot=icon]:mr-2',
-    'forced-colors:**:data-[slot=icon]:text-[CanvasText] forced-colors:group-data-focused:**:data-[slot=icon]:text-[Canvas] ',
+    'forced-colors:**:data-[slot=icon]:text-[CanvasText] forced-colors:group-focus:**:data-[slot=icon]:text-[Canvas] ',
     '[&>[slot=label]+[data-slot=icon]]:absolute [&>[slot=label]+[data-slot=icon]]:right-0',
   ],
   variants: {
@@ -37,7 +41,7 @@ const dropdownItemStyles = tv({
       true: [
         '**:data-[slot=icon]:text-accent-fg **:[kbd]:text-accent-fg',
         'bg-accent text-accent-fg forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]',
-        'data-danger:bg-danger data-danger:text-danger-fg',
+        'data-danger:bg-danger/10 data-danger:text-danger',
         'data-[slot=description]:text-accent-fg data-[slot=label]:text-accent-fg [&_.text-muted-fg]:text-accent-fg/80',
       ],
     },
@@ -69,18 +73,16 @@ function DropdownSection<T extends object>({ className, ...props }: DropdownSect
 type DropdownItemProps = ListBoxItemProps
 
 function DropdownItem({ className, ...props }: DropdownItemProps) {
-  const textValue
-    = props.textValue || (typeof props.children === 'string' ? props.children : undefined)
   return (
     <ListBoxItemPrimitive
-      textValue={textValue}
+      textValue={typeof props.children === 'string' ? props.children : props.textValue}
       className={composeRenderProps(className, (className, renderProps) =>
         dropdownItemStyles({ ...renderProps, className }))}
       {...props}
     >
       {composeRenderProps(props.children, (children, { isSelected }) => (
         <>
-          {isSelected && <Icon icon="ion:checkmark" className="-mx-0.5 mr-2" data-slot="checked-icon" />}
+          {isSelected && <Icon icon="mdi:check" className="-mx-0.5 mr-2" data-slot="checked-icon" />}
           {typeof children === 'string' ? <DropdownLabel>{children}</DropdownLabel> : children}
         </>
       ))}
@@ -134,11 +136,11 @@ function DropdownItemDetails({
   )
 }
 
-interface MenuLabelProps extends TextProps {
+interface DropdownLabelProps extends TextProps {
   ref?: React.Ref<HTMLDivElement>
 }
 
-function DropdownLabel({ className, ref, ...props }: MenuLabelProps) {
+function DropdownLabel({ className, ref, ...props }: DropdownLabelProps) {
   return <Text slot="label" ref={ref} className={twMerge('col-start-2', className)} {...props} />
 }
 
@@ -146,7 +148,7 @@ function DropdownSeparator({ className, ...props }: SeparatorProps) {
   return (
     <Separator
       orientation="horizontal"
-      className={twMerge('bg-border col-span-full -mx-1 my-1 h-px', className)}
+      className={twMerge('-mx-1 col-span-full my-1 h-px bg-border', className)}
       {...props}
     />
   )
@@ -160,7 +162,7 @@ function DropdownKeyboard({ className, ...props }: React.ComponentProps<typeof K
  * Note: This is not exposed component, but it's used in other components to render dropdowns.
  * @internal
  */
-export type { DropdownItemDetailProps, DropdownItemProps, DropdownSectionProps }
+export type { DropdownItemDetailProps, DropdownItemProps, DropdownLabelProps, DropdownSectionProps }
 export {
   DropdownItem,
   DropdownItemDetails,

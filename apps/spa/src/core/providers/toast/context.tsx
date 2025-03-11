@@ -23,8 +23,8 @@ export function useCreateToastContext() {
     //   loading: <Loader variant="spin" />,
     // },
     toastOptions: {
-      //   unstyled: true,
-      //   closeButton: true,
+      // unstyled: true,
+      // closeButton: true,
       classNames: {
         toast: 'toast border-0! inset-ring! inset-ring-fg/10!',
         title: 'title',

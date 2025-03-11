@@ -11,6 +11,12 @@ declare global {
   interface IntlFormats extends Formats { }
 }
 
+declare global {
+  interface Window {
+    toggleRqDevtools: () => void
+  }
+}
+
 declare namespace NodeJS {
   export interface ProcessEnv {
     /**

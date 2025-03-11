@@ -6,7 +6,7 @@ import type {
   TagProps as TagPrimitiveProps,
 } from 'react-aria-components'
 import { Icon } from '@iconify/react'
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
   Button,
   composeRenderProps,
@@ -14,61 +14,61 @@ import {
   TagList as TagListPrimitive,
   Tag as TagPrimitive,
 } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
+import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { badgeIntents, badgeShapes, badgeStyles } from './badge'
 import { Description, Label } from './field'
-import { composeTailwindRenderProps, focusStyles } from './primitive'
+import { composeTailwindRenderProps } from './primitive'
 
 const intents = {
   primary: {
     base: [
       badgeIntents.primary,
-      '**:[[slot=remove]]:data-hovered:bg-primary **:[[slot=remove]]:data-hovered:text-primary-fg',
+      '**:[[slot=remove]]:hover:bg-primary **:[[slot=remove]]:hover:text-primary-fg',
     ],
     selected: [
-      'bg-primary dark:data-hovered:bg-primary dark:bg-primary data-hovered:bg-primary ring-primary ring-inset text-primary-fg dark:text-primary-fg data-hovered:text-primary-fg',
-      '**:[[slot=remove]]:data-hovered:bg-primary-fg/50 **:[[slot=remove]]:data-hovered:text-primary',
+      'bg-primary dark:hover:bg-primary dark:bg-primary hover:bg-primary text-primary-fg dark:text-primary-fg hover:text-primary-fg',
+      '**:[[slot=remove]]:hover:bg-primary-fg/50 **:[[slot=remove]]:hover:text-primary',
     ],
   },
   secondary: {
     base: [
       badgeIntents.secondary,
-      '**:[[slot=remove]]:data-hovered:bg-fg **:[[slot=remove]]:data-hovered:text-bg',
+      '**:[[slot=remove]]:hover:bg-fg **:[[slot=remove]]:hover:text-bg',
     ],
     selected: [
-      'bg-fg ring-fg/50 text-bg dark:bg-fg/90 dark:text-secondary ring-inset',
-      '**:[[slot=remove]]:data-hovered:**:[[slot=remove]]:data-hovered:text-secondary-fg',
+      'bg-fg text-bg dark:bg-fg/90 dark:text-secondary',
+      '**:[[slot=remove]]:hover:bg-secondary/30 **:[[slot=remove]]:hover:text-secondary',
     ],
   },
   success: {
     base: [
       badgeIntents.success,
-      '**:[[slot=remove]]:data-hovered:bg-success **:[[slot=remove]]:data-hovered:text-success-fg',
+      '**:[[slot=remove]]:hover:bg-success **:[[slot=remove]]:hover:text-success-fg',
     ],
     selected: [
-      'bg-success dark:bg-success ring-success ring-inset dark:text-success-fg dark:data-hovered:bg-success data-hovered:bg-success text-success-fg data-hovered:text-success-fg',
-      '**:[[slot=remove]]:data-hovered:bg-success-fg/80 **:[[slot=remove]]:data-hovered:text-success',
+      'bg-success dark:bg-success dark:text-success-fg dark:hover:bg-success hover:bg-success text-success-fg hover:text-success-fg',
+      '**:[[slot=remove]]:hover:bg-success-fg/30 **:[[slot=remove]]:hover:text-success-fg',
     ],
   },
   warning: {
     base: [
       badgeIntents.warning,
-      '**:[[slot=remove]]:data-hovered:bg-warning **:[[slot=remove]]:data-hovered:text-warning-fg',
+      '**:[[slot=remove]]:hover:bg-warning **:[[slot=remove]]:hover:text-warning-fg',
     ],
     selected: [
-      'bg-warning dark:data-hovered:bg-warning dark:bg-warning dark:text-bg data-hovered:bg-warning text-warning-fg data-hovered:text-warning-fg',
-      '**:[[slot=remove]]:data-hovered:bg-warning-fg/80 **:[[slot=remove]]:data-hovered:text-warning',
+      'bg-warning dark:hover:bg-warning dark:bg-warning dark:text-bg hover:bg-warning text-warning-fg hover:text-warning-fg',
+      '**:[[slot=remove]]:hover:bg-warning-fg/30 **:[[slot=remove]]:hover:text-warning-fg',
     ],
   },
   danger: {
     base: [
       badgeIntents.danger,
-      '**:[[slot=remove]]:data-hovered:bg-danger **:[[slot=remove]]:data-hovered:text-danger-fg',
+      '**:[[slot=remove]]:hover:bg-danger **:[[slot=remove]]:hover:text-danger-fg',
     ],
     selected: [
-      'bg-danger dark:bg-danger dark:data-hovered:bg-danger/90 data-hovered:bg-danger text-danger-fg ring-danger data-hovered:text-danger-fg',
-      '**:[[slot=remove]]:bg-danger-fg/80 **:[[slot=remove]]:data-hovered:text-danger',
+      'bg-danger dark:bg-danger dark:hover:bg-danger/90 hover:bg-danger text-danger-fg hover:text-danger-fg',
+      '**:[[slot=remove]]:hover:bg-danger-fg/30 **:[[slot=remove]]:hover:text-danger-fg',
     ],
   },
 }
@@ -98,19 +98,19 @@ interface TagGroupProps extends TagGroupPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
 }
 
-function TagGroup({ children, ref, ...props }: TagGroupProps) {
-  const value = useMemo(() => ({ intent: props.intent || 'primary', shape: props.shape || 'square' }), [
-    props.intent,
-    props.shape,
-  ])
-
+function TagGroup({ children, ref, className, ...props }: TagGroupProps) {
   return (
     <TagGroupPrimitive
       ref={ref}
-      className={twMerge('flex flex-col flex-wrap', props.className)}
+      className={twMerge('flex flex-col flex-wrap', className)}
       {...props}
     >
-      <TagGroupContext value={value}>
+      <TagGroupContext
+        value={{
+          intent: props.intent || 'primary',
+          shape: props.shape || 'square',
+        }}
+      >
         {props.label && <Label className="mb-1">{props.label}</Label>}
         {children}
         {props.description && <Description>{props.description}</Description>}
@@ -123,16 +123,15 @@ function TagList<T extends object>({ className, ...props }: TagListProps<T>) {
   return (
     <TagListPrimitive
       {...props}
-      className={composeTailwindRenderProps(className, 'flex flex-wrap gap-2')}
+      className={composeTailwindRenderProps(className, 'flex flex-wrap gap-1.5')}
     />
   )
 }
 
 const tagStyles = tv({
-  extend: focusStyles,
-  base: [badgeStyles.base, 'jdt3lr2x cursor-pointer'],
+  base: [badgeStyles.base, 'cursor-pointer outline-hidden'],
   variants: {
-    isFocused: { true: 'ring-1' },
+    isFocusVisible: { true: 'inset-ring inset-ring-current/10' },
     isDisabled: { true: 'cursor-default opacity-50' },
     allowsRemoving: { true: 'pr-1' },
   },
@@ -145,7 +144,7 @@ interface TagProps extends TagPrimitiveProps {
 
 function Tag({ className, intent, shape, ...props }: TagProps) {
   const textValue = typeof props.children === 'string' ? props.children : undefined
-  const groupContext = React.use(TagGroupContext)
+  const groupContext = React.useContext(TagGroupContext)
 
   return (
     <TagPrimitive
@@ -157,7 +156,7 @@ function Tag({ className, intent, shape, ...props }: TagProps) {
 
         return tagStyles({
           ...renderProps,
-          className: twMerge([
+          className: twJoin([
             intents[finalIntent]?.base,
             badgeShapes[finalShape],
             renderProps.isSelected ? intents[finalIntent].selected : undefined,
@@ -172,9 +171,9 @@ function Tag({ className, intent, shape, ...props }: TagProps) {
             {allowsRemoving && (
               <Button
                 slot="remove"
-                className="focus-visible:ring-primary -mr-0.5 grid size-3.5 place-content-center rounded focus:outline-none focus-visible:ring-1 [&>[data-slot=icon]]:size-3 [&>[data-slot=icon]]:shrink-0"
+                className="-mr-0.5 grid size-3.5 place-content-center rounded outline-hidden [&>[data-slot=icon]]:size-3 [&>[data-slot=icon]]:shrink-0"
               >
-                <Icon icon="lucide:x" />
+                <Icon icon="mdi:close" className="size-4" />
               </Button>
             )}
           </>

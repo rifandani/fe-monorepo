@@ -1,40 +1,30 @@
 'use client'
 
 import type { LinkProps as LinkPrimitiveProps } from 'react-aria-components'
-import {
-  composeRenderProps,
-  Link as LinkPrimitive,
-} from 'react-aria-components'
-import { tv } from 'tailwind-variants'
-import { focusButtonStyles } from './primitive'
-
-const linkStyles = tv({
-  extend: focusButtonStyles,
-  base: 'transition-[color,_opacity] data-disabled:cursor-default data-disabled:opacity-60 forced-colors:data-disabled:text-[GrayText]',
-  variants: {
-    intent: {
-      unstyled: 'text-current',
-      primary: 'text-fg data-hovered:underline',
-      secondary: 'text-muted-fg data-hovered:text-secondary-fg',
-    },
-  },
-  defaultVariants: {
-    intent: 'unstyled',
-  },
-})
+import { Link as LinkPrimitive } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
+import { composeTailwindRenderProps } from './primitive'
 
 interface LinkProps extends LinkPrimitiveProps {
   intent?: 'primary' | 'secondary' | 'unstyled'
   ref?: React.RefObject<HTMLAnchorElement>
 }
 
-function Link({ className, ref, ...props }: LinkProps) {
+function Link({ className, ref, intent = 'unstyled', ...props }: LinkProps) {
   return (
     <LinkPrimitive
       ref={ref}
       {...props}
-      className={composeRenderProps(className, (className, renderProps) =>
-        linkStyles({ ...renderProps, intent: props.intent, className }))}
+      className={composeTailwindRenderProps(
+        className,
+        twJoin([
+          'outline-0 outline-offset-2 transition-[color,_opacity] focus-visible:outline-2 focus-visible:outline-ring forced-colors:outline-[Highlight]',
+          'disabled:cursor-default disabled:opacity-60 forced-colors:disabled:text-[GrayText]',
+          intent === 'unstyled' && 'text-current',
+          intent === 'primary' && 'text-primary hover:underline',
+          intent === 'secondary' && 'text-secondary-fg hover:underline',
+        ]),
+      )}
     >
       {values => (
         <>{typeof props.children === 'function' ? props.children(values) : props.children}</>

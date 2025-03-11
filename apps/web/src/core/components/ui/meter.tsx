@@ -3,9 +3,7 @@
 import type { MeterProps as MeterPrimitiveProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import { motion } from 'motion/react'
-import {
-  Meter as MeterPrimitive,
-} from 'react-aria-components'
+import { Meter as MeterPrimitive } from 'react-aria-components'
 import { Label } from './field'
 import { composeTailwindRenderProps } from './primitive'
 
@@ -13,11 +11,11 @@ interface MeterProps extends MeterPrimitiveProps {
   label?: string
 }
 
-function Meter({ label, ...props }: MeterProps) {
+function Meter({ label, className, ...props }: MeterProps) {
   return (
     <MeterPrimitive
       {...props}
-      className={composeTailwindRenderProps(props.className, 'flex flex-col gap-1')}
+      className={composeTailwindRenderProps(className, 'flex min-w-56 flex-col gap-1')}
     >
       {({ percentage, valueText }) => (
         <>
@@ -27,18 +25,14 @@ function Meter({ label, ...props }: MeterProps) {
               className={`text-sm tabular-nums ${percentage >= 80 ? 'text-danger' : 'text-muted-fg'}`}
             >
               {percentage >= 80 && (
-                <Icon
-                  icon="ion:alert-circle-outline"
-                  aria-label="Alert"
-                  className="fill-danger/20 text-danger inline-block size-4 align-text-bottom"
-                />
+                <Icon icon="mdi:alert-circle-outline" aria-label="Alert" className="inline-block size-4 fill-danger/20 align-text-bottom text-danger" />
               )}
               {` ${valueText}`}
             </span>
           </div>
-          <div className="bg-muted relative h-2 min-w-64 rounded-full outline outline-1 -outline-offset-1 outline-transparent">
+          <div className="-outline-offset-1 relative h-2 rounded-full bg-muted outline outline-transparent">
             <motion.div
-              className="absolute left-0 top-0 h-full rounded-full forced-colors:bg-[Highlight]"
+              className="absolute top-0 left-0 h-full rounded-full forced-colors:bg-[Highlight]"
               initial={{ width: '0%', backgroundColor: getColor(0) }}
               animate={{
                 width: `${percentage}%`,
