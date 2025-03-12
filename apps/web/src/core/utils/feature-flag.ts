@@ -2,9 +2,9 @@
  * All flags should be declared here
  * Flags should be called in the server environment (RSC, Route Handlers, Server Functions, ...)
  *
- * @link https://flags-sdk.dev/getting-started/quickstart
+ * @link https://flags-sdk.dev/docs/getting-started/next
  */
-import { flag } from '@vercel/flags/next'
+import { flag } from 'flags/next'
 import 'server-only'
 
 /**
