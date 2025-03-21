@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test:install": "playwright install --with-deps chromium",
     "test:report": "playwright show-report",
-    "test": "DEBUG=pw:api playwright test",
+    "test": "cross-env DEBUG=pw:api playwright test",
     "test:ui": "playwright test --ui --headed",
     "test:ci": "playwright test --forbid-only --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}",
     "dev": "cp .env.dev .env.local && next dev --port 3002",
