@@ -29,7 +29,7 @@ export function AppTamaguiProvider({ children, ...rest }: Omit<TamaguiProviderPr
 
   // integrate with react navigation devtools in development
   const navigationRef = useNavigationContainerRef()
-  useReactNavigationDevTools(navigationRef)
+  useReactNavigationDevTools(navigationRef as any)
 
   return (
     <TamaguiProvider

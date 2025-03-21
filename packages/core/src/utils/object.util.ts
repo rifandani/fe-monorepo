@@ -27,5 +27,5 @@ export function deepReadObject<T = any>(obj: Record<string, unknown>, path: stri
     .split('.')
     .reduce<any>((a, b) => (a ? a[b] : undefined), obj)
 
-  return value !== undefined ? value : defaultValue
+  return value !== undefined ? value : defaultValue as T
 }
