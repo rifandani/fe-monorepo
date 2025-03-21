@@ -18,7 +18,7 @@ test.describe('authorized', () => {
     await expect(subtitle).toBeVisible()
     await expect(description).toBeVisible()
     await expect(link).toBeVisible()
-    await expect(link).toHaveText(/home/)
+    await expect(link).toHaveText('Back to Home page')
   })
 })
 
@@ -38,6 +38,6 @@ test.describe('unauthorized', () => {
     await expect(subtitle).toBeVisible()
     await expect(description).toBeVisible()
     await expect(link).toBeVisible()
-    await expect(link).toHaveText(/login/)
+    await expect(link).toHaveText('Back to Login page')
   })
 })
