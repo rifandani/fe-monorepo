@@ -3,7 +3,7 @@
 import type { LinkProps } from 'react-aria-components'
 import type { ButtonProps } from './button'
 import { Icon } from '@iconify/react'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
+import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { LayoutGroup, motion } from 'motion/react'
 import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
 import { Link } from 'react-aria-components'

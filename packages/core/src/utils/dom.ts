@@ -1,4 +1,4 @@
-import type { URLSearchParamsInit } from '@workspace/core/types/core.type'
+import type { URLSearchParamsInit } from '@workspace/core/types/core'
 
 /**
  * Check if we are in browser, not server

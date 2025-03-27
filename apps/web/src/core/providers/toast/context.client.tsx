@@ -1,7 +1,7 @@
 'use client'
 
 import type { Toaster } from 'sonner'
-import { useResetState } from '@workspace/core/hooks/use-reset-state.hook'
+import { useResetState } from '@workspace/core/hooks/use-reset-state'
 import { useTheme } from 'next-themes'
 import React from 'react'
 

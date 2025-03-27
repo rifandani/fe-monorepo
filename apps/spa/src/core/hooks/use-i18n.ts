@@ -1,4 +1,4 @@
-import type { Formatter } from '@workspace/core/locales/locale.type'
+import type { Formatter } from '@workspace/core/locales/type'
 import { I18nContext } from '@/core/providers/i18n/context'
 import { localeDict } from '@workspace/core/locales'
 import React from 'react'

@@ -1,6 +1,6 @@
-import type { LocaleDict } from '@workspace/core/locales/locale.type'
-import { enLocale } from '@workspace/core/locales/en.locale'
-import { idLocale } from '@workspace/core/locales/id.locale'
+import type { LocaleDict } from '@workspace/core/locales/type'
+import { enLocale } from '@workspace/core/locales/en'
+import { idLocale } from '@workspace/core/locales/id'
 
 const localeDict: LocaleDict = {
   'en-US': enLocale,

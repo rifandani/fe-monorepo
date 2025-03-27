@@ -1,6 +1,6 @@
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import { authLoginResponseSchema } from '@workspace/core/apis/auth.api'
-import { logger } from '@workspace/core/utils/logger.util'
+import { authLoginResponseSchema } from '@workspace/core/apis/auth'
+import { logger } from '@workspace/core/utils/logger'
 import { createSafeActionClient, DEFAULT_SERVER_ERROR_MESSAGE } from 'next-safe-action'
 import { zodAdapter } from 'next-safe-action/adapters/zod'
 import { cookies } from 'next/headers'

@@ -1,6 +1,6 @@
 import type { MutationState, UseMutationOptions } from '@tanstack/react-query'
-import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
-import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
+import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
+import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ZodError } from 'zod'
@@ -12,7 +12,7 @@ import {
 import {
   authKeys,
   authRepositories,
-} from '@workspace/core/apis/auth.api'
+} from '@workspace/core/apis/auth'
 import { HTTPError } from 'ky'
 import { toast } from 'sonner'
 

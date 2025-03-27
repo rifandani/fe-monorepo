@@ -1,5 +1,5 @@
-import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn.hook'
-import { useUpdateEffect } from '@workspace/core/hooks/use-update-effect.hook'
+import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
+import { useUpdateEffect } from '@workspace/core/hooks/use-update-effect'
 import { isFunction } from 'radashi'
 import { useState } from 'react'
 

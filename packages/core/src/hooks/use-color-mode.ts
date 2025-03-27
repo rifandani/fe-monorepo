@@ -1,5 +1,5 @@
-import { useLocalStorageState } from '@workspace/core/hooks/use-local-storage-state.hook'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
+import { useLocalStorageState } from '@workspace/core/hooks/use-local-storage-state'
+import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { useCallback, useEffect, useMemo } from 'react'
 
 /**

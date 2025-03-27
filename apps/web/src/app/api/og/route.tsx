@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
-import { logger } from '@workspace/core/utils/logger.util'
+import { logger } from '@workspace/core/utils/logger'
 import { ImageResponse } from 'next/og'
 
 // NOTE: vercel-related

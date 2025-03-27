@@ -148,23 +148,6 @@ export function removeLeadingWhitespace(value?: string) {
 }
 
 /**
- * This will works with below rules, otherwise it only view on new tab
- * 1. If the file source located in the same origin as the application.
- * 2. If the file source is on different location e.g s3 bucket, etc. Set the response headers `Content-Disposition: attachment`.
- */
-export function doDownload(url: string) {
-  if (!url)
-    return
-  const link = document.createElement('a')
-  link.href = url
-  link.download = url
-  link.target = '_blank'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
-/**
  * Convert deep object to FormData.
  * Supports File, array, and options to add object rootName and ignore object keys.
  *
@@ -355,6 +338,38 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
   appendFormData(obj, options?.rootName)
 
   return formData
+}
+
+/**
+ * Safely access deep values in an object via a string path seperated by `.`
+ * This util is largely inspired by [dlv](https://github.com/developit/dlv/blob/master/index.js) and passes all its tests
+ *
+ * @param obj {Record<string, unknown>} - The object to parse
+ * @param path {string} - The path to search in the object
+ * @param [defaultValue] {unknown} -  A default value if the path doesn't exist in the object
+ *
+ * @returns {any} The value if found, the default provided value if set and not found, undefined otherwise
+ *
+ * @example
+ *
+ * ```js
+ * const obj = { a: { b : { c: 'hello' } } };
+ *
+ * const value = deepReadObject(obj, 'a.b.c');
+ * // => 'hello'
+ * const notFound = deepReadObject(obj, 'a.b.d');
+ * // => undefined
+ * const notFound = deepReadObject(obj, 'a.b.d', 'not found');
+ * // => 'not found'
+ * ```
+ */
+export function deepReadObject<T = any>(obj: Record<string, unknown>, path: string, defaultValue?: unknown): T {
+  const value = path
+    .trim()
+    .split('.')
+    .reduce<any>((a, b) => (a ? a[b] : undefined), obj)
+
+  return value !== undefined ? value : defaultValue as T
 }
 
 /**

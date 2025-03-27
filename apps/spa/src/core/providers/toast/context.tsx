@@ -1,6 +1,6 @@
 import type { Toaster } from 'sonner'
-import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
-import { useResetState } from '@workspace/core/hooks/use-reset-state.hook'
+import { useColorMode } from '@workspace/core/hooks/use-color-mode'
+import { useResetState } from '@workspace/core/hooks/use-reset-state'
 import React from 'react'
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>

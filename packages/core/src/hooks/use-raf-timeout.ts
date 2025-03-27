@@ -1,4 +1,4 @@
-import { useLatest } from '@workspace/core/hooks/use-latest.hook'
+import { useLatest } from '@workspace/core/hooks/use-latest.js'
 import { isNumber } from 'radashi'
 import { useCallback, useEffect, useRef } from 'react'
 

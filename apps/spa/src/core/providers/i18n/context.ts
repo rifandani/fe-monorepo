@@ -1,4 +1,4 @@
-import type { LocaleDictLanguage } from '@workspace/core/locales/locale.type'
+import type { LocaleDictLanguage } from '@workspace/core/locales/type'
 import React, { createContext, useState } from 'react'
 
 export type I18nContextInterface = ReturnType<typeof useI18nContext>

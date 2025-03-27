@@ -1,4 +1,4 @@
-import type { Http } from '@workspace/core/services/http.service'
+import type { Http } from '@workspace/core/services/http'
 import type { Options } from 'ky'
 import { z } from 'zod'
 

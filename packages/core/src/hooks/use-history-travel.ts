@@ -1,4 +1,4 @@
-import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn.hook'
+import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
 import { isNumber } from 'radashi'
 import { useRef, useState } from 'react'
 

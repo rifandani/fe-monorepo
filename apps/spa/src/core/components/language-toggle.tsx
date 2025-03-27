@@ -1,4 +1,4 @@
-import type { LocaleDictLanguage } from '@workspace/core/locales/locale.type'
+import type { LocaleDictLanguage } from '@workspace/core/locales/type'
 import type { Selection } from 'react-stately'
 import { Button, Menu } from '@/core/components/ui'
 import { useI18n } from '@/core/hooks/use-i18n'

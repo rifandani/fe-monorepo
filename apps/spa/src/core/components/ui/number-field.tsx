@@ -2,7 +2,7 @@
 
 import type { ButtonProps, NumberFieldProps as NumberFieldPrimitiveProps, ValidationResult } from 'react-aria-components'
 import { Icon } from '@iconify/react'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
+import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   Button,
   NumberField as NumberFieldPrimitive,

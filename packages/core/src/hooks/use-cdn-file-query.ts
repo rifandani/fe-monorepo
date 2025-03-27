@@ -1,5 +1,5 @@
 import type { UndefinedInitialDataOptions } from '@tanstack/react-query'
-import type { CdnValidKeys, GetCdnFileSuccessSchema } from '@workspace/core/apis/cdn.api'
+import type { CdnValidKeys, GetCdnFileSuccessSchema } from '@workspace/core/apis/cdn'
 import type { HTTPError } from 'ky'
 import type { Except } from 'type-fest'
 import {
@@ -9,7 +9,7 @@ import {
 import {
   cdnKeys,
   cdnRepositories,
-} from '@workspace/core/apis/cdn.api'
+} from '@workspace/core/apis/cdn'
 import React from 'react'
 import { toast } from 'sonner'
 

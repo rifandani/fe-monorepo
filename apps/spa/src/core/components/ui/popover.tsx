@@ -12,7 +12,7 @@ import type {
   DialogHeaderProps,
   DialogTitleProps,
 } from './dialog'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
+import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   composeRenderProps,
   DialogTrigger,

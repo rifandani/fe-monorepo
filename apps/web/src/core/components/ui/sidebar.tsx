@@ -9,7 +9,7 @@ import type {
   SeparatorProps as SidebarSeparatorProps,
 } from 'react-aria-components'
 import { Icon } from '@iconify/react'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query.hook'
+import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
 import {
   composeRenderProps,

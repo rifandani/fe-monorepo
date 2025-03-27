@@ -1,6 +1,6 @@
 import type { SetStateAction } from 'react'
-import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn.hook'
-import { useUpdate } from '@workspace/core/hooks/use-update.hook'
+import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
+import { useUpdate } from '@workspace/core/hooks/use-update'
 import { isFunction } from 'radashi'
 import { useMemo, useRef } from 'react'
 

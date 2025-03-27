@@ -1,4 +1,4 @@
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth.api'
+import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
 import { faker } from '@faker-js/faker'
 
 export function seedUser(): AuthLoginResponseSchema {

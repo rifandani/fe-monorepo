@@ -1,4 +1,4 @@
-import { authLoginResponseSchema } from '@workspace/core/apis/auth.api'
+import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { isFunction } from 'radashi'
 import React from 'react'
 import { z } from 'zod'

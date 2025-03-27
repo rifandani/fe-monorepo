@@ -1,4 +1,4 @@
-import { getSchemaDefaults } from '@workspace/core/utils/core.util'
+import { getSchemaDefaults } from '@workspace/core/utils/core'
 import { z } from 'zod'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'

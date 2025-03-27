@@ -1,5 +1,5 @@
 import { Role } from '@/app/models'
-import { logger } from '@workspace/core/utils/logger.util'
+import { logger } from '@workspace/core/utils/logger'
 import { db } from '.'
 
 async function main() {

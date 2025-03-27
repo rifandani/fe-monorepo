@@ -1,5 +1,5 @@
 import type { RequestIdVariables } from 'hono/request-id'
-import { logger } from '@workspace/core/utils/logger.util'
+import { logger } from '@workspace/core/utils/logger'
 import { Hono } from 'hono'
 import { csrf } from 'hono/csrf'
 import { showRoutes } from 'hono/dev'

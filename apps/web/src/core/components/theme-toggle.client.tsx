@@ -1,6 +1,6 @@
 'use client'
 
-import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode.hook'
+import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
 import type { Selection } from 'react-stately'
 import { Button, Menu } from '@/core/components/ui'
 import { Icon } from '@iconify/react'

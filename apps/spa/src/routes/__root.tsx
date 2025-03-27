@@ -9,7 +9,7 @@ import {
   Outlet,
   useRouter,
 } from '@tanstack/react-router'
-import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
+import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
 
 declare module 'react-aria-components' {
