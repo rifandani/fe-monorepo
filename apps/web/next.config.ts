@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
 import createNextIntlPlugin from 'next-intl/plugin'
 
-const withNextIntl = createNextIntlPlugin('./src/core/i18n/request.ts')
+const withNextIntl = createNextIntlPlugin('./src/core/utils/i18n.ts')
 
 // eslint-disable-next-line import/no-mutable-exports
 let config: NextConfig = withNextIntl({

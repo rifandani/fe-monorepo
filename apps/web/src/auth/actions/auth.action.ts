@@ -1,25 +1,15 @@
 'use server'
 
+import type { ActionResult } from '@/core/utils/action'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { http } from '@/core/services/http.service'
 import { actionClient } from '@/core/utils/action'
+import { repositoryErrorMapper } from '@/core/utils/error'
 import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth.api'
+import { logger } from '@workspace/core/utils/logger.util'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { ZodError } from 'zod'
-import { zfd } from 'zod-form-data'
-import { fromZodError } from 'zod-validation-error'
-
-interface LoginActionResult {
-  data: null
-  error: string
-}
-
-const authLoginRequestFormDataSchema = zfd.formData({
-  username: zfd.text(authLoginRequestSchema.shape.username),
-  password: zfd.text(authLoginRequestSchema.shape.password),
-  expiresInMins: zfd.numeric(authLoginRequestSchema.shape.expiresInMins),
-})
+import { tryit } from 'radashi'
 
 /**
  * Server action to handle user login.
@@ -32,31 +22,28 @@ const authLoginRequestFormDataSchema = zfd.formData({
  *
  * @returns {Promise<LoginActionResult | void>} Returns error object if login fails (zod error or server error), void if successful (redirects)
  */
-export const loginStateAction = actionClient
-  .schema(authLoginRequestFormDataSchema)
-  .stateAction<LoginActionResult>(async ({ parsedInput }) => {
-    try {
-      // request for user login
-      const response = await authRepositories(http).login({ json: parsedInput })
-
-      // set auth cookies
-      const cookie = await cookies()
-      cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 1, // 1 days
-        path: '/',
-      })
-    }
-    catch (error) {
-      if (error instanceof ZodError)
-        return { data: null, error: fromZodError(error).message }
-
-      return { data: null, error: (error as Error).message }
+export const loginAction = actionClient
+  .metadata({ actionName: 'login' })
+  .schema(authLoginRequestSchema)
+  .action<ActionResult<null>>(async ({ parsedInput }) => {
+    logger.info(parsedInput, `[login]: Start login`)
+    const [error, response] = await tryit(authRepositories(http).login)({ json: parsedInput })
+    if (error) {
+      return await repositoryErrorMapper(error)
     }
 
-    // redirect to home when success (INFO: we can't use redirect in try catch block, because redirect will throw an error object)
+    logger.info(response, `[login]: Start set session cookie`)
+    const cookie = await cookies()
+    cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 1, // 1 days
+      path: '/',
+    })
+
+    // INFO: we can't use redirect in try catch block, because redirect will throw an error object
+    logger.info(`[login]: Start redirect to /`)
     redirect('/')
   })
 
@@ -70,11 +57,12 @@ export const loginStateAction = actionClient
  * @returns {Promise<void>} Redirects to login page
  */
 export const logoutAction = actionClient
+  .metadata({ actionName: 'logoutAction' })
   .action(async () => {
-    // clear auth cookies
+    logger.info(`[logout]: Start clearing auth cookie`)
     const cookie = await cookies()
     cookie.delete(AUTH_COOKIE_NAME)
 
-    // redirect to login page when success
+    logger.info(`[logout]: Start redirect to /login`)
     redirect('/login')
   })

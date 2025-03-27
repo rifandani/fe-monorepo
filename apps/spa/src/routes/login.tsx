@@ -2,7 +2,7 @@ import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login.hook'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
-import { TextField } from '@/core/components/ui'
+import { Note, TextField } from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n.hook'
@@ -11,7 +11,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth.api'
-import reactjs from '@workspace/core/assets/images/reactjs.svg'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -62,11 +61,9 @@ function LoginRoute() {
       {/* image */}
       <section className="hidden w-1/2 shadow-2xl md:block">
         <span className="relative h-screen w-full md:flex md:items-center md:justify-center">
-          <img
-            src={reactjs}
-            alt="cool react logo with rainbow shadow"
-            loading="lazy"
-            className="h-full object-cover"
+          <Icon
+            icon="logos:react"
+            className="size-60 object-cover"
             aria-label="cool react logo"
           />
         </span>
@@ -155,14 +152,14 @@ function LoginForm() {
       />
 
       {loginMutation.error && (
-        <div
+        <Note
           data-testid="mutation-error"
           aria-label="Mutation error alert"
-          className="bg-destructive text-destructive-foreground mt-2 flex w-full items-center gap-x-2 rounded-md p-2 shadow-md"
+          intent="danger"
+          className="mt-4"
         >
-          <Icon icon="lucide:alert-circle" />
-          <p>{(loginMutation.error as ErrorResponseSchema).message}</p>
-        </div>
+          {(loginMutation.error as ErrorResponseSchema).message}
+        </Note>
       )}
 
       <Button

@@ -16,6 +16,6 @@ import 'server-only'
 export const homeWelcomeFlag = flag<boolean>({
   key: 'home-welcome-flag',
   decide() {
-    return Math.random() > 0.5
+    return true
   },
 })

@@ -1,3 +1,4 @@
+import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { expect, test } from '@playwright/test'
 
 const validUsername = 'emilys'
@@ -32,7 +33,7 @@ test.describe('unauthorized', () => {
   }) => {
     const title = page.getByRole('heading', { level: 1 })
     const link = page.getByRole('link', { name: /register/i })
-    const logo = page.getByLabel('cool react logo').locator('path')
+    const logo = page.getByLabel('cool nextjs logo').locator('g circle')
 
     await expect(title).toBeVisible()
     await expect(link).toBeVisible()
@@ -98,12 +99,11 @@ test.describe('unauthorized', () => {
     await expect(passwordAlert).toBeHidden()
     await expect(submitBtn).toBeEnabled()
 
-    // assert that user value in localstorage is null and error alert is visible
+    // assert that NEXT_AUTH cookie is not set and error alert is visible
     await submitBtn.click()
-    const appUser = await page.evaluate(
-      () => localStorage.getItem('app-user') as string,
-    )
-    expect(JSON.parse(appUser)).toBeNull()
+    const cookies = await page.context().cookies()
+    const appUserCookie = cookies.find(cookie => cookie.name === AUTH_COOKIE_NAME)
+    expect(appUserCookie).toBeUndefined()
     await expect(errorAlert).toBeVisible()
   })
 })

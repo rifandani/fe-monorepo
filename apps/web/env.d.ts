@@ -1,5 +1,5 @@
 import type en from './messages/en.json'
-import type { formats } from './src/core/i18n/request'
+import type { formats } from './src/core/utils/i18n'
 
 type Messages = typeof en
 type Formats = typeof formats

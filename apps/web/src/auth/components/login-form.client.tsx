@@ -1,64 +1,88 @@
 'use client'
 
-import { loginStateAction } from '@/auth/actions/auth.action'
-import { Button, Note, TextField } from '@/core/components/ui'
+import { loginAction } from '@/auth/actions/auth.action'
+import { Button, Form, Note, TextField } from '@/core/components/ui'
+import { useHookFormAction } from '@/core/hooks/use-hook-form-action.hook'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { authLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import { useTranslations } from 'next-intl'
-import { useStateAction } from 'next-safe-action/stateful-hooks'
-
-const initResult = { data: { data: null, error: '' } }
+import { Controller } from 'react-hook-form'
 
 export function LoginForm() {
   const t = useTranslations('auth')
-  /**
-   * NOTE: there is a bug, if we use `useFormStatus`'s `pending`, it goes:
-   * -> `true`, `false`, `true`, `false`
-   * where as it should be like below when we used `isPending` from `useStateAction`:
-   * -> `true`, `true`, `false`
-   */
-  const { result, execute, isPending } = useStateAction(loginStateAction, { initResult })
+  const { action, form, handleSubmitWithAction } = useHookFormAction(loginAction, zodResolver(authLoginRequestSchema), {
+    formProps: { mode: 'onChange' },
+  })
 
   return (
-    <form
+    <Form
       className="flex flex-col pt-3 md:pt-8"
-      action={execute}
+      onSubmit={handleSubmitWithAction}
     >
-      <TextField
+      <Controller
+        control={form.control}
         name="username"
-        className="group/username pt-4"
-        validationBehavior="aria"
-        label={t('username')}
-        placeholder={t('usernamePlaceholder')}
-        isRequired
-        isPending={isPending}
-        errorMessage={result.data?.error ?? undefined}
+        render={({
+          field: { name, value, onChange, onBlur },
+          fieldState: { error, invalid },
+        }) => (
+          <TextField
+            type="text"
+            className="group/username pt-4"
+            label={t('username')}
+            placeholder={t('usernamePlaceholder')}
+            // Let React Hook Form handle validation instead of the browser.
+            validationBehavior="aria"
+            isPending={action.isPending}
+            isInvalid={invalid}
+            name={name}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            errorMessage={error?.message}
+          />
+        )}
       />
 
-      <TextField
+      <Controller
+        control={form.control}
         name="password"
-        className="group/password pt-4"
-        validationBehavior="aria"
-        label={t('password')}
-        placeholder={t('passwordPlaceholder')}
-        type="password"
-        isRevealable
-        isRequired
-        isPending={isPending}
-        errorMessage={result.data?.error ?? undefined}
+        render={({
+          field: { name, value, onChange, onBlur },
+          fieldState: { error, invalid },
+        }) => (
+          <TextField
+            type="password"
+            className="group/password pt-4"
+            label={t('password')}
+            placeholder={t('passwordPlaceholder')}
+            // Let React Hook Form handle validation instead of the browser.
+            validationBehavior="aria"
+            isRevealable
+            isPending={action.isPending}
+            isInvalid={invalid}
+            name={name}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            errorMessage={error?.message}
+          />
+        )}
       />
 
-      {result.data?.error && (
-        <Note intent="danger" className="mt-4">{result.data.error}</Note>
+      {action.result.data?.error && (
+        <Note data-testid="mutation-error" intent="danger" className="mt-4">{action.result.data.error}</Note>
       )}
 
       <Button
         type="submit"
         className="mt-8 w-full normal-case"
-        isPending={isPending}
+        isDisabled={action.isPending || !form.formState.isValid}
       >
-        {isPending ? t('loginLoading') : t('login')}
+        {action.isPending ? t('loginLoading') : t('login')}
         {' '}
         (emilyspass)
       </Button>
-    </form>
+    </Form>
   )
 }
