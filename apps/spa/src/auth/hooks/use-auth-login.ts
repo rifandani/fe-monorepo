@@ -4,7 +4,7 @@ import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ZodError } from 'zod'
-import { http } from '@/core/services/http.service'
+import { http } from '@/core/services/http'
 import {
   useMutation,
   useMutationState,

@@ -1,7 +1,7 @@
 import type { LocaleDictLanguage } from '@workspace/core/locales/locale.type'
 import type { Selection } from 'react-stately'
 import { Button, Menu } from '@/core/components/ui'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { Icon } from '@iconify/react'
 import { useLocale } from 'react-aria'
 

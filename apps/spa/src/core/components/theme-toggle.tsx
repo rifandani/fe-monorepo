@@ -3,7 +3,7 @@
 import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 import type { Selection } from 'react-stately'
 import { Button, Menu } from '@/core/components/ui'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { Icon } from '@iconify/react'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode.hook'
 

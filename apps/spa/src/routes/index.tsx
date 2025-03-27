@@ -1,14 +1,14 @@
+import { validateAuthUser } from '@/auth/utils/storage'
 import { LanguageToggle } from '@/core/components/language-toggle'
 import { ProfileMenu } from '@/core/components/profile-menu'
 import { ThemeToggle } from '@/core/components/theme-toggle'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
-import { checkAuthUser } from '@/core/utils/checker.util'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ location }) => {
-    const authed = checkAuthUser()
+    const authed = validateAuthUser()
 
     if (!authed) {
       // redirect unauthorized user to login

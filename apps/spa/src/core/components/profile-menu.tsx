@@ -1,7 +1,7 @@
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
 import { Menu } from '@/core/components/ui/menu'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { Icon } from '@iconify/react'
 import { useNavigate } from '@tanstack/react-router'
 

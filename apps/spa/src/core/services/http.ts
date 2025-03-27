@@ -1,4 +1,4 @@
-import { env } from '@/core/constants/env.constant'
+import { env } from '@/core/constants/env'
 import { Http } from '@workspace/core/services/http.service'
 
 // Set config defaults when creating the instance

@@ -1,5 +1,5 @@
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useMount } from '@workspace/core/hooks/use-mount.hook'
 import { toast } from 'sonner'

@@ -1,4 +1,4 @@
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useRegisterSW } from 'virtual:pwa-register/react'

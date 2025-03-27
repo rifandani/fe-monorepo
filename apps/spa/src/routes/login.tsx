@@ -1,12 +1,12 @@
 import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core.api'
-import { useAuthLogin } from '@/auth/hooks/use-auth-login.hook'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { useAuthLogin } from '@/auth/hooks/use-auth-login'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
+import { validateAuthUser } from '@/auth/utils/storage'
 import { Note, TextField } from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
-import { checkAuthUser } from '@/core/utils/checker.util'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: ({ location }) => {
-    const authed = checkAuthUser()
+    const authed = validateAuthUser()
 
     if (authed) {
       // redirect authorized user to login

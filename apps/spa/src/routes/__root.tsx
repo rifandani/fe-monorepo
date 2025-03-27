@@ -1,8 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { NavigateOptions, RegisteredRouter, ToPathOption } from '@tanstack/react-router'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store.hook'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Link } from '@/core/components/ui/link'
-import { useI18n } from '@/core/hooks/use-i18n.hook'
+import { useI18n } from '@/core/hooks/use-i18n'
 import { Devtools } from '@/core/providers/devtools'
 import {
   createRootRouteWithContext,
