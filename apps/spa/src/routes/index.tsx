@@ -4,6 +4,7 @@ import { ProfileMenu } from '@/core/components/profile-menu'
 import { ThemeToggle } from '@/core/components/theme-toggle'
 import { useI18n } from '@/core/hooks/use-i18n'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useHead } from '@unhead/react'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/')({
@@ -27,6 +28,10 @@ export const Route = createFileRoute('/')({
 })
 
 function HomeRoute() {
+  useHead({
+    title: 'Home',
+    titleTemplate: '%s | React Template',
+  })
   const [t] = useI18n()
 
   return (

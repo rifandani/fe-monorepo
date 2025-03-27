@@ -69,6 +69,7 @@
     "@tanstack/react-query-devtools": "5.67.2",
     "@tanstack/react-router": "1.114.13",
     "@tanstack/react-router-devtools": "1.114.13",
+    "@unhead/react": "2.0.2",
     "@workspace/core": "workspace:*",
     "embla-carousel-react": "8.5.2",
     "input-otp": "1.4.2",

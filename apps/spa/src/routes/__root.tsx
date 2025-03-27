@@ -52,9 +52,9 @@ function RootRoute() {
 }
 
 function NotFoundRoute() {
+  useColorMode()
   const userStore = useAuthUserStore()
   const [t] = useI18n()
-  useColorMode()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">

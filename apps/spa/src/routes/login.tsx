@@ -10,6 +10,7 @@ import { useI18n } from '@/core/hooks/use-i18n'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useHead } from '@unhead/react'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -35,6 +36,10 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginRoute() {
+  useHead({
+    title: 'Login',
+    titleTemplate: '%s | React Template',
+  })
   const [t] = useI18n()
 
   return (
