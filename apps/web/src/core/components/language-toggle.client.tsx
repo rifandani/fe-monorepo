@@ -2,7 +2,7 @@
 
 import type { I18NLocale } from '@/core/constants/i18n'
 import type { Selection } from 'react-stately'
-import { setUserLocaleAction } from '@/core/actions/i18n.action'
+import { setUserLocaleAction } from '@/core/actions/i18n'
 import { Button, Menu } from '@/core/components/ui'
 import { Icon } from '@iconify/react'
 import { useLocale, useTranslations } from 'next-intl'

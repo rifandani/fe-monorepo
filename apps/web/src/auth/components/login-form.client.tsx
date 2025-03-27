@@ -1,8 +1,8 @@
 'use client'
 
-import { loginAction } from '@/auth/actions/auth.action'
+import { loginAction } from '@/auth/actions/auth'
 import { Button, Form, Note, TextField } from '@/core/components/ui'
-import { useHookFormAction } from '@/core/hooks/use-hook-form-action.hook'
+import { useHookFormAction } from '@/core/hooks/use-hook-form-action'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth.api'
 import { useTranslations } from 'next-intl'

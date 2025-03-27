@@ -1,6 +1,6 @@
 'use client'
 
-import { logoutAction } from '@/auth/actions/auth.action'
+import { logoutAction } from '@/auth/actions/auth'
 import { Avatar } from '@/core/components/ui/avatar'
 import { Menu } from '@/core/components/ui/menu'
 import { Icon } from '@iconify/react'

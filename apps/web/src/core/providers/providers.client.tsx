@@ -1,6 +1,6 @@
 'use client'
 
-import { AppQueryProvider } from '@/core/providers/query/provider'
+import { AppQueryProvider } from '@/core/providers/query/provider.client'
 import { AppToastProvider } from '@/core/providers/toast/provider.client'
 import * as React from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'

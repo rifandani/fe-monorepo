@@ -2,7 +2,7 @@
 
 import type { ActionResult } from '@/core/utils/action'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import { http } from '@/core/services/http.service'
+import { http } from '@/core/services/http'
 import { actionClient } from '@/core/utils/action'
 import { repositoryErrorMapper } from '@/core/utils/error'
 import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth.api'
