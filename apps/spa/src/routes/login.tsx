@@ -7,6 +7,7 @@ import { Note, TextField } from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n'
+import { reportWebVitals } from '@/core/utils/web-vitals'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
@@ -33,6 +34,9 @@ export const Route = createFileRoute('/login')({
     }
   },
   component: LoginRoute,
+  onEnter() {
+    reportWebVitals()
+  },
 })
 
 function LoginRoute() {

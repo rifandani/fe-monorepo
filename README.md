@@ -8,11 +8,10 @@ Todo
 
 ### Todo
 
-- [ ] migrate breaking changes from tailwindcss v3 to v4 (variables in arbitrary value)
-- [ ] i18n
+- [ ] sitemap.txt still does not work when we run `bun web:build`
 
 ## @workspace/spa
 
 ### Todo
 
-- [ ] migrate breaking changes from tailwindcss v3 to v4 (variables in arbitrary value)
+- [ ] ...

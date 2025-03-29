@@ -88,6 +88,7 @@
     "tailwind-variants": "1.0.0",
     "ts-pattern": "5.6.2",
     "type-fest": "4.37.0",
+    "web-vitals": "4.2.4",
     "zod": "3.24.2",
     "zod-validation-error": "3.4.0",
     "zustand": "5.0.3"

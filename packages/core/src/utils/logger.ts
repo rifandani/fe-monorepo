@@ -51,7 +51,7 @@ export const loggerBrowser = pino({
      * @param logObj - The log object containing level, message and timestamp
      */
     write: (logObj) => {
-      const { level, msg, time } = logObj as Record<string, string>
+      const { level, msg, time, ...args } = logObj as Record<string, string>
       const levelUppercased = level?.toUpperCase()
       const date = new Date(time ?? Date.now())
       const timeFormatted = date.toLocaleTimeString(navigator.language || 'en-US', {
@@ -67,6 +67,7 @@ export const loggerBrowser = pino({
       // eslint-disable-next-line no-console
       console.log(
         `${LEVEL_COLOR}[${timeFormatted}] ${LEVEL_COLOR}${levelUppercased}: ${COLOR.WHITE}${msg}`,
+        args,
       )
     },
     formatters: {
