@@ -17,9 +17,11 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install deps
-        run: bun i --frozen-lockfile
+        run: bun i
 
       - name: Lint
         run: bun lint
@@ -32,9 +34,11 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install deps
-        run: bun i --frozen-lockfile
+        run: bun i
 
       - name: Typecheck
         run: bun typecheck
@@ -54,9 +58,11 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install deps
-        run: bun i --frozen-lockfile
+        run: bun i
 
       - name: Install playwright browsers
         run: bun spa:test:install

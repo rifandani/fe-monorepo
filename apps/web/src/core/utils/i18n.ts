@@ -1,4 +1,4 @@
-import type { Formats } from 'next-intl'
+import type { Formats, Locale } from 'next-intl'
 import { I18N_COOKIE_NAME, I18N_DEFAULT_LOCALE } from '@/core/constants/i18n'
 import { getRequestConfig } from 'next-intl/server'
 import { cookies } from 'next/headers'
@@ -27,7 +27,7 @@ export const formats = {
 
 export default getRequestConfig(async () => {
   const cookie = await cookies()
-  const locale = cookie.get(I18N_COOKIE_NAME)?.value || I18N_DEFAULT_LOCALE
+  const locale = (cookie.get(I18N_COOKIE_NAME)?.value || I18N_DEFAULT_LOCALE) as Locale
 
   return {
     locale,

@@ -12,6 +12,7 @@ const localeSchema = z.enum(I18N_LOCALES)
  * @returns {Promise<string>} The user's locale string, or the default I18N_DEFAULT_LOCALE if not set
  */
 export const getUserLocaleAction = actionClient
+  .metadata({ actionName: 'getUserLocale' })
   .action(async () => {
     // get locale from cookies
     const cookie = await cookies()
@@ -24,6 +25,7 @@ export const getUserLocaleAction = actionClient
  * @returns {Promise<{ error?: string } | undefined>} An object containing an error message if the locale payload is invalid
  */
 export const setUserLocaleAction = actionClient
+  .metadata({ actionName: 'setUserLocale' })
   .schema(localeSchema)
   .action(async ({ parsedInput }) => {
     // set locale in cookies

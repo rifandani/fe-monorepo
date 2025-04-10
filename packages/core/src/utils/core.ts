@@ -1,14 +1,5 @@
 import type { RequireAtLeastOne, UnknownRecord } from 'type-fest'
-import React from 'react'
 import { z } from 'zod'
-
-// declare a type that works with generic components
-type FixedForwardRef = <T, P = object>(
-  render: (props: P, ref: React.Ref<T>) => React.ReactNode,
-) => (props: P & React.RefAttributes<T>) => React.ReactNode
-
-// cast the old forwardRef to the new one
-export const fixedForwardRef = React.forwardRef as FixedForwardRef
 
 /**
  * Clamps a value to a specified range.

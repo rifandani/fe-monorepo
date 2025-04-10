@@ -1,4 +1,3 @@
-import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
@@ -86,7 +85,7 @@ function LoginForm() {
   const navigate = Route.useNavigate()
   const { setUser } = useAuthUserStore()
 
-  const form = useForm<AuthLoginRequestSchema>({
+  const form = useForm({
     mode: 'onChange',
     resolver: zodResolver(authLoginRequestSchema),
     defaultValues: {

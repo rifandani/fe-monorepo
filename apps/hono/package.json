@@ -22,27 +22,27 @@
     "db:generate:types": "kanel && bun db:types:prettier"
   },
   "dependencies": {
-    "@hono/node-server": "1.13.8",
+    "@hono/node-server": "1.14.0",
     "@t3-oss/env-core": "0.12.0",
     "@workspace/core": "workspace:*",
-    "hono": "4.7.4",
+    "hono": "4.7.6",
     "kysely": "0.27.6",
     "kysely-migration-cli": "0.4.2",
-    "pg": "8.13.3",
-    "ts-pattern": "5.6.2",
+    "pg": "8.14.1",
+    "ts-pattern": "5.7.0",
     "zod": "3.24.2",
-    "zod-form-data": "2.0.5",
+    "zod-form-data": "2.0.7",
     "zod-validation-error": "3.4.0"
   },
   "devDependencies": {
-    "@types/bun": "1.2.4",
-    "@types/node": "22.13.10",
+    "@types/bun": "1.2.9",
+    "@types/node": "22.14.0",
     "@types/pg": "8.11.11",
     "@workspace/typescript-config": "workspace:*",
     "dotenv": "16.4.7",
     "kanel": "3.11.1",
-    "kanel-kysely": "0.6.1",
+    "kanel-kysely": "0.7.0",
     "tsx": "4.19.3",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   }
 }
