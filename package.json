@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "bun@1.2.9",
-  "description": "Hono, React, Next.js, Expo monorepo template",
+  "description": "React, Next.js, and Expo monorepo template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
     "node": ">=22"
@@ -14,12 +14,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
-    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck hono:typecheck",
-    "regression": "run-p lint web:typecheck spa:typecheck expo:typecheck hono:typecheck",
+    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck",
+    "regression": "run-p lint web:typecheck spa:typecheck expo:typecheck",
     "spa": "bun --elide-lines=0 --filter @workspace/spa",
     "web": "bun --elide-lines=0 --filter @workspace/web",
     "expo": "bun --elide-lines=0 --filter @workspace/expo",
-    "hono": "bun --elide-lines=0 --filter @workspace/hono",
     "spa:dev": "bun spa dev",
     "spa:dev:prod": "bun spa dev:prod",
     "spa:build": "bun spa build",
@@ -52,12 +51,7 @@
     "expo:build:ios": "bun expo build:ios",
     "expo:build:ios:local": "bun expo build:ios:local",
     "expo:android": "bun expo android",
-    "expo:ios": "bun expo ios",
-    "hono:typecheck": "bun hono typecheck",
-    "hono:dev": "bun hono dev",
-    "hono:node:dev": "bun hono node:dev",
-    "hono:node:build": "bun hono node:build",
-    "hono:node:start": "bun hono node:start"
+    "expo:ios": "bun expo ios"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.12.0",
