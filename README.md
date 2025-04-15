@@ -3,6 +3,7 @@
 Todo
 
 - [ ] Make sure CI/CD works
+- [ ] Use changesets for monorepo versioning
 
 ## @workspace/web
 

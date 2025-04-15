@@ -62,6 +62,7 @@ export function SplashScreenWrapper({ children }: PropsWithChildren) {
       duration: 300,
       useNativeDriver: true,
     }).start(() => {
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setIsSplashAnimationComplete(true)
     })
   }, [opacity])
