@@ -17,13 +17,13 @@
     "./utils/*": "./src/utils/*.ts"
   },
   "peerDependencies": {
-    "@internationalized/date": ">=3.7.0",
-    "@tanstack/react-query": ">=5.67.2",
-    "ky": ">=1.7.5",
-    "radashi": ">=12.3.4",
-    "react": ">=19.0.0",
-    "sonner": ">=2.0.1",
-    "type-fest": ">=4.37.0",
+    "@internationalized/date": ">=3.8.0",
+    "@tanstack/react-query": ">=5.74.3",
+    "ky": ">=1.8.1",
+    "radashi": ">=12.4.0",
+    "react": ">=19.1.0",
+    "sonner": ">=2.0.3",
+    "type-fest": ">=4.39.1",
     "zod": ">=3.24.2"
   },
   "peerDependenciesMeta": {

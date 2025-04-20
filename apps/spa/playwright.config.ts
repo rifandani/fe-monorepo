@@ -1,13 +1,4 @@
 import { defineConfig, devices } from '@playwright/test'
-import dotenv from 'dotenv'
-
-/**
- * Read environment variables from file.
- * `import.meta.env` doesn't works, that's why we use this
- */
-dotenv.config({
-  path: './.env.development',
-})
 
 /**
  * http://localhost:3001
