@@ -1,5 +1,4 @@
 import type { Instrumentation } from 'next'
-import { registerOTel } from '@vercel/otel'
 
 /**
  * Instrumentation is the process of using code to integrate monitoring and logging tools into your application.
@@ -7,7 +6,6 @@ import { registerOTel } from '@vercel/otel'
  */
 export function register() {
   // process.env.NEXT_RUNTIME
-  registerOTel({ serviceName: '@workspace/web' })
 }
 
 /**
