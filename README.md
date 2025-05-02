@@ -9,7 +9,7 @@ Todo
 
 ### Note
 
-- we don't use `@vercel/otel` because it needs a third party service to be setup (e.g. sentry, datadog, langwatch)
+- we don't use `@vercel/otel` because it needs a third party service to setup (e.g. sentry, datadog, langwatch)
 
 ### Todo
 
