@@ -69,6 +69,7 @@ ios/
 build-*.tar.gz
 
 # Native
+.kotlin/
 *.orig.*
 *.jks
 *.p8
