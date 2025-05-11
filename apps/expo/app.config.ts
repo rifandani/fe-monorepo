@@ -19,6 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     platforms: ['android', 'ios'],
+    newArchEnabled: true,
     assetBundlePatterns: ['**/*'],
     updates: {
       fallbackToCacheTimeout: 0,
@@ -31,6 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: './src/core/assets/adaptive-icon.png',
         backgroundColor: '#000',
       },
+      edgeToEdgeEnabled: true,
     },
     ios: {
       bundleIdentifier: bundleId,
@@ -63,6 +65,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           //   image: './src/core/assets/splash-dark.png',
           //   backgroundColor: '#000000',
           // },
+          // imageWidth: 200,
           resizeMode: 'contain',
           backgroundColor: '#ffffff',
         },

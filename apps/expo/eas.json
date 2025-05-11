@@ -5,6 +5,8 @@
   },
   "build": {
     "development": {
+      // https: //docs.expo.dev/build-reference/infrastructure/#android-server-images
+      "bun": "1.2.4",
       "developmentClient": true,
       "distribution": "internal",
       /**
@@ -30,6 +32,7 @@
       }
     },
     "production": {
+      "bun": "1.2.4",
       "autoIncrement": true,
       "distribution": "store",
       "env": {

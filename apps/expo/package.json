@@ -9,10 +9,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "install:fix": "expo install --fix",
-    "prebuild": "expo prebuild",
-    "prebuild:clean": "expo prebuild --clean",
-    "dev": "expo start --dev-client",
-    "dev:clean": "expo start --dev-client -c",
+    "prebuild": "expo prebuild --clean",
+    "dev": "expo start --dev-client -c",
     "build:android": "eas build --profile development --platform android",
     "build:android:local": "eas build --profile development --platform android --local",
     "build:ios": "eas build --profile development-simulator --platform ios",
@@ -20,7 +18,9 @@
     "android": "expo run:android",
     "android:debug": "expo run:android --variant debug",
     "android:release": "expo run:android --variant release",
-    "ios": "expo run:ios"
+    "android:reverse:3000": "adb reverse tcp:3000 tcp:3000",
+    "ios": "expo run:ios",
+    "ios:device": "expo run:ios -d"
   },
   "dependencies": {
     "@dev-plugins/react-navigation": "0.3.1",
