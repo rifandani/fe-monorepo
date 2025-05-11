@@ -2,7 +2,7 @@
   "name": "fe-monorepo",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "bun@1.2.9",
+  "packageManager": "bun@1.2.13",
   "description": "React, Next.js, and Expo monorepo template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
