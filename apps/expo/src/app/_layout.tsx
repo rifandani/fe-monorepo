@@ -1,5 +1,9 @@
+import { AppI18nProvider } from '@/core/providers/i18n/provider'
 import { translate } from '@/core/providers/i18n/translate'
+import { AppQueryProvider } from '@/core/providers/query/provider'
 import { SplashScreenWrapper } from '@/core/providers/splash-screen-wrapper'
+import { AppTamaguiProvider } from '@/core/providers/tamagui/provider'
+import { AppToastProvider } from '@/core/providers/toast/provider'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 
@@ -12,7 +16,7 @@ SplashScreen.setOptions({
   fade: true,
 })
 
-function _App() {
+function App() {
   return (
     <Stack initialRouteName="(tabs)">
       <Stack.Screen
@@ -38,7 +42,7 @@ export default function RootLayout() {
     <SplashScreenWrapper>
       Test
 
-      {/* <AppI18nProvider>
+      <AppI18nProvider>
         <AppQueryProvider>
           <AppTamaguiProvider>
             <AppToastProvider>
@@ -46,7 +50,7 @@ export default function RootLayout() {
             </AppToastProvider>
           </AppTamaguiProvider>
         </AppQueryProvider>
-      </AppI18nProvider> */}
+      </AppI18nProvider>
     </SplashScreenWrapper>
   )
 }

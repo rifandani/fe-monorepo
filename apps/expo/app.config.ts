@@ -41,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       eas: {
-        projectId: '975abfb8-c490-47ad-ab6d-7b7c8c1a063d',
+        projectId: '28f2412b-baec-4843-b0d3-c51706061d29',
       },
     },
     experiments: {
@@ -74,11 +74,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         'expo-font',
         {
           fonts: [
-            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_300Light.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_400Regular.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_500Medium.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_600SemiBold.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/SpaceGrotesk_700Bold.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/600SemiBold/SpaceGrotesk_600SemiBold.ttf',
+            '../../node_modules/@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf',
           ],
         },
       ],

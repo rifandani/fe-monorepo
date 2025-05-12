@@ -1,11 +1,11 @@
-# React Monorepo
+# Frontend React Monorepo
 
-Todo
+### Todo
 
 - [ ] Make sure CI/CD works
 - [ ] Maybe use changesets for monorepo versioning
 
-Upgrading Dependencies
+### Upgrading Dependencies\_
 
 - Remember to always use EXACT version for each dependency
 - Run `bun outdated` to check for outdated dependencies in root and run `bun upgrade --latest` to upgrade all dependencies in root to the latest version
@@ -30,28 +30,40 @@ Upgrading Dependencies
 
 ## @workspace/expo
 
+Creating development build failed because of:
+
+```bash
+ERROR  Warning: Error: Incompatible React versions: The "react" and "react-native-renderer" packages must have the exact same version. Instead got:
+│   - react:                  19.1.0
+│   - react-native-renderer:  19.0.0
+```
+
+- [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
+
+### Todo
+
+- [ ] E2E test with maestro
+
 ### Prerequisite
 
 - Java 17+
+- Install EAS CLI globally using `npm i -g eas-cli`
 
 ### How to upgrade?
 
-If there are any new versions of Expo SDK, here's how to upgrade the app to the next versions:
+If there are any new versions of Expo SDK, please check the corresponding changelog first (refer to the "Deprecations, renamings, and removals" section above for breaking changes that are most likely to impact our app), most of the time here's how to upgrade the app to the next versions:
 
 ```bash
-# Update to the latest version of EAS CLI
-$ npm i -g eas-cli
-
 # Upgrade all dependencies to match Expo SDK 53
 $ npx expo install expo@^53.0.0 --fix
 
 # Check for any possible known issues
-$ npx expo-doctor@latest
+$ bun expo doctor
 
 # Next, in `eas.json` file, update `cli.version` to the new version of `eas-cli` global package
 # Next, upgrade xcode / android studio if needed
-# Next, Delete the android and ios directories and run `bun run prebuild` again
-# Next, Recreate a development build
+# Next, delete the android and ios directories and run `bun run prebuild` again
+# Next, recreate a development build
 ```
 
 ### Development
@@ -60,14 +72,21 @@ Every single time you change the `app.json` file / install native libraries, you
 
 ```bash
 # or regenerate native project from scratch
-$ bun run prebuild
+$ npm run prebuild -w @workspace/expo
+```
+
+Then, create a development build:
+
+```bash
+# create a development build
+$ npm run android -w @workspace/expo
 ```
 
 After that, to start the app:
 
 ```bash
-# Runs the app
-$ bun run dev
+# Run the app
+$ npm run dev -w @workspace/expo
 ```
 
 ### Testing
@@ -75,13 +94,6 @@ $ bun run dev
 Coming Soon
 
 ### Build
-
-To build the app, we use global `eas-cli` bun package. Install it globally as it is the recommendation from the expo team.
-
-```bash
-# install eas-cli globally
-$ npm i -g eas-cli
-```
 
 There are 2 main target build, android and ios. For further details, please check `eas.json` file.
 
