@@ -17,7 +17,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     scheme: 'expoapp',
     version: '1.0.0',
     orientation: 'portrait',
-    userInterfaceStyle: 'automatic',
+    userInterfaceStyle: 'automatic', // to support dark mode
     platforms: ['android', 'ios'],
     newArchEnabled: true,
     assetBundlePatterns: ['**/*'],
@@ -51,23 +51,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-localization',
       'expo-router',
       [
-        'expo-video',
-        {
-          supportsBackgroundPlayback: true,
-          supportsPictureInPicture: true,
-        },
-      ],
-      [
         'expo-splash-screen',
         {
-          image: './src/core/assets/splash.png',
+          image: './src/core/assets/splash-icon.png',
           // dark: {
           //   image: './src/core/assets/splash-dark.png',
           //   backgroundColor: '#000000',
           // },
-          // imageWidth: 200,
+          imageWidth: 200,
           resizeMode: 'contain',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#25292E',
         },
       ],
       [

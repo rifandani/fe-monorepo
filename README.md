@@ -30,12 +30,39 @@
 
 ## @workspace/expo
 
-Creating development build failed because of:
+### Fixme
+
+- [ ] running `bun android` failed because of: (might be related to `peerDependencies` in `@workspace/core` package)
 
 ```bash
 ERROR  Warning: Error: Incompatible React versions: The "react" and "react-native-renderer" packages must have the exact same version. Instead got:
 │   - react:                  19.1.0
 │   - react-native-renderer:  19.0.0
+```
+
+- [ ] running `bun build:android:local` successfully created a development build, but failed when running `bun dev` because of:
+
+```bash
+ERROR  Warning: TypeError: Cannot convert undefined value to object
+Call Stack
+│   CheckAuthWrapper (apps/expo/src/core/components/check-auth-wrapper.tsx:7:44)
+│   RNCSafeAreaView (<anonymous>)
+│   TabsHomeScreen(./(tabs)/home.tsx) (<anonymous>)
+│   RNSScreenContainer (<anonymous>)
+│   TabsLayout(./(tabs)/_layout.tsx) (<anonymous>)
+│   ScreenContentWrapper (<anonymous>)
+│   RNSScreenStack (<anonymous>)
+│   App (<anonymous>)
+│   AppToastProvider (apps/expo/src/core/providers/toast/provider.tsx:13:44)
+│   AppTamaguiProvider (apps/expo/src/core/providers/tamagui/provider.tsx:15:46)
+│   AppQueryProvider (apps/expo/src/core/providers/query/provider.tsx:6:44)
+│   AppStateLanguageListener (apps/expo/src/core/providers/i18n/provider.tsx:8:45)
+│   AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)
+│   SplashScreenWrapper (apps/expo/src/core/providers/splash-screen-wrapper.tsx:52:47)
+│   RootLayout(./_layout.tsx) (<anonymous>)
+│   RNCSafeAreaProvider (<anonymous>)
+│   App (<anonymous>)
+│   ErrorOverlay (<anonymous>)
 ```
 
 - [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
