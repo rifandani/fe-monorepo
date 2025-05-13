@@ -29,6 +29,16 @@ interface StandardProps<T> {
  * - If there is no value in props, the component manage state by self (Uncontrolled Component)
  * - If props has the value field, then the state is controlled by it's parent (Controlled Component)
  * - If there is an `onChange` field in props, the `onChange` will be trigger when state change
+ *
+ * @example
+ *
+ * ```tsx
+ * const [value, setValue] = useControllableValue({
+ *   value: 1,
+ *   onChange: (v) => {
+ *     console.log(v)
+ *   }
+ * })
  */
 // biome-ignore lint/suspicious/noExplicitAny: intended
 export function useControllableValue<T = any>(

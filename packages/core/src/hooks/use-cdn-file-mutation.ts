@@ -10,7 +10,6 @@ import {
   cdnKeys,
   cdnRepositories,
 } from '@workspace/core/apis/cdn'
-import { toast } from 'sonner'
 
 interface Opt {
   key: CdnValidKeys
@@ -19,8 +18,6 @@ interface Opt {
 
 /**
  * Lazily download file based on input url.
- *
- * Includes error handling in `onError` for convenience.
  */
 export function useCdnFileMutation(
   opt: Opt,
@@ -29,17 +26,10 @@ export function useCdnFileMutation(
     'mutationKey' | 'mutationFn'
   >,
 ) {
-  const { onError, ..._mutationOptions } = mutationOptions ?? {}
-
   const mutation = useMutation<GetCdnFileSuccessSchema, HTTPError, string>({
     mutationKey: cdnKeys[opt.key](opt.url),
     mutationFn: url => cdnRepositories().getCdnFile({ url }),
-    onError: (error, variables, context) => {
-      toast.error(error.message)
-
-      onError?.(error, variables, context)
-    },
-    ..._mutationOptions,
+    ...mutationOptions,
   })
 
   return mutation

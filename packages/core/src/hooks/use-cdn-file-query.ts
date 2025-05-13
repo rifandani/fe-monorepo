@@ -10,8 +10,6 @@ import {
   cdnKeys,
   cdnRepositories,
 } from '@workspace/core/apis/cdn'
-import React from 'react'
-import { toast } from 'sonner'
 
 interface Opt {
   key: CdnValidKeys
@@ -20,9 +18,7 @@ interface Opt {
 }
 
 /**
- * Eagerly download (GET) file based on input url.
- *
- * Includes error handling in "effect" for convenience.
+ * Eagerly download (GET) file based on input url. Doesn't handle on error.
  */
 export function useCdnFileQuery(
   opt: Opt,
@@ -47,12 +43,6 @@ export function useCdnFileQuery(
       lastModified: Date.now(),
     })
     : null
-
-  React.useEffect(() => {
-    if (query.error) {
-      toast.error(query.error.message)
-    }
-  }, [query.error])
 
   return { ...query, file }
 }
