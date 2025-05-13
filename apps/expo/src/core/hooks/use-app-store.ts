@@ -1,5 +1,5 @@
-import { loginApiSuccessResponseSchema } from '@/auth/schemas/login'
 import { appStateStorage, appStorageId } from '@/core/services/mmkv'
+import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { z } from 'zod'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
@@ -8,13 +8,13 @@ export type AppStoreState = z.infer<typeof appStoreStateSchema>
 type AppStore = z.infer<typeof _appStoreSchema>
 
 const appStoreStateSchema = z.object({
-  user: loginApiSuccessResponseSchema.nullable(),
+  user: authLoginResponseSchema.nullable(),
   theme: z.enum(['system', 'light', 'dark']),
 })
 const appStoreActionSchema = z.object({
   reset: z.function().args(z.void()).returns(z.void()),
   resetUser: z.function().args(z.void()).returns(z.void()),
-  setUser: z.function().args(loginApiSuccessResponseSchema).returns(z.void()),
+  setUser: z.function().args(authLoginResponseSchema).returns(z.void()),
   setTheme: z.function().args(appStoreStateSchema.shape.theme).returns(z.void()),
 })
 const _appStoreSchema = appStoreStateSchema.merge(appStoreActionSchema)

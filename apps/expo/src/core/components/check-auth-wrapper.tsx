@@ -1,19 +1,77 @@
 import type { PropsWithChildren } from 'react'
-import { useCheckAuth } from '@/auth/hooks/use-check-auth'
-import { BaseSpinner } from '@/core/components/spinner/base-spinner'
+import { useAppStore } from '@/core/hooks/use-app-store'
 import { translate } from '@/core/providers/i18n/translate'
-import { Paragraph, YStack } from 'tamagui'
+import { Redirect, useFocusEffect, usePathname } from 'expo-router'
+import { useCallback, useState } from 'react'
+import { Paragraph, Spinner, YStack } from 'tamagui'
+
+/**
+ * Side effect to check user authentication status and handle redirects
+ *
+ * @returns { isAuthenticated, isLoading } - Authentication status and loading state
+ *
+ * @example
+ *
+ * ```tsx
+ * const { isAuthenticated, isLoading } = useCheckAuth()
+ * if (isLoading) return <LoadingSpinner />
+ * ```
+ */
+function useCheckAuth() {
+  const pathname = usePathname()
+  const user = useAppStore(state => state.user)
+  const resetUser = useAppStore(state => state.resetUser)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useFocusEffect(
+    useCallback(() => {
+      try {
+        const isLoginRoute = pathname === '/login'
+
+        if (!user && !isLoginRoute) {
+          // if user is not authenticated and not on login page
+          setIsAuthenticated(false)
+        }
+        else if (user && isLoginRoute) {
+          // If user is authenticated but on login page, reset user (logout)
+          // Consider either redirecting to home or resetting user, not both
+          resetUser()
+          setIsAuthenticated(false)
+        }
+        else if (user) {
+          // User is authenticated and not on login page
+          setIsAuthenticated(true)
+        }
+      }
+      catch (error) {
+        // Handle navigation errors
+        console.error('[useCheckAuth]: Authentication check failed', error)
+        setIsAuthenticated(false)
+      }
+      finally {
+        setIsLoading(false)
+      }
+    }, [pathname, resetUser, user]),
+  )
+
+  return { isAuthenticated, isLoading }
+}
 
 export function CheckAuthWrapper({ children }: PropsWithChildren) {
-  const [authed] = useCheckAuth()
+  const { isAuthenticated, isLoading } = useCheckAuth()
 
-  if (!authed) {
+  if (isLoading) {
     return (
       <YStack flex={1} justify="center" items="center" gap="$5">
-        <BaseSpinner size="large" preset="primary" />
+        <Spinner size="large" color="$primary" />
         <Paragraph>{translate('auth:checkingAuth')}</Paragraph>
       </YStack>
     )
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/login" />
   }
 
   return children

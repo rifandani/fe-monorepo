@@ -8,12 +8,11 @@ import { useGetUser } from '@/user/hooks/use-get-user'
 import Feather from '@expo/vector-icons/Feather'
 import { nativeApplicationVersion } from 'expo-application'
 import { Image } from 'expo-image'
-import { useRouter } from 'expo-router'
-import { getTokenValue, H6, ListItem, Paragraph, Separator, XStack, YStack } from 'tamagui'
+import { getToken, getTokens, getTokenValue, H6, ListItem, Paragraph, Separator, XStack, YStack } from 'tamagui'
 
 export default function TabsProfileScreen() {
-  const { push } = useRouter()
   const user = useAppStore(state => state.user)
+  const resetUser = useAppStore(state => state.resetUser)
   const { data } = useGetUser({
     // `user` should not be `null`, we already check it in `CheckAuthWrapper` component in _layout
     id: user!.id,
@@ -31,8 +30,8 @@ export default function TabsProfileScreen() {
         />
 
         <YStack flex={1}>
-          <H6 background="$backgroundTransparent">{data?.username}</H6>
-          <Paragraph>{data?.email}</Paragraph>
+          <H6 size="$4">{data?.username}</H6>
+          <Paragraph size="$3">{data?.email}</Paragraph>
 
           <BaseButton mt="auto" p="$2" width="$12" icon={<Feather name="edit" />}>
             {translate('user:editProfile')}
@@ -47,9 +46,6 @@ export default function TabsProfileScreen() {
 
       <ProfileThemeChanger />
       <ProfileListItem title="Language" icon={<Feather name="globe" />} />
-      <ProfileListItem title="Display" icon={<Feather name="tv" />} />
-      <ProfileListItem title="Feed preferences" icon={<Feather name="phone" />} />
-      <ProfileListItem title="Subscriptions" icon={<Feather name="credit-card" />} />
 
       <Separator my="$2" />
 
@@ -57,18 +53,21 @@ export default function TabsProfileScreen() {
       <ProfileListItem title="Clear history" icon={<Feather name="file" />} />
       <ProfileListItem
         pressStyle={{
-          background: '$red2',
+          background: 'red',
         }}
-        icon={<Feather name="log-out" color={getTokenValue('$color.10')} />}
-        iconAfter={<Feather name="chevron-right" color={getTokenValue('$color.10')} />}
+        icon={<Feather name="log-out" color={getToken('$color.red10', 'color', true)} />}
+        iconAfter={<Feather name="chevron-right" color={getTokenValue('$color.red1')} />}
         onPress={() => {
-          push('/login')
+          resetUser()
         }}
       >
-        <ListItem.Text color="$red10">Logout</ListItem.Text>
+        <ListItem.Text color="$red10">
+          {JSON.stringify(getTokens({ prefixed: true }).color)}
+          Logout
+        </ListItem.Text>
       </ProfileListItem>
 
-      <Paragraph text="center" marginEnd="auto" color="slategray">
+      <Paragraph text="center" color="slategray">
         {translate('common:appVersion')}
         {' '}
         {nativeApplicationVersion}

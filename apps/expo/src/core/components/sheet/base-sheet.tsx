@@ -41,7 +41,9 @@ export function BaseSheet<T extends BaseSheetState>({
 
       <Sheet.Handle />
 
-      <Sheet.Frame {...frameProps}>{children}</Sheet.Frame>
+      <Sheet.Frame {...frameProps}>
+        {children}
+      </Sheet.Frame>
     </Sheet>
   )
 }
