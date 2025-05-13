@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
-import { queryClient } from '@/core/providers/query/query-client'
 import { useReactQueryDevTools } from '@dev-plugins/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/core/providers/query/query-client'
 
 export function AppQueryProvider({ children }: PropsWithChildren) {
   // integrate with react query devtools

@@ -1,11 +1,11 @@
 import type { BaseSheetState } from '@/core/components/sheet/types'
+import Feather from '@expo/vector-icons/Feather'
+import React, { useState } from 'react'
+import { ListItem, Separator, YGroup } from 'tamagui'
 import { BaseSheet } from '@/core/components/sheet/base-sheet'
 import { useAppStore } from '@/core/hooks/use-app-store'
 import { translate } from '@/core/providers/i18n/translate'
 import { ProfileListItem } from '@/user/components/profile-list-item'
-import Feather from '@expo/vector-icons/Feather'
-import React, { useState } from 'react'
-import { ListItem, Separator, YGroup } from 'tamagui'
 
 export function ProfileThemeChanger() {
   const theme = useAppStore(state => state.theme)

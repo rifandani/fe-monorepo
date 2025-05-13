@@ -1,6 +1,6 @@
 import type { ResourceListRequestSchema } from '@workspace/core/apis/core'
-import { http } from '@/core/services/http'
 import { z } from 'zod'
+import { http } from '@/core/services/http'
 
 export const userSchema = z.object({
   id: z.number(),

@@ -1,8 +1,8 @@
-import { appStateStorage, appStorageId } from '@/core/services/mmkv'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { z } from 'zod'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { appStateStorage, appStorageId } from '@/core/services/mmkv'
 
 export type AppStoreState = z.infer<typeof appStoreStateSchema>
 type AppStore = z.infer<typeof _appStoreSchema>

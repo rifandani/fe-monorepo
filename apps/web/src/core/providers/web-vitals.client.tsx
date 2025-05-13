@@ -1,6 +1,6 @@
 'use client'
 
-import { loggerBrowser } from '@workspace/core/utils/logger'
+import { loggerBrowser } from '@/core/utils/logger'
 import { useReportWebVitals } from 'next/web-vitals'
 
 export function WebVitals() {

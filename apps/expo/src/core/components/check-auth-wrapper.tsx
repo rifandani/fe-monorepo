@@ -1,9 +1,10 @@
 import type { PropsWithChildren } from 'react'
-import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 import { Redirect, useFocusEffect, usePathname } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { Paragraph, Spinner, YStack } from 'tamagui'
+import { useAppStore } from '@/core/hooks/use-app-store'
+import { translate } from '@/core/providers/i18n/translate'
+import { logger } from '@/core/utils/logger'
 
 /**
  * Side effect to check user authentication status and handle redirects
@@ -46,7 +47,7 @@ function useCheckAuth() {
       }
       catch (error) {
         // Handle navigation errors
-        console.error('[useCheckAuth]: Authentication check failed', error)
+        logger.error('[useCheckAuth]: Authentication check failed', error)
         setIsAuthenticated(false)
       }
       finally {

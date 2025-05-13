@@ -1,4 +1,4 @@
-import { loggerBrowser } from '@workspace/core/utils/logger'
+import { loggerBrowser } from '@/core/utils/logger'
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
 
 /**

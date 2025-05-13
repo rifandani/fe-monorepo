@@ -1,5 +1,5 @@
 import { Entry } from '@/core/entry'
-import { loggerBrowser } from '@workspace/core/utils/logger'
+import { loggerBrowser } from '@/core/utils/logger'
 import { createRoot } from 'react-dom/client'
 import '@/core/styles/globals.css'
 

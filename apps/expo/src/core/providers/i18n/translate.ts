@@ -1,5 +1,5 @@
-import type { TxKeyPath } from '@/core/providers/i18n/client'
 import type { TOptions } from 'i18next'
+import type { TxKeyPath } from '@/core/providers/i18n/client'
 import i18n from 'i18next'
 
 /**

@@ -1,13 +1,13 @@
-import type { ToastCustomData } from '@/core/types/component'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import type { HTTPError, TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
-import { userApi, userKeys } from '@/user/api/user'
+import type { ToastCustomData } from '@/core/types/component'
 import { useToastController } from '@tamagui/toast'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { ZodError } from 'zod'
 import { fromZodError } from 'zod-validation-error'
+import { userApi, userKeys } from '@/user/api/user'
 
 type Params = Parameters<typeof userKeys.detail>[0]
 type Success = Awaited<
