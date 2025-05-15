@@ -39,7 +39,7 @@ const TableContext = React.createContext<TableProps>({
   allowResize: false,
 })
 
-const useTableContext = () => React.useContext(TableContext)
+const useTableContext = () => React.use(TableContext)
 
 function Table({ children, className, ...props }: TableProps) {
   return (

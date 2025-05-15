@@ -1,7 +1,3 @@
-import { useAuthLogin } from '@/auth/hooks/use-auth-login'
-import { BaseButton } from '@/core/components/button/base-button'
-import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
@@ -9,6 +5,10 @@ import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Checkbox, Form, Input, Label, Paragraph, Spinner, XStack } from 'tamagui'
+import { useAuthLogin } from '@/auth/hooks/use-auth-login'
+import { BaseButton } from '@/core/components/button/base-button'
+import { useAppStore } from '@/core/hooks/use-app-store'
+import { translate } from '@/core/providers/i18n/translate'
 
 function RememberMeCheckbox() {
   const [state, setState] = useState({ rememberMe: false })

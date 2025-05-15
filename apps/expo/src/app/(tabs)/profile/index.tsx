@@ -1,3 +1,7 @@
+import Feather from '@expo/vector-icons/Feather'
+import { nativeApplicationVersion } from 'expo-application'
+import { Image } from 'expo-image'
+import { getToken, getTokens, getTokenValue, H6, ListItem, Paragraph, Separator, XStack, YStack } from 'tamagui'
 import { BaseButton } from '@/core/components/button/base-button'
 import { BLURHASH } from '@/core/constants/global'
 import { useAppStore } from '@/core/hooks/use-app-store'
@@ -5,10 +9,6 @@ import { translate } from '@/core/providers/i18n/translate'
 import { ProfileListItem } from '@/user/components/profile-list-item'
 import { ProfileThemeChanger } from '@/user/components/profile-theme-changer'
 import { useGetUser } from '@/user/hooks/use-get-user'
-import Feather from '@expo/vector-icons/Feather'
-import { nativeApplicationVersion } from 'expo-application'
-import { Image } from 'expo-image'
-import { getToken, getTokens, getTokenValue, H6, ListItem, Paragraph, Separator, XStack, YStack } from 'tamagui'
 
 export default function TabsProfileScreen() {
   const user = useAppStore(state => state.user)

@@ -1,9 +1,9 @@
-import { LoginForm } from '@/auth/components/login-form'
-import { translate } from '@/core/providers/i18n/translate'
 import { Link } from 'expo-router'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { H2, Paragraph, styled } from 'tamagui'
+import { LoginForm } from '@/auth/components/login-form'
+import { translate } from '@/core/providers/i18n/translate'
 
 const StyledSafeAreaView = styled(SafeAreaView, {
   name: 'SAV',

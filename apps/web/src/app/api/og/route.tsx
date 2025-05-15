@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
-import { logger } from '@/core/utils/logger'
 import { ImageResponse } from 'next/og'
+import { logger } from '@/core/utils/logger'
 
 // NOTE: vercel-related
 // export const runtime = 'edge'

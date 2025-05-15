@@ -1,9 +1,9 @@
+import { Icon } from '@iconify/react'
+import { useNavigate } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
 import { Menu } from '@/core/components/ui/menu'
 import { useI18n } from '@/core/hooks/use-i18n'
-import { Icon } from '@iconify/react'
-import { useNavigate } from '@tanstack/react-router'
 
 export function ProfileMenu() {
   const [t] = useI18n()

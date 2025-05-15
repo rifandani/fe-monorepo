@@ -1,7 +1,7 @@
-import { CheckAuthWrapper } from '@/core/components/check-auth-wrapper'
 import { Slot } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styled } from 'tamagui'
+import { CheckAuthWrapper } from '@/core/components/check-auth-wrapper'
 
 const SAV = styled(SafeAreaView, {
   name: 'SAV',

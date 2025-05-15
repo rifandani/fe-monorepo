@@ -2,7 +2,7 @@
 
 import type { GroupProps, SeparatorProps, ToolbarProps } from 'react-aria-components'
 import type { ToggleProps } from './toggle'
-import { createContext, useContext } from 'react'
+import { createContext, use } from 'react'
 import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { composeTailwindRenderProps } from './primitive'
@@ -52,14 +52,14 @@ function ToolbarGroup({ isDisabled, className, ...props }: ToolbarGroupProps) {
 
 type ToggleItemProps = ToggleProps
 function ToolbarItem({ isDisabled, ref, ...props }: ToggleItemProps) {
-  const context = useContext(ToolbarGroupContext)
+  const context = use(ToolbarGroupContext)
   const effectiveIsDisabled = isDisabled || context.isDisabled
 
   return <Toggle ref={ref} isDisabled={effectiveIsDisabled} {...props} />
 }
 type ToolbarSeparatorProps = SeparatorProps
 function ToolbarSeparator({ className, ...props }: ToolbarSeparatorProps) {
-  const { orientation } = useContext(ToolbarContext)
+  const { orientation } = use(ToolbarContext)
   const effectiveOrientation = orientation === 'vertical' ? 'horizontal' : 'vertical'
   return (
     <Separator

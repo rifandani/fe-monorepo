@@ -1,9 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { NavigateOptions, RegisteredRouter, ToPathOption } from '@tanstack/react-router'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
-import { Link } from '@/core/components/ui/link'
-import { useI18n } from '@/core/hooks/use-i18n'
-import { Devtools } from '@/core/providers/devtools'
 import {
   createRootRouteWithContext,
   Outlet,
@@ -11,6 +7,10 @@ import {
 } from '@tanstack/react-router'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
+import { Link } from '@/core/components/ui/link'
+import { useI18n } from '@/core/hooks/use-i18n'
+import { Devtools } from '@/core/providers/devtools'
 
 declare module 'react-aria-components' {
   interface RouterConfig {

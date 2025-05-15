@@ -1,6 +1,6 @@
-import { queryClient } from '@/core/providers/query/client'
 import { Icon } from '@iconify/react'
 import { createRouter, ErrorComponent } from '@tanstack/react-router'
+import { queryClient } from '@/core/providers/query/client'
 import { routeTree } from '../../../routeTree.gen'
 
 // Register the router instance for type safety

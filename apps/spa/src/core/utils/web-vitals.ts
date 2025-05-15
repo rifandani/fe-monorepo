@@ -1,5 +1,5 @@
-import { loggerBrowser } from '@/core/utils/logger'
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
+import { loggerBrowser } from '@/core/utils/logger'
 
 /**
  * Report web vitals to the console. Enabled on production for now. Use per page basis.

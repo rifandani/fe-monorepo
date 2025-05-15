@@ -1,8 +1,8 @@
-import { queryClient } from '@/core/providers/query/client'
-import { router } from '@/core/providers/router/client'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import React from 'react'
+import { queryClient } from '@/core/providers/query/client'
+import { router } from '@/core/providers/router/client'
 
 const ReactQueryDevtoolsProduction = React.lazy(() =>
   import('@tanstack/react-query-devtools/build/modern/production.js').then(

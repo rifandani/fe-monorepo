@@ -155,7 +155,7 @@ function Track(props: SliderTrackProps) {
 }
 
 function Filler({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const state = React.useContext(SliderStateContext)
+  const state = React.use(SliderStateContext)
   const { orientation, getThumbPercent, values } = state || {}
 
   const getStyle = () => {

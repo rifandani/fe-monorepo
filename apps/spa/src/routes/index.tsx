@@ -1,12 +1,12 @@
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useHead } from '@unhead/react'
+import { toast } from 'sonner'
 import { validateAuthUser } from '@/auth/utils/storage'
 import { LanguageToggle } from '@/core/components/language-toggle'
 import { ProfileMenu } from '@/core/components/profile-menu'
 import { ThemeToggle } from '@/core/components/theme-toggle'
 import { useI18n } from '@/core/hooks/use-i18n'
 import { reportWebVitals } from '@/core/utils/web-vitals'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { useHead } from '@unhead/react'
-import { toast } from 'sonner'
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ location }) => {

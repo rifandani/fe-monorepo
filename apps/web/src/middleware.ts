@@ -1,9 +1,9 @@
 import type { MiddlewareConfig, NextRequest } from 'next/server'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { createMiddleware, defaults } from '@nosecone/next'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 
 // Specify protected and public routes
 const protectedRoutes = ['/']

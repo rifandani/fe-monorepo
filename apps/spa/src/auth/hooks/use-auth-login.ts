@@ -4,7 +4,6 @@ import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ZodError } from 'zod'
-import { http } from '@/core/services/http'
 import {
   useMutation,
   useMutationState,
@@ -15,6 +14,7 @@ import {
 } from '@workspace/core/apis/auth'
 import { HTTPError } from 'ky'
 import { toast } from 'sonner'
+import { http } from '@/core/services/http'
 
 type Params = Parameters<typeof authKeys.login>[0]
 type Success = Awaited<ReturnType<ReturnType<typeof authRepositories>['login']>>

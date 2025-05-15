@@ -1,9 +1,9 @@
-import { BaseButton } from '@/core/components/button/base-button'
-import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 import { Link, Stack } from 'expo-router'
 import React from 'react'
 import { H1, YStack } from 'tamagui'
+import { BaseButton } from '@/core/components/button/base-button'
+import { useAppStore } from '@/core/hooks/use-app-store'
+import { translate } from '@/core/providers/i18n/translate'
 
 export default function Unmatched() {
   const user = useAppStore(state => state.user)

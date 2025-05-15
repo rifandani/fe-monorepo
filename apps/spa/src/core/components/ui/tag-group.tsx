@@ -144,7 +144,7 @@ interface TagProps extends TagPrimitiveProps {
 
 function Tag({ className, intent, shape, ...props }: TagProps) {
   const textValue = typeof props.children === 'string' ? props.children : undefined
-  const groupContext = React.useContext(TagGroupContext)
+  const groupContext = React.use(TagGroupContext)
 
   return (
     <TagPrimitive

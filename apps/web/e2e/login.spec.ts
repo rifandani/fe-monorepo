@@ -1,5 +1,5 @@
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { expect, test } from '@playwright/test'
+import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 
 const validUsername = 'emilys'
 const validPassword = 'emilyspass'

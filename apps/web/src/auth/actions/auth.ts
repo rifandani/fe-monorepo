@@ -1,15 +1,15 @@
 'use server'
 
 import type { ActionResult } from '@/core/utils/action'
+import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { tryit } from 'radashi'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { http } from '@/core/services/http'
 import { actionClient } from '@/core/utils/action'
 import { repositoryErrorMapper } from '@/core/utils/error'
 import { logger } from '@/core/utils/logger'
-import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { tryit } from 'radashi'
 
 /**
  * Server action to handle user login.

@@ -1,11 +1,11 @@
-import { AppProviders } from '@/core/providers/providers.client'
-import { createMetadata } from '@/core/utils/seo'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { connection } from 'next/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { AppProviders } from '@/core/providers/providers.client'
+import { createMetadata } from '@/core/utils/seo'
 import '@/core/styles/globals.css'
 
 const fontSans = Geist({

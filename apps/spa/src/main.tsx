@@ -1,6 +1,6 @@
+import { createRoot } from 'react-dom/client'
 import { Entry } from '@/core/entry'
 import { loggerBrowser } from '@/core/utils/logger'
-import { createRoot } from 'react-dom/client'
 import '@/core/styles/globals.css'
 
 const root = document.getElementById('root')

@@ -45,7 +45,8 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 ### Todo
 
-- [ ] remove `tamagui`, install `nativewind` and `gluestack`.
+<!-- - [ ] remove `tamagui`, install `nativewind` and `gluestack`. -->
+
 - [ ] expo eslint config
 - [ ] expo atlas analyze bundle
 - [ ] expo dev plugin mmkv

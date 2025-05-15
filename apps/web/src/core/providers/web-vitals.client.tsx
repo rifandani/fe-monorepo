@@ -1,7 +1,7 @@
 'use client'
 
-import { loggerBrowser } from '@/core/utils/logger'
 import { useReportWebVitals } from 'next/web-vitals'
+import { loggerBrowser } from '@/core/utils/logger'
 
 export function WebVitals() {
   useReportWebVitals((metric) => {

@@ -1,7 +1,7 @@
-import { CheckAuthWrapper } from '@/core/components/check-auth-wrapper'
-import { translate } from '@/core/providers/i18n/translate'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { H1, styled, YStack } from 'tamagui'
+import { CheckAuthWrapper } from '@/core/components/check-auth-wrapper'
+import { translate } from '@/core/providers/i18n/translate'
 
 const SAV = styled(SafeAreaView, {
   name: 'SAV',

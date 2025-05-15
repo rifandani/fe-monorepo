@@ -1,8 +1,8 @@
+import { Icon } from '@iconify/react'
+import { useTranslations } from 'next-intl'
 import { LoginForm } from '@/auth/components/login-form.client'
 import { Link } from '@/core/components/ui'
 import { createMetadata } from '@/core/utils/seo'
-import { Icon } from '@iconify/react'
-import { useTranslations } from 'next-intl'
 
 export const metadata = createMetadata({
   title: 'Login',
