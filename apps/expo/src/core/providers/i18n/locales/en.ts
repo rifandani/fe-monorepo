@@ -1,11 +1,11 @@
 const en = {
   auth: {
     welcome: 'Welcome Back',
-    logoutUsername: 'Logout ({username:string})',
-    registerHere: 'Don\'t have an account? <>Register here<>',
+    dontHaveAccount: 'Don\'t have an account?',
+    registerHere: 'Register here',
     notFound404: '404: Not Found',
     gone: 'It\'s gone',
-    backTo: 'Go back to {isLoggedIn|{true: home, false: login}}',
+    backTo: 'Go back to {{path}}',
     checkingAuth: 'Checking your authentication...',
   },
   home: {

@@ -48,7 +48,7 @@ export function LoginForm() {
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
       setUser(user)
-      router.push('/home')
+      router.push('/')
     },
   })
 
@@ -59,7 +59,7 @@ export function LoginForm() {
         loginMutation.mutate(values)
       })}
     >
-      <Label htmlFor="username" mb="$2">
+      <Label htmlFor="username" mb="$1">
         {translate('forms:username')}
       </Label>
       <Controller

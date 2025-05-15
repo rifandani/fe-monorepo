@@ -1,6 +1,6 @@
 import { Link, Stack } from 'expo-router'
 import React from 'react'
-import { H1, YStack } from 'tamagui'
+import { H3, YStack } from 'tamagui'
 import { BaseButton } from '@/core/components/button/base-button'
 import { useAppStore } from '@/core/hooks/use-app-store'
 import { translate } from '@/core/providers/i18n/translate'
@@ -10,13 +10,13 @@ export default function Unmatched() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
+      <Stack.Screen options={{ headerShown: false }} />
 
       <YStack flex={1} items="center" justify="center" p={5}>
-        <H1 className="text-2xl font-bold">{translate('auth:notFound404')}</H1>
+        <H3 className="text-2xl font-bold">{translate('auth:notFound404')}</H3>
 
-        <Link href={user ? '/home' : '/login'} replace asChild>
-          <BaseButton mt="$2">{translate('auth:backTo', { isLoggedIn: user ? 'true' : 'false' })}</BaseButton>
+        <Link href={user ? '/' : '/login'} replace asChild>
+          <BaseButton mt="$3">{translate('auth:backTo', { path: user ? 'home' : 'login' })}</BaseButton>
         </Link>
       </YStack>
     </>

@@ -37,11 +37,20 @@ export function BaseSheet<T extends BaseSheetState>({
       animation="medium"
       {...sheetProps}
     >
-      <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Overlay
+        animation="lazy"
+        enterStyle={{ opacity: 0 }}
+        exitStyle={{ opacity: 0 }}
+      />
 
-      <Sheet.Handle />
+      <Sheet.Handle
+        theme="blue"
+      />
 
-      <Sheet.Frame {...frameProps}>
+      <Sheet.Frame
+        theme="blue"
+        {...frameProps}
+      >
         {children}
       </Sheet.Frame>
     </Sheet>

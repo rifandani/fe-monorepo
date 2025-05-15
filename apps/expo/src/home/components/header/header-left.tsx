@@ -16,7 +16,7 @@ export function HeaderLeft({ canGoBack }: HeaderBackButtonProps) {
       onPress={() => {
         if (canGoBack)
           router.back()
-        else router.push('/home')
+        else router.push('/')
       }}
     />
   )

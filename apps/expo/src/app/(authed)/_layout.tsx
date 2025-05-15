@@ -1,5 +1,4 @@
-import type { PropsWithChildren } from 'react'
-import { Redirect, useFocusEffect, usePathname } from 'expo-router'
+import { Redirect, Stack, useFocusEffect, usePathname } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { Paragraph, Spinner, YStack } from 'tamagui'
 import { useAppStore } from '@/core/hooks/use-app-store'
@@ -59,7 +58,7 @@ function useCheckAuth() {
   return { isAuthenticated, isLoading }
 }
 
-export function CheckAuthWrapper({ children }: PropsWithChildren) {
+export default function AuthedLayout() {
   const { isAuthenticated, isLoading } = useCheckAuth()
 
   if (isLoading) {
@@ -75,5 +74,9 @@ export function CheckAuthWrapper({ children }: PropsWithChildren) {
     return <Redirect href="/login" />
   }
 
-  return children
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  )
 }

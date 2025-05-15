@@ -1,11 +1,11 @@
 const id = {
   auth: {
     welcome: 'Selamat Datang Kembali',
-    logoutUsername: 'Keluar ({username})',
-    registerHere: 'Tidak punya akun? <>Daftar disini<>',
+    dontHaveAccount: 'Tidak punya akun?',
+    registerHere: 'Daftar disini',
     notFound404: '404: Tidak Ditemukan',
     gone: 'Halaman Kosong',
-    backTo: 'Kembali ke {isLoggedIn|{true: beranda, false: login}}',
+    backTo: 'Kembali ke {{path}}',
     checkingAuth: 'Memeriksa autentikasi anda...',
   },
   home: {

@@ -48,8 +48,12 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 <!-- - [ ] remove `tamagui`, install `nativewind` and `gluestack`. -->
 
-- [ ] consider using `expo/fetch` to replace native `fetch`
 - [ ] E2E test with maestro
+- [ ] investigate why tab bar is blue colored
+- [ ] keyboard avoiding view in login screen
+- [ ] consider using `expo/fetch` to replace native `fetch`
+- [ ] consider using new expo-router [protected route guard](https://docs.expo.dev/router/advanced/protected/)
+- [ ] consider using `expo-secure-store` to store sensitive data (e.g. access token)
 
 ### Prerequisite
 

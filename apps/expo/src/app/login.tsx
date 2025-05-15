@@ -5,7 +5,7 @@ import { H2, Paragraph, styled } from 'tamagui'
 import { LoginForm } from '@/auth/components/login-form'
 import { translate } from '@/core/providers/i18n/translate'
 
-const StyledSafeAreaView = styled(SafeAreaView, {
+const SAV = styled(SafeAreaView, {
   name: 'SAV',
   flex: 1,
   px: '$5',
@@ -14,15 +14,18 @@ const StyledSafeAreaView = styled(SafeAreaView, {
 
 export default function LoginScreen() {
   return (
-    <StyledSafeAreaView>
+    <SAV>
       <H2 verticalAlign="center">{translate('auth:welcome')}</H2>
 
       <LoginForm />
 
-      <Paragraph verticalAlign="center" marginEnd="$2">
-        <Link href="/register">
+      <Paragraph text="center" mt="$2">
+        {translate('auth:dontHaveAccount')}
+        {' '}
+        <Link href="/register" style={{ textDecorationLine: 'underline' }}>
+          {translate('auth:registerHere')}
         </Link>
       </Paragraph>
-    </StyledSafeAreaView>
+    </SAV>
   )
 }

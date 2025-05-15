@@ -1,23 +1,25 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 
+export const unstable_settings = {
+  // Ensure any route can link back to `/`
+  initialRouteName: 'index',
+}
+
 export default function TabsLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          // This tab will no longer show up in the tab bar
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="home"
-        options={{
+          // use href null to hide tab bar
+          // href: null,
           title: 'Home',
-          headerShown: false,
-          tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
         }}
       />
@@ -26,8 +28,6 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          headerShown: false,
-          tabBarShowLabel: false,
           tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
         }}
       />

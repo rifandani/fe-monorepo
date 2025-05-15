@@ -34,9 +34,9 @@ export type GetUserApiResponseSchema = z.infer<typeof getUserApiResponseSchema>
 export const userKeys = {
   all: ['users'] as const,
   lists: () => [...userKeys.all, 'list'] as const,
-  list: (params: ResourceListRequestSchema) => [...userKeys.lists(), ...(params ? [params] : [])] as const,
+  list: (params?: ResourceListRequestSchema) => [...userKeys.lists(), ...(params ? [params] : [])] as const,
   details: () => [...userKeys.all, 'detail'] as const,
-  detail: (params: GetUserApiRequestSchema) => [...userKeys.details(), ...(params ? [params] : [])] as const,
+  detail: (params?: GetUserApiRequestSchema) => [...userKeys.details(), ...(params ? [params] : [])] as const,
 }
 
 export const userApi = {

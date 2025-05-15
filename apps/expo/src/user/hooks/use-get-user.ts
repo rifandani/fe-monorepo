@@ -3,7 +3,7 @@ import type { HTTPError, TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ToastCustomData } from '@/core/types/component'
 import { useToastController } from '@tamagui/toast'
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { ZodError } from 'zod'
 import { fromZodError } from 'zod-validation-error'
@@ -19,16 +19,18 @@ type Error = ZodError | HTTPError | TimeoutError
  * fetch single user
  */
 export function useGetUser(
-  params: Params,
+  params?: Params,
   options?: Except<
     UseQueryOptions<unknown, Error, Success>,
     'queryKey' | 'queryFn'
   >,
 ) {
   const toast = useToastController()
+  const enabled = !!params
+
   const query = useQuery({
     queryKey: userKeys.detail(params),
-    queryFn: () => userApi.getDetail(params),
+    queryFn: enabled ? () => userApi.getDetail(params) : skipToken,
     ...options,
   })
 

@@ -11,6 +11,7 @@ export function ProfileListItem(props: ComponentPropsWithoutRef<typeof ListItem>
       iconAfter={<Feather name="chevron-right" />}
       pressStyle={{
         radiused: true,
+        bg: '$accent12',
       }}
       {...props}
     />
