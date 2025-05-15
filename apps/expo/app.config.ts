@@ -19,7 +19,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     userInterfaceStyle: 'automatic', // to support dark mode
     platforms: ['android', 'ios'],
-    newArchEnabled: true,
     assetBundlePatterns: ['**/*'],
     updates: {
       fallbackToCacheTimeout: 0,
@@ -46,10 +45,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     experiments: {
       typedRoutes: true,
+      // reactCanary: true, // improved errors. link: https://expo.dev/changelog/sdk-53
     },
     plugins: [
       'expo-localization',
       'expo-router',
+      // [
+      //   "expo-dev-launcher",
+      //   {
+      //     "launchMode": "most-recent"
+      //   }
+      // ],
       [
         'expo-splash-screen',
         {
