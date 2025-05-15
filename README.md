@@ -48,7 +48,6 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 <!-- - [ ] remove `tamagui`, install `nativewind` and `gluestack`. -->
 
-- [ ] expo atlas analyze bundle
 - [ ] consider using `expo/fetch` to replace native `fetch`
 - [ ] E2E test with maestro
 
@@ -125,6 +124,15 @@ $ bun build:android:local
 # build ios locally
 $ bun build:ios:local
 ```
+
+### Analyze Bundle Size
+
+```bash
+# analyze bundle size mimicking the production build
+$ bun analyze
+```
+
+This will start the dev server. Click `shift+m` on the terminal and choos to open expo-atlas. This will open a new tab on the browser.
 
 ### Deployment
 

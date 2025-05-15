@@ -22,7 +22,8 @@
     "android:release": "expo run:android --variant release",
     "android:reverse:3000": "adb reverse tcp:3000 tcp:3000",
     "ios": "expo run:ios",
-    "ios:device": "expo run:ios -d"
+    "ios:device": "expo run:ios -d",
+    "analyze": "EXPO_UNSTABLE_ATLAS=true npx expo start --dev-client -c --no-dev"
   },
   "dependencies": {
     "@dev-plugins/react-native-mmkv": "0.3.1",
@@ -78,6 +79,7 @@
     "@babel/core": "7.26.10",
     "@expo/metro-config": "0.20.14",
     "@types/react": "19.0.13",
+    "expo-atlas": "0.4.0",
     "metro-minify-terser": "0.82.3",
     "typescript": "5.8.3"
   },
