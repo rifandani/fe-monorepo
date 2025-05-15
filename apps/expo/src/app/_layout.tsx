@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router'
+import { DevPlugins } from '@/core/providers/dev-plugins'
 import { AppI18nProvider } from '@/core/providers/i18n/provider'
 import { translate } from '@/core/providers/i18n/translate'
 import { AppQueryProvider } from '@/core/providers/query/provider'
@@ -43,6 +44,7 @@ export default function RootLayout() {
         <AppTamaguiProvider>
           <AppToastProvider>
             <App />
+            <DevPlugins />
           </AppToastProvider>
         </AppTamaguiProvider>
       </AppQueryProvider>

@@ -33,6 +33,7 @@
       "name": "@workspace/expo",
       "version": "1.0.0",
       "dependencies": {
+        "@dev-plugins/react-native-mmkv": "0.3.1",
         "@dev-plugins/react-navigation": "0.3.1",
         "@dev-plugins/react-query": "0.3.1",
         "@expo-google-fonts/space-grotesk": "0.3.0",
@@ -558,6 +559,8 @@
     "@commitlint/top-level": ["@commitlint/top-level@19.8.1", "", { "dependencies": { "find-up": "^7.0.0" } }, "sha512-Ph8IN1IOHPSDhURCSXBz44+CIu+60duFwRsg6HqaISFHQHbmBtxVw4ZrFNIYUzEP7WwrNPxa2/5qJ//NK1FGcw=="],
 
     "@commitlint/types": ["@commitlint/types@19.8.1", "", { "dependencies": { "@types/conventional-commits-parser": "^5.0.0", "chalk": "^5.3.0" } }, "sha512-/yCrWGCoA1SVKOks25EGadP9Pnj0oAIHGpl2wH2M2Y46dPM2ueb8wyCVOD7O3WCTkaJ0IkKvzhl1JY7+uCT2Dw=="],
+
+    "@dev-plugins/react-native-mmkv": ["@dev-plugins/react-native-mmkv@0.3.1", "", { "peerDependencies": { "expo": "^53.0.5", "react-native-mmkv": "*" } }, "sha512-wV4g99hy1jqwXEETaIFAkxsL9ymMlX7aZ8XaKuhpEYhF3MCo3/D3g47ciHshmh84CEQjPRHlip1FWwpU8aN7wQ=="],
 
     "@dev-plugins/react-navigation": ["@dev-plugins/react-navigation@0.3.1", "", { "dependencies": { "@react-navigation/devtools": "^7.0.1", "nanoid": "^5.0.8" }, "peerDependencies": { "@react-navigation/core": "*", "expo": "^53.0.5" } }, "sha512-M8b1lzzlC1TjYqe9QvjnzNuUyd0GPL/ZxB8GJjJtTv9eQRYqnq/E4mt5xdllHZJSl5ExvZ528sPZKozir1MlRQ=="],
 

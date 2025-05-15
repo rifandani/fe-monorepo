@@ -1,7 +1,5 @@
 import type { TamaguiProviderProps } from 'tamagui'
-import { useReactNavigationDevTools } from '@dev-plugins/react-navigation'
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useNavigationContainerRef } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useMemo } from 'react'
 import { useColorScheme } from 'react-native'
@@ -26,10 +24,6 @@ export function AppTamaguiProvider({ children, ...rest }: Omit<TamaguiProviderPr
           : DefaultTheme,
     [scheme, theme],
   )
-
-  // integrate with react navigation devtools in development
-  const navigationRef = useNavigationContainerRef()
-  useReactNavigationDevTools(navigationRef as any)
 
   return (
     <TamaguiProvider

@@ -2,7 +2,7 @@ import type { StateStorage } from 'zustand/middleware'
 import { MMKV } from 'react-native-mmkv'
 
 export const appStorageId = 'app-storage' as const
-const appStorage = new MMKV({ id: appStorageId })
+export const appStorage = new MMKV({ id: appStorageId })
 
 export const appStateStorage: StateStorage = {
   setItem: (name, value) => {
