@@ -4,6 +4,7 @@ import { fixupConfigRules } from '@eslint/compat'
 import { FlatCompat } from '@eslint/eslintrc'
 import pluginRouter from '@tanstack/eslint-plugin-router'
 import depend from 'eslint-plugin-depend'
+import expoPlugin from 'eslint-plugin-expo'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 // import tailwind from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
@@ -17,6 +18,8 @@ const [nextRecommended, nextCoreWebVitals] = fixupConfigRules(flatCompat.extends
 
 export default antfu(
   {
+    name: 'fe-monorepo/global',
+
     // Type of the project. 'lib' for libraries, the default is 'app'
     type: 'app',
 
@@ -67,6 +70,9 @@ export default antfu(
       '**/coverage/**',
       '**/__mocks__/**',
       '**/.next/**',
+      '**/.expo/**',
+      '**/android/**',
+      '**/ios/**',
       '**/.react-router/**',
       '**/jest.config.js',
       '**/tailwind.config.js',
@@ -141,5 +147,28 @@ export default antfu(
     name: '@tanstack/router',
     files: ['apps/spa/*.{ts,tsx}'],
     ...pluginRouter.configs['flat/recommended'][0],
+  },
+  /**
+   * we are not using full `eslint-config-expo`, cause it contains already implemented plugins for react, typescript, etc.
+   * instead we are using only expo-specific config
+   * link: https://github.com/expo/expo/blob/main/packages/eslint-config-expo/flat/utils/expo.js
+   */
+  {
+    name: 'expo/config',
+    files: ['apps/expo/*.{ts,tsx}'],
+    plugins: {
+      expo: expoPlugin,
+    },
+    rules: {
+      'expo/no-env-var-destructuring': ['error'],
+      'expo/no-dynamic-env-var': ['error'],
+    },
+  },
+  {
+    name: 'expo/metro',
+    files: ['apps/expo/metro.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
   },
 )
