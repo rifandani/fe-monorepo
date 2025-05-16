@@ -48,8 +48,8 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 <!-- - [ ] remove `tamagui`, install `nativewind` and `gluestack`. -->
 
+- [ ] test on iOS after all to-do items are resolved
 - [ ] E2E test with maestro
-- [ ] keyboard avoiding view in login screen
 - [ ] consider to have a success/error/warning theme in `tamagui`
 - [ ] consider using `expo/fetch` to replace native `fetch`
 - [ ] consider using new expo-router [protected route guard](https://docs.expo.dev/router/advanced/protected/)

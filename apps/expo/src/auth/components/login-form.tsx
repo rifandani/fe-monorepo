@@ -54,7 +54,6 @@ export function LoginForm() {
 
   return (
     <Form
-      mt="$5"
       onSubmit={form.handleSubmit(async (values) => {
         loginMutation.mutate(values)
       })}

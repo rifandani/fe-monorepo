@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router'
+import { KeyboardProvider } from 'react-native-keyboard-controller'
 // import * as SplashScreen from 'expo-splash-screen'
 import { DevPlugins } from '@/core/providers/dev-plugins'
 import { AppI18nProvider } from '@/core/providers/i18n/provider'
@@ -38,15 +39,17 @@ function App() {
 
 export default function RootLayout() {
   return (
-    <AppI18nProvider>
-      <AppQueryProvider>
-        <AppTamaguiProvider>
-          <AppToastProvider>
-            <App />
-            <DevPlugins />
-          </AppToastProvider>
-        </AppTamaguiProvider>
-      </AppQueryProvider>
-    </AppI18nProvider>
+    <KeyboardProvider>
+      <AppI18nProvider>
+        <AppQueryProvider>
+          <AppTamaguiProvider>
+            <AppToastProvider>
+              <App />
+              <DevPlugins />
+            </AppToastProvider>
+          </AppTamaguiProvider>
+        </AppQueryProvider>
+      </AppI18nProvider>
+    </KeyboardProvider>
   )
 }
