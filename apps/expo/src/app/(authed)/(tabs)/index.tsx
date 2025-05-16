@@ -1,19 +1,13 @@
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { H1, styled, YStack } from 'tamagui'
+import { H6, YStack } from 'tamagui'
+import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { translate } from '@/core/providers/i18n/translate'
 
-const SAV = styled(SafeAreaView, {
-  name: 'SAV',
-  flex: 1,
-  justify: 'center',
-})
+export const ErrorBoundary = BaseErrorBoundary
 
 export default function TabsIndexScreen() {
   return (
-    <SAV>
-      <YStack flex={1} p="$3">
-        <H1>{translate('home:title')}</H1>
-      </YStack>
-    </SAV>
+    <YStack flex={1} p="$3" justify="center">
+      <H6>{translate('home:title')}</H6>
+    </YStack>
   )
 }

@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { nativeApplicationVersion } from 'expo-application'
 import { Image } from 'expo-image'
 import { H6, ListItem, Paragraph, Separator, useTheme, XStack, YStack } from 'tamagui'
+import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { BaseButton } from '@/core/components/button/base-button'
 import { BLURHASH } from '@/core/constants/global'
 import { useAppStore } from '@/core/hooks/use-app-store'
@@ -65,6 +66,8 @@ function LogoutListItem() {
     </ProfileListItem>
   )
 }
+
+export const ErrorBoundary = BaseErrorBoundary
 
 export default function TabsProfileScreen() {
   return (

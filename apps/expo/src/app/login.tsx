@@ -1,20 +1,15 @@
 import { Link } from 'expo-router'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { H2, Paragraph, styled } from 'tamagui'
+import { H2, Paragraph, YStack } from 'tamagui'
 import { LoginForm } from '@/auth/components/login-form'
+import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { translate } from '@/core/providers/i18n/translate'
 
-const SAV = styled(SafeAreaView, {
-  name: 'SAV',
-  flex: 1,
-  px: '$5',
-  justify: 'center',
-})
+export const ErrorBoundary = BaseErrorBoundary
 
 export default function LoginScreen() {
   return (
-    <SAV>
+    <YStack flex={1} px="$3" justify="center">
       <H2 verticalAlign="center">{translate('auth:welcome')}</H2>
 
       <LoginForm />
@@ -26,6 +21,6 @@ export default function LoginScreen() {
           {translate('auth:registerHere')}
         </Link>
       </Paragraph>
-    </SAV>
+    </YStack>
   )
 }
