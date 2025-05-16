@@ -4,13 +4,14 @@ import { authLoginRequestSchema } from '@workspace/core/apis/auth'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Checkbox, Form, Input, Label, Paragraph, Spinner, XStack } from 'tamagui'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login'
 import { BaseButton } from '@/core/components/button/base-button'
 import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 
 function RememberMeCheckbox() {
+  const { t } = useTranslation()
   const [state, setState] = useState({ rememberMe: false })
 
   return (
@@ -27,12 +28,13 @@ function RememberMeCheckbox() {
         </Checkbox.Indicator>
       </Checkbox>
 
-      <Label htmlFor="rememberMe">{translate('forms:rememberMe')}</Label>
+      <Label htmlFor="rememberMe">{t('forms.rememberMe')}</Label>
     </XStack>
   )
 }
 
 export function LoginForm() {
+  const { t } = useTranslation()
   const router = useRouter()
   const setUser = useAppStore(state => state.setUser)
 
@@ -59,7 +61,7 @@ export function LoginForm() {
       })}
     >
       <Label htmlFor="username" mb="$1">
-        {translate('forms:username')}
+        {t('forms.username')}
       </Label>
       <Controller
         name="username"
@@ -67,7 +69,7 @@ export function LoginForm() {
         render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
           <>
             <Input
-              placeholder={translate('forms:usernamePlaceholder')}
+              placeholder={t('forms.usernamePlaceholder')}
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -78,7 +80,7 @@ export function LoginForm() {
       />
 
       <Label htmlFor="password" my="$2">
-        {translate('forms:password')}
+        {t('forms.password')}
       </Label>
       <Controller
         name="password"
@@ -91,7 +93,7 @@ export function LoginForm() {
           <>
             <Input
               secureTextEntry
-              placeholder={translate('forms:passwordPlaceholder')}
+              placeholder={t('forms.passwordPlaceholder')}
               value={value}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -110,7 +112,7 @@ export function LoginForm() {
           }
           disabled={loginMutation.isPending || !form.formState.isValid}
         >
-          {loginMutation.isPending ? translate('forms:loginLoading') : translate('forms:login')}
+          {loginMutation.isPending ? t('forms.loginLoading') : t('forms.login')}
         </BaseButton>
       </Form.Trigger>
     </Form>

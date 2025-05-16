@@ -1,9 +1,9 @@
 import { Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 // import * as SplashScreen from 'expo-splash-screen'
 import { DevPlugins } from '@/core/providers/dev-plugins'
 import { AppI18nProvider } from '@/core/providers/i18n/provider'
-import { translate } from '@/core/providers/i18n/translate'
 import { AppQueryProvider } from '@/core/providers/query/provider'
 import { AppTamaguiProvider } from '@/core/providers/tamagui/provider'
 import { AppToastProvider } from '@/core/providers/toast/provider'
@@ -18,6 +18,8 @@ import { AppToastProvider } from '@/core/providers/toast/provider'
 // })
 
 function App() {
+  const { t } = useTranslation()
+
   return (
     <Stack>
       <Stack.Screen
@@ -29,7 +31,7 @@ function App() {
       <Stack.Screen
         name="login"
         options={{
-          title: translate('forms:login'),
+          title: t('forms.login'),
           headerShown: false,
         }}
       />

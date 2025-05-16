@@ -1,18 +1,19 @@
 import Feather from '@expo/vector-icons/Feather'
 import { nativeApplicationVersion } from 'expo-application'
 import { Image } from 'expo-image'
+import { useTranslation } from 'react-i18next'
 import { H6, ListItem, Paragraph, Separator, useTheme, XStack, YStack } from 'tamagui'
 import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { BaseButton } from '@/core/components/button/base-button'
 import { BLURHASH } from '@/core/constants/global'
 import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 import { ProfileLanguageChanger } from '@/user/components/profile-language-changer'
 import { ProfileListItem } from '@/user/components/profile-list-item'
 import { ProfileThemeChanger } from '@/user/components/profile-theme-changer'
 import { useGetUser } from '@/user/hooks/use-get-user'
 
 function EditProfileSection() {
+  const { t } = useTranslation()
   const user = useAppStore(state => state.user)
   const { data } = useGetUser(user
     ? {
@@ -23,6 +24,7 @@ function EditProfileSection() {
   return (
     <XStack mb="$3" height="$10" gap="$5">
       <Image
+        testID="profile-image"
         source={data?.image}
         placeholder={{ blurhash: BLURHASH }}
         transition={1_000}
@@ -35,7 +37,7 @@ function EditProfileSection() {
         <Paragraph size="$3">{data?.email}</Paragraph>
 
         <BaseButton mt="auto" p="$2" width="$12" icon={<Feather name="edit" />}>
-          {translate('user:editProfile')}
+          {t('user.editProfile')}
         </BaseButton>
       </YStack>
     </XStack>
@@ -44,6 +46,7 @@ function EditProfileSection() {
 
 function LogoutListItem() {
   const theme = useTheme()
+  const { t } = useTranslation()
   const resetUser = useAppStore(state => state.resetUser)
 
   const $red10 = theme?.red10?.get() || ''
@@ -61,7 +64,7 @@ function LogoutListItem() {
       }}
     >
       <ListItem.Text color="$red10">
-        Logout
+        {t('common.logout')}
       </ListItem.Text>
     </ProfileListItem>
   )
@@ -70,6 +73,8 @@ function LogoutListItem() {
 export const ErrorBoundary = BaseErrorBoundary
 
 export default function TabsProfileScreen() {
+  const { t } = useTranslation()
+
   return (
     <YStack flex={1} p="$3" pt="$6">
       <EditProfileSection />
@@ -80,7 +85,7 @@ export default function TabsProfileScreen() {
 
       <LogoutListItem />
       <Paragraph mt="auto" size="$2" text="center">
-        {translate('common:appVersion')}
+        {t('common.appVersion')}
         {' '}
         {nativeApplicationVersion}
       </Paragraph>

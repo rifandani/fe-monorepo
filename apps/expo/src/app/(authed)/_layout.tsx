@@ -1,8 +1,8 @@
 import { Redirect, Stack, useFocusEffect, usePathname } from 'expo-router'
 import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Paragraph, Spinner, YStack } from 'tamagui'
 import { useAppStore } from '@/core/hooks/use-app-store'
-import { translate } from '@/core/providers/i18n/translate'
 import { logger } from '@/core/utils/logger'
 
 /**
@@ -59,13 +59,14 @@ function useCheckAuth() {
 }
 
 export default function AuthedLayout() {
+  const { t } = useTranslation()
   const { isAuthenticated, isLoading } = useCheckAuth()
 
   if (isLoading) {
     return (
       <YStack flex={1} justify="center" items="center" gap="$5">
         <Spinner size="large" color="$primary" />
-        <Paragraph>{translate('auth:checkingAuth')}</Paragraph>
+        <Paragraph>{t('auth.checkingAuth')}</Paragraph>
       </YStack>
     )
   }

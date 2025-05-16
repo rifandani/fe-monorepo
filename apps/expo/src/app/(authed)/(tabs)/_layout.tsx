@@ -20,7 +20,7 @@ export default function TabsLayout() {
           // use href null to hide tab bar
           // href: null,
           title: 'Home',
-          tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
+          tabBarIcon: ({ color }) => <Feather testID="home-tab-icon" name="home" size={24} color={color} />,
         }}
       />
 
@@ -28,7 +28,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
+          tabBarIcon: ({ color }) => <Feather testID="profile-tab-icon" name="user" size={24} color={color} />,
         }}
       />
     </Tabs>

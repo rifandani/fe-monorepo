@@ -26,7 +26,7 @@ export function TheToast() {
     <Toast
       theme={themeMapper[(currentToast.customData as ToastCustomData)?.preset ?? 'default']}
       key={currentToast.id}
-      duration={currentToast.duration}
+      duration={currentToast.duration ?? 3_000}
       viewportName={currentToast.viewportName}
       enterStyle={{ opacity: 0, scale: 0.25, y: 25 }}
       exitStyle={{ opacity: 0, scale: 0.5, y: 25 }}

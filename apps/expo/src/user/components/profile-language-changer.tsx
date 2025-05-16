@@ -7,13 +7,13 @@ import { BaseSheet } from '@/core/components/sheet/base-sheet'
 import { ProfileListItem } from '@/user/components/profile-list-item'
 
 export function ProfileLanguageChanger() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [state, setState] = useState<BaseSheetState>({ open: false, position: 0 })
 
   return (
     <>
       <ProfileListItem
-        title="Language"
+        title={t('common.language')}
         icon={<Feather name="globe" />}
         onPress={() => {
           setState({ ...state, open: true })
@@ -32,7 +32,7 @@ export function ProfileLanguageChanger() {
               pressTheme
               theme="light"
               title="English"
-              iconAfter={i18n.language === 'en-US' ? <Feather name="check-circle" size={20} /> : undefined}
+              iconAfter={i18n.language === 'en-US' ? <Feather testID="profile-language-english-checked" name="check-circle" size={20} /> : undefined}
               onPress={() => i18n.changeLanguage('en-US')}
             />
           </YGroup.Item>
@@ -40,7 +40,7 @@ export function ProfileLanguageChanger() {
             <ListItem
               pressTheme
               title="Indonesia"
-              iconAfter={i18n.language === 'id-ID' ? <Feather name="check-circle" size={20} /> : undefined}
+              iconAfter={i18n.language === 'id-ID' ? <Feather testID="profile-language-indonesia-checked" name="check-circle" size={20} /> : undefined}
               onPress={() => i18n.changeLanguage('id-ID')}
             />
           </YGroup.Item>
