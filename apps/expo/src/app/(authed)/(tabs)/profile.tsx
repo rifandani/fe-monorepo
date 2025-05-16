@@ -24,7 +24,7 @@ function EditProfileSection() {
     <XStack mb="$3" height="$10" gap="$5">
       <Image
         source={data?.image}
-        placeholder={BLURHASH}
+        placeholder={{ blurhash: BLURHASH }}
         transition={1_000}
         contentFit="fill"
         style={{ width: 100, borderRadius: 1_000 }}

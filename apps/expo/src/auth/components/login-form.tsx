@@ -111,8 +111,6 @@ export function LoginForm() {
           disabled={loginMutation.isPending || !form.formState.isValid}
         >
           {loginMutation.isPending ? translate('forms:loginLoading') : translate('forms:login')}
-          {' '}
-          (emilyspass)
         </BaseButton>
       </Form.Trigger>
     </Form>

@@ -2,7 +2,10 @@ import type { StateStorage } from 'zustand/middleware'
 import { MMKV } from 'react-native-mmkv'
 
 export const appStorageId = 'app-storage' as const
-export const appStorage = new MMKV({ id: appStorageId })
+export const appStorage = new MMKV({
+  id: appStorageId,
+  encryptionKey: 'fe-monorepo/expo', // simple inline key for now
+})
 
 export const appStateStorage: StateStorage = {
   setItem: (name, value) => {
