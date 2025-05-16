@@ -1,0 +1,9 @@
+appId: ${MAESTRO_APP_ID} 
+onFlowStart:
+  - runFlow: ../shared/_on-flow-start.yaml
+---
+- assertVisible: "Don't have an account? Register here"
+- tapOn: "Register here"
+- assertVisible: "404: Not Found"
+- assertVisible: "Go back to login"
+- tapOn: "Go back to login"

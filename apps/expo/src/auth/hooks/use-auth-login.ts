@@ -4,7 +4,7 @@ import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
 import type { ZodError } from 'zod'
-import type { ToastCustomData } from '@/core/types/component'
+import type { ToastCustomData } from '@/core/providers/toast/the-toast'
 import { useToastController } from '@tamagui/toast'
 import {
   useMutation,

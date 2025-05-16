@@ -74,7 +74,7 @@ export function LoginForm() {
               onBlur={onBlur}
               onChangeText={onChange}
             />
-            {error?.message ? <Paragraph color="$red10">{error.message}</Paragraph> : null}
+            {error?.message ? <Paragraph testID="login-form-username-error" color="$red10">{error.message}</Paragraph> : null}
           </>
         )}
       />
@@ -98,7 +98,7 @@ export function LoginForm() {
               onBlur={onBlur}
               onChangeText={onChange}
             />
-            {error?.message ? <Paragraph color="$red10">{error.message}</Paragraph> : null}
+            {error?.message ? <Paragraph testID="login-form-password-error" color="$red10">{error.message}</Paragraph> : null}
           </>
         )}
       />

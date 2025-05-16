@@ -1,0 +1,56 @@
+appId: ${MAESTRO_APP_ID} 
+---
+- runFlow: ./login.yaml
+- tapOn:
+    id: "profile-tab-icon"
+- assertVisible:
+    id: "profile-image"
+- assertVisible: "emilys"
+- assertVisible: "emily.johnson@x.dummyjson.com"
+- assertVisible: "Edit Profile"
+
+# theme changer
+- assertVisible: "Theme"
+- tapOn: "Theme"
+- assertVisible: "Light"
+- assertVisible: "Dark"
+- assertVisible: "System"
+- assertVisible:
+    id: "profile-theme-system-checked"
+- tapOn: "Light"
+- assertVisible:
+    id: "profile-theme-light-checked"
+- tapOn: "Dark"
+- assertVisible:
+    id: "profile-theme-dark-checked"
+- tapOn: "System"
+- assertVisible:
+    id: "profile-theme-system-checked"
+- swipe:
+    direction: DOWN
+
+# language changer
+- assertVisible: "Language"
+- tapOn: "Language"
+- assertVisible: "English"
+- assertVisible: "Indonesia"
+- assertVisible:
+    id: "profile-language-english-checked"
+- tapOn: "Indonesia"
+- assertVisible:
+    id: "profile-language-indonesia-checked"
+- swipe:
+    direction: DOWN
+- assertVisible: "Tema"
+- assertVisible: "Bahasa"
+- assertVisible: "Keluar"
+- tapOn: "Bahasa"
+- tapOn: "English"
+- swipe:
+    direction: DOWN
+
+# logout
+- assertVisible: "Logout"
+- tapOn: "Logout"
+- assertVisible: "Username"
+- assertVisible: "Password"

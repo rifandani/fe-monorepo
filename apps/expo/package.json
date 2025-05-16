@@ -23,7 +23,10 @@
     "android:reverse:3000": "adb reverse tcp:3000 tcp:3000",
     "ios": "expo run:ios",
     "ios:device": "expo run:ios -d",
-    "analyze": "EXPO_UNSTABLE_ATLAS=true npx expo start --dev-client -c --no-dev"
+    "analyze": "EXPO_UNSTABLE_ATLAS=true npx expo start --dev-client -c --no-dev",
+    "test:dev": "maestro test -e MAESTRO_APP_ID=com.rifandani.expoapp.development -e IS_DEV=true .maestro/flows",
+    "test:prod": "maestro test -e MAESTRO_APP_ID=com.rifandani.expoapp.production -e IS_DEV=false .maestro/flows",
+    "test:ui": "maestro studio"
   },
   "dependencies": {
     "@dev-plugins/react-native-mmkv": "0.3.1",

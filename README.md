@@ -48,13 +48,13 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 <!-- - [ ] remove `tamagui`, install `nativewind` and `gluestack`. -->
 
-- [ ] E2E test with maestro
 - [ ] test a multi-environment build -> development/preview/production
 - [ ] test on iOS after all to-do items are resolved
-- [ ] consider to have a primary/success/error/warning theme in `tamagui`
 - [ ] consider using new expo-router [protected route guard](https://docs.expo.dev/router/advanced/protected/)
 
 ### Prerequisite
+
+[Expo reference](https://docs.expo.dev/get-started/set-up-your-environment/)
 
 - Java 17+
 - Install EAS CLI globally using `npm i -g eas-cli`
@@ -82,49 +82,48 @@ $ bun expo doctor
 Every single time you change the `app.json` file / install native libraries, you need to re-generate native project (CNG) using:
 
 ```bash
+# cd into the expo directory (this is for better terminal logging)
+$ cd apps/expo
+
 # or regenerate native project from scratch
-$ npm run prebuild -w @workspace/expo
+$ bun prebuild
 ```
 
 Then, create a development build:
 
 ```bash
-# create a development build
-$ npm run android -w @workspace/expo
+# compiles and runs the app on connected android device/simulator
+$ bun android
 ```
 
-After that, to start the app:
+After that, install the app to your android device/simulator and start the app:
 
 ```bash
 # Run the app
-$ npm run dev -w @workspace/expo
+$ bun dev
 ```
-
-### Testing
-
-Coming Soon
 
 ### Build
 
 There are 2 main target build, android and ios. For further details, please check `eas.json` file.
 
 ```bash
-# build android
+# for android
 $ bun build:android
 
-# build ios
+# for ios
 $ bun build:ios
 ```
 
-If you want to opt-out of EAS cloud build, you can [run the build locally](https://docs.expo.dev/build-reference/local-builds/). But first, you still need to login to EAS first OR alternatively set `EXPO_TOKEN` access token.
+If you want to opt-out of EAS cloud build, you can [run the build locally](https://docs.expo.dev/build-reference/local-builds/).
 
 > As of Expo SDK 50, you need to have Java 17 installed in your device to build android
 
 ```bash
-# build android locally
+# this will create a .apk file in the root directory
 $ bun build:android:local
 
-# build ios locally
+# this will create a .app file in the root directory
 $ bun build:ios:local
 ```
 
@@ -136,6 +135,28 @@ $ bun analyze
 ```
 
 This will start the dev server. Click `shift+m` on the terminal and choos to open expo-atlas. This will open a new tab on the browser.
+
+### Testing
+
+End to end testing is done with maestro. Follow their [installation steps](https://docs.maestro.dev/getting-started/installing-maestro) to install maestro CLI. We can't run test on regular CI like github actions, because we need to have a physical device/simulator to run the test.
+
+> Note: At the moment, Maestro does not support physical iOS devices
+
+```bash
+# run end to end test on development variant
+bun run test:dev
+
+# run end to end test on production variant
+bun run test:prod
+```
+
+To help us write and debug Maestro Flows better, we can open Maestro Studio.
+
+```bash
+# DO NOT run this and `bun run test:dev` at the same time, it will cause "(Unable to launch app com.rifandani.expoapp.development: null)"
+# open Maestro Studio in http://localhost:9999/interact
+bun run test:ui
+```
 
 ### Deployment
 

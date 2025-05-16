@@ -1,0 +1,24 @@
+appId: ${MAESTRO_APP_ID} 
+onFlowStart:
+  - runFlow: ../shared/_on-flow-start.yaml
+---
+
+# run failed login
+- tapOn: "Your username..."
+- inputText: "em"
+- assertVisible: "username must contain at least 3 characters"
+- inputText: "ilys"
+- tapOn: "Your password..."
+- inputText: "em"
+- assertVisible: "password must contain at least 6 characters"
+- inputText: "ilyspass_incorrect"
+- tapOn: "Remember me"
+- tapOn: "Login"
+- assertVisible: "Invalid credentials"
+- tapOn: "Your username..."
+- eraseText
+- tapOn: "Your password..."
+- eraseText
+
+# run successful login
+- runFlow: ../shared/_login.yaml

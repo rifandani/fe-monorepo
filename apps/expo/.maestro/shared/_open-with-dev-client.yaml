@@ -1,0 +1,25 @@
+appId: ${MAESTRO_APP_ID}
+---
+- runFlow:
+    file: "./_open-with-clear-state-and-keychain.yaml"
+
+# Wait for animation subflow
+- waitForAnimationToEnd
+
+# Connect to development server subflow
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - tapOn: ".*8081.*"
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "http://localhost:8081"
+
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Continue"
+- swipe:
+    direction: DOWN

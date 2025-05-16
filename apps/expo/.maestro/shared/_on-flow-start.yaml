@@ -1,0 +1,11 @@
+appId: ${MAESTRO_APP_ID}
+---
+- runFlow:
+    when:
+      true: ${IS_DEV == "true"}
+    file: './_open-with-dev-client.yaml'
+
+- runFlow:
+    when:
+      true: ${IS_DEV == "false"}
+    file: './_open-with-clear-state-and-keychain.yaml'

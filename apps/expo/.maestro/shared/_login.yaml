@@ -1,0 +1,13 @@
+# shared login flow for any flow that needs to start with a log in.
+appId: ${MAESTRO_APP_ID} 
+---
+- assertVisible: "Welcome Back"
+- assertVisible: "Username"
+- assertVisible: "Password"
+- assertVisible: "Don't have an account? Register here"
+- tapOn: "Your username..."
+- inputText: "emilys"
+- tapOn: "Your password..."
+- inputText: "emilyspass"
+- tapOn: "Remember me"
+- tapOn: "Login"
