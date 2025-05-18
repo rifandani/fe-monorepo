@@ -1,7 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
-import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -35,7 +34,6 @@ function RememberMeCheckbox() {
 
 export function LoginForm() {
   const { t } = useTranslation()
-  const router = useRouter()
   const setUser = useAppStore(state => state.setUser)
 
   const form = useForm({
@@ -50,7 +48,6 @@ export function LoginForm() {
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
       setUser(user)
-      router.push('/')
     },
   })
 
@@ -108,7 +105,7 @@ export function LoginForm() {
       <Form.Trigger asChild>
         <BaseButton
           icon={
-            loginMutation.isPending ? <Spinner size="small" color="$primary" /> : <Feather name="log-in" />
+            loginMutation.isPending ? <Spinner size="small" /> : <Feather name="log-in" />
           }
           disabled={loginMutation.isPending || !form.formState.isValid}
         >

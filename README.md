@@ -32,18 +32,7 @@
 
 ### Fixme
 
-- [ ] error occurs only on iOS simulator. If i delete `(authed)/(tabs)/_layout.tsx`, it will work. Might be related to `Tabs` component.
-
-```bash
-Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}
-
-Call Stack
-  TabsLayout(./(authed)/(tabs)/_layout.tsx) (<anonymous>)
-  ScreenContentWrapper (<anonymous>)
-  RNSScreenStack (<anonymous>)
-  AuthedLayout (apps/expo/src/app/(authed)/_layout.tsx:62:31)
-```
-
+- [x] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead.
 - [x] `Invalid hook call. Hooks can only be called inside of the body of a function component. Call Stack - AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)`. Resolved by not preserving the original code in `metro.config.js`
 - [x] running `bun build:android:dev:local` successfully created a development build, but failed when running `bun dev` (`ERROR  Warning: TypeError: Cannot convert undefined value to object. Call Stack - CheckAuthWrapper (apps/expo/src/core/components/check-auth-wrapper.tsx:7:44)`). Resolved by not using `BaseSpinner` component, instead using `Spinner` component from `tamagui`
 - [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
@@ -52,7 +41,6 @@ Call Stack
 
 - [ ] add a "preview" profile build, unlike "development" profile build, this do not require running a development server and "development build". This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS).
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
-- [ ] consider using new expo-router [protected route guard](https://docs.expo.dev/router/advanced/protected/)
 
 ### Prerequisite
 

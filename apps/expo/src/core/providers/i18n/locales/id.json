@@ -9,7 +9,8 @@
     "checkingAuth": "Memeriksa autentikasi anda..."
   },
   "home": {
-    "title": "Aplikasi Expo menggunakan:",
+    "home": "Beranda",
+    "title": "Aplikasi Expo",
     "sortBtn": "Sortir Tombol",
     "clock": "Jam",
     "toggleClock": "Beralih Jam",
@@ -21,6 +22,7 @@
     "backTo": "Kembali ke {target}"
   },
   "user": {
+    "profile": "Profil",
     "editProfile": "Ubah Profil"
   },
   "forms": {

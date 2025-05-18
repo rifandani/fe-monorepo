@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { nativeApplicationVersion } from 'expo-application'
 import { Image } from 'expo-image'
 import { useTranslation } from 'react-i18next'
+import { Platform } from 'react-native'
 import { H6, ListItem, Paragraph, Separator, useTheme, XStack, YStack } from 'tamagui'
 import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { BaseButton } from '@/core/components/button/base-button'
@@ -36,7 +37,7 @@ function EditProfileSection() {
         <H6 size="$4">{data?.username}</H6>
         <Paragraph size="$3">{data?.email}</Paragraph>
 
-        <BaseButton mt="auto" p="$2" width="$12" icon={<Feather name="edit" />}>
+        <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
           {t('user.editProfile')}
         </BaseButton>
       </YStack>
@@ -76,7 +77,7 @@ export default function TabsProfileScreen() {
   const { t } = useTranslation()
 
   return (
-    <YStack flex={1} p="$3" pt="$6">
+    <YStack flex={1} p="$3" pt={Platform.select({ ios: '$9', android: '$6' })}>
       <EditProfileSection />
       <ProfileThemeChanger />
       <ProfileLanguageChanger />

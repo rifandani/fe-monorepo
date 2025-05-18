@@ -9,7 +9,8 @@
     "checkingAuth": "Checking your authentication..."
   },
   "home": {
-    "title": "Expo App using:",
+    "home": "Home",
+    "title": "Expo App",
     "sortBtn": "Sort Buttons",
     "clock": "Clock",
     "toggleClock": "Toggle Clock",
@@ -21,6 +22,7 @@
     "backTo": "Go back to {target:string}"
   },
   "user": {
+    "profile": "Profile",
     "editProfile": "Edit Profile"
   },
   "forms": {
