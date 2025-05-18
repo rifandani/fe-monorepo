@@ -1,15 +1,34 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config'
 
 const isDevelopment = process.env.APP_VARIANT === 'development'
-/**
- * so that we can install different app based on the variant without overriding previous installed app
- */
-const bundleId = isDevelopment
-  ? 'com.rifandani.expoapp.development'
-  : 'com.rifandani.expoapp'
-const appName = isDevelopment ? 'Expo App (Dev)' : 'Expo App'
+const isPreview = process.env.APP_VARIANT === 'preview'
+
+function getBundleId() {
+  if (isDevelopment) {
+    return 'com.rifandani.expoapp.development'
+  }
+  else if (isPreview) {
+    return 'com.rifandani.expoapp.preview'
+  }
+
+  return 'com.rifandani.expoapp'
+}
+
+function getAppName() {
+  if (isDevelopment) {
+    return 'Expo App (Dev)'
+  }
+  else if (isPreview) {
+    return 'Expo App (Preview)'
+  }
+
+  return 'Expo App'
+}
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const bundleId = getBundleId()
+  const appName = getAppName()
+
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,

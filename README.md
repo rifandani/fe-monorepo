@@ -32,12 +32,16 @@
 
 ### Fixme
 
-- [ ] running `bun android` failed because of: (might be related to `peerDependencies` in `@workspace/core` package)
+- [ ] error occurs only on iOS simulator. If i delete `(authed)/(tabs)/_layout.tsx`, it will work. Might be related to `Tabs` component.
 
 ```bash
-ERROR  Warning: Error: Incompatible React versions: The "react" and "react-native-renderer" packages must have the exact same version. Instead got:
-│   - react:                  19.1.0
-│   - react-native-renderer:  19.0.0
+Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}
+
+Call Stack
+  TabsLayout(./(authed)/(tabs)/_layout.tsx) (<anonymous>)
+  ScreenContentWrapper (<anonymous>)
+  RNSScreenStack (<anonymous>)
+  AuthedLayout (apps/expo/src/app/(authed)/_layout.tsx:62:31)
 ```
 
 - [x] `Invalid hook call. Hooks can only be called inside of the body of a function component. Call Stack - AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)`. Resolved by not preserving the original code in `metro.config.js`
@@ -46,7 +50,7 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 
 ### Todo
 
-- [ ] test a multi-environment build -> development/production
+- [ ] add a "preview" profile build, unlike "development" profile build, this do not require running a development server and "development build". This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS).
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
 - [ ] consider using new expo-router [protected route guard](https://docs.expo.dev/router/advanced/protected/)
 
@@ -55,7 +59,7 @@ ERROR  Warning: Error: Incompatible React versions: The "react" and "react-nativ
 [Expo reference](https://docs.expo.dev/get-started/set-up-your-environment/) or [React Native reference](https://reactnative.dev/docs/set-up-your-environment).
 
 - Node 22+
-- Java 17+
+- Java 17+ (as of Expo SDK 50)
 - Install EAS CLI globally using `npm i -g eas-cli`
 - **Don't use VPN**, or `fetch` will not work
 
@@ -73,7 +77,7 @@ $ bun expo doctor
 # Next, in `eas.json` file, update `cli.version` to the new version of `eas-cli` global package
 # Next, upgrade xcode / android studio if needed
 # Next, run `bun run prebuild` to regenerate native project (android and ios folders)
-# Next, run `bun build:android:dev:local` to create a development build
+# Next, run `bun build:android:dev:local` or `bun build:ios:dev:sim` to create a local development build
 ```
 
 ### Development
@@ -109,9 +113,9 @@ $ bun android
 $ bun ios
 ```
 
-### Build
+### Development Build
 
-There are 2 main target build, android and ios. For further details, please check `eas.json` file.
+Development Build requires a "development build" app and a development server to be running. There are 2 build profiles, `development` and `development-simulator`. For further details, please check `eas.json` file.
 
 > Every env requires different keystores, because it counts as different app id
 
@@ -119,23 +123,24 @@ There are 2 main target build, android and ios. For further details, please chec
 # kickoff EAS build for android
 $ bun build:android:dev
 
-# kickoff EAS build for ios (EAS will prompt us our Apple Developer account credentials)
+# kickoff EAS build for ios (iphone device)
+# requirements: https://docs.expo.dev/tutorial/eas/ios-development-build-for-devices/
+# - Apple Developer Account credentials for signing the app as each build needs to be signed to verify that the app comes from a trusted source
+# - Developer Mode activated on iOS 16 and higher. https://docs.expo.dev/guides/ios-developer-mode/
 $ bun build:ios:dev
 ```
 
 If you want to opt-out of EAS cloud build, you can [run the build locally](https://docs.expo.dev/build-reference/local-builds/).
 
-> As of Expo SDK 50, you need to have Java 17 installed in your device to build android
-
 ```bash
 # this will create a .apk file in the root directory
 $ bun build:android:dev:local
 
-# for ios device
-$ bun build:ios:dev:local
-
 # this will create a .tar.gz file in the root directory (for ios simulator)
 $ bun build:ios:dev:sim
+
+# for ios device
+$ bun build:ios:dev:local
 ```
 
 If we run `bun build:ios:dev:sim`, you will get a `build-*.tar.gz` file. We can't just drag it to the simulator, because it's not a valid app file. To install the app to the iOS simulator:
@@ -144,6 +149,32 @@ If we run `bun build:ios:dev:sim`, you will get a `build-*.tar.gz` file. We can'
 # this will extract the `build-*.tar.gz` file into /tmp/fe-monorepo-expo folder and install the app to the iOS simulator
 $ bun ios:install:sim
 ```
+
+### Preview Build
+
+This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS). [Reference](https://docs.expo.dev/tutorial/eas/internal-distribution-builds/).
+
+```bash
+# kickoff EAS build for android
+$ bun build:android:preview
+
+# kickoff EAS build for ios (iphone device)
+$ bun build:ios:preview
+```
+
+If you want to opt-out of EAS cloud build, you can run the build locally.
+
+```bash
+# this will create a .apk file in the root directory
+$ bun build:android:preview:local
+
+# this will create a .app file in the root directory
+$ bun build:ios:preview:local
+```
+
+### Production Build
+
+Coming Soon
 
 ### Analyze Bundle Size
 
@@ -158,7 +189,7 @@ This will start the dev server. Click `shift+m` on the terminal and choos to ope
 
 End to end testing is done with maestro. Follow their [installation steps](https://docs.maestro.dev/getting-started/installing-maestro) to install maestro CLI. We can't run test on regular CI like github actions, because we need to have a physical device/simulator to run the test.
 
-> Note: At the moment, Maestro does not support physical iOS devices
+> Note: As of 18 May 2025, Maestro does not support physical iOS devices
 
 ```bash
 # run end to end test on development variant
