@@ -32,7 +32,7 @@ export function ProfileLanguageChanger() {
               pressTheme
               theme="light"
               title="English"
-              iconAfter={i18n.language === 'en-US' ? <Feather testID="profile-language-english-checked" name="check-circle" size={20} /> : undefined}
+              iconAfter={i18n.resolvedLanguage === 'en' ? <Feather testID="profile-language-english-checked" name="check-circle" size={20} /> : undefined}
               onPress={() => i18n.changeLanguage('en-US')}
             />
           </YGroup.Item>
@@ -40,7 +40,7 @@ export function ProfileLanguageChanger() {
             <ListItem
               pressTheme
               title="Indonesia"
-              iconAfter={i18n.language === 'id-ID' ? <Feather testID="profile-language-indonesia-checked" name="check-circle" size={20} /> : undefined}
+              iconAfter={i18n.resolvedLanguage === 'id' ? <Feather testID="profile-language-indonesia-checked" name="check-circle" size={20} /> : undefined}
               onPress={() => i18n.changeLanguage('id-ID')}
             />
           </YGroup.Item>

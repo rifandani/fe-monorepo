@@ -35,6 +35,11 @@ function AppStateLanguageListener({ children }: PropsWithChildren) {
  * Get the supported locale from the device locale
  *
  * @returns supported locale or fallback locale if no supported locale is found
+ *
+ * @note
+ * "en-US" means preferred language is English and region is United States
+ * "id-ID" means preferred language is Indonesian and region is Indonesia
+ * "en-ID" means preferred language is English and region is Indonesia
  */
 export function useLocale() {
   const locales = useLocales()
