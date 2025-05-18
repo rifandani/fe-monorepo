@@ -65,7 +65,7 @@ dist/
 web-build/
 android/
 ios/
-# created using `npm run build:ios:local` scripts
+# created using `npm run build:ios:dev:local` scripts
 build-*.tar.gz
 *.apk
 

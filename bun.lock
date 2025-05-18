@@ -88,6 +88,7 @@
         "@babel/core": "7.26.10",
         "@expo/metro-config": "0.20.14",
         "@types/react": "19.0.13",
+        "cross-env": "7.0.3",
         "expo-atlas": "0.4.0",
         "metro-minify-terser": "0.82.3",
         "typescript": "5.8.3",

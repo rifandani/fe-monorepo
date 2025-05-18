@@ -40,17 +40,7 @@
     "web:test": "bun web test",
     "web:test:ui": "bun web test:ui",
     "web:test:ci": "bun web test:ci",
-    "expo:typecheck": "bun --filter @workspace/expo typecheck",
-    "expo:prebuild": "bun expo prebuild",
-    "expo:prebuild:clean": "bun expo prebuild:clean",
-    "expo:dev": "bun expo dev",
-    "expo:dev:clean": "bun expo dev:clean",
-    "expo:build:android": "bun expo build:android",
-    "expo:build:android:local": "bun expo build:android:local",
-    "expo:build:ios": "bun expo build:ios",
-    "expo:build:ios:local": "bun expo build:ios:local",
-    "expo:android": "bun expo android",
-    "expo:ios": "bun expo ios"
+    "expo:typecheck": "bun --filter @workspace/expo typecheck"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.13.0",

@@ -1,18 +1,20 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config'
 
+const isDevelopment = process.env.APP_VARIANT === 'development'
 /**
  * so that we can install different app based on the variant without overriding previous installed app
  */
-const bundleId
-  = process.env.APP_VARIANT === 'development'
-    ? 'com.rifandani.expoapp.development'
-    : 'com.rifandani.expoapp'
+const bundleId = isDevelopment
+  ? 'com.rifandani.expoapp.development'
+  : 'com.rifandani.expoapp'
+const appName = isDevelopment ? 'Expo App (Dev)' : 'Expo App'
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
+    // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,
     owner: 'rifandani',
-    name: 'expoapp',
+    name: appName,
     slug: 'expoapp',
     scheme: 'expoapp',
     version: '1.0.0',
@@ -35,8 +37,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     ios: {
       bundleIdentifier: bundleId,
+      // if no remote versions are configured, buildNumber will be initialized based on the value from the local project
       // buildNumber: 1,
       supportsTablet: true,
+      // infoPlist: {
+      //   ITSAppUsesNonExemptEncryption: false,
+      // },
     },
     extra: {
       eas: {
