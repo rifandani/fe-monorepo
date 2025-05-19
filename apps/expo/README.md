@@ -63,7 +63,7 @@ $ bun expo doctor
 # Next, in `eas.json` file, update `cli.version` to the new version of `eas-cli` global package
 # Next, upgrade xcode / android studio if needed
 # Next, run `bun run prebuild` to regenerate native project (android and ios folders)
-# Next, run `bun build:android:dev:local` or `bun build:ios:dev:sim` to create a local development build
+# Next, run `bun build:android:dev:local` or `bun build:ios:dev-sim:local` to create a local development build
 ```
 
 ## Development
@@ -78,7 +78,7 @@ $ cd apps/expo
 $ bun prebuild && bun build:android:dev:local
 
 # or, for ios
-$ bun prebuild && bun build:ios:dev:sim
+$ bun prebuild && bun build:ios:dev-sim:local
 ```
 
 After that, install the app to your android device/simulator and start the app:
@@ -91,8 +91,11 @@ $ bun start:dev
 Or, we can straight forward doing prebuild -> create a development build -> runs the app on connected android device/simulator, all at once with single command:
 
 ```bash
-# uninstall the app from the device/simulator if it's installed,
-# then prebuild + build:android:dev:local + install the app to the device/simulator
+# uninstall the app from the device/simulator if it's installed
+$ adb uninstall com.rifandani.expoapp.development # or .preview or .production
+$ xcrun simctl uninstall booted com.rifandani.expoapp.development # or .preview or .production
+
+# prebuild + build:android:dev:local + install the app to the device/simulator
 $ bun android
 
 # or, for ios
@@ -130,13 +133,13 @@ If you want to opt-out of EAS cloud build, you can [run the build locally](https
 $ bun build:android:dev:local
 
 # this will create a .tar.gz file in the root directory (for ios simulator)
-$ bun build:ios:dev:sim
+$ bun build:ios:dev-sim:local
 
 # for ios device
 $ bun build:ios:dev:local
 ```
 
-If we run `bun build:ios:dev:sim`, you will get a `build-*.tar.gz` file. We can't just drag it to the simulator, because it's not a valid app file. To install the app to the iOS simulator:
+If we run `bun build:ios:dev-sim:local`, you will get a `build-*.tar.gz` file. We can't just drag it to the simulator, because it's not a valid app file. To install the app to the iOS simulator:
 
 ```bash
 # this will extract the `build-*.tar.gz` file into /tmp/fe-monorepo-expo folder and install the app to the iOS simulator

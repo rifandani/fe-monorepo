@@ -13,7 +13,7 @@
       "distribution": "internal",
       "developmentClient": true
     },
-    // only for "build:ios:dev:sim" script
+    // only for "build:ios:dev-sim:local" script
     "development-simulator": {
       "extends": "development",
       "ios": {
