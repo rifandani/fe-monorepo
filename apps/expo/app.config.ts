@@ -9,10 +9,6 @@ const PROJECT_SLUG = 'expoapp'
 const OWNER = 'rifandani'
 
 function getDynamicAppConfig(environment: 'development' | 'preview' | 'production') {
-  if (!environment) {
-    throw new Error('❌ ENVIRONMENT IS REQUIRED')
-  }
-
   const APP_NAME = 'Expo App'
   const BUNDLE_IDENTIFIER = 'com.rifandani.expoapp'
   const BASE_ICON_SRC = './src/core/assets/icons'
@@ -48,6 +44,7 @@ function getDynamicAppConfig(environment: 'development' | 'preview' | 'productio
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  console.log(`🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT -> `, process.env.APP_VARIANT)
   const { name, bundleIdentifier, icon, adaptiveIcon, scheme }
     = getDynamicAppConfig((process.env.APP_VARIANT as 'development' | 'preview' | 'production'))
 
