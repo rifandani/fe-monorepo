@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { nativeApplicationVersion } from 'expo-application'
+import { nativeApplicationVersion, nativeBuildVersion } from 'expo-application'
 import { Image } from 'expo-image'
 import { useTranslation } from 'react-i18next'
 import { Platform } from 'react-native'
@@ -74,8 +74,6 @@ function LogoutListItem() {
 export const ErrorBoundary = BaseErrorBoundary
 
 export default function TabsProfileScreen() {
-  const { t } = useTranslation()
-
   return (
     <YStack flex={1} p="$3" pt={Platform.select({ ios: '$9', android: '$6' })}>
       <EditProfileSection />
@@ -86,9 +84,10 @@ export default function TabsProfileScreen() {
 
       <LogoutListItem />
       <Paragraph mt="auto" size="$2" text="center">
-        {t('common.appVersion')}
-        {' '}
+        {'Version '}
         {nativeApplicationVersion}
+        {' Build '}
+        {nativeBuildVersion}
       </Paragraph>
     </YStack>
   )

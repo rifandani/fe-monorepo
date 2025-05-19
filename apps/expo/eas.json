@@ -16,8 +16,10 @@
         "APP_VARIANT": "development",
         "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
       },
-      "developmentClient": true,
-      "distribution": "internal"
+      "environment": "development",
+      "channel": "development",
+      "distribution": "internal",
+      "developmentClient": true
     },
     // only for "build:ios:dev:sim" script
     "development-simulator": {
@@ -28,11 +30,13 @@
     },
     "preview": {
       "bun": "1.2.4",
-      "distribution": "internal",
       "env": {
         "APP_VARIANT": "preview",
         "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
-      }
+      },
+      "environment": "preview",
+      "channel": "preview",
+      "distribution": "internal"
     },
     "production": {
       "bun": "1.2.4",
@@ -40,6 +44,8 @@
         "APP_VARIANT": "production",
         "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
       },
+      "environment": "production",
+      "channel": "production",
       "distribution": "store",
       "autoIncrement": true
     }
@@ -47,7 +53,13 @@
   "submit": {
     "production": {
       // "android": {
-      //   "serviceAccountKeyPath": "./" // git ignored generatedservice account from google cloud
+      //   "serviceAccountKeyPath": "./service-account.json" // git ignored generatedservice account from google cloud
+      //   "track": "internal"
+      // }
+      // "ios": {
+      //   "appleId": "john@turtle.com",
+      //   "ascAppId": "1234567890",
+      //   "appleTeamId": "AB12XYZ34S"
       // }
     }
   }

@@ -1,42 +1,64 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config'
+import { version } from './package.json'
 
-const isDevelopment = process.env.APP_VARIANT === 'development'
-const isPreview = process.env.APP_VARIANT === 'preview'
+/**
+ * create a new project in EAS, and copy the project ID, slug, and expo account username, and paste here
+ */
+const EAS_PROJECT_ID = '28f2412b-baec-4843-b0d3-c51706061d29'
+const PROJECT_SLUG = 'expoapp'
+const OWNER = 'rifandani'
 
-function getBundleId() {
-  if (isDevelopment) {
-    return 'com.rifandani.expoapp.development'
-  }
-  else if (isPreview) {
-    return 'com.rifandani.expoapp.preview'
-  }
-
-  return 'com.rifandani.expoapp'
-}
-
-function getAppName() {
-  if (isDevelopment) {
-    return 'Expo App (Dev)'
-  }
-  else if (isPreview) {
-    return 'Expo App (Preview)'
+function getDynamicAppConfig(environment: 'development' | 'preview' | 'production') {
+  if (!environment) {
+    throw new Error('❌ ENVIRONMENT IS REQUIRED')
   }
 
-  return 'Expo App'
+  const APP_NAME = 'Expo App'
+  const BUNDLE_IDENTIFIER = 'com.rifandani.expoapp'
+  const BASE_ICON_SRC = './src/core/assets/icons'
+  const SCHEME = 'expoapp'
+
+  if (environment === 'production') {
+    return {
+      name: APP_NAME,
+      bundleIdentifier: BUNDLE_IDENTIFIER,
+      icon: `${BASE_ICON_SRC}/ios.png`,
+      adaptiveIcon: `${BASE_ICON_SRC}/android.png`,
+      scheme: SCHEME,
+    }
+  }
+
+  if (environment === 'preview') {
+    return {
+      name: `${APP_NAME} (Preview)`,
+      bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
+      icon: `${BASE_ICON_SRC}/ios-preview.png`,
+      adaptiveIcon: `${BASE_ICON_SRC}/android-preview.png`,
+      scheme: `${SCHEME}-preview`,
+    }
+  }
+
+  return {
+    name: `${APP_NAME} (Development)`,
+    bundleIdentifier: `${BUNDLE_IDENTIFIER}.development`,
+    icon: `${BASE_ICON_SRC}/ios-development.png`,
+    adaptiveIcon: `${BASE_ICON_SRC}/android-development.png`,
+    scheme: `${SCHEME}-development`,
+  }
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const bundleId = getBundleId()
-  const appName = getAppName()
+  const { name, bundleIdentifier, icon, adaptiveIcon, scheme }
+    = getDynamicAppConfig((process.env.APP_VARIANT as 'development' | 'preview' | 'production'))
 
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,
-    owner: 'rifandani',
-    name: appName,
-    slug: 'expoapp',
-    scheme: 'expoapp',
-    version: '1.0.0',
+    owner: OWNER,
+    slug: PROJECT_SLUG, // must be consistent across all env
+    name,
+    scheme,
+    version, // automatically bump project version with `npm version patch`, `npm version minor` or `npm version major`.
     orientation: 'portrait',
     userInterfaceStyle: 'automatic', // to support dark mode
     platforms: ['android', 'ios'],
@@ -44,20 +66,21 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     updates: {
       fallbackToCacheTimeout: 0,
     },
-    icon: './src/core/assets/icon.png',
+    runtimeVersion: {
+      policy: 'appVersion',
+      // url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+    },
+    icon,
     android: {
-      package: bundleId,
-      // versionCode: 1,
+      package: bundleIdentifier,
       adaptiveIcon: {
-        foregroundImage: './src/core/assets/adaptive-icon.png',
-        backgroundColor: '#000',
+        foregroundImage: adaptiveIcon,
+        backgroundColor: '#ffffff',
       },
       edgeToEdgeEnabled: true,
     },
     ios: {
-      bundleIdentifier: bundleId,
-      // if no remote versions are configured, buildNumber will be initialized based on the value from the local project
-      // buildNumber: 1,
+      bundleIdentifier,
       supportsTablet: true,
       // infoPlist: {
       //   ITSAppUsesNonExemptEncryption: false,
@@ -65,7 +88,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       eas: {
-        projectId: '28f2412b-baec-4843-b0d3-c51706061d29',
+        projectId: EAS_PROJECT_ID,
       },
     },
     experiments: {
@@ -84,14 +107,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-splash-screen',
         {
-          image: './src/core/assets/splash-icon.png',
+          image: './src/core/assets/icons/splash.png',
           // dark: {
           //   image: './src/core/assets/splash-dark.png',
           //   backgroundColor: '#000000',
           // },
           imageWidth: 200,
           resizeMode: 'contain',
-          backgroundColor: '#25292E',
+          backgroundColor: '#ffffff',
         },
       ],
       [

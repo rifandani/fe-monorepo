@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 import { useTranslation } from 'react-i18next'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { useAppStore } from '@/core/hooks/use-app-store'
-// import * as SplashScreen from 'expo-splash-screen'
 import { DevPlugins } from '@/core/providers/dev-plugins'
 import { AppI18nProvider } from '@/core/providers/i18n/provider'
 import { AppQueryProvider } from '@/core/providers/query/provider'
@@ -13,10 +13,10 @@ import { AppToastProvider } from '@/core/providers/toast/provider'
 // SplashScreen.preventAutoHideAsync()
 
 // // Set the animation options. This is optional.
-// SplashScreen.setOptions({
-//   duration: 1000,
-//   fade: true,
-// })
+SplashScreen.setOptions({
+  duration: 1_000,
+  fade: true,
+})
 
 function App() {
   const { t } = useTranslation()

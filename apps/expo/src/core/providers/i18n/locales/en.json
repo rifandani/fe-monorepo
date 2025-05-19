@@ -60,7 +60,6 @@
     "update": "Update {icon:string}",
     "remove": "Remove {icon:string}",
     "empty": "Empty Data",
-    "appVersion": "App version",
     "system": "System",
     "dark": "Dark",
     "light": "Light"
