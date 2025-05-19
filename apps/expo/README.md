@@ -98,6 +98,13 @@ $ bun android
 $ bun ios
 ```
 
+Everytime we change the app icon, we need to clean re-build the app.
+
+```bash
+# clean re-build the app
+$ bun prebuild
+```
+
 ## Development Build
 
 Development Build requires a "development build" app and a development server to be running. There are 2 build profiles, `development` and `development-simulator`. For further details, please check `eas.json` file.
@@ -132,7 +139,7 @@ If we run `bun build:ios:dev:sim`, you will get a `build-*.tar.gz` file. We can'
 
 ```bash
 # this will extract the `build-*.tar.gz` file into /tmp/fe-monorepo-expo folder and install the app to the iOS simulator
-$ bun ios:install:sim
+$ bun ios:sim:install
 ```
 
 ## Preview Build
