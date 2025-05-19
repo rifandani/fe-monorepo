@@ -79,9 +79,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       bundleIdentifier,
       supportsTablet: true,
-      // infoPlist: {
-      //   ITSAppUsesNonExemptEncryption: false,
-      // },
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      },
     },
     extra: {
       eas: {
