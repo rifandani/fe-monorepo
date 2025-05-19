@@ -9,7 +9,6 @@
 
 ## Todo
 
-- [ ] add a "preview" profile build, unlike "development" profile build, this do not require running a development server and "development build". This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS).
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
 - [ ] EAS workflows, setup CI/CD
 - [ ] EAS update, OTA updates, login in dev client so we can have extensions tab
@@ -76,9 +75,7 @@ $ cd apps/expo
 
 # regenerate native project from scratch, then create a development build
 $ bun prebuild && bun build:android:dev:local
-
-# or, for ios
-$ bun prebuild && bun build:ios:dev-sim:local
+$ bun prebuild && bun build:ios:dev-sim:local # for ios simulator
 ```
 
 After that, install the app to your android device/simulator and start the app:
@@ -95,11 +92,9 @@ Or, we can straight forward doing prebuild -> create a development build -> runs
 $ adb uninstall com.rifandani.expoapp.development # or .preview or .production
 $ xcrun simctl uninstall booted com.rifandani.expoapp.development # or .preview or .production
 
-# prebuild + build:android:dev:local + install the app to the device/simulator
+# prebuild + create development build + install the app to the device/simulator
 $ bun android
-
-# or, for ios
-$ bun ios
+$ bun ios # for ios simulator
 ```
 
 Everytime we change the app icon, we need to clean re-build the app.
@@ -132,11 +127,9 @@ If you want to opt-out of EAS cloud build, you can [run the build locally](https
 # this will create a .apk file in the root directory
 $ bun build:android:dev:local
 
-# this will create a .tar.gz file in the root directory (for ios simulator)
-$ bun build:ios:dev-sim:local
-
-# for ios device
-$ bun build:ios:dev:local
+# this will create a .tar.gz file in the root directory
+$ bun build:ios:dev:local # for ios device
+$ bun build:ios:dev-sim:local # for ios simulator
 ```
 
 If we run `bun build:ios:dev-sim:local`, you will get a `build-*.tar.gz` file. We can't just drag it to the simulator, because it's not a valid app file. To install the app to the iOS simulator:
@@ -170,7 +163,29 @@ $ bun build:ios:preview:local
 
 ## Production Build
 
-Coming Soon
+Production builds must be installed through their respective app stores. They cannot be installed directly on your Android Emulator or device, or iOS Simulator or device.
+
+A production Android build has a `.aab` format which is optimized for distribution on the Google Play Store. Unlike `.apk` builds, `.aab` files can only be distributed and installed through the Google Play Store.
+
+A production iOS build is optimized for Apple's App Store Connect, which allows distributing builds to testers with TestFlight and public end users through the App Store. This build type cannot be side-loaded on a simulator or device and can only be distributed through App Store Connect.
+
+```bash
+# kickoff EAS build for android
+$ bun build:android:prod
+
+# kickoff EAS build for ios (iphone device)
+$ bun build:ios:prod
+```
+
+If you want to opt-out of EAS cloud build, you can run the build locally.
+
+```bash
+# this will create a .aab file in the root directory
+$ bun build:android:prod:local
+
+# this will create a .app file in the root directory
+$ bun build:ios:prod:local
+```
 
 ## Updates
 
@@ -221,4 +236,12 @@ bun test:ui
 
 ## Submission
 
-Coming Soon
+To publish and distribute an app on the Google Play Store, we need [Google Play Developer Account, Google Service Account key, Production build profile](https://docs.expo.dev/tutorial/eas/android-production-build/). To publish and distribute an app on the Apple App Store, we need [Apple Developer account, Production build profile](https://docs.expo.dev/tutorial/eas/ios-production-build/).
+
+```bash
+# submit the app to the Google Play Store
+$ bun submit:android
+
+# submit the app to the Apple App Store
+$ bun submit:ios
+```
