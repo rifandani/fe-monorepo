@@ -10,9 +10,11 @@
 ## Todo
 
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
-- [ ] EAS workflows, setup CI/CD
-- [ ] EAS update, OTA updates, login in dev client so we can have extensions tab
+- [ ] [EAS workflows](https://docs.expo.dev/eas/workflows/get-started/), setup CI/CD yaml
+- [ ] [EAS update](https://docs.expo.dev/eas-update/introduction), OTA updates, login in dev client so we can have extensions tab
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
+- [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
+- [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
 
 ## Prerequisite
 
@@ -157,7 +159,7 @@ If you want to opt-out of EAS cloud build, you can run the build locally.
 # this will create a .apk file in the root directory
 $ bun build:android:preview:local
 
-# this will create a .app file in the root directory
+# this will create a .app file in the root directory (can't be installed directly on ios device)
 $ bun build:ios:preview:local
 ```
 
@@ -180,10 +182,10 @@ $ bun build:ios:prod
 If you want to opt-out of EAS cloud build, you can run the build locally.
 
 ```bash
-# this will create a .aab file in the root directory
+# this will create a .aab file in the root directory (can't be installed directly on android emulator/device)
 $ bun build:android:prod:local
 
-# this will create a .app file in the root directory
+# this will create a .ipa file in the root directory (can't be installed directly on ios simulator/device)
 $ bun build:ios:prod:local
 ```
 
@@ -203,14 +205,32 @@ $ bun update:ios:preview
 $ bun update:ios:prod
 ```
 
+## Submission
+
+To publish and distribute an app on the Google Play Store, we need [Google Play Developer Account, Google Service Account key, Production build profile](https://docs.expo.dev/tutorial/eas/android-production-build/). To publish and distribute an app on the Apple App Store, we need [Apple Developer account, Production build profile](https://docs.expo.dev/tutorial/eas/ios-production-build/).
+
+[Best practices for submitting your app to the app stores](https://docs.expo.dev/distribution/app-stores/).
+
+```bash
+# submit the app to the Google Play Store
+$ bun submit:android
+
+# submit the app to the Apple App Store
+$ bun submit:ios
+```
+
 ## Analyze Bundle Size
 
 ```bash
-# analyze bundle size mimicking the production build
+# analyze Javascript bundle size mimicking the production build
+# this will start the dev server. Click `shift+m` on the terminal and choose to open expo-atlas. This will open a new tab on the browser.
 $ bun analyze
 ```
 
-This will start the dev server. Click `shift+m` on the terminal and choos to open expo-atlas. This will open a new tab on the browser.
+[Best practices for reducing bundle size](https://docs.expo.dev/distribution/app-size/#optimizing-app-size):
+
+- [Android](https://developer.android.com/topic/performance/reduce-apk-size)
+- [iOS](https://developer.apple.com/documentation/xcode/reducing-your-app-s-size)
 
 ## Testing
 
@@ -232,16 +252,4 @@ To help us write and debug Maestro Flows better, we can open Maestro Studio.
 # DO NOT run this and `bun run test:dev` at the same time, it will cause "(Unable to launch app com.rifandani.expoapp.development: null)"
 # open Maestro Studio in http://localhost:9999/interact
 bun test:ui
-```
-
-## Submission
-
-To publish and distribute an app on the Google Play Store, we need [Google Play Developer Account, Google Service Account key, Production build profile](https://docs.expo.dev/tutorial/eas/android-production-build/). To publish and distribute an app on the Apple App Store, we need [Apple Developer account, Production build profile](https://docs.expo.dev/tutorial/eas/ios-production-build/).
-
-```bash
-# submit the app to the Google Play Store
-$ bun submit:android
-
-# submit the app to the Apple App Store
-$ bun submit:ios
 ```

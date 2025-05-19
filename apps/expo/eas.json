@@ -24,7 +24,8 @@
       "bun": "1.2.4",
       "environment": "preview",
       "channel": "preview",
-      "distribution": "internal"
+      "distribution": "internal",
+      "autoIncrement": true
     },
     "production": {
       "bun": "1.2.4",

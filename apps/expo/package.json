@@ -15,7 +15,7 @@
     "env:pull:preview": "eas env:pull preview --non-interactive",
     "env:pull:prod": "eas env:pull production --non-interactive",
     "prebuild": "expo prebuild --clean",
-    "start:dev": "expo start --dev-client -c",
+    "dev": "expo start --dev-client -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "ios:sim:install": "echo \"Step 1: Creating temp dir\" && mkdir -p /tmp/fe-monorepo-expo && echo \"Step 2: Finding build file\" && BUILD_PATH=\"$(find $PWD -name 'build-*.tar.gz' -type f -print -quit)\" && if [ -z \"$BUILD_PATH\" ]; then echo \"ERROR: No build file found! Run build:ios:dev-sim:local first.\"; exit 1; fi && echo \"Found build: $BUILD_PATH\" && echo \"Step 3: Extracting archive\" && tar -xvzf \"$BUILD_PATH\" -C /tmp/fe-monorepo-expo && echo \"Step 4: Finding .app file\" && APP_PATH=$(find /tmp/fe-monorepo-expo -name \"*.app\" -print -quit) && if [ -z \"$APP_PATH\" ]; then echo \"ERROR: No .app file found in archive!\"; exit 1; fi && echo \"Found app: $APP_PATH\" && echo \"Step 5: Installing to simulator\" && xcrun simctl install booted \"$APP_PATH\" || echo \"Installation failed. Make sure a simulator is running.\" && echo \"Done!\"",

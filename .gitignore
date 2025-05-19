@@ -68,6 +68,9 @@ ios/
 # created using `npm run build:ios:dev:local` scripts
 build-*.tar.gz
 *.apk
+*.aab
+*.app
+*.ipa
 
 # Native
 .kotlin/
