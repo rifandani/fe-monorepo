@@ -12,7 +12,7 @@
 - [ ] add a "preview" profile build, unlike "development" profile build, this do not require running a development server and "development build". This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS).
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
 - [ ] EAS workflows, setup CI/CD
-- [ ] EAS update, OTA updates
+- [ ] EAS update, OTA updates, login in dev client so we can have extensions tab
 
 ## Prerequisite
 
