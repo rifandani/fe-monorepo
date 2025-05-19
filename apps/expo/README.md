@@ -13,6 +13,7 @@
 - [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
 - [ ] EAS workflows, setup CI/CD
 - [ ] EAS update, OTA updates, login in dev client so we can have extensions tab
+- [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
 
 ## Prerequisite
 
@@ -170,7 +171,19 @@ Coming Soon
 
 ## Updates
 
-Coming Soon
+EAS Update is a hosted service that serves updates for projects using the `expo-updates` library. Updates for own non-native pieces (such as JS, styling, and images) over-the-air (OTA).
+
+```bash
+# send OTA update to android in preview environment
+$ bun update:android:preview
+# send OTA update to android in production environment
+$ bun update:android:prod
+
+# send OTA update to ios in preview environment
+$ bun update:ios:preview
+# send OTA update to ios in production environment
+$ bun update:ios:prod
+```
 
 ## Analyze Bundle Size
 

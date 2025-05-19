@@ -23,7 +23,9 @@
   },
   "user": {
     "profile": "Profile",
-    "editProfile": "Edit Profile"
+    "editProfile": "Edit Profile",
+    "newUpdateAvailable": "A new update is available",
+    "downloadAndInstallUpdate": "Download and install update"
   },
   "forms": {
     "username": "Username",

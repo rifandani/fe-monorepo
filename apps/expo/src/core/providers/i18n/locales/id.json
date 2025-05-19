@@ -23,7 +23,9 @@
   },
   "user": {
     "profile": "Profil",
-    "editProfile": "Ubah Profil"
+    "editProfile": "Ubah Profil",
+    "newUpdateAvailable": "Versi baru tersedia",
+    "downloadAndInstallUpdate": "Unduh dan instal pembaruan"
   },
   "forms": {
     "username": "Username",

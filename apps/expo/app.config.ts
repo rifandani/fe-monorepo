@@ -65,10 +65,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     assetBundlePatterns: ['**/*'],
     updates: {
       fallbackToCacheTimeout: 0,
+      url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
     },
     runtimeVersion: {
       policy: 'appVersion',
-      // url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
     },
     icon,
     android: {

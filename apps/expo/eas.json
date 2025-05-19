@@ -8,14 +8,6 @@
     "development": {
       // https: //docs.expo.dev/build-reference/infrastructure/#android-server-images
       "bun": "1.2.4",
-      /**
-       * Environment variables defined in your eas.json build profile will be used when evaluating your app.config.js
-       * when running eas build and will be available to all steps of the build process on the EAS Build server
-       */
-      "env": {
-        "APP_VARIANT": "development",
-        "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
-      },
       "environment": "development",
       "channel": "development",
       "distribution": "internal",
@@ -30,20 +22,12 @@
     },
     "preview": {
       "bun": "1.2.4",
-      "env": {
-        "APP_VARIANT": "preview",
-        "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
-      },
       "environment": "preview",
       "channel": "preview",
       "distribution": "internal"
     },
     "production": {
       "bun": "1.2.4",
-      "env": {
-        "APP_VARIANT": "production",
-        "EXPO_PUBLIC_API_BASE_URL": "https://dummyjson.com"
-      },
       "environment": "production",
       "channel": "production",
       "distribution": "store",
