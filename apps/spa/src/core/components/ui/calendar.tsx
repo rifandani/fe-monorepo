@@ -1,6 +1,5 @@
 'use client'
 
-import type { CalendarDate } from '@internationalized/date'
 import type { CalendarState } from '@react-stately/calendar'
 import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
 import { Icon } from '@iconify/react'
@@ -17,6 +16,7 @@ interface CalendarProps<T extends DateValue>
   errorMessage?: string
   className?: string
 }
+type CalendarDate = NonNullable<CalendarState['value']>
 
 function Calendar<T extends DateValue>({ errorMessage, className, ...props }: CalendarProps<T>) {
   const now = today(getLocalTimeZone())

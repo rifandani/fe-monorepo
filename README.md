@@ -3,7 +3,7 @@
 ### Todo
 
 - [ ] Make sure CI/CD works
-- [ ] Consider using changesets for monorepo versioning
+- [ ] Consider updating `zod` to v4 (affected libraries: `next-safe-action`, `@hookform/resolvers`, `@t3-oss/env-nextjs`, `@t3-oss/env-core`, `zod-form-data`, `zod-validation-error`)
 
 ### Upgrading Dependencies
 
