@@ -2,16 +2,14 @@
 
 ## Fixme
 
-- [x] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead.
+- [ ] Can not open preview build on Android device & simulator. Maybe try to use only 1 route first.
+- [ ] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead. Happens again on 19 May 2025.
 - [x] `Invalid hook call. Hooks can only be called inside of the body of a function component. Call Stack - AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)`. Resolved by not preserving the original code in `metro.config.js`
 - [x] running `bun build:android:dev:local` successfully created a development build, but failed when running `bun dev` (`ERROR  Warning: TypeError: Cannot convert undefined value to object. Call Stack - CheckAuthWrapper (apps/expo/src/core/components/check-auth-wrapper.tsx:7:44)`). Resolved by not using `BaseSpinner` component, instead using `Spinner` component from `tamagui`
 - [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
 
 ## Todo
 
-- [ ] test on iOS and update README to also mention iOS after all to-do items are resolved
-- [ ] [EAS workflows](https://docs.expo.dev/eas/workflows/get-started/), setup CI/CD yaml
-- [ ] [EAS update](https://docs.expo.dev/eas-update/introduction), OTA updates, login in dev client so we can have extensions tab
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
@@ -26,6 +24,8 @@
 - **Don't use VPN**, or `fetch` will not work
 
 ### Setup EAS
+
+> Full list of [EAS CLI commands](https://github.com/expo/eas-cli/blob/main/packages/eas-cli/README.md)
 
 ```bash
 # setup EAS CLI autocomplete
@@ -118,7 +118,7 @@ $ bun build:android:dev
 
 # kickoff EAS build for ios (iphone device)
 # requirements: https://docs.expo.dev/tutorial/eas/ios-development-build-for-devices/
-# - Apple Developer Account credentials for signing the app as each build needs to be signed to verify that the app comes from a trusted source
+# - Apple Developer Account (paid $99/year) credentials for signing the app as each build needs to be signed to verify that the app comes from a trusted source
 # - Developer Mode activated on iOS 16 and higher. https://docs.expo.dev/guides/ios-developer-mode/
 $ bun build:ios:dev
 ```
@@ -130,7 +130,7 @@ If you want to opt-out of EAS cloud build, you can [run the build locally](https
 $ bun build:android:dev:local
 
 # this will create a .tar.gz file in the root directory
-$ bun build:ios:dev:local # for ios device
+$ bun build:ios:dev:local # for ios device (requires apple developer account)
 $ bun build:ios:dev-sim:local # for ios simulator
 ```
 
@@ -149,7 +149,7 @@ This build often referred as "internal distribution" which can be distributed to
 # kickoff EAS build for android
 $ bun build:android:preview
 
-# kickoff EAS build for ios (iphone device)
+# kickoff EAS build for ios (iphone device, requires apple developer account)
 $ bun build:ios:preview
 ```
 
@@ -160,7 +160,7 @@ If you want to opt-out of EAS cloud build, you can run the build locally.
 $ bun build:android:preview:local
 
 # this will create a .app file in the root directory (can't be installed directly on ios device)
-$ bun build:ios:preview:local
+$ bun build:ios:preview:local # (iphone device, requires apple developer account)
 ```
 
 ## Production Build
@@ -175,7 +175,7 @@ A production iOS build is optimized for Apple's App Store Connect, which allows 
 # kickoff EAS build for android
 $ bun build:android:prod
 
-# kickoff EAS build for ios (iphone device)
+# kickoff EAS build for ios (requires apple developer account)
 $ bun build:ios:prod
 ```
 
@@ -186,7 +186,7 @@ If you want to opt-out of EAS cloud build, you can run the build locally.
 $ bun build:android:prod:local
 
 # this will create a .ipa file in the root directory (can't be installed directly on ios simulator/device)
-$ bun build:ios:prod:local
+$ bun build:ios:prod:local # (requires apple developer account)
 ```
 
 ## Updates
@@ -194,15 +194,11 @@ $ bun build:ios:prod:local
 EAS Update is a hosted service that serves updates for projects using the `expo-updates` library. Updates for own non-native pieces (such as JS, styling, and images) over-the-air (OTA).
 
 ```bash
-# send OTA update to android in preview environment
-$ bun update:android:preview
-# send OTA update to android in production environment
-$ bun update:android:prod
+# send OTA update to preview environment
+$ bun update:preview
 
-# send OTA update to ios in preview environment
-$ bun update:ios:preview
-# send OTA update to ios in production environment
-$ bun update:ios:prod
+# send OTA update to production environment
+$ bun update:prod
 ```
 
 ## Submission
@@ -252,4 +248,13 @@ To help us write and debug Maestro Flows better, we can open Maestro Studio.
 # DO NOT run this and `bun run test:dev` at the same time, it will cause "(Unable to launch app com.rifandani.expoapp.development: null)"
 # open Maestro Studio in http://localhost:9999/interact
 bun test:ui
+```
+
+## EAS Workflow
+
+Requires the EAS project to be connected to the github repository to be able to run the workflow automatically based on push/pr events.
+
+```bash
+# run manually
+$ eas workflow:run .eas/workflows/create-development-builds.yaml --non-interactive
 ```

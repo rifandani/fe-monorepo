@@ -5,6 +5,16 @@
     "appVersionSource": "remote"
   },
   "build": {
+    // maestro e2e test in EAS workflow (for now it's a paid feature)
+    "e2e-test": {
+      "withoutCredentials": true,
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "development": {
       // https: //docs.expo.dev/build-reference/infrastructure/#android-server-images
       "bun": "1.2.4",

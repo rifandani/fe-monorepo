@@ -1,0 +1,20 @@
+# unused
+name: Create preview builds
+
+# on:
+#   push:
+#     branches: ['main']
+
+jobs:
+  android_preview_build:
+    name: Build Android
+    type: build
+    params:
+      platform: android
+      profile: preview
+  ios_preview_build:
+    name: Build iOS
+    type: build
+    params:
+      platform: ios
+      profile: preview

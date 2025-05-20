@@ -79,28 +79,31 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       bundleIdentifier,
       supportsTablet: true,
-      infoPlist: {
-        ITSAppUsesNonExemptEncryption: false,
+      config: {
+        usesNonExemptEncryption: false,
       },
+      // "appleTeamId": "T2A8YY9YDW",
+      // entitlements: {
+      //   'com.apple.security.application-groups': [
+      //     'group.com.rifandani.expoapp',
+      //   ],
+      // },
     },
     extra: {
+      router: {
+        origin: false,
+      },
       eas: {
         projectId: EAS_PROJECT_ID,
       },
     },
     experiments: {
       typedRoutes: true,
-      // reactCanary: true, // improved errors. link: https://expo.dev/changelog/sdk-53
+      // reactCanary: true, // improved errors using react 19.1.0. link: https://expo.dev/changelog/sdk-53
     },
     plugins: [
       'expo-localization',
       'expo-router',
-      // [
-      //   "expo-dev-launcher",
-      //   {
-      //     "launchMode": "most-recent"
-      //   }
-      // ],
       [
         'expo-splash-screen',
         {
@@ -117,6 +120,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-font',
         {
+          /**
+           * <Text style={{ fontFamily: 'SpaceGrotesk_300Light' }}>Space Grotesk 300 Light</Text>
+           * <Text style={{ fontFamily: 'SpaceGrotesk_400Regular' }}>Space Grotesk 400 Regular</Text>
+           * <Text style={{ fontFamily: 'SpaceGrotesk_500Medium' }}>Space Grotesk 500 Medium</Text>
+           * <Text style={{ fontFamily: 'SpaceGrotesk_600SemiBold' }}>Space Grotesk 600 Semi Bold</Text>
+           * <Text style={{ fontFamily: 'SpaceGrotesk_700Bold' }}>Space Grotesk 700 Bold</Text>
+           */
           fonts: [
             '../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf',
             '../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf',
@@ -126,6 +136,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           ],
         },
       ],
+      // [
+      //   "react-native-edge-to-edge",
+      //   {
+      //     "android": {
+      //       "parentTheme": "Default",
+      //       "enforceNavigationBarContrast": true
+      //     }
+      //   }
+      // ],
     ],
   }
 }
