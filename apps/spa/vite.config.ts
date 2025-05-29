@@ -16,9 +16,9 @@ const pwaOptions: Partial<VitePWAOptions> = {
   mode: process.env.SW_DEV === 'true' ? 'development' : 'production',
   includeAssets: ['*.ico', '*.svg', '*.png'],
   manifest: {
-    name: 'React App',
-    short_name: 'React App',
-    description: 'Bulletproof React 18 SPA Template',
+    name: '@workspace/spa',
+    short_name: '@workspace/spa',
+    description: 'Bulletproof React.js 19 Template',
     theme_color: '#ffffff',
     icons: [
       {

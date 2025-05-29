@@ -1,33 +1,32 @@
-# Frontend React Monorepo
+# fe-monorepo
 
 ### Todo
 
 - [ ] Make sure CI/CD works
 - [ ] Consider updating `zod` to v4 (affected libraries: `next-safe-action`, `@hookform/resolvers`, `@t3-oss/env-nextjs`, `@t3-oss/env-core`, `zod-form-data`, `zod-validation-error`)
+- [ ] Consider using Bun `catalog` to manage monorepo dependencies
 
 ### Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
 - Run `bun outdated` to check for outdated dependencies in root and run `bun upgrade --latest` to upgrade all dependencies in root to the latest version
-- Run `bun outdated --cwd packages/core` to check for outdated dependencies and run `bun upgrade --latest --cwd packages/core` to upgrade all dependencies to the latest version
+- Run `bun outdated --cwd packages/core` to check for outdated dependencies and run `bun upgrade --latest --cwd packages/core` to upgrade all dependencies to the latest version. Make sure to also update the `peerDependencies`
 - Run `bun outdated --cwd apps/web` to check for outdated dependencies and run `bun upgrade --latest --cwd apps/web` to upgrade all dependencies to the latest version
 - Run `bun outdated --cwd apps/spa` to check for outdated dependencies and run `bun upgrade --latest --cwd apps/spa` to upgrade all dependencies to the latest version
-- To upgrade expo app, it's better to follow the steps in "How to upgrade?" section below
-- If there's MINOR upgrade in `playwright`, run `bun spa:test:install` to install new version of chromium
-- Run `bun web:test` and `bun spa:test` to tests (expo is not ready yet)
-- Run `bun web:build` and `bun spa:build` to build (expo is not ready yet)
-- Run `bun lint-typecheck` for regression
+- To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
+- If there's MINOR upgrade in `playwright`, run `bun web:test:install` to install new version of chromium
+- Run `bun web:test`, `bun spa:test`, and `bun expo test:dev` to run E2E tests
+- Run `bun web:build`, `bun spa:build`, and `bun expo build:android:dev:local` to build a development build
+- Run `bun lint-typecheck` for linting and type checking
+
+## @workspace/spa
+
+[See here](./apps/spa/README.md)
 
 ## @workspace/web
 
-### Note
+[See here](./apps/web/README.md)
 
-- we don't use `@vercel/otel` because it needs a third party service to setup (e.g. sentry, datadog, langwatch, langfuse)
-
-### Todo
-
-- [ ] sitemap.txt still does not work when we run `bun web:build`
-
-## @workspac/expo
+## @workspace/expo
 
 [See here](./apps/expo/README.md)

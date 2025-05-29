@@ -54,7 +54,6 @@
     "xDeleteError": "{feature:string} failed to delete",
     "error": "❌ {module:string|capitalize} error",
     "noPageContent": "No Page Content",
-    "appName": "Svelte Template",
     "theme": "Theme",
     "language": "Language",
     "logout": "Logout",

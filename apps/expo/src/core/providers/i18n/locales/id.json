@@ -54,7 +54,6 @@
     "xDeleteError": "{feature} gagal dihapus",
     "error": "❌ {module|capitalize} eror",
     "noPageContent": "Tidak Ada Konten",
-    "appName": "Templat Svelte",
     "theme": "Tema",
     "language": "Bahasa",
     "logout": "Keluar",

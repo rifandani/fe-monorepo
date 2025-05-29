@@ -2,7 +2,7 @@
   "name": "@workspace/expo",
   "version": "1.0.0",
   "private": false,
-  "description": "Bulletproof Expo SDK 52 Template",
+  "description": "Bulletproof Expo 53 Template",
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
   "main": "index.ts",
