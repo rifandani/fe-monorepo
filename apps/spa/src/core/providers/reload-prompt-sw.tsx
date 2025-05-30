@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useRegisterSW } from 'virtual:pwa-register/react'
-import { useI18n } from '@/core/hooks/use-i18n'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 // replaced dynamically
 const buildDate = '__DATE__' as '__DATE__' | Omit<string, '__DATE__'>
@@ -30,7 +30,7 @@ export function ReloadPromptSw() {
     console.error('🛑 Service Worker registration error', error)
   }, [])
 
-  const [t] = useI18n()
+  const { t } = useTranslation()
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],

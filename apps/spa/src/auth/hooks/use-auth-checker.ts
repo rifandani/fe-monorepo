@@ -3,7 +3,7 @@ import { useMount } from '@workspace/core/hooks/use-mount'
 import { toast } from 'sonner'
 import { match, P } from 'ts-pattern'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
-import { useI18n } from '@/core/hooks/use-i18n'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 /**
  * Hooks to check the authentication of your user, wheter they're logged in or not
@@ -15,7 +15,7 @@ import { useI18n } from '@/core/hooks/use-i18n'
  * ```
  */
 export function useAuthChecker() {
-  const [t] = useI18n()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuthUserStore()

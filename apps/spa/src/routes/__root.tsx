@@ -9,8 +9,8 @@ import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Link } from '@/core/components/ui/link'
-import { useI18n } from '@/core/hooks/use-i18n'
 import { Devtools } from '@/core/providers/devtools'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 declare module 'react-aria-components' {
   interface RouterConfig {
@@ -54,7 +54,7 @@ function RootRoute() {
 function NotFoundRoute() {
   useColorMode()
   const userStore = useAuthUserStore()
-  const [t] = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">

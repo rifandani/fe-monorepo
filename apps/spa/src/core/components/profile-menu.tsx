@@ -3,10 +3,10 @@ import { useNavigate } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
 import { Menu } from '@/core/components/ui/menu'
-import { useI18n } from '@/core/hooks/use-i18n'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 export function ProfileMenu() {
-  const [t] = useI18n()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, clearUser } = useAuthUserStore()
 

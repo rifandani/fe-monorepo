@@ -1,6 +1,6 @@
 import React from 'react'
 import { AppHeadProvider } from '@/core/providers/head/provider'
-import { AppI18nProvider } from '@/core/providers/i18n/provider'
+import { AppI18nProvider, AppTranslationProvider } from '@/core/providers/i18n/provider'
 import { AppQueryProvider } from '@/core/providers/query/provider'
 import { ReloadPromptSw } from '@/core/providers/reload-prompt-sw'
 import { AppRouterProvider } from '@/core/providers/router/provider'
@@ -11,15 +11,17 @@ export function Entry() {
     <React.StrictMode>
       <AppHeadProvider>
         <AppQueryProvider>
-          <AppI18nProvider>
-            <AppToastProvider>
-              {/* Router entry point */}
-              <AppRouterProvider />
+          <AppTranslationProvider>
+            <AppI18nProvider>
+              <AppToastProvider>
+                {/* Router entry point */}
+                <AppRouterProvider />
 
-              {/* PWA */}
-              <ReloadPromptSw />
-            </AppToastProvider>
-          </AppI18nProvider>
+                {/* PWA */}
+                <ReloadPromptSw />
+              </AppToastProvider>
+            </AppI18nProvider>
+          </AppTranslationProvider>
         </AppQueryProvider>
       </AppHeadProvider>
     </React.StrictMode>

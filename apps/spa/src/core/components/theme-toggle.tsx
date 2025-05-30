@@ -5,10 +5,10 @@ import type { Selection } from 'react-stately'
 import { Icon } from '@iconify/react'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { Button, Menu } from '@/core/components/ui'
-import { useI18n } from '@/core/hooks/use-i18n'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 export function ThemeToggle() {
-  const [t] = useI18n()
+  const { t } = useTranslation()
   const [theme, setTheme] = useColorMode()
 
   return (

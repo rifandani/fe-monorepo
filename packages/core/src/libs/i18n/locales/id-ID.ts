@@ -1,5 +1,8 @@
-export const idLocale = {
+import type { LanguageMessages } from '@workspace/core/libs/i18n/init.js'
+
+export default {
   // #region COMMON
+  locale: 'id-ID',
   backTo: 'Kembali ke halaman {target}',
   errorMinLength: '{field} harus memiliki minimal {length} karakter',
   error: '{module} eror',
@@ -13,6 +16,7 @@ export const idLocale = {
   empty: 'Data Kosong',
   unsavedChanges: 'Buang perubahan yang belum disimpan - anda yakin?',
   noPageContent: 'Tidak Ada Konten',
+  unauthorized: 'Tidak diizinkan. Silakan masuk terlebih dahulu',
   authorized: 'Sudah Ada Akses',
   attention: 'Perhatian',
   language: 'Bahasa',
@@ -45,4 +49,4 @@ export const idLocale = {
   // #region HOME
   title: 'Home',
   // #endregion HOME
-} as const
+} as const satisfies LanguageMessages

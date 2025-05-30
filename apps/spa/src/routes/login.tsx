@@ -11,8 +11,8 @@ import { validateAuthUser } from '@/auth/utils/storage'
 import { Note, TextField } from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
-import { useI18n } from '@/core/hooks/use-i18n'
 import { useSeo } from '@/core/hooks/use-seo'
+import { useTranslation } from '@/core/providers/i18n/context'
 import { reportWebVitals } from '@/core/utils/web-vitals'
 
 export const Route = createFileRoute('/login')({
@@ -43,7 +43,7 @@ function LoginRoute() {
     title: 'Login',
     description: 'Sign in to your account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.',
   })
-  const [t] = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div className="flex min-h-screen w-full">
@@ -81,7 +81,7 @@ function LoginRoute() {
 }
 
 function LoginForm() {
-  const [t] = useI18n()
+  const { t } = useTranslation()
   const navigate = Route.useNavigate()
   const { setUser } = useAuthUserStore()
 

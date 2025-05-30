@@ -2,7 +2,7 @@
 
 ## 🎯 Todo
 
-- [ ] Use i18n implementation from scratch based on [Kyle youtube](https://www.youtube.com/watch?v=VbZVx13b2oY&t=1160s)
+~
 
 ## 📦 Prerequisite
 

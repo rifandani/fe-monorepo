@@ -4,8 +4,8 @@ import { validateAuthUser } from '@/auth/utils/storage'
 import { LanguageToggle } from '@/core/components/language-toggle'
 import { ProfileMenu } from '@/core/components/profile-menu'
 import { ThemeToggle } from '@/core/components/theme-toggle'
-import { useI18n } from '@/core/hooks/use-i18n'
 import { useSeo } from '@/core/hooks/use-seo'
+import { useTranslation } from '@/core/providers/i18n/context'
 import { reportWebVitals } from '@/core/utils/web-vitals'
 
 export const Route = createFileRoute('/')({
@@ -36,7 +36,7 @@ function HomeRoute() {
     title: 'Home',
     description: 'Welcome to our React.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.',
   })
-  const [t] = useI18n()
+  const { t } = useTranslation()
 
   return (
     <div

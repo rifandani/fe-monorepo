@@ -1,19 +1,17 @@
-import type { LocaleDictLanguage } from '@workspace/core/locales/type'
+import type { LocaleDictLanguage } from '@workspace/core/libs/i18n/init'
 import type { Selection } from 'react-stately'
 import { Icon } from '@iconify/react'
-import { useLocale } from 'react-aria'
 import { Button, Menu } from '@/core/components/ui'
-import { useI18n } from '@/core/hooks/use-i18n'
+import { useTranslation } from '@/core/providers/i18n/context'
 
 export function LanguageToggle() {
-  const { locale } = useLocale()
-  const [t, { changeLocale }] = useI18n()
+  const { t, setLocale, locale } = useTranslation()
 
   return (
     <Menu>
       <Button appearance="plain">
         <Icon
-          icon={locale === 'en-US' ? 'flag:us-1x1' : 'flag:id-1x1'}
+          icon={locale === 'en-us' ? 'flag:us-1x1' : 'flag:id-1x1'}
           className="size-6"
         />
       </Button>
@@ -25,14 +23,14 @@ export function LanguageToggle() {
           const selection = _selection as Exclude<Selection, 'all'> & {
             currentKey: LocaleDictLanguage
           }
-          changeLocale(selection.currentKey)
+          setLocale(selection.currentKey)
         }}
       >
         <Menu.Section>
           <Menu.Header separator>{t('language')}</Menu.Header>
 
-          <Menu.Item id="en-US">English</Menu.Item>
-          <Menu.Item id="id-ID">Indonesia</Menu.Item>
+          <Menu.Item id="en-us">English</Menu.Item>
+          <Menu.Item id="id-id">Indonesia</Menu.Item>
         </Menu.Section>
       </Menu.Content>
     </Menu>
