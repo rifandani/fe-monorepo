@@ -3,7 +3,6 @@
 ## 🎯 Todo
 
 - [ ] Use i18n implementation from scratch based on [Kyle youtube](https://www.youtube.com/watch?v=VbZVx13b2oY&t=1160s)
-- [ ] Add sitemap.xml
 
 ## 📦 Prerequisite
 
@@ -16,7 +15,10 @@ Coming Soon.
 
 ## 🚀 Performance
 
-- [Capo.js](https://rviscomi.github.io/capo.js/) is a really good reference for enhancing the performance of HTML `<head>` by reordering it.
+Resources:
+
+- [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.
+- [Unlighthouse](https://unlighthouse.dev/) is a good reference for measuring the performance of all pages.
 
 ### Web Vitals
 
@@ -34,6 +36,10 @@ Use `useSeo` in `src/core/hooks/use-seo.ts` to generate metadata for each page a
 # run check-site-meta in port 3051
 bun meta
 ```
+
+Resources:
+
+- [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
 
 ### Favicons
 
@@ -59,6 +65,13 @@ A file that matches the [Robots Exclusion Standard](https://en.wikipedia.org/wik
 ### Sitemap.xml
 
 A file that matches the [Sitemaps XML format](https://www.sitemaps.org/protocol.html). Used to help search engine crawlers index our site more efficiently.
+
+Everytime we add a new page, we need to regenerate the `sitemap.xml` by running:
+
+```bash
+# this will regenerate the sitemap.xml in public folder
+bun sitemap:gen
+```
 
 ### Structured Data (Rich Results)
 

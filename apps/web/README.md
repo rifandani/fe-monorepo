@@ -21,7 +21,10 @@ Coming Soon. [Reference here](https://nextjs.org/docs/app/guides/content-securit
 
 ## 🚀 Performance
 
+Resources:
+
 - [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.
+- [Unlighthouse](https://unlighthouse.dev/) is a good reference for measuring the performance of all pages.
 
 ### Web Vitals
 
@@ -39,6 +42,10 @@ Use `createMetadata` in `src/core/utils/seo.tsx` to generate metadata for each p
 # run check-site-meta in port 3052
 bun meta
 ```
+
+Resources:
+
+- [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
 
 ### Favicons
 
@@ -69,7 +76,7 @@ A file that matches the [Sitemaps XML format](https://www.sitemaps.org/protocol.
 
 Structured data is a standardized format for providing information about a page and classifying the page content. Adding structured data can enable search results that are more engaging to users and might encourage them to interact more with our website, which are called **_rich results_**. Structured data uses [schema.org](https://schema.org/) vocabulary with many different encodings, including RDFa, Microdata and [JSON-LD (JavaScript Object Notation for Linked Data)](https://json-ld.org/) format.
 
-To add structured data to a page, we can use the `JsonLd` component from `src/core/utils/seo.tsx`:
+To add structured data to a page, we can use the `JsonLd` component from `src/core/utils/seo.tsx` for each page. Make sure to adjust minimum the `title` and `description` to match the page content every time we add a new page.
 
 ```tsx
 import { JsonLd } from '@/core/utils/seo'

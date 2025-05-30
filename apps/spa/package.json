@@ -7,6 +7,7 @@
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
   "scripts": {
+    "sitemap:gen": "bun scripts/gen-sitemap.ts",
     "pwa:assets-gen": "pwa-assets-generator --preset minimal-2023 public/favicon.svg",
     "typecheck": "tsc --noEmit",
     "test:install": "playwright install --with-deps chromium",
@@ -114,6 +115,7 @@
     "npm-run-all2": "8.0.1",
     "rimraf": "6.0.1",
     "rollup-plugin-visualizer": "5.14.0",
+    "sitemap": "8.0.0",
     "tailwindcss": "4.1.5",
     "vite": "6.3.5",
     "vite-plugin-pwa": "1.0.0",
