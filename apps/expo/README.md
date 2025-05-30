@@ -1,6 +1,6 @@
 # @workspace/expo
 
-## Fixme
+## 🔧 Fixme
 
 - [ ] Can not open preview build on Android device & simulator. Maybe try to use only 1 route first.
 - [ ] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead. Happens again on 19 May 2025.
@@ -8,13 +8,13 @@
 - [x] running `bun build:android:dev:local` successfully created a development build, but failed when running `bun dev` (`ERROR  Warning: TypeError: Cannot convert undefined value to object. Call Stack - CheckAuthWrapper (apps/expo/src/core/components/check-auth-wrapper.tsx:7:44)`). Resolved by not using `BaseSpinner` component, instead using `Spinner` component from `tamagui`
 - [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
 
-## Todo
+## 🎯 Todo
 
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
 
-## Prerequisite
+## 📦 Prerequisite
 
 [Expo reference](https://docs.expo.dev/get-started/set-up-your-environment/) or [React Native reference](https://reactnative.dev/docs/set-up-your-environment).
 
@@ -51,7 +51,7 @@ $ eas init
 - Set EAS project env from the dashboard, with key `APP_VARIANT` with value `development`, `preview`, or `production`, and `EXPO_PUBLIC_APP_VARIANT` with value `https://dummyjson.com`
 - Pull EAS project env into local env every time you want to change the app environment by running `bun env:pull:dev`, `bun env:pull:preview`, or `bun env:pull:prod`
 
-## How to upgrade?
+## ♻️ How to upgrade?
 
 If there are any new versions of Expo SDK, please check the corresponding changelog first (refer to the "Deprecations, renamings, and removals" section above for breaking changes that are most likely to impact our app), most of the time here's how to upgrade the app to the next versions:
 
@@ -68,7 +68,7 @@ $ bun expo doctor
 # Next, run `bun build:android:dev:local` or `bun build:ios:dev-sim:local` to create a local development build
 ```
 
-## Development
+## 💻 Development
 
 Every single time you change the `app.json` file / install native libraries, you need to re-generate native project (CNG) using:
 
@@ -107,7 +107,7 @@ Everytime we change the app icon, we need to clean re-build the app.
 $ bun prebuild
 ```
 
-## Development Build
+## 🔨 Development Build
 
 Development Build requires a "development build" app and a development server to be running. There are 2 build profiles, `development` and `development-simulator`. For further details, please check `eas.json` file.
 
@@ -142,7 +142,7 @@ If we run `bun build:ios:dev-sim:local`, you will get a `build-*.tar.gz` file. W
 $ bun ios:sim:install
 ```
 
-## Preview Build
+## 🔨 Preview Build
 
 This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS). [Reference](https://docs.expo.dev/tutorial/eas/internal-distribution-builds/).
 
@@ -164,7 +164,7 @@ $ bun build:android:preview:local
 $ bun build:ios:preview:local # (iphone device, requires apple developer account)
 ```
 
-## Production Build
+## 🔨 Production Build
 
 Production builds must be installed through their respective app stores. They cannot be installed directly on your Android Emulator or device, or iOS Simulator or device.
 
@@ -190,7 +190,7 @@ $ bun build:android:prod:local
 $ bun build:ios:prod:local # (requires apple developer account)
 ```
 
-## Updates
+## 🔄 Updates
 
 EAS Update is a hosted service that serves updates for projects using the `expo-updates` library. Updates for own non-native pieces (such as JS, styling, and images) over-the-air (OTA).
 
@@ -202,7 +202,7 @@ $ bun update:preview
 $ bun update:prod
 ```
 
-## Submission
+## 📨 Submission
 
 To publish and distribute an app on the Google Play Store, we need [Google Play Developer Account, Google Service Account key, Production build profile](https://docs.expo.dev/tutorial/eas/android-production-build/). To publish and distribute an app on the Apple App Store, we need [Apple Developer account, Production build profile](https://docs.expo.dev/tutorial/eas/ios-production-build/).
 
@@ -216,7 +216,7 @@ $ bun submit:android
 $ bun submit:ios
 ```
 
-## Analyze Bundle Size
+## 📊 Analyze Bundle Size
 
 ```bash
 # analyze Javascript bundle size mimicking the production build
@@ -229,7 +229,7 @@ $ bun analyze
 - [Android](https://developer.android.com/topic/performance/reduce-apk-size)
 - [iOS](https://developer.apple.com/documentation/xcode/reducing-your-app-s-size)
 
-## Testing
+## 🧪 Testing
 
 End to end testing is done with maestro. Follow their [installation steps](https://docs.maestro.dev/getting-started/installing-maestro) to install maestro CLI. We can't run test on regular CI like github actions, because we need to have a physical device/simulator to run the test.
 
@@ -251,7 +251,7 @@ To help us write and debug Maestro Flows better, we can open Maestro Studio.
 bun test:ui
 ```
 
-## EAS Workflow
+## ⏳ EAS Workflow
 
 Requires the EAS project to be connected to the github repository to be able to run the workflow automatically based on push/pr events.
 

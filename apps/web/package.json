@@ -20,7 +20,7 @@
     "dev:turbo": "cp .env.dev .env.local && next dev --turbopack --port 3002",
     "build": "cp .env.dev .env.local && next build",
     "build:prod": "cp .env.prod .env.local && next build",
-    "build:prod:analyze": "cp .env.prod .env.local && dotenvx run --env ANALYZE=true -- next build",
+    "build:prod:analyze": "cp .env.prod .env.local && dotenvx run --env ANALYZE=true --env-file=.env.prod -- next build",
     "start": "next start"
   },
   "dependencies": {

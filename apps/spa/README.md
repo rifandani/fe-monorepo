@@ -9,11 +9,91 @@
 - Node 22+
 - Bun 1.2.15+
 
+### Environment Variables
+
+> The source of truth is the local env files, so the process is whenever we change the local env files, we need to also update the deployment CI/CD project env
+
+- `.env.development.example` and `.env.production.example` are just an example to show the available env variables, it's not used in any possible way
+- if you're new, rename the `.env.development.example` and `.env.production.example` to `.env.development` and `.env.production` respectively
+
+## 💻 Development
+
+To run the app:
+
+```bash
+# run the app with development env in port 3001
+$ bun dev
+
+# run the app with production env in port 3001
+$ bun dev:prod
+```
+
+## 🔨 Development Build
+
+To build the app:
+
+```bash
+# build the app with development env
+$ bun build
+```
+
+## 🔨 Production Build
+
+To build the app:
+
+```bash
+# build the app with production env
+$ bun build:prod
+```
+
+## 📊 Analyze Bundle Size
+
+Everytime we build the app, we can see the HTML report of the bundle size by checking the `html` folder.
+
+## 🧪 Testing
+
+End to end testing is done with playwright. If you're new, you should install the required browsers first.
+
+```bash
+# install the required browsers
+bun test:install
+```
+
+To help us write and debug playwright tests better, we can open playwright UI mode.
+
+```bash
+# open playwright UI mode
+bun test:ui
+```
+
+To run the test in terminal:
+
+```bash
+# run the test in terminal
+bun test
+
+# run the test in CI with sharding
+bun test:ci
+```
+
+To show the test report:
+
+```bash
+# show the test report
+bun test:report
+```
+
+## 🚀 Deployment
+
+This app supposed to be a full client-side app. After we build the app, we can deploy the static files in `dist` folder to any hosting service.
+
+---
+
 ## 🔒 Security
 
 Coming Soon.
 
-## 🚀 Performance
+## ⚙️ Performance
 
 Resources:
 
@@ -24,7 +104,7 @@ Resources:
 
 Coming Soon
 
-## Accessibility
+## ⌨️ Accessibility
 
 Coming Soon.
 
@@ -91,3 +171,7 @@ function Page() {
 ```
 
 To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.org/playground/). To test if our structured data is working, we can use [Rich Results Test](https://search.google.com/test/rich-results) for Google or [schema.org Validator](https://validator.schema.org/) for general validation.
+
+## 📱 Progressive Web App (PWA)
+
+Coming Soon

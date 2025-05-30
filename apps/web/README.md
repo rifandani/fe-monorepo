@@ -13,13 +13,102 @@
 - Node 22+
 - Bun 1.2.15+
 
+### Environment Variables
+
+> The source of truth is the local env files, so the process is whenever we change the local env files, we need to also update the deployment CI/CD project env
+
+- `.env.dev.example` and `.env.prod.example` are just an example to show the available env variables, it's not used in any possible way
+- if you're new, rename the `.env.dev.example` and `.env.prod.example` to `.env.dev` and `.env.prod` respectively
+
+## 💻 Development
+
+To run the app:
+
+```bash
+# run the app with development env in port 3002
+$ bun dev
+
+# run the app with production env in port 3002
+$ bun dev:prod
+```
+
+## 🔨 Development Build
+
+To build the app:
+
+```bash
+# build the app with development env
+$ bun build
+```
+
+## 🔨 Production Build
+
+To build the app:
+
+```bash
+# build the app with production env
+$ bun build:prod
+```
+
+## 📊 Analyze Bundle Size
+
+To analyze the production bundle size:
+
+```bash
+# analyze Javascript bundle size mimicking the production build
+# this will open 3 new tabs on the browser, one for nodejs build, one for edge build, and one for browser build
+# the html report will be saved in the `.next/analyze` folder
+$ bun build:prod:analyze
+```
+
+[Best practices for reducing bundle size](https://nextjs.org/docs/app/guides/package-bundling)
+
+## 🧪 Testing
+
+End to end testing is done with playwright. If you're new, you should install the required browsers first.
+
+```bash
+# install the required browsers
+bun test:install
+```
+
+To help us write and debug playwright tests better, we can open playwright UI mode.
+
+```bash
+# open playwright UI mode
+bun test:ui
+```
+
+To run the test in terminal:
+
+```bash
+# run the test in terminal
+bun test
+
+# run the test in CI with sharding
+bun test:ci
+```
+
+To show the test report:
+
+```bash
+# show the test report
+bun test:report
+```
+
+## 🚀 Deployment
+
+Coming Soon
+
+---
+
 ## 🔒 Security
 
 ### Content Security Policy (CSP)
 
 Coming Soon. [Reference here](https://nextjs.org/docs/app/guides/content-security-policy)
 
-## 🚀 Performance
+## ⚙️ Performance
 
 Resources:
 
@@ -30,7 +119,7 @@ Resources:
 
 Coming Soon
 
-## Accessibility
+## ⌨️ Accessibility
 
 Coming Soon. [Reference here](https://nextjs.org/docs/app/building-your-application/optimizing/accessibility)
 
