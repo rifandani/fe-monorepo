@@ -2,7 +2,6 @@ import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { useHead } from '@unhead/react'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -13,6 +12,7 @@ import { Note, TextField } from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
 import { useI18n } from '@/core/hooks/use-i18n'
+import { useSeo } from '@/core/hooks/use-seo'
 import { reportWebVitals } from '@/core/utils/web-vitals'
 
 export const Route = createFileRoute('/login')({
@@ -39,9 +39,9 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginRoute() {
-  useHead({
+  useSeo({
     title: 'Login',
-    titleTemplate: '%s | React Template',
+    description: 'Sign in to your account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.',
   })
   const [t] = useI18n()
 
