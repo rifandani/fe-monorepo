@@ -47,15 +47,9 @@ type ParseArgType<
           : never
         : never
 
-type ExtractParamArgs<
-  S extends string,
-  Enums extends EnumMap,
-> = S extends `${string}{${infer Param}}${infer Rest}`
-  ? Param extends `${infer Name}:${infer Type}` // If the string contains a parameter
-  ? { [K in Name]: ParseArgType<Type, Name, Enums> } & ExtractParamArgs<
-      Rest,
-      Enums
-    > // If the string contains a parameter with a type
+type ExtractParamArgs<S extends string, Enums extends EnumMap> = S extends `${string}{${infer Param}}${infer Rest}`
+  ? Param extends `${infer Name}:${infer Type}`
+    ? { [K in Name]: ParseArgType<Type, Name, Enums> } & ExtractParamArgs<Rest, Enums> // If the string contains a parameter with a type
     : { [K in Param]: string } & ExtractParamArgs<Rest, Enums> // If the string has no parameter type
   : unknown // If the string has no parameters
 
