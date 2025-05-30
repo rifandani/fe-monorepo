@@ -12,7 +12,6 @@ export const idLocale = {
   remove: 'Hapus',
   empty: 'Data Kosong',
   unsavedChanges: 'Buang perubahan yang belum disimpan - anda yakin?',
-  appName: 'Templat React',
   noPageContent: 'Tidak Ada Konten',
   authorized: 'Sudah Ada Akses',
   attention: 'Perhatian',

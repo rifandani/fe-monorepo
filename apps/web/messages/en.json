@@ -10,7 +10,8 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
-    "backTo": "Back to {target} page"
+    "backTo": "Back to {target} page",
+    "somethingWentWrong": "Something went wrong"
   },
   "home": {
     "title": "Home"

@@ -10,7 +10,8 @@
     "profile": "Profil",
     "settings": "Pengaturan",
     "logout": "Keluar",
-    "backTo": "Kembali ke halaman {target}"
+    "backTo": "Kembali ke halaman {target}",
+    "somethingWentWrong": "Terjadi kesalahan"
   },
   "home": {
     "title": "Beranda"

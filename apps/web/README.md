@@ -1,29 +1,39 @@
 # @workspace/web
 
-## Note
+## 📝 Note
 
 - we don't use `@vercel/otel` because it needs a third party service to setup (e.g. sentry, datadog, langwatch, langfuse) or a custom OpenTelemetry collector.
 
-## Todo
+## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web:build`. That's why we rename it into `sitemap.txt`.
 
-## Prerequisite
+## 📦 Prerequisite
 
 - Node 22+
 - Bun 1.2.15+
 
-## Performance
+## 🔒 Security
 
-- [Capo.js](https://rviscomi.github.io/capo.js/) is a really good reference for enhancing the performance of HTML `<head>`.
+### Content Security Policy (CSP)
+
+Coming Soon. [Reference here](https://nextjs.org/docs/app/guides/content-security-policy)
+
+## 🚀 Performance
+
+- [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.
 
 ### Web Vitals
 
 Coming Soon
 
-## Metadata ~ SEO (Search Engine Optimization) & GEO (Generative Engine Optimization)
+## Accessibility
 
-Use `createMetadata` in `src/core/utils/seo.tsx` to generate metadata for each page. Make sure to adjust minimum the `title` and `description` to match the page content every time we add a new page. To check our overall site metadata:
+Coming Soon. [Reference here](https://nextjs.org/docs/app/building-your-application/optimizing/accessibility)
+
+## 🌎 Metadata ~ SEO (Search Engine Optimization) & GEO (Generative Engine Optimization)
+
+Use `createMetadata` in `src/core/utils/seo.tsx` to generate metadata for each page at runtime in server. Make sure to adjust minimum the `title` and `description` to match the page content every time we add a new page. To check our overall site metadata:
 
 ```bash
 # run check-site-meta in port 3052
@@ -33,6 +43,13 @@ bun meta
 ### Favicons
 
 Favicons are small icons that represent our site in bookmarks, web browser tabs, phone home screens, and search engine results. [Reference here](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons).
+
+To regenerate your app icon assets, change the `public/favicon.svg` and run:
+
+```bash
+# this will generate the app icon assets in public folder
+bun pwa:assets-gen
+```
 
 ### Open Graph & Twitter Images
 
@@ -57,13 +74,22 @@ To add structured data to a page, we can use the `JsonLd` component from `src/co
 ```tsx
 import { JsonLd } from '@/core/utils/seo'
 
-<JsonLd code={{
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  'name': title,
-  'description': description,
-}}
-/>
+const ldParams = {
+  url: process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3002',
+  title,
+  description,
+}
+
+function Page() {
+  return (
+    <JsonLd
+      graphs={[
+        createWebSite(ldParams),
+        createWebPage(ldParams),
+      ]}
+    />
+  )
+}
 ```
 
-To test if our structured data is working, we can use [Rich Results Test](https://search.google.com/test/rich-results) for Google or [schema.org Validator](https://validator.schema.org/) for general validation.
+To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.org/playground/). To test if our structured data is working, we can use [Rich Results Test](https://search.google.com/test/rich-results) for Google or [schema.org Validator](https://validator.schema.org/) for general validation.

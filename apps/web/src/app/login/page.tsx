@@ -2,11 +2,19 @@ import { Icon } from '@iconify/react'
 import { useTranslations } from 'next-intl'
 import { LoginForm } from '@/auth/components/login-form.client'
 import { Link } from '@/core/components/ui'
-import { createMetadata } from '@/core/utils/seo'
+import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
+
+const title = 'Login'
+const description = 'Sign in to your account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.'
+const ldParams = {
+  url: process.env.NODE_ENV === 'production' ? 'https://rifandani.com/login' : 'http://localhost:3002/login',
+  title,
+  description,
+}
 
 export const metadata = createMetadata({
-  title: 'Login',
-  description: 'Sign in to your account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.',
+  title,
+  description,
 })
 
 export default function LoginPage() {
@@ -43,6 +51,12 @@ export default function LoginPage() {
           />
         </span>
       </section>
+
+      <JsonLd graphs={[
+        createWebSite(ldParams),
+        createWebPage(ldParams),
+      ]}
+      />
     </div>
   )
 }

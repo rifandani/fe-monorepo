@@ -3,11 +3,19 @@ import { LanguageToggle } from '@/core/components/language-toggle.client'
 import { ProfileMenu } from '@/core/components/profile-menu.client'
 import { ThemeToggle } from '@/core/components/theme-toggle.client'
 import { homeWelcomeFlag } from '@/core/utils/feature-flag'
-import { createMetadata } from '@/core/utils/seo'
+import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
+
+const title = 'Home'
+const description = 'Welcome to our Next.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.'
+const ldParams = {
+  url: process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3002',
+  title,
+  description,
+}
 
 export const metadata = createMetadata({
-  title: 'Home',
-  description: 'Welcome to our Next.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.',
+  title,
+  description,
 })
 
 export default async function HomePage() {
@@ -27,6 +35,13 @@ export default async function HomePage() {
         <LanguageToggle />
         <ProfileMenu username="Get From Cookies" />
       </div>
+
+      <JsonLd
+        graphs={[
+          createWebSite(ldParams),
+          createWebPage(ldParams),
+        ]}
+      />
     </div>
   )
 }

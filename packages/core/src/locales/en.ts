@@ -1,7 +1,6 @@
 export const enLocale = {
   // #region COMMON
   backTo: 'Back to {target} page',
-  todoUpdateError: 'Todo failed to update',
   errorMinLength: '{field} must contain at least {length} characters',
   error: '{module} error',
   theme: 'Theme',
@@ -13,7 +12,6 @@ export const enLocale = {
   remove: 'Remove',
   empty: 'Empty Data',
   unsavedChanges: 'Discard unsaved changes - are you sure?',
-  appName: 'React Template',
   noPageContent: 'No Page Content',
   unauthorized: 'Unauthorized. Please login first',
   authorized: 'Already authorized',

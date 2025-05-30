@@ -1,3 +1,4 @@
+import type { Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
@@ -23,6 +24,16 @@ export const metadata = createMetadata({
   description: 'Bulletproof Next.js 15 Template',
 })
 
+export function generateViewport(): Viewport {
+  return {
+    colorScheme: 'light dark',
+    themeColor: [
+      { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+      { media: '(prefers-color-scheme: dark)', color: '#020203' },
+    ],
+  }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -37,6 +48,12 @@ export default async function RootLayout({
   return (
     // suppressHydrationWarning for next-themes
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" sizes="180x180" />
+      </head>
+
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-svh`}
       >

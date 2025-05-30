@@ -7,7 +7,7 @@
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
   "scripts": {
-    "gen:pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.svg",
+    "pwa:assets-gen": "pwa-assets-generator --preset minimal-2023 public/favicon.svg",
     "typecheck": "tsc --noEmit",
     "test:install": "playwright install --with-deps chromium",
     "test:report": "dotenvx run --env-file=.env.development -- playwright show-report",
@@ -71,6 +71,7 @@
     "@tanstack/react-router": "1.120.2",
     "@tanstack/react-router-devtools": "1.120.2",
     "@unhead/react": "2.0.8",
+    "@unhead/schema-org": "2.0.10",
     "@workspace/core": "workspace:*",
     "embla-carousel-react": "8.6.0",
     "input-otp": "1.4.2",
