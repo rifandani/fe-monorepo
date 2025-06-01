@@ -3,6 +3,10 @@ name: Release
 permissions:
   contents: write
 
+env:
+  # The "FORCE_COLOR" variable, when set to 1
+  FORCE_COLOR: "1"
+
 on:
   push:
     tags:

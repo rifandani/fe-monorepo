@@ -17,6 +17,12 @@ let config: NextConfig = withNextIntl({
   images: {
     formats: ['image/avif', 'image/webp'],
   },
+  // logging: {
+  //   incomingRequests: true,
+  //   fetches: {
+  //     fullUrl: true,
+  //   },
+  // },
   experimental: {
     // testProxy: true, // need to enable for e2e testing
     optimizePackageImports: ['@workspace/core'],

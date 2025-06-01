@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+env:
+  # The "FORCE_COLOR" variable, when set to 1
+  FORCE_COLOR: "1"
+
 jobs:
   lint-typecheck:
     runs-on: ubuntu-latest
