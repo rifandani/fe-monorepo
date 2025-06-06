@@ -1,3 +1,4 @@
+import type { TestOptions } from './e2e/_base'
 import { defineConfig, devices } from '@playwright/test'
 
 /**
@@ -12,7 +13,7 @@ const baseURL = `http://localhost:${port}`
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -56,6 +57,12 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/user.json',
+
+        // we can adjust user per project here, this will override the user in the base config
+        // user: {
+        //   username: 'emilysnew',
+        //   password: 'emilyspassnew',
+        // },
       },
     },
     // when we add more projects, make sure we also change `test:install` script

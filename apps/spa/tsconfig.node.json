@@ -12,6 +12,7 @@
   },
   "include": [
     "vite.config.*",
-    "playwright.config.*"
+    "playwright.config.*",
+    "e2e/_base.ts"
   ]
 }

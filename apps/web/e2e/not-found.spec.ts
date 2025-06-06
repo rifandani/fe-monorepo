@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './_base'
 
 test.beforeEach(async ({ page }) => {
   // not exists route
@@ -18,7 +18,7 @@ test.describe('authorized', () => {
     await expect(subtitle).toBeVisible()
     await expect(description).toBeVisible()
     await expect(link).toBeVisible()
-    await expect(link).toHaveText('Back to Home page')
+    await expect(link).toHaveText(/Back to Home page|Kembali ke halaman Home/)
   })
 })
 
@@ -38,6 +38,6 @@ test.describe('unauthorized', () => {
     await expect(subtitle).toBeVisible()
     await expect(description).toBeVisible()
     await expect(link).toBeVisible()
-    await expect(link).toHaveText('Back to Login page')
+    await expect(link).toHaveText(/Back to Login page|Kembali ke halaman Login/)
   })
 })

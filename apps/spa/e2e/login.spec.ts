@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './_base'
 
 const validUsername = 'emilys'
 const validPassword = 'emilyspass'
@@ -11,7 +11,7 @@ test.describe('authorized', () => {
   test('should redirect back to home page', async ({ page }) => {
     const usernameInput = page.getByRole('textbox', { name: /username/i })
     const passwordInput = page.getByRole('textbox', { name: /password/i })
-    const submitBtn = page.getByRole('button', { name: /login/i })
+    const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     await expect(usernameInput).toBeHidden()
     await expect(passwordInput).toBeHidden()
@@ -31,7 +31,7 @@ test.describe('unauthorized', () => {
     page,
   }) => {
     const title = page.getByRole('heading', { level: 1 })
-    const link = page.getByRole('link', { name: /register/i })
+    const link = page.getByRole('link', { name: /register|daftar/i })
     const logo = page.getByLabel('cool react logo').locator('path')
 
     await expect(title).toBeVisible()
@@ -44,7 +44,7 @@ test.describe('unauthorized', () => {
     const usernameAlert = page.getByRole('alert', { name: /username/i })
     const passwordInput = page.getByRole('textbox', { name: /password/i })
     const passwordAlert = page.getByRole('alert', { name: /password/i })
-    const submitBtn = page.getByRole('button', { name: /login/i })
+    const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     // default form state
     await expect(usernameInput).toBeVisible()
@@ -74,7 +74,7 @@ test.describe('unauthorized', () => {
     const passwordInput = page.getByRole('textbox', { name: /password/i })
     const passwordAlert = page.getByText(/password must contain at least/i)
     const errorAlert = page.getByTestId('mutation-error')
-    const submitBtn = page.getByRole('button', { name: /login/i })
+    const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     // default form state
     await expect(usernameInput).toBeVisible()

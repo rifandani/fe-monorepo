@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './_base'
 
 test('auth setup', async ({ page }) => {
   // when we're not authenticated, the app redirects to the login page
@@ -6,7 +6,7 @@ test('auth setup', async ({ page }) => {
 
   const usernameInput = page.getByRole('textbox', { name: /username/i })
   const passwordInput = page.getByRole('textbox', { name: /password/i })
-  const submitBtn = page.getByRole('button', { name: /login/i })
+  const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
   await usernameInput.fill('emilys')
   await passwordInput.fill('emilyspass')
