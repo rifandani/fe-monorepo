@@ -6,16 +6,16 @@ import { useEffect } from 'react'
 
 interface ScrollOptions { x?: number, y?: number, animated?: boolean }
 
-type ScrollableView =
-  | { scrollToTop: () => void }
-  | { scrollTo: (options: ScrollOptions) => void }
-  | { scrollToOffset: (options: { offset?: number, animated?: boolean }) => void }
-  | { scrollResponderScrollTo: (options: ScrollOptions) => void }
+type ScrollableView
+  = | { scrollToTop: () => void }
+    | { scrollTo: (options: ScrollOptions) => void }
+    | { scrollToOffset: (options: { offset?: number, animated?: boolean }) => void }
+    | { scrollResponderScrollTo: (options: ScrollOptions) => void }
 
-type ScrollableWrapper =
-  | { getScrollResponder: () => ReactNode | ScrollView }
-  | { getNode: () => ScrollableView }
-  | ScrollableView
+type ScrollableWrapper
+  = | { getScrollResponder: () => ReactNode | ScrollView }
+    | { getNode: () => ScrollableView }
+    | ScrollableView
 
 function getScrollableNode(ref: RefObject<ScrollableWrapper>) {
   if (ref.current == null) {

@@ -29,8 +29,8 @@ export interface FeatureFlagStoreActionSchema {
 }
 export type FeatureFlagStoreSchema = z.infer<
   typeof featureFlagStoreStateSchema
-> &
-FeatureFlagStoreActionSchema
+>
+& FeatureFlagStoreActionSchema
 
 export const featureFlagStoreInitialState = getSchemaDefaults<
   typeof featureFlagStoreStateSchema

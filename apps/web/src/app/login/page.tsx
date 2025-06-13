@@ -24,19 +24,19 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full">
       {/* form */}
       <section className="flex min-h-screen w-full flex-col justify-center px-10 md:w-1/2 xl:px-20">
-        <h1 className="text-primary text-center text-3xl">{t('core.welcome')}</h1>
+        <h1 className="text-primary text-center text-3xl">{t('welcome')}</h1>
 
         <LoginForm />
 
         <p className="py-12 text-center">
-          {t('auth.noAccount')}
+          {t('noAccount')}
           {' '}
           <Link
-            aria-label={t('auth.registerHere')}
+            aria-label={t('registerHere')}
             className="hover:underline"
             href="/"
           >
-            {t('auth.registerHere')}
+            {t('registerHere')}
           </Link>
         </p>
       </section>

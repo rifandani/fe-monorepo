@@ -114,8 +114,8 @@ function ChartTooltipContent({
   nameKey,
   labelKey,
   ref,
-}: React.ComponentProps<typeof Tooltip> &
-  React.ComponentProps<'div'> & {
+}: React.ComponentProps<typeof Tooltip>
+  & React.ComponentProps<'div'> & {
     hideLabel?: boolean
     hideIndicator?: boolean
     indicator?: 'line' | 'dot' | 'dashed'
@@ -246,8 +246,8 @@ function ChartLegendContent({
   verticalAlign = 'bottom',
   nameKey,
   ref,
-}: React.ComponentProps<'div'> &
-  Pick<LegendProps, 'payload' | 'verticalAlign'> & {
+}: React.ComponentProps<'div'>
+  & Pick<LegendProps, 'payload' | 'verticalAlign'> & {
     hideIcon?: boolean
     nameKey?: string
   }) {

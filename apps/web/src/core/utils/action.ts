@@ -1,6 +1,5 @@
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { createSafeActionClient, DEFAULT_SERVER_ERROR_MESSAGE } from 'next-safe-action'
-import { zodAdapter } from 'next-safe-action/adapters/zod'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
@@ -16,7 +15,6 @@ export interface ActionResult<T> {
  * Default action client with logging middleware
  */
 export const actionClient = createSafeActionClient({
-  validationAdapter: zodAdapter(),
   handleServerError: (error) => {
     logger.error(error instanceof Error ? error.message : error, '[actionClient]: Error default server error handler')
 

@@ -12,7 +12,7 @@ import { Button, Menu } from '@/core/components/ui'
 
 export function LanguageToggle() {
   const locale = useLocale()
-  const t = useTranslations('core')
+  const t = useTranslations()
   const { executeAsync, isPending } = useAction(setUserLocaleAction)
 
   return (

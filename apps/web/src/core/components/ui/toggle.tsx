@@ -32,8 +32,8 @@ interface ToggleGroupPropsGapZero extends BaseToggleGroupProps {
   intent?: Exclude<ToggleGroupContextProps['intent'], 'plain'>
 }
 
-type ToggleGroupProps = ToggleButtonGroupProps &
-  (ToggleGroupPropsGapZero | ToggleGroupPropsNonZeroGap) & {
+type ToggleGroupProps = ToggleButtonGroupProps
+  & (ToggleGroupPropsGapZero | ToggleGroupPropsNonZeroGap) & {
     ref?: React.RefObject<HTMLDivElement>
   }
 

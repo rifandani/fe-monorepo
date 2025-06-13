@@ -1,16 +1,21 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// make sure to sync this with `e2e/_base.ts`
+interface TestOptions {
+  user: { username: string, password: string }
+}
+
 /**
  * http://localhost:3002
  * http://127.0.0.1:3002
  */
-const port = 3002
+const port = process.env.CI ? 3000 : 3002
 const baseURL = `http://localhost:${port}`
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -54,6 +59,12 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/user.json',
+
+        // we can adjust user per project here, this will override the user in the base config
+        // user: {
+        //   username: 'emilysnew',
+        //   password: 'emilyspassnew',
+        // },
       },
     },
     // when we add more projects, make sure we also change `test:install` script
@@ -70,7 +81,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     url: baseURL,
-    command: 'bun web:dev',
+    // in CI, we run `build-and-preview` instead of `dev`
+    command: process.env.CI ? 'bun build-and-preview' : 'bun dev',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',
     stderr: 'pipe',

@@ -1,5 +1,9 @@
-import type { TestOptions } from './e2e/_base'
 import { defineConfig, devices } from '@playwright/test'
+
+// make sure to sync this with `e2e/_base.ts`
+interface TestOptions {
+  user: { username: string, password: string }
+}
 
 /**
  * http://localhost:3001
@@ -80,7 +84,7 @@ export default defineConfig<TestOptions>({
   webServer: {
     url: baseURL,
     // in CI, we run `build-and-preview` instead of `dev`
-    command: process.env.CI ? 'npm run build-and-preview' : 'npm run dev',
+    command: process.env.CI ? 'bun build-and-preview' : 'bun dev',
     reuseExistingServer: !process.env.CI,
     stdout: 'pipe',
     stderr: 'pipe',

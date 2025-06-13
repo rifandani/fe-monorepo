@@ -8,7 +8,7 @@ import { useTheme } from 'next-themes'
 import { Button, Menu } from '@/core/components/ui'
 
 export function ThemeToggle() {
-  const t = useTranslations('core')
+  const t = useTranslations()
   const { theme, setTheme } = useTheme()
 
   return (

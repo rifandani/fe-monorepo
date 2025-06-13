@@ -70,8 +70,8 @@ type NormalizedTranslationAtKey<T> = T extends ReturnType<
   ? T
   : [T, ReturnType<typeof defineTranslation>[1]]
 
-type NormalizedTranslationAtKeyWithParams<Key extends string> =
-  NormalizedTranslationAtKey<
+type NormalizedTranslationAtKeyWithParams<Key extends string>
+  = NormalizedTranslationAtKey<
     TranslationAtKeyWithParams<RegisteredTranslations, Key>
   >
 

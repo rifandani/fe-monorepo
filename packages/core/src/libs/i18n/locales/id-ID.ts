@@ -47,6 +47,6 @@ export default {
   // #endregion AUTH
 
   // #region HOME
-  title: 'Home',
+  title: 'Beranda',
   // #endregion HOME
 } as const satisfies LanguageMessages

@@ -12,6 +12,7 @@ build
 out
 stats.html
 .react-router
+.tanstack
 
 # misc
 .DS_Store

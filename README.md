@@ -15,6 +15,7 @@
 - Run `bun outdated --cwd apps/web` to check for outdated dependencies and run `bun update --latest --cwd apps/web` to upgrade all dependencies to the latest version
 - Run `bun outdated --cwd apps/spa` to check for outdated dependencies and run `bun update --latest --cwd apps/spa` to upgrade all dependencies to the latest version
 - To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
+- To upgrade IntentUI components, run interactively `bunx @intentui/cli@beta add -o`
 - If there's MINOR upgrade in `playwright`, run `bun web:test:install` to install new version of chromium
 - Run `bun web:test`, `bun spa:test`, and `bun expo test:dev` to run E2E tests (run the dev server / emulator first)
 - Run `bun web:build`, `bun spa:build`, and `bun expo build:android:dev:local` to build with development env

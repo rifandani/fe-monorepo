@@ -19,8 +19,8 @@ export const metadata = createMetadata({
 })
 
 export default async function HomePage() {
-  const t = await getTranslations('core')
-  const tHome = await getTranslations('home')
+  const t = await getTranslations()
+  const tHome = await getTranslations()
   const welcomeFlag = await homeWelcomeFlag()
 
   return (

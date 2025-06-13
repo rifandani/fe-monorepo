@@ -14,17 +14,17 @@ export default async function NotFound() {
         {/* Hero Section */}
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">404</h1>
-          <h2 className="text-2xl font-semibold">{t('auth.notFound')}</h2>
+          <h2 className="text-2xl font-semibold">{t('notFound')}</h2>
           <p className="text-muted-foreground">
-            {t('auth.gone')}
+            {t('gone')}
           </p>
         </div>
 
         {/* Quick Actions */}
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Link intent="primary" href={session ? '/' : '/login'} className="flex items-center">
-            {t('core.backTo', {
-              target: session ? t('home.title') : 'Login',
+            {t('backTo', {
+              target: session ? t('title') : 'Login',
             })}
           </Link>
         </div>

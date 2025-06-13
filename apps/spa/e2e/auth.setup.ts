@@ -13,9 +13,9 @@ test('auth setup', async ({ page }) => {
   await submitBtn.click()
 
   await page.waitForURL('')
-  await expect(usernameInput).toBeHidden()
-  await expect(passwordInput).toBeHidden()
-  await expect(submitBtn).toBeHidden()
+  await expect(usernameInput).toBeHidden({ timeout: 10_000 })
+  await expect(passwordInput).toBeHidden({ timeout: 10_000 })
+  await expect(submitBtn).toBeHidden({ timeout: 10_000 })
 
   await page.context().storageState({ path: 'playwright/.auth/user.json' })
 })

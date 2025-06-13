@@ -1,294 +1,205 @@
 'use client'
 
-import type { Inertia, PanInfo } from 'motion/react'
-import type { ButtonProps, DialogProps } from 'react-aria-components'
+import type {
+  DialogProps,
+  DialogTriggerProps,
+  HeadingProps,
+  ModalOverlayProps,
+  TextProps,
+} from 'react-aria-components'
+import { AnimatePresence, motion } from 'motion/react'
+import { use } from 'react'
 import {
-  animate,
-  AnimatePresence,
-
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useMotionValueEvent,
-  useTransform,
-} from 'motion/react'
-import { createContext, use, useState } from 'react'
-import { Modal, ModalOverlay } from 'react-aria-components'
+  Button as ButtonPrimitive,
+  Dialog,
+  DialogTrigger,
+  Heading,
+  ModalOverlay,
+  Modal as ModalPrimitive,
+  OverlayTriggerStateContext,
+  Text,
+} from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { Dialog } from './dialog'
+import { Button, type ButtonProps } from '@/core/components/ui/button'
 
-const inertiaTransition: Inertia = {
-  type: 'inertia',
-  bounceStiffness: 300,
-  bounceDamping: 60,
-  timeConstant: 300,
-}
-const staticTransition = {
-  duration: 0.4,
-  ease: [0.32, 0.72, 0, 1],
-}
-const drawerMargin = 60
-const drawerRadius = 32
+const DrawerRoot = motion.create(ModalPrimitive)
+const DrawerOverlay = motion.create(ModalOverlay)
 
-interface DrawerContextType {
-  isOpen: boolean
-  openDrawer: () => void
-  closeDrawer: () => void
-  withNotch?: boolean
+const Drawer = (props: DialogTriggerProps) => <DialogTrigger {...props} />
+
+interface DrawerContentProps
+  extends Omit<ModalOverlayProps, 'className' | 'children' | 'isDismissable'>,
+  Pick<DialogProps, 'aria-label' | 'aria-labelledby' | 'role' | 'children' | 'className'> {
+  isFloat?: boolean
+  isBlurred?: boolean
+  className?: string
+  style?: React.CSSProperties
+  side?: 'top' | 'bottom' | 'left' | 'right'
+  notch?: boolean
 }
 
-const DrawerContext = createContext<DrawerContextType | undefined>(undefined)
-
-function useDrawerContext() {
-  const context = use(DrawerContext)
-  if (context === undefined) {
-    throw new Error('useDrawerContext must be used within a Drawer')
-  }
-  return context
-}
-
-function ModalWrapper({ ref, ...props }: React.ComponentProps<typeof Modal>) {
-  return <Modal ref={ref} {...props} />
-}
-
-function ModalOverlayWrapper({ ref, ...props }: React.ComponentProps<typeof ModalOverlay>) {
-  return <ModalOverlay ref={ref} {...props} />
-}
-
-const ModalPrimitive = motion.create(ModalWrapper)
-const ModalOverlayPrimitive = motion.create(ModalOverlayWrapper)
-
-interface DrawerOverlayPrimitiveProps
-  extends Omit<
-    React.ComponentProps<typeof ModalOverlayPrimitive>,
-    'isOpen' | 'onOpenChange' | 'style'
-  > {
-  'aria-label'?: DialogProps['aria-label']
-  'aria-labelledby'?: DialogProps['aria-labelledby']
-  'role'?: DialogProps['role']
-  'children'?: React.ReactNode
-}
-
-function DrawerContentPrimitive({ children, ...props }: DrawerOverlayPrimitiveProps) {
-  const { closeDrawer, withNotch } = useDrawerContext()
-  const [contentHeight, setContentHeight] = useState(0)
-
-  const h = Math.min(contentHeight + drawerMargin, window.innerHeight - drawerMargin)
-  const y = useMotionValue(h)
-  const bgOpacity = useTransform(y, [0, h], [0.15, 0])
-  const bg = useMotionTemplate`rgba(0, 0, 0, ${bgOpacity})`
-
-  const root = document.getElementsByTagName('main')[0] as HTMLElement
-
-  const bodyBorderRadius = useTransform(y, [0, h], [drawerRadius, 0])
-
-  useMotionValueEvent(bodyBorderRadius, 'change', (v) => {
-    root.style.borderRadius = `${v}px`
-  })
-
-  const onDragEnd = (_: any, { offset, velocity }: PanInfo) => {
-    if (offset.y > h * 0.4 || velocity.y > 10) {
-      closeDrawer()
-    }
-    else {
-      animate(y, 0, { ...inertiaTransition, min: 0, max: 0 })
-    }
-  }
+function DrawerContent({
+  side = 'bottom',
+  isFloat = false,
+  isBlurred,
+  notch = true,
+  children,
+  className,
+  ...props
+}: DrawerContentProps) {
+  const state = use(OverlayTriggerStateContext)!
 
   return (
-    <>
-      <ModalOverlayPrimitive
-        isDismissable
-        isOpen
-        onOpenChange={closeDrawer}
-        className={twJoin([
-          'fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full touch-none will-change-transform',
-          'flex items-end [--visual-viewport-vertical-padding:100px]',
-        ])}
-        style={{
-          backgroundColor: bg as any,
-        }}
-      >
-        <ModalPrimitive
-          className="flex max-h-full w-full flex-col overflow-hidden rounded-t-2xl bg-overlay text-left align-middle text-overlay-fg shadow-lg ring-1 ring-dark/5 sm:rounded-lg dark:ring-light/15"
-          initial={{ y: h }}
-          animate={{ y: 0 }}
-          exit={{ y: h }}
-          transition={staticTransition}
-          style={{
-            y,
-            top: 'auto',
-            height: contentHeight > 0 ? `${contentHeight + drawerMargin}px` : 'auto',
-            maxHeight: `calc(100% - ${drawerMargin}px)`,
-          }}
-          drag="y"
-          dragConstraints={{ top: 0, bottom: h }}
-          onDragEnd={onDragEnd}
-          {...props}
+    <AnimatePresence>
+      {(props?.isOpen || state?.isOpen) && (
+        <DrawerOverlay
+          isDismissable
+          isOpen={props?.isOpen || state?.isOpen}
+          onOpenChange={props?.onOpenChange || state?.setOpen}
+          animate={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+          exit={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+          className="fixed inset-0 z-50 will-change-auto [--visual-viewport-vertical-padding:32px]"
         >
-          <div className="overflow-hidden">
-            {withNotch && (
-              <div className="notch sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
-            )}
-            <div
-              className="mt-3 overflow-y-auto"
-              ref={(el) => {
-                if (el) {
-                  const resizeObserver = new ResizeObserver((entries) => {
-                    for (const entry of entries) {
-                      setContentHeight(entry.contentRect.height)
-                    }
-                  })
-                  resizeObserver.observe(el)
-                  return () => resizeObserver.disconnect()
+          {({ state }) => (
+            <DrawerRoot
+              className={twJoin(
+                'fixed max-h-full touch-none overflow-hidden bg-bg align-middle text-fg ring ring-input will-change-transform',
+                side === 'top'
+                && (isFloat ? 'inset-x-2 top-2 rounded-lg' : 'inset-x-0 top-0 rounded-b-2xl'),
+                side === 'right'
+                && [
+                  'w-full max-w-xs overflow-y-auto',
+                  '**:[[slot=header]]:text-left',
+                  isFloat ? 'inset-y-2 right-2 rounded-lg' : 'inset-y-0 right-0 h-auto',
+                ].join(' '),
+                side === 'bottom'
+                && (isFloat ? 'inset-x-2 bottom-2 rounded-lg' : 'inset-x-0 bottom-0 rounded-t-2xl'),
+                side === 'left'
+                && [
+                  'w-full max-w-xs overflow-y-auto',
+                  '**:[[slot=header]]:text-left',
+                  isFloat ? 'inset-y-2 left-2 rounded-lg' : 'inset-y-0 left-0 h-auto',
+                ].join(' '),
+                className,
+              )}
+              animate={{ x: 0, y: 0 }}
+              initial={{
+                x: side === 'left' ? '-100%' : side === 'right' ? '100%' : 0,
+                y: side === 'top' ? '-100%' : side === 'bottom' ? '100%' : 0,
+              }}
+              exit={{
+                x: side === 'left' ? '-100%' : side === 'right' ? '100%' : 0,
+                y: side === 'top' ? '-100%' : side === 'bottom' ? '100%' : 0,
+              }}
+              drag={side === 'left' || side === 'right' ? 'x' : 'y'}
+              whileDrag={{ cursor: 'grabbing' }}
+              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
+              dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+              transition={{ duration: 0.15, ease: 'easeInOut' }}
+              onDragEnd={(_, { offset, velocity }) => {
+                if (side === 'bottom' && (velocity.y > 150 || offset.y > screen.height * 0.25)) {
+                  state.close()
+                }
+                if (side === 'top' && (velocity.y < -150 || offset.y < screen.height * 0.25)) {
+                  state.close()
+                }
+                if (side === 'left' && velocity.x < -150) {
+                  state.close()
+                }
+                if (side === 'right' && velocity.x > 150) {
+                  state.close()
                 }
               }}
+              dragElastic={{
+                top: side === 'top' ? 1 : 0,
+                bottom: side === 'bottom' ? 1 : 0,
+                left: side === 'left' ? 1 : 0,
+                right: side === 'right' ? 1 : 0,
+              }}
+              dragPropagation
             >
-              {children}
-            </div>
-          </div>
-        </ModalPrimitive>
-      </ModalOverlayPrimitive>
-    </>
+              <Dialog
+                aria-label="Drawer"
+                role="dialog"
+                className={twJoin(
+                  'relative flex flex-col overflow-hidden outline-hidden will-change-auto',
+                  side === 'top' || side === 'bottom'
+                    ? 'mx-auto max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))] max-w-lg'
+                    : 'h-full',
+                )}
+              >
+                {notch && side === 'bottom' && (
+                  <div className="notch sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
+                )}
+                {children as React.ReactNode}
+                {notch && side === 'top' && (
+                  <div className="notch sticky bottom-0 mx-auto mb-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
+                )}
+              </Dialog>
+            </DrawerRoot>
+          )}
+        </DrawerOverlay>
+      )}
+    </AnimatePresence>
   )
 }
 
-interface DrawerPrimitiveProps extends Omit<React.ComponentProps<typeof Modal>, 'children'> {
-  'aria-label'?: DialogProps['aria-label']
-  'aria-labelledby'?: DialogProps['aria-labelledby']
-  'role'?: DialogProps['role']
-  'children'?: DialogProps['children']
-}
-
-function DrawerPrimitive(props: DrawerPrimitiveProps) {
-  const { isOpen } = useDrawerContext()
-
-  const h = window.innerHeight - drawerMargin
-  const y = useMotionValue(h)
-  const bodyBorderRadius = useTransform(y, [0, h], [drawerRadius, 0])
+function DrawerHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <motion.div
-      style={{
-        borderRadius: bodyBorderRadius,
-        transformOrigin: 'center 0',
-      }}
-    >
-      <AnimatePresence>{isOpen && (props.children as React.ReactNode)}</AnimatePresence>
-    </motion.div>
+    <div
+      slot="header"
+      className={twMerge('flex flex-col p-4 text-center sm:text-left', className)}
+      {...props}
+    />
   )
 }
 
-function DrawerTrigger(props: ButtonProps) {
-  const { openDrawer } = useDrawerContext()
-
-  return <Dialog.Trigger onPress={openDrawer} {...props} />
+function DrawerTitle({ className, ...props }: HeadingProps) {
+  return <Heading slot="title" className={twMerge('font-semibold text-lg/8', className)} {...props} />
 }
 
-interface DrawerProps {
-  children: React.ReactNode
-  isOpen?: boolean
-  withNotch?: boolean
-  onOpenChange?: (isOpen: boolean) => void
+function DrawerDescription({ className, ...props }: TextProps) {
+  return <Text slot="description" className={twMerge('text-muted-fg text-sm', className)} {...props} />
 }
 
-function Drawer({
-  children,
-  withNotch = true,
-  isOpen: controlledIsOpen,
-  onOpenChange,
-}: DrawerProps) {
-  const [internalIsOpen, setInternalIsOpen] = useState(false)
-
-  const isControlled = controlledIsOpen !== undefined
-  const isOpen = isControlled ? controlledIsOpen : internalIsOpen
-
-  const openDrawer = () => {
-    if (isControlled && onOpenChange) {
-      onOpenChange(true)
-    }
-    else {
-      setInternalIsOpen(true)
-    }
-  }
-
-  const closeDrawer = () => {
-    if (isControlled && onOpenChange) {
-      onOpenChange(false)
-    }
-    else {
-      setInternalIsOpen(false)
-    }
-  }
-
-  if (typeof window === 'undefined') {
-    return null
-  }
-
+function DrawerBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <DrawerContext value={{ isOpen, openDrawer, closeDrawer, withNotch }}>
-      {children}
-    </DrawerContext>
+    <div
+      slot="body"
+      className={twMerge(
+        'isolate flex max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))] flex-col overflow-auto px-4 py-1 will-change-scroll',
+        className,
+      )}
+      {...props}
+    />
   )
 }
 
-type DrawerContentProps = React.ComponentProps<typeof DrawerPrimitive>
-function DrawerContent({ children, ...props }: DrawerContentProps) {
+function DrawerFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <DrawerPrimitive>
-      <DrawerContentPrimitive {...props}>
-        <Dialog
-          role={props.role ?? 'dialog'}
-          aria-label={props['aria-label'] ?? undefined}
-          aria-labelledby={props['aria-labelledby'] ?? undefined}
-          className="mx-auto sm:max-w-lg"
-        >
-          {values => <>{typeof children === 'function' ? children(values) : children}</>}
-        </Dialog>
-      </DrawerContentPrimitive>
-    </DrawerPrimitive>
+    <div
+      slot="footer"
+      className={twMerge(
+        'isolate mt-auto flex flex-col-reverse justify-end gap-2 p-4 sm:flex-row',
+        className,
+      )}
+      {...props}
+    />
   )
 }
 
-function DrawerHeader({ className, ...props }: React.ComponentProps<typeof Dialog.Header>) {
-  return <Dialog.Header className={twMerge('pt-2', className)} {...props} />
+function DrawerClose({ className, intent = 'outline', ref, ...props }: ButtonProps) {
+  return <Button slot="close" className={className} ref={ref} intent={intent} {...props} />
 }
 
-function DrawerBody({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof Dialog.Body>) {
-  return (
-    <Dialog.Body {...props} className={twMerge('px-4', className)}>
-      {children}
-    </Dialog.Body>
-  )
-}
-
-function DrawerFooter({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof Dialog.Footer>) {
-  return (
-    <Dialog.Footer {...props} className={twMerge('pb-2', className)}>
-      {children}
-    </Dialog.Footer>
-  )
-}
-
-const DrawerClose = Dialog.Close
-const DrawerDescription = Dialog.Description
-const DrawerTitle = Dialog.Title
-
-Drawer.Trigger = DrawerTrigger
+Drawer.Trigger = ButtonPrimitive
+Drawer.Footer = DrawerFooter
 Drawer.Header = DrawerHeader
 Drawer.Title = DrawerTitle
 Drawer.Description = DrawerDescription
 Drawer.Body = DrawerBody
 Drawer.Content = DrawerContent
-Drawer.Footer = DrawerFooter
 Drawer.Close = DrawerClose
 
-export type { DrawerContentProps, DrawerProps }
 export { Drawer }
+export type { DrawerContentProps }

@@ -9,7 +9,7 @@ import { Avatar } from '@/core/components/ui/avatar'
 import { Menu } from '@/core/components/ui/menu'
 
 export function ProfileMenu({ username }: { username: string }) {
-  const t = useTranslations('core')
+  const t = useTranslations()
   const { execute, isPending } = useAction(logoutAction)
 
   return (

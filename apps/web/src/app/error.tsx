@@ -1,6 +1,5 @@
 'use client' // Error boundaries must be Client Components
 
-import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 import { Button } from '@/core/components/ui'
 import { loggerBrowser } from '@/core/utils/logger'
@@ -12,7 +11,6 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  const t = useTranslations()
   useEffect(() => {
     // Log the error to an error monitoring service (e.g. Sentry)
     loggerBrowser.error(error)
@@ -26,7 +24,7 @@ export default function Error({
           <h1 className="text-8xl font-bold text-primary">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
           <p className="text-muted-foreground">
-            {t('core.somethingWentWrong')}
+            Something went wrong
           </p>
         </div>
 
