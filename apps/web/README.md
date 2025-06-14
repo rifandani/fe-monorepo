@@ -2,7 +2,7 @@
 
 ## 📝 Note
 
-- we don't use `@vercel/otel` because it needs a third party service to setup (e.g. sentry, datadog, langwatch, langfuse) or a custom OpenTelemetry collector.
+- we can install & use `@vercel/otel` with a custom OpenTelemetry collector from grafana.
 
 ## 🎯 Todo
 
@@ -109,6 +109,8 @@ Coming Soon
 Coming Soon. [Reference here](https://nextjs.org/docs/app/guides/content-security-policy)
 
 ## ⚙️ Performance
+
+Coming Soon.
 
 Resources:
 

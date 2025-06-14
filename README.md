@@ -2,10 +2,11 @@
 
 ### Todo
 
+- [ ] use `changeset` to manage versioning and changelogs per package/app
 - [ ] Make sure CI/CD works
 - [ ] Consider updating `zod` to v4 (affected libraries: `next-safe-action`, `@hookform/resolvers`, `@t3-oss/env-nextjs`, `@t3-oss/env-core`, `zod-form-data`, `zod-validation-error`)
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
-- [ ] Consider using `@tanstack/react-form` instead of `react-hook-form`
+- [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
 ### Upgrading Dependencies
 

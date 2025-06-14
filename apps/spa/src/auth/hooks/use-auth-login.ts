@@ -21,7 +21,7 @@ type Success = Awaited<ReturnType<ReturnType<typeof authRepositories>['login']>>
 type Error = HTTPError<ErrorResponseSchema> | TimeoutError | ZodError
 
 /**
- * @url POST ${env.apiBaseUrl}/auth/login
+ * @url POST ${ENV.VITE_API_BASE_URL}/auth/login
  * @note includes error handling for convenience
  */
 export function useAuthLogin(

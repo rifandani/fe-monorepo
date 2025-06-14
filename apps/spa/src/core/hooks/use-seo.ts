@@ -1,12 +1,13 @@
 import { useSeoMeta } from '@unhead/react'
 import { defineWebPage, defineWebSite, useSchemaOrg } from '@unhead/schema-org/react'
 import { assign } from 'radashi'
+import { ENV } from '@/core/constants/env'
 
 type UseSeoMetaParams = Parameters<typeof useSeoMeta>[0]
 
 const appName = '@workspace/spa'
 const appDescription = 'Bulletproof React.js 19 Template'
-const appBaseUrl = process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3001'
+const appBaseUrl = ENV.VITE_APP_URL
 const appOgImage = '/og.png'
 const appPublisher = 'Rizeki Rifandani'
 const ldParams = {

@@ -1,4 +1,5 @@
 import { createEnv } from '@t3-oss/env-nextjs'
+// import { vercel } from '@t3-oss/env-nextjs/presets-zod'
 import { z } from 'zod'
 
 export const ENV = createEnv({
@@ -14,4 +15,5 @@ export const ENV = createEnv({
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   },
+  // extends: [vercel()],
 })

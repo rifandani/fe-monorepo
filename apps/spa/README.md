@@ -95,6 +95,8 @@ Coming Soon.
 
 ## ⚙️ Performance
 
+Coming Soon.
+
 Resources:
 
 - [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.

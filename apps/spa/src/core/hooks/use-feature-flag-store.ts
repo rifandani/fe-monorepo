@@ -2,8 +2,9 @@ import { getSchemaDefaults } from '@workspace/core/utils/core'
 import { z } from 'zod'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { ENV } from '@/core/constants/env'
 
-const defaultValue = import.meta.env.VITE_MODE === 'development'
+const defaultValue = ENV.DEV
 const featureFlagStoreStateSchema = z.object({
   auth: z.object({
     condition: z.object({
