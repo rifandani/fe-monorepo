@@ -61,8 +61,8 @@ jobs:
         uses: actions/upload-artifact@v4.6.1
         if: always()
         with:
-          name: playwright-report-${{ matrix.shardIndex }}
-          path: playwright-report
+          name: spa-playwright-report-${{ matrix.shardIndex }}
+          path: apps/spa/playwright-report
           retention-days: 7
 
   web-e2e:
@@ -96,8 +96,8 @@ jobs:
         uses: actions/upload-artifact@v4.6.1
         if: always()
         with:
-          name: playwright-report-${{ matrix.shardIndex }}
-          path: playwright-report
+          name: web-playwright-report-${{ matrix.shardIndex }}
+          path: apps/web/playwright-report
           retention-days: 7
 
   spa-build:
@@ -115,12 +115,20 @@ jobs:
       - name: Build
         run: bun spa:ci build
 
-      - name: Save build artifact
-        uses: actions/upload-artifact@v4.6.1
-        if: always()
-        with:
-          name: spa-build
-          path: dist
+  web-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4.2.2
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun i --frozen-lockfile
+
+      - name: Build
+        run: bun web:ci build
 
   # e2e:
   #   runs-on: ubuntu-latest
