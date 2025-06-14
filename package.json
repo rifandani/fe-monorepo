@@ -54,7 +54,7 @@
     "@tanstack/eslint-plugin-router": "1.115.0",
     "@workspace/typescript-config": "workspace:*",
     "bumpp": "10.1.1",
-    "eslint": "9.27.0",
+    "eslint": "9.29.0",
     "eslint-plugin-depend": "1.2.0",
     "eslint-plugin-expo": "0.1.4",
     "eslint-plugin-format": "1.0.1",
