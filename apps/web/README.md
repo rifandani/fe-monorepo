@@ -1,12 +1,8 @@
 # @workspace/web
 
-## 📝 Note
-
-- we can install & use `@vercel/otel` with a custom OpenTelemetry collector from grafana.
-
 ## 🎯 Todo
 
-- [ ] sitemap still does not work when we run `bun web:build`. That's why we rename it into `sitemap.txt`.
+- [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
 
 ## 📦 Prerequisite
 

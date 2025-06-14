@@ -6,6 +6,7 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
+import { logger } from '@workspace/core/utils/logger'
 import { useEffect } from 'react'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
@@ -13,7 +14,6 @@ import { Button } from '@/core/components/ui'
 import { Link } from '@/core/components/ui/link'
 import { Devtools } from '@/core/providers/devtools'
 import { useTranslation } from '@/core/providers/i18n/context'
-import { loggerBrowser } from '@/core/utils/logger'
 
 declare module 'react-aria-components' {
   interface RouterConfig {
@@ -58,7 +58,7 @@ function RootRoute() {
 function ErrorRoute({ error, reset }: ErrorComponentProps) {
   useEffect(() => {
     // Log the error to an error monitoring service (e.g. Sentry)
-    loggerBrowser.error(error)
+    logger.error('[ErrorRoute]: Error', { error })
   }, [error])
 
   return (

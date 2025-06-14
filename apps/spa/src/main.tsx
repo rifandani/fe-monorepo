@@ -1,6 +1,6 @@
+import { logger } from '@workspace/core/utils/logger'
 import { createRoot } from 'react-dom/client'
 import { Entry } from '@/core/entry'
-import { loggerBrowser } from '@/core/utils/logger'
 import '@/core/styles/globals.css'
 
 const root = document.getElementById('root')
@@ -13,10 +13,10 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 createRoot(root as HTMLElement, {
   onCaughtError(error, errorInfo) {
-    loggerBrowser.error({ error, errorInfo }, '[root]: Caught Error')
+    logger.error('[root]: Caught Error', { error, errorInfo })
   },
   onUncaughtError(error, errorInfo) {
-    loggerBrowser.error({ error, errorInfo }, '[root]: Uncaught Error')
+    logger.error('[root]: Uncaught Error', { error, errorInfo })
   },
 }).render(
   <Entry />,

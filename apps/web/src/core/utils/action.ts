@@ -1,9 +1,9 @@
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
+import { logger } from '@workspace/core/utils/logger'
 import { createSafeActionClient, DEFAULT_SERVER_ERROR_MESSAGE } from 'next-safe-action'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import { logger } from '@/core/utils/logger'
 import 'server-only'
 
 export interface ActionResult<T> {
@@ -16,7 +16,7 @@ export interface ActionResult<T> {
  */
 export const actionClient = createSafeActionClient({
   handleServerError: (error) => {
-    logger.error(error instanceof Error ? error.message : error, '[actionClient]: Error default server error handler')
+    logger.error('[actionClient]: Error default server error handler', error instanceof Error ? error.message : error)
 
     if (error instanceof Error) {
       return error.message
@@ -38,7 +38,7 @@ export const actionClient = createSafeActionClient({
     const endTime = performance.now()
 
     // Log the action execution time
-    logger.info(`[actionClient]: ${metadata.actionName} action took ${endTime - startTime}ms`)
+    logger.log(`[actionClient]: ${metadata.actionName} action took ${endTime - startTime}ms`)
 
     // Return the result of the awaited action.
     return result
@@ -60,11 +60,11 @@ export const authActionClient = actionClient
 
     const parsedSession = authLoginResponseSchema.safeParse(JSON.parse(atob(session)))
     if (parsedSession.error) {
-      logger.error(parsedSession.error, '[authActionClient]: Unauthorized: Session is not valid')
+      logger.error('[authActionClient]: Unauthorized: Session is not valid', parsedSession.error)
       throw new Error('[authActionClient]: Unauthorized: Session is not valid')
     }
 
-    logger.info('[authActionClient]: Authorized: Session is valid')
+    logger.log('[authActionClient]: Authorized: Session is valid')
     // Return the next middleware with `userId` value in the context
     return next({ ctx: { session: parsedSession.data } })
   })

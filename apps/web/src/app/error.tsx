@@ -1,8 +1,8 @@
 'use client' // Error boundaries must be Client Components
 
+import { logger } from '@workspace/core/utils/logger'
 import { useEffect } from 'react'
 import { Button } from '@/core/components/ui'
-import { loggerBrowser } from '@/core/utils/logger'
 
 export default function Error({
   error,
@@ -13,7 +13,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error monitoring service (e.g. Sentry)
-    loggerBrowser.error(error)
+    logger.error('[ErrorPage]: Error', { error })
   }, [error])
 
   return (

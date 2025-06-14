@@ -1,5 +1,5 @@
+import { logger } from '@workspace/core/utils/logger'
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
-import { loggerBrowser } from '@/core/utils/logger'
 
 /**
  * Report web vitals to the console. Enabled on production for now. Use per page basis.
@@ -7,18 +7,18 @@ import { loggerBrowser } from '@/core/utils/logger'
 export function reportWebVitals() {
   // we could send to analytics here if the rating is not "good"
   onLCP((metric) => {
-    loggerBrowser.info(metric, '[web-vitals]: LCP')
+    logger.log('[web-vitals]: LCP', metric)
   })
   onINP((metric) => {
-    loggerBrowser.info(metric, '[web-vitals]: INP')
+    logger.log('[web-vitals]: INP', metric)
   })
   onCLS((metric) => {
-    loggerBrowser.info(metric, '[web-vitals]: CLS')
+    logger.log('[web-vitals]: CLS', metric)
   })
   onFCP((metric) => {
-    loggerBrowser.info(metric, '[web-vitals]: FCP')
+    logger.log('[web-vitals]: FCP', metric)
   })
   onTTFB((metric) => {
-    loggerBrowser.info(metric, '[web-vitals]: TTFB')
+    logger.log('[web-vitals]: TTFB', metric)
   })
 }

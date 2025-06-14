@@ -24,14 +24,9 @@
     "type-fest": ">=4.41.0",
     "zod": ">=3.25.63"
   },
-  "peerDependenciesMeta": {
-    "react-dom": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@tanstack/react-query": "5.80.7",
-    "@types/node": "22.15.28",
+    "@types/node": "22.15.31",
     "@types/react": "19.1.8",
     "@workspace/typescript-config": "workspace:*",
     "ky": "1.8.1",

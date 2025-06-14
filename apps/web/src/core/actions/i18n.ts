@@ -26,7 +26,7 @@ export const getUserLocaleAction = actionClient
  */
 export const setUserLocaleAction = actionClient
   .metadata({ actionName: 'setUserLocale' })
-  .schema(localeSchema)
+  .inputSchema(localeSchema)
   .action(async ({ parsedInput }) => {
     // set locale in cookies
     const cookie = await cookies()

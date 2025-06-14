@@ -2,6 +2,7 @@
 
 import type { ActionResult } from '@/core/utils/action'
 import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth'
+import { logger } from '@workspace/core/utils/logger'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { tryit } from 'radashi'
@@ -9,7 +10,6 @@ import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { http } from '@/core/services/http'
 import { actionClient } from '@/core/utils/action'
 import { repositoryErrorMapper } from '@/core/utils/error'
-import { logger } from '@/core/utils/logger'
 
 /**
  * Server action to handle user login.
@@ -24,15 +24,15 @@ import { logger } from '@/core/utils/logger'
  */
 export const loginAction = actionClient
   .metadata({ actionName: 'login' })
-  .schema(authLoginRequestSchema)
+  .inputSchema(authLoginRequestSchema)
   .action<ActionResult<null>>(async ({ parsedInput }) => {
-    logger.info(parsedInput, `[login]: Start login`)
+    logger.log(`[login]: Start login`, parsedInput)
     const [error, response] = await tryit(authRepositories(http).login)({ json: parsedInput })
     if (error) {
       return await repositoryErrorMapper(error)
     }
 
-    logger.info(response, `[login]: Start set session cookie`)
+    logger.log(`[login]: Start set session cookie`, response)
     const cookie = await cookies()
     cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
       httpOnly: true,
@@ -43,7 +43,7 @@ export const loginAction = actionClient
     })
 
     // INFO: we can't use redirect in try catch block, because redirect will throw an error object
-    logger.info(`[login]: Start redirect to /`)
+    logger.log(`[login]: Start redirect to /`)
     redirect('/')
   })
 
@@ -59,10 +59,10 @@ export const loginAction = actionClient
 export const logoutAction = actionClient
   .metadata({ actionName: 'logoutAction' })
   .action(async () => {
-    logger.info(`[logout]: Start clearing auth cookie`)
+    logger.log(`[logout]: Start clearing auth cookie`)
     const cookie = await cookies()
     cookie.delete(AUTH_COOKIE_NAME)
 
-    logger.info(`[logout]: Start redirect to /login`)
+    logger.log(`[logout]: Start redirect to /login`)
     redirect('/login')
   })
