@@ -66,6 +66,8 @@
     "@formkit/auto-animate": "0.8.2",
     "@hookform/resolvers": "5.1.1",
     "@internationalized/date": "3.8.2",
+    "@openfeature/flagsmith-client-provider": "0.1.3",
+    "@openfeature/react-sdk": "1.0.0",
     "@radix-ui/react-scroll-area": "1.2.9",
     "@t3-oss/env-core": "0.13.8",
     "@tanstack/react-query": "5.80.7",

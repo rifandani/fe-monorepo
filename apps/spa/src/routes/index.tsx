@@ -1,3 +1,4 @@
+import { useStringFlagValue } from '@openfeature/react-sdk'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { validateAuthUser } from '@/auth/utils/storage'
@@ -37,6 +38,8 @@ function HomeRoute() {
     description: 'Welcome to our React.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.',
   })
   const { t } = useTranslation()
+  // it takes time to load the flag first, then it resolves to the correct value
+  const home_welcome_message = useStringFlagValue('home_welcome_message', '')
 
   return (
     <div
@@ -44,6 +47,7 @@ function HomeRoute() {
     >
       <h1 className="text-3xl sm:text-4xl">{t('title')}</h1>
       <h2 className="font-mono text-xl sm:text-2xl">{t('welcome')}</h2>
+      {home_welcome_message && <p className="font-mono text-sm">{home_welcome_message}</p>}
 
       <div className="flex items-center gap-x-2">
         <ThemeToggle />

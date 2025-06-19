@@ -8,6 +8,8 @@ export const ENV = createEnv({
     VITE_APP_TITLE: z.string().min(1),
     VITE_APP_URL: z.string().url(),
     VITE_API_BASE_URL: z.string().url(),
+    VITE_FLAGSMITH_ENVIRONMENT_ID: z.string().min(1),
+    VITE_FLAGSMITH_API_URL: z.string().url(),
   },
   runtimeEnv: import.meta.env,
   extends: [vite()],

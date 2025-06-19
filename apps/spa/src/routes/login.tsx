@@ -96,6 +96,7 @@ function LoginForm() {
 
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
+      // set user to local storage and navigate to home
       setUser(user)
       await navigate({ to: '/' })
     },
