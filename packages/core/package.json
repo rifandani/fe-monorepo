@@ -22,7 +22,7 @@
     "radashi": ">=12.5.1",
     "react": ">=19.0.0",
     "type-fest": ">=4.41.0",
-    "zod": ">=3.25.63"
+    "zod": ">=3.25.67"
   },
   "devDependencies": {
     "@tanstack/react-query": "5.80.7",
@@ -35,6 +35,6 @@
     "react-dom": "19.1.0",
     "type-fest": "4.41.0",
     "typescript": "5.8.3",
-    "zod": "3.25.63"
+    "zod": "3.25.67"
   }
 }
