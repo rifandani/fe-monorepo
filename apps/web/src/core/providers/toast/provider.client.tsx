@@ -1,3 +1,5 @@
+'use client'
+
 import type { PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
 import { ToastContext, useCreateToastContext } from './context.client'

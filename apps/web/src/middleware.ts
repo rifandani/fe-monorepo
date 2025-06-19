@@ -1,9 +1,7 @@
 import type { MiddlewareConfig, NextRequest } from 'next/server'
 import { createMiddleware, defaults } from '@nosecone/next'
-import { authLoginResponseSchema } from '@workspace/core/apis/auth'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
+import { getAuthUser } from '@/auth/utils/auth'
 
 // Specify protected and public routes
 const protectedRoutes = ['/']
@@ -36,17 +34,15 @@ export async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path)
 
   // Parse the session from the cookie
-  const cookie = await cookies()
-  const session = cookie.get(AUTH_COOKIE_NAME)?.value
-  const parsedSession = session ? authLoginResponseSchema.safeParse(JSON.parse(atob(session))) : null
+  const user = await getAuthUser()
 
   // Redirect to login if there is no session or the session is invalid
-  if ((!session || parsedSession?.error) && isProtectedRoute) {
+  if (!user && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
   // Redirect to home if session is valid and in public route
-  if (session && parsedSession?.success && isPublicRoute) {
+  if (user && isPublicRoute) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 

@@ -187,3 +187,16 @@ function Page() {
 ```
 
 To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.org/playground/). To test if our structured data is working, we can use [Rich Results Test](https://search.google.com/test/rich-results) for Google or [schema.org Validator](https://validator.schema.org/) for general validation.
+
+## 🎛️ Feature Flags
+
+We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
+
+> We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
+
+```bash
+# spin up flagsmith self-hosted using docker compose (run this in root project)
+bun flagsmith:up
+```
+
+Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.

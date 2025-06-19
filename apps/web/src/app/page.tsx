@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { LanguageToggle } from '@/core/components/language-toggle.client'
 import { ProfileMenu } from '@/core/components/profile-menu.client'
 import { ThemeToggle } from '@/core/components/theme-toggle.client'
-import { homeWelcomeFlag } from '@/core/utils/feature-flag'
+import { WelcomeMessage } from '@/core/components/welcome-message.client'
 import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
 
 const title = 'Home'
@@ -20,15 +20,14 @@ export const metadata = createMetadata({
 
 export default async function HomePage() {
   const t = await getTranslations()
-  const tHome = await getTranslations()
-  const welcomeFlag = await homeWelcomeFlag()
 
   return (
     <div
       className="container mx-auto flex flex-col items-center gap-y-2 py-24 duration-300"
     >
-      <h1 className="text-3xl sm:text-4xl">{tHome('title')}</h1>
-      {welcomeFlag && <h2 className="font-mono text-xl sm:text-2xl">{t('welcome')}</h2>}
+      <h1 className="text-3xl sm:text-4xl">{t('title')}</h1>
+      <h2 className="font-mono text-xl sm:text-2xl">{t('welcome')}</h2>
+      <WelcomeMessage />
 
       <div className="flex items-center gap-x-2">
         <ThemeToggle />

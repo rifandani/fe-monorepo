@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { connection } from 'next/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { getAuthUser } from '@/auth/utils/auth'
 import { AppProviders } from '@/core/providers/providers.client'
 import { createMetadata } from '@/core/utils/seo'
 import '@/core/styles/globals.css'
@@ -44,6 +45,7 @@ export default async function RootLayout({
 
   const locale = await getLocale()
   const messages = await getMessages()
+  const user = await getAuthUser()
 
   return (
     // suppressHydrationWarning for next-themes
@@ -79,7 +81,7 @@ export default async function RootLayout({
             enableColorScheme
           >
             <NuqsAdapter>
-              <AppProviders locale={locale}>{children}</AppProviders>
+              <AppProviders locale={locale} user={user}>{children}</AppProviders>
             </NuqsAdapter>
           </NextThemesProvider>
         </NextIntlClientProvider>
