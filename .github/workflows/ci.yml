@@ -30,9 +30,10 @@ jobs:
       - name: Lint
         run: bun lint-typecheck
 
-  spa-e2e:
+  dev-spa-e2e:
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    environment: dev
     strategy:
       fail-fast: false
       matrix:
@@ -50,6 +51,9 @@ jobs:
 
       - name: Install deps and disallow changes to lockfile
         run: bun i --frozen-lockfile
+
+      - name: Save github secrets as env file
+        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
 
       - name: Install playwright browsers
         run: bun spa:ci test:install
@@ -65,9 +69,10 @@ jobs:
           path: apps/spa/playwright-report
           retention-days: 7
 
-  web-e2e:
+  dev-web-e2e:
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    environment: dev
     strategy:
       fail-fast: false
       matrix:
@@ -85,6 +90,9 @@ jobs:
 
       - name: Install deps and disallow changes to lockfile
         run: bun i --frozen-lockfile
+      
+      - name: Save github secrets as env file
+        run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
 
       - name: Install playwright browsers
         run: bun web:ci test:install
@@ -100,8 +108,9 @@ jobs:
           path: apps/web/playwright-report
           retention-days: 7
 
-  spa-build:
+  dev-spa-build:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4.2.2
@@ -111,12 +120,16 @@ jobs:
 
       - name: Install deps and disallow changes to lockfile
         run: bun i --frozen-lockfile
+
+      - name: Save github secrets as env file
+        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
 
       - name: Build
         run: bun spa:ci build
 
-  web-build:
+  dev-web-build:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4.2.2
@@ -126,6 +139,9 @@ jobs:
 
       - name: Install deps and disallow changes to lockfile
         run: bun i --frozen-lockfile
+
+      - name: Save github secrets as env file
+        run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
 
       - name: Build
         run: bun web:ci build
