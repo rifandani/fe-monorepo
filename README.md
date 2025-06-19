@@ -1,14 +1,13 @@
 # fe-monorepo
 
-### Todo
+### 🎯 Todo
 
 - [ ] use `changeset` to manage versioning and changelogs per package/app
 - [ ] Make sure CI/CD works
-- [ ] Consider updating `zod` to v4 (affected libraries: `zod-form-data`). replace all `'zod'` occurences with `'zod/v4'` in the codebase
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
-### Upgrading Dependencies
+### 📦 Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
 - Run `bun outdated` to check for outdated dependencies in root and run `bun update --latest` to upgrade all dependencies in root to the latest version
