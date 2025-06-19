@@ -25,6 +25,7 @@ export const flagsmithClientProvider = new FlagsmithClientProvider({
   environmentID: ENV.VITE_FLAGSMITH_ENVIRONMENT_ID,
   // realtime: true, // only for enterprise plan
   // cacheFlags: true,
+  enableAnalytics: true,
   enableLogs: import.meta.env.DEV, // ENV.DEV will trigger error
   onError(err) {
     logger.error('[FlagsmithClientProvider]: error', err.message)
