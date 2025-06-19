@@ -1,5 +1,4 @@
 import type { RequireAtLeastOne, UnknownRecord } from 'type-fest'
-import { z } from 'zod'
 
 /**
  * Clamps a value to a specified range.
@@ -361,51 +360,6 @@ export function deepReadObject<T = any>(obj: Record<string, unknown>, path: stri
     .reduce<any>((a, b) => (a ? a[b] : undefined), obj)
 
   return value !== undefined ? value : defaultValue as T
-}
-
-/**
- * get default values from zod schema, similar to `yupSchema.getDefault()`
- *
- * If all of your schema keys have default values, then you can just do `schema.parse({})` to read the defaults
- *
- * @note doesn't work with `refine` or `superRefine` in nested `object`
- */
-export function getSchemaDefaults<T extends z.ZodTypeAny>(
-  // biome-ignore lint/suspicious/noExplicitAny: intended
-  schema: z.AnyZodObject | z.ZodEffects<any>,
-): z.infer<T> {
-  // Check if it's a ZodEffect
-  if (schema instanceof z.ZodEffects) {
-    // Check if it's a recursive ZodEffect
-    if (schema.innerType() instanceof z.ZodEffects)
-      return getSchemaDefaults(schema.innerType())
-    // return schema inner shape as a fresh zodObject
-    return getSchemaDefaults(z.ZodObject.create(schema.innerType().shape))
-  }
-
-  function getDefaultValue(schema: z.ZodTypeAny): unknown {
-    if (schema instanceof z.ZodDefault)
-      return schema._def.defaultValue()
-    // return an empty array if it is
-    if (schema instanceof z.ZodArray)
-      return []
-    // return an empty string if it is
-    if (schema instanceof z.ZodString)
-      return ''
-    // return an content of object recursivly
-    if (schema instanceof z.ZodObject)
-      return getSchemaDefaults(schema)
-
-    if (!('innerType' in schema._def))
-      return undefined
-    return getDefaultValue(schema._def.innerType)
-  }
-
-  return Object.fromEntries(
-    Object.entries(schema.shape).map(([key, value]) => {
-      return [key, getDefaultValue(value as z.ZodTypeAny)]
-    }),
-  )
 }
 
 /**

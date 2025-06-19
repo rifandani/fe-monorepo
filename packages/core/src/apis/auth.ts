@@ -1,6 +1,6 @@
 import type { Http } from '@workspace/core/services/http'
 import type { Options } from 'ky'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 // #region API SCHEMAS
 export const authLoginRequestSchema = z.object({
@@ -11,11 +11,11 @@ export const authLoginRequestSchema = z.object({
 export const authLoginResponseSchema = z.object({
   id: z.number().positive(),
   username: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   firstName: z.string(),
   lastName: z.string(),
   gender: z.union([z.literal('male'), z.literal('female')]),
-  image: z.string().url(),
+  image: z.url(),
   accessToken: z.string(),
   refreshToken: z.string(),
 })

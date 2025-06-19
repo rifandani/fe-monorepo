@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test:install": "playwright install --with-deps chromium",
     "test:report": "dotenvx run --env-file=.env.dev -- playwright show-report",
-    "test": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test",
+    "test": "dotenvx run --env-file=.env.dev -- playwright test",
     "test:ui": "dotenvx run --env-file=.env.dev -- playwright test --ui --headed",
     "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}",
     "meta": "bunx check-site-meta 3002 -p 3052",
@@ -64,8 +64,7 @@
     "ts-pattern": "5.7.1",
     "type-fest": "4.41.0",
     "zod": "3.25.67",
-    "zod-form-data": "3.0.0",
-    "zod-validation-error": "3.5.0"
+    "zod-form-data": "3.0.0"
   },
   "devDependencies": {
     "@faker-js/faker": "9.8.0",

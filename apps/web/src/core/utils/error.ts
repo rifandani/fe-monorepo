@@ -3,8 +3,7 @@ import type { ActionResult } from '@/core/utils/action'
 import { logger } from '@workspace/core/utils/logger'
 import { HTTPError, TimeoutError } from 'ky'
 import { match, P } from 'ts-pattern'
-import { ZodError } from 'zod'
-import { fromZodError } from 'zod-validation-error'
+import { z } from 'zod/v4'
 import 'server-only'
 
 /**
@@ -31,9 +30,9 @@ export async function repositoryErrorMapper(error: Error): Promise<ActionResult<
       logger.error('[login]: Error timeout login', err)
       return { data: null, error: err.message }
     })
-    .with(P.instanceOf(ZodError), (err) => {
+    .with(P.instanceOf(z.ZodError), (err) => {
       logger.error('[login]: Error zod login', err)
-      return { data: null, error: fromZodError(err).message }
+      return { data: null, error: z.prettifyError(err) }
     })
     .otherwise((err) => {
       logger.error('[login]: Error login', err)

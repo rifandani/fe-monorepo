@@ -3,7 +3,7 @@ import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
-import type { ZodError } from 'zod'
+import type { z } from 'zod/v4'
 import type { ToastCustomData } from '@/core/providers/toast/the-toast'
 import { useToastController } from '@tamagui/toast'
 import {
@@ -16,7 +16,7 @@ import { http } from '@/core/services/http'
 
 type Params = Parameters<typeof authKeys.login>[0]
 type Success = Awaited<ReturnType<ReturnType<typeof authRepositories>['login']>>
-type Error = HTTPError<ErrorResponseSchema> | TimeoutError | ZodError
+type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError
 
 /**
  * @url POST ${env.apiBaseUrl}/auth/login

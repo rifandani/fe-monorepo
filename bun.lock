@@ -83,7 +83,6 @@
         "ts-pattern": "5.7.1",
         "type-fest": "4.41.0",
         "zod": "3.25.67",
-        "zod-validation-error": "3.5.0",
         "zustand": "5.0.5",
       },
       "devDependencies": {
@@ -133,7 +132,6 @@
         "type-fest": "4.41.0",
         "web-vitals": "5.0.3",
         "zod": "3.25.67",
-        "zod-validation-error": "3.5.0",
         "zustand": "5.0.5",
       },
       "devDependencies": {
@@ -209,7 +207,6 @@
         "type-fest": "4.41.0",
         "zod": "3.25.67",
         "zod-form-data": "3.0.0",
-        "zod-validation-error": "3.5.0",
       },
       "devDependencies": {
         "@faker-js/faker": "9.8.0",
@@ -3819,8 +3816,6 @@
     "zod": ["zod@3.25.67", "", {}, "sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw=="],
 
     "zod-form-data": ["zod-form-data@3.0.0", "", { "dependencies": { "@rvf/set-get": "^7.0.0" }, "peerDependencies": { "zod": ">= 3.25.0" } }, "sha512-jTQbmXQU5wMfI+ERZH6EuATzeD9FEOviPasLL2hCUP+FcLagXLtboUM95PHsSOFseL8Nv91YKlwln3zo1sAS2g=="],
-
-    "zod-validation-error": ["zod-validation-error@3.5.0", "", { "peerDependencies": { "zod": "^3.25.0" } }, "sha512-IWK6O51sRkq0YsnYD2oLDuK2BNsIjYUlR0+1YSd4JyBzm6/892IWroUnLc7oW4FU+b0f6948BHi6H8MDcqpOGw=="],
 
     "zustand": ["zustand@5.0.5", "", { "peerDependencies": { "@types/react": ">=18.0.0", "immer": ">=9.0.6", "react": ">=18.0.0", "use-sync-external-store": ">=1.2.0" }, "optionalPeers": ["@types/react", "immer", "react", "use-sync-external-store"] }, "sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg=="],
 

@@ -1,25 +1,23 @@
+import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { isFunction } from 'radashi'
 import React from 'react'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 import { create, createStore, useStore } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export type UserStoreState = z.infer<typeof userStoreStateSchema>
-export type UserStore = z.infer<typeof userStoreSchema>
+export interface UserStoreAction {
+  setUser: (user: AuthLoginResponseSchema) => void
+  clearUser: () => void
+}
+export type UserStore = UserStoreState & UserStoreAction
 export type UserStoreLocalStorage = z.infer<typeof userStoreLocalStorageSchema>
 
 export const userStoreName = 'app-user' as const
 const userStoreStateSchema = z.object({
   user: authLoginResponseSchema.nullable(),
 })
-const userStoreActionSchema = z.object({
-  setUser: z.function().args(authLoginResponseSchema).returns(z.void()),
-  clearUser: z.function().args(z.void()).returns(z.void()),
-})
-export const userStoreSchema = userStoreStateSchema.merge(
-  userStoreActionSchema,
-)
 export const userStoreLocalStorageSchema = z.object({
   state: userStoreStateSchema,
   version: z.number(),

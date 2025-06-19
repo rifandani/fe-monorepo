@@ -5,15 +5,14 @@ import type { ToastCustomData } from '@/core/providers/toast/the-toast'
 import { useToastController } from '@tamagui/toast'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { ZodError } from 'zod'
-import { fromZodError } from 'zod-validation-error'
+import { z } from 'zod/v4'
 import { userApi, userKeys } from '@/user/api/user'
 
 type Params = Parameters<typeof userKeys.detail>[0]
 type Success = Awaited<
   ReturnType<typeof userApi.getDetail>
 >
-type Error = ZodError | HTTPError | TimeoutError
+type Error = z.ZodError | HTTPError | TimeoutError
 
 /**
  * fetch single user
@@ -40,8 +39,8 @@ export function useGetUser(
 
     let message = query.error.message
 
-    if (query.error instanceof ZodError) {
-      message = fromZodError(query.error).message
+    if (query.error instanceof z.ZodError) {
+      message = z.prettifyError(query.error)
     }
 
     toast.show(message, {

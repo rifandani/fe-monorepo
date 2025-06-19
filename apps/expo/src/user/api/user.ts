@@ -1,5 +1,5 @@
 import type { ResourceListRequestSchema } from '@workspace/core/apis/core'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 import { http } from '@/core/services/http'
 
 export const userSchema = z.object({
@@ -9,12 +9,12 @@ export const userSchema = z.object({
   maidenName: z.string(),
   age: z.number(),
   gender: z.union([z.literal('male'), z.literal('female')]),
-  email: z.string().email(),
+  email: z.email(),
   phone: z.string(),
   username: z.string(),
   password: z.string(),
   birthDate: z.string(),
-  image: z.string().url(),
+  image: z.url(),
   bloodGroup: z.string(),
   height: z.number(),
   weight: z.number(),
