@@ -12,6 +12,8 @@
     "prepare": "husky",
     "flagsmith:up": "docker compose -f docker/flagsmith.yaml up --build",
     "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/build\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" && bun install",
+    "cs": "changeset",
+    "cs:v": "changeset version",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
