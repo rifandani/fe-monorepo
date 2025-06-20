@@ -14,7 +14,7 @@
     "test:report": "dotenvx run --env-file=.env.development -- playwright show-report",
     "test": "dotenvx run --env DEBUG=pw:api --env-file=.env.development -- playwright test",
     "test:ui": "dotenvx run --env-file=.env.development -- playwright test --ui --headed",
-    "test:ci": "dotenvx run --env-file=.env.development -- playwright test --forbid-only --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}",
+    "test:ci": "dotenvx run --env-file=.env.development -- playwright test --forbid-only --shard=$SHARD_INDEX/$SHARD_TOTAL",
     "meta": "bunx check-site-meta 3001 -p 3051",
     "dev": "rimraf dev-dist && dotenvx run --env DEBUG=vite-plugin-pwa SW_DEV=true --env-file=.env.development -- vite dev",
     "dev:prod": "rimraf dev-dist && dotenvx run --env DEBUG=vite-plugin-pwa SW_DEV=true --env-file=.env.production -- vite dev --mode production",
