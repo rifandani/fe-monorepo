@@ -22,7 +22,7 @@
     "build:prod": "cp .env.prod .env.local && next build",
     "build:prod:analyze": "cp .env.prod .env.local && dotenvx run --env ANALYZE=true --env-file=.env.prod -- next build",
     "start": "next start",
-    "build-and-preview": "bun build && bun start"
+    "build-and-preview": "bun run build && bun run start"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "1.44.2",
