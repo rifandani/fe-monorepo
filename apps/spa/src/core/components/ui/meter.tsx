@@ -22,17 +22,36 @@ function Meter({ label, className, ...props }: MeterProps) {
           <div className="flex w-full justify-between gap-2">
             <Label>{label}</Label>
             <span
-              className={`text-sm tabular-nums ${percentage >= 80 ? 'text-danger' : 'text-muted-fg'}`}
+              className={`
+                text-sm tabular-nums
+                ${percentage >= 80
+          ? `text-danger`
+          : `text-muted-fg`}
+              `}
             >
               {percentage >= 80 && (
-                <Icon icon="mdi:alert-circle-outline" aria-label="Alert" className="inline-block size-4 fill-danger/20 align-text-bottom text-danger" />
+                <Icon
+                  icon="mdi:alert-circle-outline"
+                  aria-label="Alert"
+                  className={`
+                    inline-block size-4 fill-danger/20 align-text-bottom
+                    text-danger
+                  `}
+                />
               )}
               {` ${valueText}`}
             </span>
           </div>
-          <div className="-outline-offset-1 relative h-2 rounded-full bg-muted outline outline-transparent">
+          <div className={`
+            relative h-2 rounded-full bg-muted outline -outline-offset-1
+            outline-transparent
+          `}
+          >
             <motion.div
-              className="absolute top-0 left-0 h-full rounded-full forced-colors:bg-[Highlight]"
+              className={`
+                absolute top-0 left-0 h-full rounded-full
+                forced-colors:bg-[Highlight]
+              `}
               initial={{ width: '0%', backgroundColor: getColor(0) }}
               animate={{
                 width: `${percentage}%`,

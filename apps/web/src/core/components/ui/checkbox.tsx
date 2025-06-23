@@ -46,19 +46,29 @@ const checkboxStyles = tv({
 })
 
 const boxStyles = tv({
-  base: 'flex size-4 shrink-0 items-center justify-center rounded border border-input text-bg transition *:data-[slot=icon]:size-3',
+  base: `
+    flex size-4 shrink-0 items-center justify-center rounded border border-input
+    text-bg transition
+    *:data-[slot=icon]:size-3
+  `,
   variants: {
     isSelected: {
       false: 'bg-muted',
       true: [
         'border-primary bg-primary text-primary-fg',
-        'group-invalid:border-danger/70 group-invalid:bg-danger group-invalid:text-danger-fg',
+        `
+          group-invalid:border-danger/70 group-invalid:bg-danger
+          group-invalid:text-danger-fg
+        `,
       ],
     },
     isFocused: {
       true: [
         'border-primary ring-4 ring-primary/20',
-        'group-invalid:border-danger/70 group-invalid:text-danger-fg group-invalid:ring-danger/20',
+        `
+          group-invalid:border-danger/70 group-invalid:text-danger-fg
+          group-invalid:ring-danger/20
+        `,
       ],
     },
     isInvalid: {
@@ -81,7 +91,9 @@ function Checkbox({ className, ...props }: CheckboxProps) {
     >
       {({ isSelected, isIndeterminate, ...renderProps }) => (
         <div
-          className={twMerge('flex gap-x-2', props.description ? 'items-start' : 'items-center')}
+          className={twMerge('flex gap-x-2', props.description
+            ? 'items-start'
+            : `items-center`)}
         >
           <div
             className={boxStyles({
@@ -96,7 +108,10 @@ function Checkbox({ className, ...props }: CheckboxProps) {
             <>
               {props.label
                 ? (
-                    <Label className={twMerge(props.description && 'font-normal text-sm/4')}>
+                    <Label className={twMerge(props.description && `
+                      text-sm/4 font-normal
+                    `)}
+                    >
                       {props.label}
                     </Label>
                   )

@@ -42,11 +42,19 @@ const toggleGroupStyles = tv({
   variants: {
     orientation: {
       horizontal:
-        'flex-row [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+        `
+          flex-row
+          [-ms-overflow-style:none]
+          [scrollbar-width:none]
+          [&::-webkit-scrollbar]:hidden
+        `,
       vertical: 'flex-col items-start',
     },
     gap: {
-      0: 'gap-0 rounded-lg *:[button]:inset-ring-1 *:[button]:rounded-none',
+      0: `
+        gap-0 rounded-lg
+        *:[button]:rounded-none *:[button]:inset-ring-1
+      `,
       1: 'gap-1',
       2: 'gap-2',
       3: 'gap-3',
@@ -62,13 +70,21 @@ const toggleGroupStyles = tv({
       gap: 0,
       orientation: 'vertical',
       className:
-        '*:[button]:-mt-px *:[button]:first:rounded-t-[calc(var(--radius-lg)-1px)] *:[button]:last:rounded-b-[calc(var(--radius-lg)-1px)]',
+        `
+          *:[button]:-mt-px
+          *:[button]:first:rounded-t-[calc(var(--radius-lg)-1px)]
+          *:[button]:last:rounded-b-[calc(var(--radius-lg)-1px)]
+        `,
     },
     {
       gap: 0,
       orientation: 'horizontal',
       className:
-        '*:[button]:-mr-px *:[button]:first:rounded-s-[calc(var(--radius-lg)-1px)] *:[button]:last:rounded-e-[calc(var(--radius-lg)-1px)]',
+        `
+          *:[button]:-mr-px
+          *:[button]:first:rounded-s-[calc(var(--radius-lg)-1px)]
+          *:[button]:last:rounded-e-[calc(var(--radius-lg)-1px)]
+        `,
     },
   ],
 })
@@ -104,22 +120,49 @@ function ToggleGroup({
 
 const toggleStyles = tv({
   base: [
-    'inset-ring inset-ring-border cursor-pointer items-center gap-x-2 rounded-lg outline-hidden sm:text-sm',
-    'forced-colors:[--button-icon:ButtonText] forced-colors:hover:[--button-icon:ButtonText]',
-    '*:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:my-1 *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:text-current/60 pressed:*:data-[slot=icon]:text-current hover:*:data-[slot=icon]:text-current/90',
+    `
+      cursor-pointer items-center gap-x-2 rounded-lg inset-ring
+      inset-ring-border outline-hidden
+      sm:text-sm
+    `,
+    `
+      forced-colors:[--button-icon:ButtonText]
+      forced-colors:hover:[--button-icon:ButtonText]
+    `,
+    `
+      *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:my-1
+      *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0
+      *:data-[slot=icon]:text-current/60
+      hover:*:data-[slot=icon]:text-current/90
+      pressed:*:data-[slot=icon]:text-current
+    `,
   ],
   variants: {
     isDisabled: {
-      true: 'cursor-default opacity-50 forced-colors:border-[GrayText]',
+      true: `
+        cursor-default opacity-50
+        forced-colors:border-[GrayText]
+      `,
     },
     isFocusVisible: {
-      true: 'inset-ring-ring/70 z-20 ring-4 ring-ring/20',
+      true: 'z-20 ring-4 ring-ring/20 inset-ring-ring/70',
     },
     intent: {
-      plain: 'inset-ring-0 selected:bg-secondary selected:text-secondary-fg',
-      solid: ['inset-ring selected:inset-ring-fg selected:bg-fg selected:text-bg'],
+      plain: `
+        inset-ring-0
+        selected:bg-secondary selected:text-secondary-fg
+      `,
+      solid: [`
+        inset-ring
+        selected:bg-fg selected:text-bg selected:inset-ring-fg
+      `],
       outline: [
-        'pressed:border-secondary-fg/10 selected:border-secondary-fg/10 selected:bg-secondary selected:text-secondary-fg hover:border-secondary-fg/10 hover:bg-muted hover:text-secondary-fg',
+        `
+          hover:border-secondary-fg/10 hover:bg-muted hover:text-secondary-fg
+          pressed:border-secondary-fg/10
+          selected:border-secondary-fg/10 selected:bg-secondary
+          selected:text-secondary-fg
+        `,
       ],
     },
     noGap: { true: '' },
@@ -128,10 +171,17 @@ const toggleStyles = tv({
       vertical: 'flex',
     },
     size: {
-      'extra-small': 'h-8 px-3 text-xs/4 *:data-[slot=icon]:size-3.5',
+      'extra-small': `
+        h-8 px-3 text-xs/4
+        *:data-[slot=icon]:size-3.5
+      `,
       'small': 'h-9 px-3.5',
       'medium': 'h-10 px-4',
-      'large': 'h-11 px-5 *:data-[slot=icon]:size-4.5 sm:text-base',
+      'large': `
+        h-11 px-5
+        *:data-[slot=icon]:size-4.5
+        sm:text-base
+      `,
       'square-petite': 'size-9 shrink-0',
     },
     shape: {

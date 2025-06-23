@@ -21,28 +21,71 @@ import { Keyboard } from './keyboard'
 
 const dropdownItemStyles = tv({
   base: [
-    'col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] not-has-data-[slot=dropdown-item-details]:items-center has-data-[slot=dropdown-item-details]:**:data-[slot=checked-icon]:mt-[1.5px] supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
-    'group relative cursor-default select-none rounded-[calc(var(--radius-lg)-1px)] px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)] forced-color:text-[Highlight] text-base text-fg outline-0 forced-color-adjust-none sm:text-sm/6 forced-colors:text-[LinkText]',
-    '**:data-[slot=avatar]:*:mr-2 **:data-[slot=avatar]:*:size-6 **:data-[slot=avatar]:mr-2 **:data-[slot=avatar]:size-6 sm:**:data-[slot=avatar]:*:size-5 sm:**:data-[slot=avatar]:size-5',
-    'data-danger:**:data-[slot=icon]:text-danger/60 **:data-[slot=icon]:size-4 **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-muted-fg focus:data-danger:**:data-[slot=icon]:text-danger',
-    'data-[slot=menu-radio]:*:data-[slot=icon]:size-3 *:data-[slot=icon]:mr-2',
-    'forced-colors:**:data-[slot=icon]:text-[CanvasText] forced-colors:group-focus:**:data-[slot=icon]:text-[Canvas] ',
-    '[&>[slot=label]+[data-slot=icon]]:absolute [&>[slot=label]+[data-slot=icon]]:right-0',
+    `
+      col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto]
+      not-has-data-[slot=dropdown-item-details]:items-center
+      has-data-[slot=dropdown-item-details]:**:data-[slot=checked-icon]:mt-[1.5px]
+      supports-[grid-template-columns:subgrid]:grid-cols-subgrid
+    `,
+    `
+      group relative cursor-default rounded-[calc(var(--radius-lg)-1px)]
+      px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)] text-base
+      text-fg outline-0 forced-color-adjust-none select-none
+      forced-color:text-[Highlight]
+      sm:text-sm/6
+      forced-colors:text-[LinkText]
+    `,
+    `
+      **:data-[slot=avatar]:mr-2 **:data-[slot=avatar]:size-6
+      **:data-[slot=avatar]:*:mr-2 **:data-[slot=avatar]:*:size-6
+      sm:**:data-[slot=avatar]:size-5 sm:**:data-[slot=avatar]:*:size-5
+    `,
+    `
+      **:data-[slot=icon]:size-4 **:data-[slot=icon]:shrink-0
+      **:data-[slot=icon]:text-muted-fg
+      data-danger:**:data-[slot=icon]:text-danger/60
+      focus:data-danger:**:data-[slot=icon]:text-danger
+    `,
+    `
+      *:data-[slot=icon]:mr-2
+      data-[slot=menu-radio]:*:data-[slot=icon]:size-3
+    `,
+    `
+      forced-colors:**:data-[slot=icon]:text-[CanvasText]
+      forced-colors:group-focus:**:data-[slot=icon]:text-[Canvas]
+    `,
+    `
+      [&>[slot=label]+[data-slot=icon]]:absolute
+      [&>[slot=label]+[data-slot=icon]]:right-0
+    `,
   ],
   variants: {
     isDisabled: {
-      true: 'text-muted-fg forced-colors:text-[GrayText]',
+      true: `
+        text-muted-fg
+        forced-colors:text-[GrayText]
+      `,
     },
     isSelected: {
-      true: '**:data-[slot=avatar]:*:hidden **:data-[slot=avatar]:hidden **:data-[slot=icon]:hidden',
+      true: `
+        **:data-[slot=avatar]:hidden **:data-[slot=avatar]:*:hidden
+        **:data-[slot=icon]:hidden
+      `,
     },
     isFocused: {
       false: 'data-danger:text-danger',
       true: [
         '**:data-[slot=icon]:text-accent-fg **:[kbd]:text-accent-fg',
-        'bg-accent text-accent-fg forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]',
+        `
+          bg-accent text-accent-fg
+          forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
+        `,
         'data-danger:bg-danger/10 data-danger:text-danger',
-        'data-[slot=description]:text-accent-fg data-[slot=label]:text-accent-fg [&_.text-muted-fg]:text-accent-fg/80',
+        `
+          data-[slot=description]:text-accent-fg
+          data-[slot=label]:text-accent-fg
+          [&_.text-muted-fg]:text-accent-fg/80
+        `,
       ],
     },
   },
@@ -51,7 +94,10 @@ const dropdownItemStyles = tv({
 const dropdownSectionStyles = tv({
   slots: {
     section: 'col-span-full grid grid-cols-[auto_1fr]',
-    header: 'col-span-full px-2.5 py-1 font-medium text-muted-fg text-sm sm:text-xs',
+    header: `
+      col-span-full px-2.5 py-1 text-sm font-medium text-muted-fg
+      sm:text-xs
+    `,
   },
 })
 
@@ -116,7 +162,10 @@ function DropdownItemDetails({
       {label && (
         <Text
           slot={slot ?? 'label'}
-          className={twMerge('font-medium sm:text-sm', classNames?.label)}
+          className={twMerge(`
+            font-medium
+            sm:text-sm
+          `, classNames?.label)}
           {...restProps}
         >
           {label}
@@ -125,7 +174,7 @@ function DropdownItemDetails({
       {description && (
         <Text
           slot={slot ?? 'description'}
-          className={twMerge('text-muted-fg text-xs', classNames?.description)}
+          className={twMerge('text-xs text-muted-fg', classNames?.description)}
           {...restProps}
         >
           {description}
@@ -148,7 +197,7 @@ function DropdownSeparator({ className, ...props }: SeparatorProps) {
   return (
     <Separator
       orientation="horizontal"
-      className={twMerge('-mx-1 col-span-full my-1 h-px bg-border', className)}
+      className={twMerge('col-span-full -mx-1 my-1 h-px bg-border', className)}
       {...props}
     />
   )

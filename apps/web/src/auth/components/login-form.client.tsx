@@ -16,7 +16,10 @@ export function LoginForm() {
 
   return (
     <Form
-      className="flex flex-col pt-3 md:pt-8"
+      className={`
+        flex flex-col pt-3
+        md:pt-8
+      `}
       onSubmit={handleSubmitWithAction}
     >
       <Controller

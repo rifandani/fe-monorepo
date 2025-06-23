@@ -60,17 +60,29 @@ function DateField<T extends DateValue>({
 }
 
 const segmentStyles = tv({
-  base: 'inline shrink-0 rounded p-0.5 type-literal:px-0 text-fg tabular-nums tracking-wider caret-transparent outline-0 forced-color-adjust-none sm:text-sm forced-colors:text-[ButtonText]',
+  base: `
+    inline shrink-0 rounded p-0.5 tracking-wider text-fg tabular-nums
+    caret-transparent outline-0 forced-color-adjust-none
+    sm:text-sm
+    forced-colors:text-[ButtonText]
+    type-literal:px-0
+  `,
   variants: {
     isPlaceholder: {
       true: 'text-muted-fg',
     },
     isDisabled: {
-      true: 'text-fg/50 forced-colors:text-[GrayText]',
+      true: `
+        text-fg/50
+        forced-colors:text-[GrayText]
+      `,
     },
     isFocused: {
       true: [
-        'bg-accent text-accent-fg forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]',
+        `
+          bg-accent text-accent-fg
+          forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
+        `,
         'data-invalid:bg-danger data-invalid:text-danger-fg',
       ],
     },

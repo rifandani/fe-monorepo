@@ -57,9 +57,17 @@ export default async function RootLayout({
       </head>
 
       <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased min-h-svh`}
+        className={`
+          ${fontSans.variable}
+          ${fontMono.variable}
+          min-h-svh font-sans antialiased
+        `}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          className="hidden"
+        >
           <defs>
             {/* #region icon-reactjs */}
             <symbol id="icon-reactjs" width="36" height="32" viewBox="0 0 256 228">

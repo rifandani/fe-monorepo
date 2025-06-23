@@ -68,7 +68,10 @@ type ListBoxSectionProps = React.ComponentProps<typeof DropdownSection>
 function ListBoxSection({ className, ...props }: ListBoxSectionProps) {
   return (
     <DropdownSection
-      className={twMerge('[&_.lbi:last-child]:-mb-1.5 gap-y-1', className)}
+      className={twMerge(`
+        gap-y-1
+        [&_.lbi:last-child]:-mb-1.5
+      `, className)}
       {...props}
     />
   )

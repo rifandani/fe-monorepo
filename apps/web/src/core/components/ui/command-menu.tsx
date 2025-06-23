@@ -93,17 +93,43 @@ function CommandMenu({
         <ModalOverlay
           isDismissable={isDismissable}
           className={twMerge([
-            'fixed inset-0 z-50 max-h-(--visual-viewport-height) bg-black/15 dark:bg-black/40',
-            'data-entering:fade-in data-exiting:fade-out data-entering:animate-in data-exiting:animate-in',
+            `
+              fixed inset-0 z-50 max-h-(--visual-viewport-height) bg-black/15
+              dark:bg-black/40
+            `,
+            `
+              data-entering:animate-in data-entering:fade-in
+              data-exiting:animate-in data-exiting:fade-out
+            `,
             isBlurred && props.isOpen ? 'backdrop-blur' : '',
             classNames?.overlay ?? '',
           ])}
         >
           <Modal
             className={twMerge([
-              'fixed top-auto bottom-0 left-[50%] z-50 grid h-[calc(100vh-30%)] w-full max-w-full translate-x-[-50%] gap-4 overflow-hidden rounded-t-2xl bg-overlay text-overlay-fg shadow-lg ring-1 ring-fg/10 sm:top-[6rem] sm:bottom-auto sm:h-auto sm:w-full sm:max-w-2xl sm:rounded-xl dark:ring-border forced-colors:border',
-              'data-entering:fade-in-0 data-entering:slide-in-from-bottom sm:data-entering:slide-in-from-bottom-0 sm:data-entering:zoom-in-95 data-entering:animate-in data-entering:duration-300 sm:data-entering:duration-300',
-              'data-exiting:fade-out sm:data-exiting:zoom-out-95 data-exiting:slide-out-to-bottom-56 sm:data-exiting:slide-out-to-bottom-0 data-exiting:animate-out data-exiting:duration-200',
+              `
+                fixed top-auto bottom-0 left-[50%] z-50 grid h-[calc(100vh-30%)]
+                w-full max-w-full translate-x-[-50%] gap-4 overflow-hidden
+                rounded-t-2xl bg-overlay text-overlay-fg shadow-lg ring-1
+                ring-fg/10
+                sm:top-[6rem] sm:bottom-auto sm:h-auto sm:w-full sm:max-w-2xl
+                sm:rounded-xl
+                dark:ring-border
+                forced-colors:border
+              `,
+              `
+                data-entering:duration-300 data-entering:animate-in
+                data-entering:fade-in-0 data-entering:slide-in-from-bottom
+                sm:data-entering:duration-300
+                sm:data-entering:slide-in-from-bottom-0
+                sm:data-entering:zoom-in-95
+              `,
+              `
+                data-exiting:duration-200 data-exiting:animate-out
+                data-exiting:fade-out data-exiting:slide-out-to-bottom-56
+                sm:data-exiting:slide-out-to-bottom-0
+                sm:data-exiting:zoom-out-95
+              `,
               classNames?.content ?? '',
             ])}
             {...props}
@@ -153,12 +179,22 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
           )}
       <Input
         placeholder={placeholder ?? 'Search...'}
-        className="w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg placeholder-muted-fg outline-hidden focus:outline-hidden sm:text-sm [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden"
+        className={`
+          w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg
+          placeholder-muted-fg outline-hidden
+          focus:outline-hidden
+          sm:text-sm
+          [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden
+        `}
       />
       {escapeButton && (
         <Button
           onPress={() => state?.close()}
-          className="hidden cursor-pointer rounded border text-current/90 hover:bg-muted lg:inline lg:px-1.5 lg:py-0.5 lg:text-xs"
+          className={`
+            hidden cursor-pointer rounded border text-current/90
+            hover:bg-muted
+            lg:inline lg:px-1.5 lg:py-0.5 lg:text-xs
+          `}
         >
           Esc
         </Button>
@@ -172,7 +208,10 @@ const renderer: CollectionRenderer = {
     if (props.collection.size === 0) {
       return (
         // biome-ignore lint/a11y/useFocusableInteractive: <explanation>
-        <div role="menuitem" className="col-span-full p-4 text-center text-muted-fg text-sm">
+        <div
+          role="menuitem"
+          className="col-span-full p-4 text-center text-sm text-muted-fg"
+        >
           No results found.
         </div>
       )
@@ -206,12 +245,19 @@ function CommandMenuSection<T extends object>({
       ref={ref}
       className={twMerge(
         className,
-        'col-span-full grid grid-cols-[auto_1fr] gap-y-[calc(var(--spacing)*0.25)]',
+        `
+          col-span-full grid grid-cols-[auto_1fr]
+          gap-y-[calc(var(--spacing)*0.25)]
+        `,
       )}
       {...props}
     >
       {'title' in props && (
-        <Header className="col-span-full mb-1 block min-w-(--trigger-width) truncate px-2.5 text-muted-fg text-xs">
+        <Header className={`
+          col-span-full mb-1 block min-w-(--trigger-width) truncate px-2.5
+          text-xs text-muted-fg
+        `}
+        >
           {props.title}
         </Header>
       )}
@@ -242,16 +288,34 @@ function CommandMenuDescription({ intent, className, ...props }: CommandMenuDesc
       {...props}
       slot="command-menu-description"
       className={twMerge(
-        'ml-auto hidden text-sm sm:inline',
+        `
+          ml-auto hidden text-sm
+          sm:inline
+        `,
         intent === 'danger'
-          ? 'text-danger/90 group-selected:text-fg/70'
+          ? `
+            text-danger/90
+            group-selected:text-fg/70
+          `
           : intent === 'warning'
-            ? 'text-warning/90 group-selected:text-fg/70'
+            ? `
+              text-warning/90
+              group-selected:text-fg/70
+            `
             : intent === 'success'
-              ? 'text-success/90 group-selected:text-fg/70'
+              ? `
+                text-success/90
+                group-selected:text-fg/70
+              `
               : intent === 'primary'
-                ? 'text-fg/90 group-selected:text-white/70'
-                : 'text-muted-fg group-selected:text-fg/70',
+                ? `
+                  text-fg/90
+                  group-selected:text-white/70
+                `
+                : `
+                  text-muted-fg
+                  group-selected:text-fg/70
+                `,
         className,
       )}
     />

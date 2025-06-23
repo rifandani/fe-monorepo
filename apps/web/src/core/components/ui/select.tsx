@@ -31,13 +31,30 @@ import { composeTailwindRenderProps, focusStyles } from './primitive'
 const selectTriggerStyles = tv({
   extend: focusStyles,
   base: [
-    'btr flex h-10 w-full cursor-default items-center gap-4 gap-x-2 rounded-lg border border-input py-2 pr-2 pl-3 text-start shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] transition group-disabled:opacity-50 **:data-[slot=icon]:size-4 dark:shadow-none',
-    'group-data-open:border-ring/70 group-data-open:ring-4 group-data-open:ring-ring/20',
-    'text-fg group-invalid:border-danger group-invalid:ring-danger/20 forced-colors:group-invalid:border-[Mark]',
+    `
+      btr flex h-10 w-full cursor-default items-center gap-4 gap-x-2 rounded-lg
+      border border-input py-2 pr-2 pl-3 text-start
+      shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] transition
+      group-disabled:opacity-50
+      **:data-[slot=icon]:size-4
+      dark:shadow-none
+    `,
+    `
+      group-data-open:border-ring/70 group-data-open:ring-4
+      group-data-open:ring-ring/20
+    `,
+    `
+      text-fg
+      group-invalid:border-danger group-invalid:ring-danger/20
+      forced-colors:group-invalid:border-[Mark]
+    `,
   ],
   variants: {
     isDisabled: {
-      true: 'opacity-50 forced-colors:border-[GrayText] forced-colors:text-[GrayText]',
+      true: `
+        opacity-50
+        forced-colors:border-[GrayText] forced-colors:text-[GrayText]
+      `,
     },
   },
 })
@@ -123,12 +140,26 @@ function SelectTrigger({ className, ...props }: SelectTriggerProps) {
       {props.prefix && <span className="-mr-1">{props.prefix}</span>}
       <SelectValue
         data-slot="select-value"
-        className="*:data-[slot=icon]:-mx-0.5 *:data-[slot=avatar]:-mx-0.5 *:data-[slot=avatar]:*:-mx-0.5 grid flex-1 grid-cols-[auto_1fr] items-center text-base data-placeholder:text-muted-fg *:data-[slot=avatar]:*:mr-2 *:data-[slot=avatar]:mr-2 *:data-[slot=icon]:mr-2 sm:text-sm [&_[slot=description]]:hidden"
+        className={`
+          grid flex-1 grid-cols-[auto_1fr] items-center text-base
+          data-placeholder:text-muted-fg
+          *:data-[slot=avatar]:*:-mx-0.5 *:data-[slot=avatar]:-mx-0.5
+          *:data-[slot=avatar]:*:mr-2 *:data-[slot=avatar]:mr-2
+          *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:mr-2
+          sm:text-sm
+          [&_[slot=description]]:hidden
+        `}
       />
       <Icon
         icon="mdi:chevron-down"
         aria-hidden
-        className="size-4 shrink-0 text-muted-fg duration-300 group-disabled:opacity-50 group-data-open:rotate-180 group-data-open:text-fg forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
+        className={`
+          size-4 shrink-0 text-muted-fg duration-300
+          group-disabled:opacity-50
+          group-data-open:rotate-180 group-data-open:text-fg
+          forced-colors:text-[ButtonText]
+          forced-colors:group-disabled:text-[GrayText]
+        `}
       />
     </Button>
   )

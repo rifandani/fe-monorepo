@@ -55,7 +55,21 @@ function Chart({
         data-chart={chartId}
         ref={ref}
         className={twMerge(
-          'flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-fg [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke=\'#fff\']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden',
+          `
+            flex aspect-video justify-center text-xs
+            [&_.recharts-cartesian-axis-tick_text]:fill-muted-fg
+            [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80
+            [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border
+            [&_.recharts-dot[stroke=\'#fff\']]:stroke-transparent
+            [&_.recharts-layer]:outline-hidden
+            [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border
+            [&_.recharts-radial-bar-background-sector]:fill-muted
+            [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted
+            [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border
+            [&_.recharts-sector]:outline-hidden
+            [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent
+            [&_.recharts-surface]:outline-hidden
+          `,
           className,
         )}
         {...props}
@@ -163,7 +177,10 @@ function ChartTooltipContent({
     <div
       ref={ref}
       className={twMerge(
-        'grid min-w-[12rem] items-start gap-1.5 rounded-lg border bg-overlay px-3 py-2 text-overlay-fg text-xs shadow-xl',
+        `
+          grid min-w-[12rem] items-start gap-1.5 rounded-lg border bg-overlay
+          px-3 py-2 text-xs text-overlay-fg shadow-xl
+        `,
         className,
       )}
     >
@@ -178,7 +195,10 @@ function ChartTooltipContent({
             <div
               key={item.dataKey}
               className={twMerge(
-                'flex w-full flex-wrap items-stretch gap-2 *:data-[slot=icon]:size-2.5 *:data-[slot=icon]:text-muted-fg',
+                `
+                  flex w-full flex-wrap items-stretch gap-2
+                  *:data-[slot=icon]:size-2.5 *:data-[slot=icon]:text-muted-fg
+                `,
                 indicator === 'dot' && 'items-center',
               )}
             >
@@ -196,11 +216,19 @@ function ChartTooltipContent({
                             !hideIndicator && (
                               <div
                                 className={twMerge(
-                                  'shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)',
+                                  `
+                                    shrink-0 rounded-[2px]
+                                    border-(--color-border) bg-(--color-bg)
+                                  `,
                                   indicator === 'dot' && 'size-2.5',
                                   indicator === 'line' && 'w-1',
-                                  indicator === 'dashed' && 'w-0 border-[1.5px] border-dashed bg-transparent',
-                                  nestLabel && indicator === 'dashed' && 'my-0.5',
+                                  indicator === 'dashed' && `
+                                    w-0 border-[1.5px] border-dashed
+                                    bg-transparent
+                                  `,
+                                  nestLabel && indicator === 'dashed' && `
+                                    my-0.5
+                                  `,
                                 )}
                                 style={
                                   {
@@ -222,7 +250,10 @@ function ChartTooltipContent({
                           <span className="text-muted-fg">{itemConfig?.label || item.name}</span>
                         </div>
                         {item.value && (
-                          <span className="text-fg font-mono font-medium tabular-nums">
+                          <span className={`
+                            font-mono font-medium text-fg tabular-nums
+                          `}
+                          >
                             {item.value.toLocaleString()}
                           </span>
                         )}
@@ -273,7 +304,10 @@ function ChartLegendContent({
         return (
           <div
             key={item.value}
-            className="flex items-center gap-1.5 *:data-[slot=icon]:size-3 *:data-[slot=icon]:text-muted-fg"
+            className={`
+              flex items-center gap-1.5
+              *:data-[slot=icon]:size-3 *:data-[slot=icon]:text-muted-fg
+            `}
           >
             {itemConfig?.icon && !hideIcon
               ? (

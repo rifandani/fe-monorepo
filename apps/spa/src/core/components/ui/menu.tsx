@@ -63,10 +63,23 @@ function MenuSubMenu({ delay = 0, ...props }) {
 
 const menuStyles = tv({
   slots: {
-    menu: 'grid max-h-[calc(var(--visual-viewport-height)-10rem)] grid-cols-[auto_1fr] overflow-auto rounded-xl p-1 outline-hidden [clip-path:inset(0_0_0_0_round_calc(var(--radius-lg)-2px))] sm:max-h-[inherit] *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
-    popover: 'z-50 p-0 shadow-xs outline-hidden sm:min-w-40',
+    menu: `
+      grid max-h-[calc(var(--visual-viewport-height)-10rem)]
+      grid-cols-[auto_1fr] overflow-auto rounded-xl p-1 outline-hidden
+      [clip-path:inset(0_0_0_0_round_calc(var(--radius-lg)-2px))]
+      sm:max-h-[inherit]
+      *:[[role=\'group\']+[role=group]]:mt-4
+      *:[[role=\'group\']+[role=separator]]:mt-1
+    `,
+    popover: `
+      z-50 p-0 shadow-xs outline-hidden
+      sm:min-w-40
+    `,
     trigger: [
-      'relative inline text-left outline-hidden data-focus-visible:ring-1 data-focus-visible:ring-primary',
+      `
+        relative inline text-left outline-hidden
+        data-focus-visible:ring-1 data-focus-visible:ring-primary
+      `,
     ],
   },
 })
@@ -148,8 +161,15 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
           ...renderProps,
           className: renderProps.hasSubmenu
             ? twMerge([
-                'data-open:data-danger:bg-danger/10 data-open:data-danger:text-danger',
-                'data-open:bg-accent data-open:text-accent-fg data-open:*:data-[slot=icon]:text-accent-fg data-open:*:[.text-muted-fg]:text-accent-fg',
+                `
+                  data-open:data-danger:bg-danger/10
+                  data-open:data-danger:text-danger
+                `,
+                `
+                  data-open:bg-accent data-open:text-accent-fg
+                  data-open:*:data-[slot=icon]:text-accent-fg
+                  data-open:*:[.text-muted-fg]:text-accent-fg
+                `,
                 className,
               ])
             : className,
@@ -165,7 +185,12 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
               {values.selectionMode === 'single' && (
                 <span
                   data-slot="bullet-icon"
-                  className="-mx-0.5 mr-2 flex size-4 shrink-0 items-center justify-center **:data-[slot=indicator]:size-2.5 **:data-[slot=indicator]:shrink-0"
+                  className={`
+                    -mx-0.5 mr-2 flex size-4 shrink-0 items-center
+                    justify-center
+                    **:data-[slot=indicator]:size-2.5
+                    **:data-[slot=indicator]:shrink-0
+                  `}
                 >
                   <Icon icon="mdi:circle-medium" data-slot="indicator" />
                 </span>
@@ -179,7 +204,11 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
           {typeof children === 'function' ? children(values) : children}
 
           {values.hasSubmenu && (
-            <Icon icon="mdi:chevron-right" data-slot="chevron" className="absolute right-2 size-3.5" />
+            <Icon
+              icon="mdi:chevron-right"
+              data-slot="chevron"
+              className="absolute right-2 size-3.5"
+            />
           )}
         </>
       )}
@@ -195,8 +224,14 @@ function MenuHeader({ className, separator = false, ...props }: MenuHeaderProps)
   return (
     <Header
       className={twMerge(
-        'col-span-full px-2.5 py-2 font-semibold text-base sm:text-sm',
-        separator && '-mx-1 mb-1 border-b sm:px-3 sm:pb-[0.625rem]',
+        `
+          col-span-full px-2.5 py-2 text-base font-semibold
+          sm:text-sm
+        `,
+        separator && `
+          -mx-1 mb-1 border-b
+          sm:px-3 sm:pb-[0.625rem]
+        `,
         className,
       )}
       {...props}

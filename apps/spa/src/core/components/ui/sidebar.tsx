@@ -127,14 +127,33 @@ function SidebarProvider({
     <SidebarContext value={contextValue}>
       <div
         className={twMerge(
-          '@container **:data-[slot=icon]:shrink-0',
-          '[--sidebar-width-dock:3.25rem] [--sidebar-width-mobile:18rem] [--sidebar-width:17rem]',
-          '[--sidebar-border:color-mix(in_oklch,var(--color-sidebar)_25%,black_6%)]',
-          'dark:[--sidebar-border:color-mix(in_oklch,var(--color-sidebar)_55%,white_10%)]',
-          '[--sidebar-accent:color-mix(in_oklab,var(--color-sidebar)_95%,black_5%)]',
-          'dark:[--sidebar-accent:color-mix(in_oklab,var(--color-sidebar)_90%,white_10%)]',
+          `
+            @container
+            **:data-[slot=icon]:shrink-0
+          `,
+          `
+            [--sidebar-width-dock:3.25rem]
+            [--sidebar-width-mobile:18rem]
+            [--sidebar-width:17rem]
+          `,
+          `
+            [--sidebar-border:color-mix(in_oklch,var(--color-sidebar)_25%,black_6%)]
+          `,
+          `
+            dark:[--sidebar-border:color-mix(in_oklch,var(--color-sidebar)_55%,white_10%)]
+          `,
+          `
+            [--sidebar-accent:color-mix(in_oklab,var(--color-sidebar)_95%,black_5%)]
+          `,
+          `
+            dark:[--sidebar-accent:color-mix(in_oklab,var(--color-sidebar)_90%,white_10%)]
+          `,
           'flex min-h-svh w-full text-sidebar-fg',
-          'group/sidebar-root has-data-[sidebar-intent=inset]:bg-sidebar dark:has-data-[sidebar-intent=inset]:bg-bg',
+          `
+            group/sidebar-root
+            has-data-[sidebar-intent=inset]:bg-sidebar
+            dark:has-data-[sidebar-intent=inset]:bg-bg
+          `,
           className,
         )}
         ref={ref}
@@ -148,48 +167,91 @@ function SidebarProvider({
 
 const gap = tv({
   base: [
-    'w-(--sidebar-width) group-data-[sidebar-collapsible=hidden]/sidebar-container:w-0',
+    `
+      w-(--sidebar-width)
+      group-data-[sidebar-collapsible=hidden]/sidebar-container:w-0
+    `,
     'relative h-svh bg-transparent transition-[width] duration-200 ease-linear',
     'group-data-[sidebar-side=right]/sidebar-container:rotate-180',
   ],
   variants: {
     intent: {
-      default: 'group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)',
-      fleet: 'group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)',
+      default: `
+        group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)
+      `,
+      fleet: `
+        group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)
+      `,
       float:
-        'group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.4))]',
+        `
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.4))]
+        `,
       inset:
-        'group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.2))]',
+        `
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.2))]
+        `,
     },
   },
 })
 
 const sidebar = tv({
   base: [
-    'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) not-has-data-sidebar-footer:pb-2 transition-[left,right,width] duration-200 ease-linear md:flex',
+    `
+      fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width)
+      transition-[left,right,width] duration-200 ease-linear
+      not-has-data-sidebar-footer:pb-2
+      md:flex
+    `,
     'min-h-svh bg-sidebar',
     '**:data-[slot=disclosure]:border-0 **:data-[slot=disclosure]:px-2.5',
   ],
   variants: {
     side: {
-      left: 'left-0 group-data-[sidebar-collapsible=hidden]/sidebar-container:left-[calc(var(--sidebar-width)*-1)]',
+      left: `
+        left-0
+        group-data-[sidebar-collapsible=hidden]/sidebar-container:left-[calc(var(--sidebar-width)*-1)]
+      `,
       right:
-        'right-0 group-data-[sidebar-collapsible=hidden]/sidebar-container:right-[calc(var(--sidebar-width)*-1)]',
+        `
+          right-0
+          group-data-[sidebar-collapsible=hidden]/sidebar-container:right-[calc(var(--sidebar-width)*-1)]
+        `,
     },
     intent: {
       float:
-        'bg-bg p-2 group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var+theme(spacing.4)+2px)]',
+        `
+          bg-bg p-2
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var+theme(spacing.4)+2px)]
+        `,
       inset: [
-        'bg-sidebar p-2 group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.2)+2px)] dark:bg-bg',
+        `
+          bg-sidebar p-2
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-[calc(var(--sidebar-width-dock)+theme(spacing.2)+2px)]
+          dark:bg-bg
+        `,
       ],
       fleet: [
-        'group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)',
-        '**:data-sidebar-disclosure:gap-y-0 **:data-sidebar-section:gap-y-0 **:data-sidebar-disclosure:px-0 **:data-sidebar-section:px-0',
-        'group-data-[sidebar-side=left]/sidebar-container:border-r group-data-[sidebar-side=right]/sidebar-container:border-l',
+        `
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)
+        `,
+        `
+          **:data-sidebar-disclosure:gap-y-0 **:data-sidebar-disclosure:px-0
+          **:data-sidebar-section:gap-y-0 **:data-sidebar-section:px-0
+        `,
+        `
+          group-data-[sidebar-side=left]/sidebar-container:border-r
+          group-data-[sidebar-side=right]/sidebar-container:border-l
+        `,
       ],
       default: [
-        'group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock) group-data-[sidebar-side=left]/sidebar-container:border-(--sidebar-border)',
-        'group-data-[sidebar-side=left]/sidebar-container:border-r group-data-[sidebar-side=right]/sidebar-container:border-l',
+        `
+          group-data-[sidebar-collapsible=dock]/sidebar-container:w-(--sidebar-width-dock)
+          group-data-[sidebar-side=left]/sidebar-container:border-(--sidebar-border)
+        `,
+        `
+          group-data-[sidebar-side=left]/sidebar-container:border-r
+          group-data-[sidebar-side=right]/sidebar-container:border-l
+        `,
       ],
     },
   },
@@ -218,7 +280,10 @@ function Sidebar({
         data-sidebar-intent={intent}
         data-sidebar-collapsible="none"
         className={twMerge(
-          'flex h-full w-(--sidebar-width) flex-col border-r bg-sidebar text-sidebar-fg',
+          `
+            flex h-full w-(--sidebar-width) flex-col border-r bg-sidebar
+            text-sidebar-fg
+          `,
           className,
         )}
         {...props}
@@ -239,7 +304,13 @@ function Sidebar({
           isFloat={intent === 'float'}
           side={side}
         >
-          <Sheet.Body className="px-0 sm:px-0">{props.children}</Sheet.Body>
+          <Sheet.Body className={`
+            px-0
+            sm:px-0
+          `}
+          >
+            {props.children}
+          </Sheet.Body>
         </Sheet.Content>
       </Sheet>
     )
@@ -251,7 +322,10 @@ function Sidebar({
       data-sidebar-collapsible={state === 'collapsed' ? collapsible : ''}
       data-sidebar-intent={intent}
       data-sidebar-side={side}
-      className="group/sidebar-container peer hidden text-sidebar-fg md:block"
+      className={`
+        group/sidebar-container peer hidden text-sidebar-fg
+        md:block
+      `}
       {...props}
     >
       <div aria-hidden="true" className={gap({ intent })} />
@@ -267,8 +341,17 @@ function Sidebar({
           data-sidebar="default"
           className={twJoin(
             'flex h-full w-full flex-col text-sidebar-fg',
-            'group-data-[sidebar-intent=inset]/sidebar-container:bg-sidebar dark:group-data-[sidebar-intent=inset]/sidebar-container:bg-bg',
-            'group-data-[sidebar-intent=float]/sidebar-container:rounded-lg group-data-[sidebar-intent=float]/sidebar-container:border group-data-[sidebar-intent=float]/sidebar-container:border-(--sidebar-border) group-data-[sidebar-intent=float]/sidebar-container:bg-sidebar group-data-[sidebar-intent=float]/sidebar-container:shadow-xs',
+            `
+              group-data-[sidebar-intent=inset]/sidebar-container:bg-sidebar
+              dark:group-data-[sidebar-intent=inset]/sidebar-container:bg-bg
+            `,
+            `
+              group-data-[sidebar-intent=float]/sidebar-container:rounded-lg
+              group-data-[sidebar-intent=float]/sidebar-container:border
+              group-data-[sidebar-intent=float]/sidebar-container:border-(--sidebar-border)
+              group-data-[sidebar-intent=float]/sidebar-container:bg-sidebar
+              group-data-[sidebar-intent=float]/sidebar-container:shadow-xs
+            `,
           )}
         >
           {props.children}
@@ -279,11 +362,19 @@ function Sidebar({
 }
 
 const header = tv({
-  base: 'mb-2 flex flex-col **:data-[slot=sidebar-label-mask]:hidden',
+  base: `
+    mb-2 flex flex-col
+    **:data-[slot=sidebar-label-mask]:hidden
+  `,
   variants: {
     collapsed: {
       false: 'px-4 py-[calc(var(--spacing)*4)]',
-      true: 'mt-2 p-5 group-data-[sidebar-intent=float]/sidebar-container:mt-2 md:mx-auto md:size-9 md:items-center md:justify-center md:rounded-lg md:p-0 md:hover:bg-(--sidebar-accent)',
+      true: `
+        mt-2 p-5
+        group-data-[sidebar-intent=float]/sidebar-container:mt-2
+        md:mx-auto md:size-9 md:items-center md:justify-center md:rounded-lg
+        md:p-0 md:hover:bg-(--sidebar-accent)
+      `,
     },
   },
 })
@@ -305,21 +396,44 @@ const footer = tv({
     'mt-auto flex flex-col p-2',
     'in-data-[sidebar-intent=fleet]:mt-0 in-data-[sidebar-intent=fleet]:p-0',
     'in-data-[sidebar-intent=fleet]:**:data-[slot=menu-trigger]:rounded-none',
-    '**:data-[slot=menu-trigger]:relative **:data-[slot=menu-trigger]:overflow-hidden',
-    ' **:data-[slot=menu-trigger]:rounded-lg',
-    '**:data-[slot=menu-trigger]:flex **:data-[slot=menu-trigger]:cursor-default **:data-[slot=menu-trigger]:items-center **:data-[slot=menu-trigger]:p-2 **:data-[slot=menu-trigger]:outline-hidden sm:**:data-[slot=menu-trigger]:text-sm',
-    '**:data-[slot=menu-trigger]:hover:bg-(--sidebar-accent) **:data-[slot=menu-trigger]:hover:text-fg',
+    `
+      **:data-[slot=menu-trigger]:relative
+      **:data-[slot=menu-trigger]:overflow-hidden
+    `,
+    '**:data-[slot=menu-trigger]:rounded-lg',
+    `
+      **:data-[slot=menu-trigger]:flex
+      **:data-[slot=menu-trigger]:cursor-default
+      **:data-[slot=menu-trigger]:items-center **:data-[slot=menu-trigger]:p-2
+      **:data-[slot=menu-trigger]:outline-hidden
+      sm:**:data-[slot=menu-trigger]:text-sm
+    `,
+    `
+      **:data-[slot=menu-trigger]:hover:bg-(--sidebar-accent)
+      **:data-[slot=menu-trigger]:hover:text-fg
+    `,
   ],
   variants: {
     collapsed: {
       false: [
-        '**:data-[slot=avatar]:*:size-8 **:data-[slot=menu-trigger]:**:data-[slot=avatar]:mr-2 **:data-[slot=avatar]:size-8',
-        '**:data-[slot=menu-trigger]:**:data-[slot=chevron]:ml-auto **:data-[slot=menu-trigger]:pressed:**:data-[slot=chevron]:rotate-180 **:data-[slot=menu-trigger]:**:data-[slot=chevron]:transition-transform **:data-[slot=menu-trigger]:w-full',
+        `
+          **:data-[slot=avatar]:size-8 **:data-[slot=avatar]:*:size-8
+          **:data-[slot=menu-trigger]:**:data-[slot=avatar]:mr-2
+        `,
+        `
+          **:data-[slot=menu-trigger]:w-full
+          **:data-[slot=menu-trigger]:**:data-[slot=chevron]:ml-auto
+          **:data-[slot=menu-trigger]:**:data-[slot=chevron]:transition-transform
+          **:data-[slot=menu-trigger]:pressed:**:data-[slot=chevron]:rotate-180
+        `,
       ],
       true: [
-        '**:data-[slot=avatar]:*:size-6 **:data-[slot=avatar]:size-6',
+        '**:data-[slot=avatar]:size-6 **:data-[slot=avatar]:*:size-6',
         '**:data-[slot=chevron]:hidden **:data-[slot=menu-label]:hidden',
-        '**:data-[slot=menu-trigger]:grid **:data-[slot=menu-trigger]:size-8 **:data-[slot=menu-trigger]:place-content-center',
+        `
+          **:data-[slot=menu-trigger]:grid **:data-[slot=menu-trigger]:size-8
+          **:data-[slot=menu-trigger]:place-content-center
+        `,
       ],
     },
   },
@@ -337,7 +451,10 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-sidebar-content="true"
       className={twMerge(
-        'flex min-h-0 flex-1 scroll-mb-96 flex-col overflow-auto *:data-sidebar-section:border-l-0',
+        `
+          flex min-h-0 flex-1 scroll-mb-96 flex-col overflow-auto
+          *:data-sidebar-section:border-l-0
+        `,
         state === 'collapsed' && 'items-center',
         className,
       )}
@@ -371,13 +488,26 @@ function SidebarSection({
     <div
       data-sidebar-section="true"
       className={twMerge(
-        'col-span-full flex flex-col gap-y-0.5 in-data-[sidebar-intent=fleet]:px-0 px-2 **:data-sidebar-section:**:gap-y-0 **:data-sidebar-section:pr-0',
+        `
+          col-span-full flex flex-col gap-y-0.5 px-2
+          in-data-[sidebar-intent=fleet]:px-0
+          **:data-sidebar-section:**:gap-y-0 **:data-sidebar-section:pr-0
+        `,
         className,
       )}
       {...props}
     >
       {state !== 'collapsed' && 'title' in props && (
-        <Header className="group-data-[sidebar-collapsible=dock]/sidebar-container:-mt-8 mb-1 flex shrink-0 items-center rounded-md px-2.5 font-medium text-sidebar-fg/70 text-xs outline-none ring-sidebar-ring transition-[margin,opa] duration-200 ease-linear data-focus-visible:ring-2 *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0 group-data-[sidebar-collapsible=dock]/sidebar-container:opacity-0">
+        <Header className={`
+          ring-sidebar-ring mb-1 flex shrink-0 items-center rounded-md px-2.5
+          text-xs font-medium text-sidebar-fg/70 transition-[margin,opa]
+          duration-200 ease-linear outline-none
+          group-data-[sidebar-collapsible=dock]/sidebar-container:-mt-8
+          group-data-[sidebar-collapsible=dock]/sidebar-container:opacity-0
+          data-focus-visible:ring-2
+          *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0
+        `}
+        >
           {props.title}
         </Header>
       )}
@@ -388,22 +518,56 @@ function SidebarSection({
 
 const sidebarItemStyles = tv({
   base: [
-    'group relative col-span-full cursor-pointer overflow-hidden rounded-lg px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)] text-sidebar-fg/70 outline-hidden sm:text-sm/6',
-    '**:data-[slot=menu-trigger]:-mr-1 **:data-[slot=menu-trigger]:absolute **:data-[slot=menu-trigger]:right-0 **:data-[slot=menu-trigger]:flex **:data-[slot=menu-trigger]:h-full **:data-[slot=menu-trigger]:w-[calc(var(--sidebar-width)-90%)] **:data-[slot=menu-trigger]:items-center **:data-[slot=menu-trigger]:justify-end **:data-[slot=menu-trigger]:pr-2.5',
-    '**:data-[slot=avatar]:*:size-4 **:data-[slot=avatar]:size-4 **:data-[slot=icon]:size-4 **:data-[slot=avatar]:shrink-0 **:data-[slot=icon]:shrink-0',
+    `
+      group relative col-span-full cursor-pointer overflow-hidden rounded-lg
+      px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)]
+      text-sidebar-fg/70 outline-hidden
+      sm:text-sm/6
+    `,
+    `
+      **:data-[slot=menu-trigger]:absolute **:data-[slot=menu-trigger]:right-0
+      **:data-[slot=menu-trigger]:-mr-1 **:data-[slot=menu-trigger]:flex
+      **:data-[slot=menu-trigger]:h-full
+      **:data-[slot=menu-trigger]:w-[calc(var(--sidebar-width)-90%)]
+      **:data-[slot=menu-trigger]:items-center
+      **:data-[slot=menu-trigger]:justify-end **:data-[slot=menu-trigger]:pr-2.5
+    `,
+    `
+      **:data-[slot=avatar]:size-4 **:data-[slot=avatar]:shrink-0
+      **:data-[slot=avatar]:*:size-4 **:data-[slot=icon]:size-4
+      **:data-[slot=icon]:shrink-0
+    `,
     'in-data-[sidebar-intent=fleet]:rounded-none',
   ],
   variants: {
     collapsed: {
       false:
-        'grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] items-center **:data-[slot=avatar]:*:mr-2 **:data-[slot=avatar]:mr-2 **:data-[slot=icon]:mr-2 supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
-      true: 'flex not-has-data-[slot=icon]:hidden size-9 items-center justify-center gap-x-0 p-0 **:data-[slot=menu-trigger]:hidden',
+        `
+          grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] items-center
+          **:data-[slot=avatar]:mr-2 **:data-[slot=avatar]:*:mr-2
+          **:data-[slot=icon]:mr-2
+          supports-[grid-template-columns:subgrid]:grid-cols-subgrid
+        `,
+      true: `
+        flex size-9 items-center justify-center gap-x-0 p-0
+        not-has-data-[slot=icon]:hidden
+        **:data-[slot=menu-trigger]:hidden
+      `,
     },
     isCurrent: {
-      true: 'bg-(--sidebar-accent) text-fg hover:bg-(--sidebar-accent)/90 hover:text-fg **:data-[slot=menu-trigger]:from-(--sidebar-accent) **:data-[slot=icon]:text-fg [&_.text-muted-fg]:text-fg/80',
+      true: `
+        bg-(--sidebar-accent) text-fg
+        hover:bg-(--sidebar-accent)/90 hover:text-fg
+        **:data-[slot=icon]:text-fg
+        **:data-[slot=menu-trigger]:from-(--sidebar-accent)
+        [&_.text-muted-fg]:text-fg/80
+      `,
     },
     isActive: {
-      true: 'bg-(--sidebar-accent) text-sidebar-fg **:data-[slot=menu-trigger]:flex',
+      true: `
+        bg-(--sidebar-accent) text-sidebar-fg
+        **:data-[slot=menu-trigger]:flex
+      `,
     },
     isDisabled: {
       true: 'cursor-default opacity-50',
@@ -459,7 +623,12 @@ function SidebarItem({
                     shape="square"
                     intent="primary"
                     data-slot="sidebar-badge"
-                    className="-translate-y-1/2 absolute inset-ring-1 inset-ring-primary/20 inset-y-1/2 right-1.5 h-5.5 w-auto text-[10px] transition-colors group-data-current:inset-ring-transparent"
+                    className={`
+                      absolute inset-y-1/2 right-1.5 h-5.5 w-auto
+                      -translate-y-1/2 text-[10px] inset-ring-1
+                      inset-ring-primary/20 transition-colors
+                      group-data-current:inset-ring-transparent
+                    `}
                   >
                     {badge}
                   </Badge>
@@ -467,7 +636,9 @@ function SidebarItem({
               : (
                   <div
                     aria-hidden
-                    className="absolute top-1 right-1 size-1.5 rounded-full bg-primary"
+                    className={`
+                      absolute top-1 right-1 size-1.5 rounded-full bg-primary
+                    `}
                   />
                 ))}
         </>
@@ -480,7 +651,10 @@ function SidebarItem({
         <Tooltip delay={0}>
           {link}
           <Tooltip.Content
-            className="**:data-[slot=icon]:hidden **:data-[slot=sidebar-label-mask]:hidden"
+            className={`
+              **:data-[slot=icon]:hidden
+              **:data-[slot=sidebar-label-mask]:hidden
+            `}
             intent="inverse"
             showArrow={false}
             placement="right"
@@ -495,11 +669,17 @@ function SidebarItem({
 }
 
 const sidebarLink = tv({
-  base: 'col-span-full items-center focus:outline-hidden',
+  base: `
+    col-span-full items-center
+    focus:outline-hidden
+  `,
   variants: {
     collapsed: {
       false:
-        'grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
+        `
+          grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto]
+          supports-[grid-template-columns:subgrid]:grid-cols-subgrid
+        `,
       true: 'absolute inset-0 flex size-full justify-center',
     },
   },
@@ -530,9 +710,24 @@ function SidebarInset({ className, ref, ...props }: React.ComponentProps<'main'>
     <main
       ref={ref}
       className={twMerge(
-        'relative flex min-h-svh w-full flex-1 flex-col peer-data-[sidebar-intent=inset]:border peer-data-[sidebar-intent=inset]:border-(--sidebar-border)',
-        'bg-bg peer-data-[sidebar-intent=inset]:overflow-hidden dark:peer-data-[sidebar-intent=inset]:bg-sidebar',
-        'peer-data-[sidebar-intent=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[sidebar-state=collapsed]:peer-data-[sidebar-intent=inset]:ml-2 md:peer-data-[sidebar-intent=inset]:m-2 md:peer-data-[sidebar-intent=inset]:ml-0 md:peer-data-[sidebar-intent=inset]:rounded-xl md:peer-data-[sidebar-intent=inset]:shadow-xs',
+        `
+          relative flex min-h-svh w-full flex-1 flex-col
+          peer-data-[sidebar-intent=inset]:border
+          peer-data-[sidebar-intent=inset]:border-(--sidebar-border)
+        `,
+        `
+          bg-bg
+          peer-data-[sidebar-intent=inset]:overflow-hidden
+          dark:peer-data-[sidebar-intent=inset]:bg-sidebar
+        `,
+        `
+          peer-data-[sidebar-intent=inset]:min-h-[calc(100svh-theme(spacing.4))]
+          md:peer-data-[sidebar-intent=inset]:m-2
+          md:peer-data-[sidebar-intent=inset]:ml-0
+          md:peer-data-[sidebar-intent=inset]:rounded-xl
+          md:peer-data-[sidebar-intent=inset]:shadow-xs
+          md:peer-data-[sidebar-state=collapsed]:peer-data-[sidebar-intent=inset]:ml-2
+        `,
         className,
       )}
       {...props}
@@ -568,7 +763,10 @@ function SidebarDisclosure({ className, ref, ...props }: SidebarDisclosureProps)
       className={composeTailwindRenderProps(
         className,
         twMerge(
-          'in-data-[sidebar-intent=fleet]:px-0 px-2.5',
+          `
+            px-2.5
+            in-data-[sidebar-intent=fleet]:px-0
+          `,
           state !== 'collapsed' && 'col-span-full',
         ),
       )}
@@ -579,12 +777,24 @@ function SidebarDisclosure({ className, ref, ...props }: SidebarDisclosureProps)
 
 const sidebarDisclosureTrigger = tv({
   base: [
-    'group relative flex w-full cursor-pointer items-center overflow-hidden rounded-lg px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)] text-sidebar-fg/70 outline-hidden sm:text-sm/6',
-    'in-data-[sidebar-intent=fleet]:rounded-none in-data-[sidebar-intent=fleet]:py-2 in-data-[sidebar-intent=fleet]:**:data-[slot=chevron]:hidden',
+    `
+      group relative flex w-full cursor-pointer items-center overflow-hidden
+      rounded-lg px-[calc(var(--spacing)*2.3)] py-[calc(var(--spacing)*1.3)]
+      text-sidebar-fg/70 outline-hidden
+      sm:text-sm/6
+    `,
+    `
+      in-data-[sidebar-intent=fleet]:rounded-none
+      in-data-[sidebar-intent=fleet]:py-2
+      in-data-[sidebar-intent=fleet]:**:data-[slot=chevron]:hidden
+    `,
   ],
   variants: {
     collapsed: {
-      false: 'col-span-full **:data-[slot=icon]:mr-2',
+      false: `
+        col-span-full
+        **:data-[slot=icon]:mr-2
+      `,
       true: 'size-9 justify-center p-0',
     },
     isActive: {
@@ -623,7 +833,10 @@ function SidebarDisclosureTrigger({ className, ref, ...props }: SidebarDisclosur
               <Icon
                 icon="mdi:chevron-down"
                 data-slot="chevron"
-                className="z-10 ml-auto size-3.5 transition-transform group-aria-expanded:rotate-180"
+                className={`
+                  z-10 ml-auto size-3.5 transition-transform
+                  group-aria-expanded:rotate-180
+                `}
               />
             )}
           </>
@@ -648,7 +861,10 @@ function SidebarSeparator({ className, ...props }: SidebarSeparatorProps) {
     <Separator
       orientation="horizontal"
       className={twMerge(
-        'col-span-full mx-auto my-2.5 h-px w-[calc(var(--sidebar-width)-theme(spacing.6))] bg-border',
+        `
+          col-span-full mx-auto my-2.5 h-px
+          w-[calc(var(--sidebar-width)-theme(spacing.6))] bg-border
+        `,
         className,
       )}
       {...props}
@@ -672,8 +888,20 @@ function SidebarTrigger({ onPress, children, ...props }: React.ComponentProps<ty
     >
       {children || (
         <>
-          <Icon icon="tabler:layout-sidebar" className="hidden md:inline" />
-          <Icon icon="mdi:menu" className="inline md:hidden" />
+          <Icon
+            icon="tabler:layout-sidebar"
+            className={`
+              hidden
+              md:inline
+            `}
+          />
+          <Icon
+            icon="mdi:menu"
+            className={`
+              inline
+              md:hidden
+            `}
+          />
           <span className="sr-only">Toggle Sidebar</span>
         </>
       )}
@@ -693,11 +921,32 @@ function SidebarRail({ className, ref, ...props }: React.ComponentProps<'button'
       tabIndex={-1}
       onClick={toggleSidebar}
       className={twMerge(
-        '-translate-x-1/2 group-data-[sidebar-side=left]/sidebar-container:-right-4 absolute inset-y-0 z-20 hidden w-4 outline-hidden transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-transparent group-data-[sidebar-side=right]/sidebar-container:left-0 sm:flex',
-        'in-data-[sidebar-side=left]:cursor-w-resize in-data-[sidebar-side=right]:cursor-e-resize',
-        '[[data-sidebar-side=left][data-sidebar-state=collapsed]_&]:cursor-e-resize [[data-sidebar-side=right][data-sidebar-state=collapsed]_&]:cursor-w-resize',
-        'group-data-[sidebar-collapsible=hidden]/sidebar-container:translate-x-0 group-data-[sidebar-collapsible=hidden]/sidebar-container:hover:bg-secondary group-data-[sidebar-collapsible=hidden]/sidebar-container:after:left-full',
-        '[[data-sidebar-side=left][data-sidebar-collapsible=hidden]_&]:-right-2 [[data-sidebar-side=right][data-sidebar-collapsible=hidden]_&]:-left-2',
+        `
+          absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 outline-hidden
+          transition-all ease-linear
+          group-data-[sidebar-side=left]/sidebar-container:-right-4
+          group-data-[sidebar-side=right]/sidebar-container:left-0
+          after:absolute after:inset-y-0 after:left-1/2 after:w-[2px]
+          hover:after:bg-transparent
+          sm:flex
+        `,
+        `
+          in-data-[sidebar-side=left]:cursor-w-resize
+          in-data-[sidebar-side=right]:cursor-e-resize
+        `,
+        `
+          [[data-sidebar-side=left][data-sidebar-state=collapsed]_&]:cursor-e-resize
+          [[data-sidebar-side=right][data-sidebar-state=collapsed]_&]:cursor-w-resize
+        `,
+        `
+          group-data-[sidebar-collapsible=hidden]/sidebar-container:translate-x-0
+          group-data-[sidebar-collapsible=hidden]/sidebar-container:after:left-full
+          group-data-[sidebar-collapsible=hidden]/sidebar-container:hover:bg-secondary
+        `,
+        `
+          [[data-sidebar-side=left][data-sidebar-collapsible=hidden]_&]:-right-2
+          [[data-sidebar-side=right][data-sidebar-collapsible=hidden]_&]:-left-2
+        `,
         className,
       )}
       {...props}
@@ -728,12 +977,24 @@ function SidebarLabel({ className, ref, ...props }: SidebarLabelProps) {
 
 const nav = tv({
   base: [
-    'isolate flex h-[3.2rem] items-center justify-between gap-x-2 px-4 text-navbar-fg sm:justify-start md:w-full',
-    'group-has-data-[sidebar-intent=default]/sidebar-root:border-b group-has-data-[sidebar-intent=fleet]/sidebar-root:border-b group-has-data-[sidebar-intent=default]/sidebar-root:bg-bg',
+    `
+      isolate flex h-[3.2rem] items-center justify-between gap-x-2 px-4
+      text-navbar-fg
+      sm:justify-start
+      md:w-full
+    `,
+    `
+      group-has-data-[sidebar-intent=default]/sidebar-root:border-b
+      group-has-data-[sidebar-intent=default]/sidebar-root:bg-bg
+      group-has-data-[sidebar-intent=fleet]/sidebar-root:border-b
+    `,
   ],
   variants: {
     isSticky: {
-      true: 'static top-0 z-40 group-has-data-[sidebar-intent=default]/sidebar-root:sticky',
+      true: `
+        static top-0 z-40
+        group-has-data-[sidebar-intent=default]/sidebar-root:sticky
+      `,
     },
   },
 })

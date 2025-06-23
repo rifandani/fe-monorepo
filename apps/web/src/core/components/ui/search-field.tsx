@@ -39,12 +39,24 @@ function SearchField({
             <>
               {label && <Label>{label}</Label>}
               <FieldGroup>
-                {isPending ? <Loader variant="spin" /> : <Icon icon="mdi:magnify" className="size-4" />}
+                {isPending
+                  ? <Loader variant="spin" />
+                  : (
+                      <Icon
+                        icon="mdi:magnify"
+                        className="size-4"
+                      />
+                    )}
                 <Input placeholder={placeholder ?? 'Search...'} />
 
                 <Button
                   intent="plain"
-                  className="size-8 pressed:bg-transparent pressed:text-fg text-muted-fg hover:bg-transparent hover:text-fg group-data-empty/search-field:invisible"
+                  className={`
+                    size-8 text-muted-fg
+                    group-data-empty/search-field:invisible
+                    hover:bg-transparent hover:text-fg
+                    pressed:bg-transparent pressed:text-fg
+                  `}
                 >
                   <Icon icon="mdi:close" className="size-4" />
                 </Button>

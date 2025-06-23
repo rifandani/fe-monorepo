@@ -18,7 +18,11 @@ const tagFieldsStyles = tv({
       outline: [
         'rounded-lg border px-1 shadow-xs',
         'has-[input[focus=true]]:border-ring/70',
-        'has-[input[data-invalid=true][focus=true]]:border-danger has-[input[data-invalid=true]]:border-danger has-[input[data-invalid=true]]:ring-danger/20',
+        `
+          has-[input[data-invalid=true]]:border-danger
+          has-[input[data-invalid=true]]:ring-danger/20
+          has-[input[data-invalid=true][focus=true]]:border-danger
+        `,
         'has-[input[focus=true]]:ring-4 has-[input[focus=true]]:ring-ring/20',
       ],
       plain: ['has-[input[focus=true]]:border-transparent'],
@@ -155,8 +159,13 @@ function TagField({
                   list.items.length !== 0
                     ? appearance === 'outline' && 'gap-1.5 px-1 py-1.5'
                     : 'gap-0',
-                  props.shape === 'square' && '[&_.jdt3lr2x]:rounded-[calc(var(--radius-lg)-4px)]',
-                  '[&_.jdt3lr2x]:last:-mr-1 outline-hidden [&_.jdt3lr2x]:cursor-default',
+                  props.shape === 'square' && `
+                    [&_.jdt3lr2x]:rounded-[calc(var(--radius-lg)-4px)]
+                  `,
+                  `
+                    outline-hidden
+                    [&_.jdt3lr2x]:cursor-default [&_.jdt3lr2x]:last:-mr-1
+                  `,
                 )}
               >
                 {item => <Tag>{item.name}</Tag>}

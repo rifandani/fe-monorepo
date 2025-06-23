@@ -21,11 +21,14 @@
 To run the app:
 
 ```bash
+# spin up flagsmith self-hosted using docker compose (run this in root project)
+bun flagsmith:up
+
 # run the app with development env in port 3002
-$ bun dev
+bun dev
 
 # run the app with production env in port 3002
-$ bun dev:prod
+bun dev:prod
 ```
 
 ## 🔨 Development Build
@@ -34,7 +37,7 @@ To build the app:
 
 ```bash
 # build the app with development env
-$ bun build
+bun build
 ```
 
 ## 🔨 Production Build
@@ -43,7 +46,7 @@ To build the app:
 
 ```bash
 # build the app with production env
-$ bun build:prod
+bun build:prod
 ```
 
 ## 📊 Analyze Bundle Size
@@ -54,7 +57,7 @@ To analyze the production bundle size:
 # analyze Javascript bundle size mimicking the production build
 # this will open 3 new tabs on the browser, one for nodejs build, one for edge build, and one for browser build
 # the html report will be saved in the `.next/analyze` folder
-$ bun build:prod:analyze
+bun build:prod:analyze
 ```
 
 [Best practices for reducing bundle size](https://nextjs.org/docs/app/guides/package-bundling)

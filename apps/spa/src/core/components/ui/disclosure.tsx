@@ -79,7 +79,7 @@ function DisclosureTrigger({ className, ref, ...props }: DisclosureTriggerProps)
             <Icon
               icon="mdi:chevron-left"
               data-slot="disclosure-chevron"
-              className="internal-chevron ml-auto size-4 shrink-0 transition duration-300"
+              className="ml-auto size-4 shrink-0 transition duration-300"
             />
           </>
         )}
@@ -104,7 +104,11 @@ function DisclosurePanel({ className, ref, ...props }: DisclosurePanelProps) {
     >
       <div
         data-slot="disclosure-panel-content"
-        className="pt-0 not-has-data-[slot=disclosure-group]:group-data-expanded/disclosure:pb-3 [&:has([data-slot=disclosure-group])_&]:px-11"
+        className={`
+          pt-0
+          not-has-data-[slot=disclosure-group]:group-data-expanded/disclosure:pb-3
+          [&:has([data-slot=disclosure-group])_&]:px-11
+        `}
       >
         {props.children}
       </div>

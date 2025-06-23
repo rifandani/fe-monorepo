@@ -29,20 +29,38 @@ function GridList<T extends object>({ children, className, ...props }: GridListP
 }
 
 const itemStyles = tv({
-  base: 'group -mb-px -outline-offset-2 relative flex cursor-default select-none gap-3 border-y px-3 py-2 text-fg outline-hidden transition [--selected-item-hovered:theme(--color-muted/70%)] [--selected-item:theme(--color-muted/80%)] first:rounded-t-md first:border-t-0 last:mb-0 last:rounded-b-md last:border-b-0 sm:text-sm',
+  base: `
+    group relative -mb-px flex cursor-default gap-3 border-y px-3 py-2 text-fg
+    outline-hidden -outline-offset-2 transition select-none
+    [--selected-item-hovered:theme(--color-muted/70%)]
+    [--selected-item:theme(--color-muted/80%)]
+    first:rounded-t-md first:border-t-0
+    last:mb-0 last:rounded-b-md last:border-b-0
+    sm:text-sm
+  `,
   variants: {
     isHovered: { true: 'bg-subtle' },
     isSelected: {
-      true: 'z-20 border-border/50 bg-(--selected-item) hover:bg-(--selected-item-hovered)',
+      true: `
+        z-20 border-border/50 bg-(--selected-item)
+        hover:bg-(--selected-item-hovered)
+      `,
     },
     isFocused: {
       true: 'outline-hidden',
     },
     isFocusVisible: {
-      true: 'bg-(--selected-item) selected:bg-(--selected-item) outline-hidden ring-1 ring-ring hover:bg-(--selected-item-hovered)',
+      true: `
+        bg-(--selected-item) ring-1 ring-ring outline-hidden
+        hover:bg-(--selected-item-hovered)
+        selected:bg-(--selected-item)
+      `,
     },
     isDisabled: {
-      true: 'text-muted-fg/70 forced-colors:text-[GrayText]',
+      true: `
+        text-muted-fg/70
+        forced-colors:text-[GrayText]
+      `,
     },
   },
 })
@@ -61,7 +79,11 @@ function GridListItem({ className, ...props }: GridListItemProps) {
           {values.allowsDragging && (
             <Button
               slot="drag"
-              className="cursor-grab data-dragging:cursor-grabbing *:data-[slot=icon]:text-muted-fg"
+              className={`
+                cursor-grab
+                data-dragging:cursor-grabbing
+                *:data-[slot=icon]:text-muted-fg
+              `}
             >
               <Icon icon="mdi:drag" />
             </Button>
@@ -69,7 +91,10 @@ function GridListItem({ className, ...props }: GridListItemProps) {
 
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary group-selected:block"
+            className={`
+              absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary
+              group-selected:block
+            `}
           />
           {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
             <Checkbox className="-mr-2" slot="selection" />

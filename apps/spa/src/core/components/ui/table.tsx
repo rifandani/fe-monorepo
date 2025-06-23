@@ -44,14 +44,25 @@ const useTableContext = () => React.use(TableContext)
 function Table({ children, className, ...props }: TableProps) {
   return (
     <TableContext value={props}>
-      <div className="relative w-full overflow-auto **:data-[slot=table-resizable-container]:overflow-auto">
+      <div className={`
+        relative w-full overflow-auto
+        **:data-[slot=table-resizable-container]:overflow-auto
+      `}
+      >
         {props.allowResize
           ? (
               <ResizableTableContainer>
                 <TablePrimitive
                   {...props}
                   className={twMerge(
-                    'table w-full min-w-full caption-bottom border-spacing-0 text-sm outline-hidden [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)] **:data-drop-target:border **:data-drop-target:border-primary dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]',
+                    `
+                      table w-full min-w-full caption-bottom border-spacing-0
+                      text-sm outline-hidden
+                      [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)]
+                      **:data-drop-target:border
+                      **:data-drop-target:border-primary
+                      dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]
+                    `,
                     className,
                   )}
                 >
@@ -63,7 +74,14 @@ function Table({ children, className, ...props }: TableProps) {
               <TablePrimitive
                 {...props}
                 className={twMerge(
-                  'table w-full min-w-full caption-bottom border-spacing-0 text-sm outline-hidden [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)] **:data-drop-target:border **:data-drop-target:border-primary dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]',
+                  `
+                    table w-full min-w-full caption-bottom border-spacing-0
+                    text-sm outline-hidden
+                    [--table-selected-bg:color-mix(in_oklab,var(--color-primary)_5%,white_90%)]
+                    **:data-drop-target:border
+                    **:data-drop-target:border-primary
+                    dark:[--table-selected-bg:color-mix(in_oklab,var(--color-primary)_25%,black_70%)]
+                  `,
                   className,
                 )}
               >
@@ -104,10 +122,10 @@ interface TableCellProps extends CellProps {
 }
 
 const cellStyles = tv({
-  base: 'group whitespace-nowrap px-3 py-3 outline-hidden',
+  base: 'group px-3 py-3 whitespace-nowrap outline-hidden',
   variants: {
     allowResize: {
-      true: 'overflow-hidden truncate',
+      true: 'truncate overflow-hidden',
     },
   },
 })
@@ -121,10 +139,15 @@ function TableCell({ children, className, ...props }: TableCellProps) {
 }
 
 const columnStyles = tv({
-  base: 'relative allows-sorting:cursor-pointer whitespace-nowrap px-3 py-3 text-left font-medium outline-hidden data-dragging:cursor-grabbing [&:has([slot=selection])]:pr-0',
+  base: `
+    relative px-3 py-3 text-left font-medium whitespace-nowrap outline-hidden
+    data-dragging:cursor-grabbing
+    allows-sorting:cursor-pointer
+    [&:has([slot=selection])]:pr-0
+  `,
   variants: {
     isResizable: {
-      true: 'overflow-hidden truncate',
+      true: 'truncate overflow-hidden',
     },
   },
 })
@@ -145,18 +168,33 @@ function TableColumn({ isResizable = false, className, ...props }: TableColumnPr
       })}
     >
       {({ allowsSorting, sortDirection, isHovered }) => (
-        <div className="flex items-center gap-2 **:data-[slot=icon]:shrink-0">
+        <div className={`
+          flex items-center gap-2
+          **:data-[slot=icon]:shrink-0
+        `}
+        >
           <>
             {props.children as React.ReactNode}
             {allowsSorting && (
               <span
                 className={twMerge(
-                  'grid size-[1.15rem] flex-none shrink-0 place-content-center rounded bg-secondary text-fg *:data-[slot=icon]:size-3.5 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:transition-transform *:data-[slot=icon]:duration-200',
+                  `
+                    grid size-[1.15rem] flex-none shrink-0 place-content-center
+                    rounded bg-secondary text-fg
+                    *:data-[slot=icon]:size-3.5 *:data-[slot=icon]:shrink-0
+                    *:data-[slot=icon]:transition-transform
+                    *:data-[slot=icon]:duration-200
+                  `,
                   isHovered ? 'bg-secondary-fg/10' : '',
                   className,
                 )}
               >
-                <Icon icon="mdi:chevron-down" className={sortDirection === 'ascending' ? 'rotate-180' : ''} />
+                <Icon
+                  icon="mdi:chevron-down"
+                  className={sortDirection === 'ascending'
+                    ? `rotate-180`
+                    : ''}
+                />
               </span>
             )}
             {isResizable && <ColumnResizer />}
@@ -219,15 +257,35 @@ function TableRow<T extends object>({
       id={id}
       {...props}
       className={twMerge(
-        'tr group relative cursor-default border-b bg-bg selected:bg-(--table-selected-bg) text-muted-fg outline-hidden ring-primary selected:hover:bg-(--table-selected-bg)/70 focus:ring-0 data-focus-visible:ring-1 dark:selected:hover:bg-[color-mix(in_oklab,var(--color-primary)_30%,black_70%)]',
-        'href' in props ? 'cursor-pointer hover:bg-secondary/50 hover:text-secondary-fg' : '',
+        `
+          tr group relative cursor-default border-b bg-bg text-muted-fg
+          ring-primary outline-hidden
+          focus:ring-0
+          data-focus-visible:ring-1
+          selected:bg-(--table-selected-bg)
+          selected:hover:bg-(--table-selected-bg)/70
+          dark:selected:hover:bg-[color-mix(in_oklab,var(--color-primary)_30%,black_70%)]
+        `,
+        'href' in props
+          ? `
+            cursor-pointer
+            hover:bg-secondary/50 hover:text-secondary-fg
+          `
+          : '',
         className,
       )}
     >
       {allowsDragging && (
-        <Cell className="group cursor-grab pr-0 ring-primary data-dragging:cursor-grabbing">
+        <Cell className={`
+          group cursor-grab pr-0 ring-primary
+          data-dragging:cursor-grabbing
+        `}
+        >
           <Button
-            className="relative bg-transparent py-1.5 pl-3.5 pressed:text-fg text-muted-fg"
+            className={`
+              relative bg-transparent py-1.5 pl-3.5 text-muted-fg
+              pressed:text-fg
+            `}
             slot="drag"
           >
             <Icon icon="mdi:menu" className="size-4" />
@@ -238,7 +296,10 @@ function TableRow<T extends object>({
         <Cell className="pl-4">
           <span
             aria-hidden
-            className="absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary group-selected:block"
+            className={`
+              absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary
+              group-selected:block
+            `}
           />
           <Checkbox slot="selection" />
         </Cell>

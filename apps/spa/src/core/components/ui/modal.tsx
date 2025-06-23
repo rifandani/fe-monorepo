@@ -18,37 +18,58 @@ function Modal(props: DialogTriggerProps) {
 const modalOverlayStyles = tv({
   base: [
     'fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full',
-    'flex items-end justify-end bg-fg/15 text-center sm:block dark:bg-bg/40',
-    '[--visual-viewport-vertical-padding:16px] sm:[--visual-viewport-vertical-padding:32px]',
+    `
+      flex items-end justify-end bg-fg/15 text-center
+      sm:block
+      dark:bg-bg/40
+    `,
+    `
+      [--visual-viewport-vertical-padding:16px]
+      sm:[--visual-viewport-vertical-padding:32px]
+    `,
   ],
   variants: {
     isBlurred: {
-      true: 'bg-bg supports-backdrop-filter:bg-bg/15 supports-backdrop-filter:backdrop-blur dark:supports-backdrop-filter:bg-bg/40',
+      true: `
+        bg-bg
+        supports-backdrop-filter:bg-bg/15 supports-backdrop-filter:backdrop-blur
+        dark:supports-backdrop-filter:bg-bg/40
+      `,
     },
     isEntering: {
-      true: 'fade-in animate-in duration-200 ease-out',
+      true: 'duration-200 ease-out animate-in fade-in',
     },
     isExiting: {
-      true: 'fade-out animate-out ease-in',
+      true: 'ease-in animate-out fade-out',
     },
   },
 })
 const modalContentStyles = tv({
   base: [
-    'max-h-full w-full rounded-t-2xl bg-overlay text-left align-middle text-overlay-fg shadow-lg ring-1 ring-fg/5',
-    'overflow-hidden sm:rounded-2xl dark:ring-border',
-    'sm:-translate-x-1/2 sm:-translate-y-1/2 sm:fixed sm:top-1/2 sm:left-[50vw]',
+    `
+      max-h-full w-full rounded-t-2xl bg-overlay text-left align-middle
+      text-overlay-fg shadow-lg ring-1 ring-fg/5
+    `,
+    `
+      overflow-hidden
+      sm:rounded-2xl
+      dark:ring-border
+    `,
+    'sm:fixed sm:top-1/2 sm:left-[50vw] sm:-translate-x-1/2 sm:-translate-y-1/2',
   ],
   variants: {
     isEntering: {
       true: [
-        'fade-in slide-in-from-bottom animate-in duration-200 ease-out',
-        'sm:zoom-in-95 sm:slide-in-from-bottom-0',
+        'duration-200 ease-out animate-in fade-in slide-in-from-bottom',
+        'sm:slide-in-from-bottom-0 sm:zoom-in-95',
       ],
     },
     isExiting: {
       true: [
-        'slide-out-to-bottom sm:slide-out-to-bottom-0 sm:zoom-out-95 animate-out duration-150 ease-in',
+        `
+          duration-150 ease-in animate-out slide-out-to-bottom
+          sm:slide-out-to-bottom-0 sm:zoom-out-95
+        `,
       ],
     },
     size: {

@@ -12,10 +12,16 @@ import { Description, FieldError, FieldGroup, Input, Label } from './field'
 import { composeTailwindRenderProps } from './primitive'
 
 const fieldBorderStyles = tv({
-  base: 'group-focus:border-primary/70 forced-colors:border-[Highlight]',
+  base: `
+    group-focus:border-primary/70
+    forced-colors:border-[Highlight]
+  `,
   variants: {
     isInvalid: {
-      true: 'group-focus:border-danger/70 forced-colors:border-[Mark]',
+      true: `
+        group-focus:border-danger/70
+        forced-colors:border-[Mark]
+      `,
     },
     isDisabled: {
       true: 'group-focus:border-input/70',
@@ -49,7 +55,13 @@ function NumberField({
         {renderProps => (
           <>
             {isMobile ? <StepperButton slot="decrement" className="border-r" /> : null}
-            <Input className="px-13 tabular-nums sm:px-2.5" placeholder={placeholder} />
+            <Input
+              className={`
+                px-13 tabular-nums
+                sm:px-2.5
+              `}
+              placeholder={placeholder}
+            />
             <div
               className={fieldBorderStyles({
                 ...renderProps,
@@ -62,14 +74,22 @@ function NumberField({
                   )
                 : (
                     <div className="flex h-full flex-col">
-                      <StepperButton slot="increment" emblemType="chevron" className="h-5 px-1" />
+                      <StepperButton
+                        slot="increment"
+                        emblemType="chevron"
+                        className="h-5 px-1"
+                      />
                       <div
                         className={fieldBorderStyles({
                           ...renderProps,
                           className: 'border-input border-b',
                         })}
                       />
-                      <StepperButton slot="decrement" emblemType="chevron" className="h-5 px-1" />
+                      <StepperButton
+                        slot="decrement"
+                        emblemType="chevron"
+                        className="h-5 px-1"
+                      />
                     </div>
                   )}
             </div>

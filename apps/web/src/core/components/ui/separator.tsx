@@ -13,7 +13,10 @@ function Separator({ className, ...props }: SeparatorProps) {
     <Divider
       {...props}
       className={twMerge(
-        'shrink-0 bg-border forced-colors:bg-[ButtonBorder]',
+        `
+          shrink-0 bg-border
+          forced-colors:bg-[ButtonBorder]
+        `,
         props.orientation === 'horizontal' ? 'h-px w-full' : 'w-px',
         className,
       )}

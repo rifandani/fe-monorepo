@@ -30,17 +30,17 @@
 
 ```bash
 # setup EAS CLI autocomplete
-$ eas autocomplete zsh # then, follow the instructions
+eas autocomplete zsh # then, follow the instructions
 ```
 
 ```bash
 # login into EAS account
-$ eas login # then, follow the instructions
+eas login # then, follow the instructions
 ```
 
 ```bash
 # init a new EAS project (this will create a `extra.eas.projectId` and also project slug)
-$ eas init
+eas init
 ```
 
 ### Environment Variables
@@ -57,10 +57,10 @@ If there are any new versions of Expo SDK, please check the corresponding change
 
 ```bash
 # Upgrade all dependencies to match Expo SDK 53
-$ npx expo install expo@^53.0.0 --fix
+npx expo install expo@^53.0.0 --fix
 
 # Check for any possible known issues
-$ bun expo doctor
+bun expo doctor
 
 # Next, in `eas.json` file, update `cli.version` to the new version of `eas-cli` global package
 # Next, upgrade xcode / android studio if needed
@@ -74,37 +74,37 @@ Every single time you change the `app.json` file / install native libraries, you
 
 ```bash
 # cd into the expo directory (this is for better terminal logging)
-$ cd apps/expo
+cd apps/expo
 
 # regenerate native project from scratch, then create a development build
-$ bun prebuild && bun build:android:dev:local
-$ bun prebuild && bun build:ios:dev-sim:local # for ios simulator
+bun prebuild && bun build:android:dev:local
+bun prebuild && bun build:ios:dev-sim:local # for ios simulator
 ```
 
 After that, install the app to your android device/simulator and start the app:
 
 ```bash
 # run the app
-$ bun start:dev
+bun start:dev
 ```
 
 Or, we can straight forward doing prebuild -> create a development build -> runs the app on connected android device/simulator, all at once with single command:
 
 ```bash
 # uninstall the app from the device/simulator if it's installed
-$ adb uninstall com.rifandani.expoapp.development # or .preview or .production
-$ xcrun simctl uninstall booted com.rifandani.expoapp.development # or .preview or .production
+adb uninstall com.rifandani.expoapp.development # or .preview or .production
+xcrun simctl uninstall booted com.rifandani.expoapp.development # or .preview or .production
 
 # prebuild + create development build + install the app to the device/simulator
-$ bun android
-$ bun ios # for ios simulator
+bun android
+bun ios # for ios simulator
 ```
 
 Everytime we change the app icon, we need to clean re-build the app.
 
 ```bash
 # clean re-build the app
-$ bun prebuild
+bun prebuild
 ```
 
 ## 🔨 Development Build
@@ -115,31 +115,31 @@ Development Build requires a "development build" app and a development server to
 
 ```bash
 # kickoff EAS build for android
-$ bun build:android:dev
+bun build:android:dev
 
 # kickoff EAS build for ios (iphone device)
 # requirements: https://docs.expo.dev/tutorial/eas/ios-development-build-for-devices/
 # - Apple Developer Account (paid $99/year) credentials for signing the app as each build needs to be signed to verify that the app comes from a trusted source
 # - Developer Mode activated on iOS 16 and higher. https://docs.expo.dev/guides/ios-developer-mode/
-$ bun build:ios:dev
+bun build:ios:dev
 ```
 
 If you want to opt-out of EAS cloud build, you can [run the build locally](https://docs.expo.dev/build-reference/local-builds/).
 
 ```bash
 # this will create a .apk file in the root directory
-$ bun build:android:dev:local
+bun build:android:dev:local
 
 # this will create a .tar.gz file in the root directory
-$ bun build:ios:dev:local # for ios device (requires apple developer account)
-$ bun build:ios:dev-sim:local # for ios simulator
+bun build:ios:dev:local # for ios device (requires apple developer account)
+bun build:ios:dev-sim:local # for ios simulator
 ```
 
 If we run `bun build:ios:dev-sim:local`, you will get a `build-*.tar.gz` file. We can't just drag it to the simulator, because it's not a valid app file. To install the app to the iOS simulator:
 
 ```bash
 # this will extract the `build-*.tar.gz` file into /tmp/fe-monorepo-expo folder and install the app to the iOS simulator
-$ bun ios:sim:install
+bun ios:sim:install
 ```
 
 ## 🔨 Preview Build
@@ -148,20 +148,20 @@ This build often referred as "internal distribution" which can be distributed to
 
 ```bash
 # kickoff EAS build for android
-$ bun build:android:preview
+bun build:android:preview
 
 # kickoff EAS build for ios (iphone device, requires apple developer account)
-$ bun build:ios:preview
+bun build:ios:preview
 ```
 
 If you want to opt-out of EAS cloud build, you can run the build locally.
 
 ```bash
 # this will create a .apk file in the root directory
-$ bun build:android:preview:local
+bun build:android:preview:local
 
 # this will create a .app file in the root directory (can't be installed directly on ios device)
-$ bun build:ios:preview:local # (iphone device, requires apple developer account)
+bun build:ios:preview:local # (iphone device, requires apple developer account)
 ```
 
 ## 🔨 Production Build
@@ -174,20 +174,20 @@ A production iOS build is optimized for Apple's App Store Connect, which allows 
 
 ```bash
 # kickoff EAS build for android
-$ bun build:android:prod
+bun build:android:prod
 
 # kickoff EAS build for ios (requires apple developer account)
-$ bun build:ios:prod
+bun build:ios:prod
 ```
 
 If you want to opt-out of EAS cloud build, you can run the build locally.
 
 ```bash
 # this will create a .aab file in the root directory (can't be installed directly on android emulator/device)
-$ bun build:android:prod:local
+bun build:android:prod:local
 
 # this will create a .ipa file in the root directory (can't be installed directly on ios simulator/device)
-$ bun build:ios:prod:local # (requires apple developer account)
+bun build:ios:prod:local # (requires apple developer account)
 ```
 
 ## 🔄 Updates
@@ -196,10 +196,10 @@ EAS Update is a hosted service that serves updates for projects using the `expo-
 
 ```bash
 # send OTA update to preview environment
-$ bun update:preview
+bun update:preview
 
 # send OTA update to production environment
-$ bun update:prod
+bun update:prod
 ```
 
 ## 📨 Submission
@@ -210,10 +210,10 @@ To publish and distribute an app on the Google Play Store, we need [Google Play 
 
 ```bash
 # submit the app to the Google Play Store
-$ bun submit:android
+bun submit:android
 
 # submit the app to the Apple App Store
-$ bun submit:ios
+bun submit:ios
 ```
 
 ## 📊 Analyze Bundle Size
@@ -221,7 +221,7 @@ $ bun submit:ios
 ```bash
 # analyze Javascript bundle size mimicking the production build
 # this will start the dev server. Click `shift+m` on the terminal and choose to open expo-atlas. This will open a new tab on the browser.
-$ bun analyze
+bun analyze
 ```
 
 [Best practices for reducing bundle size](https://docs.expo.dev/distribution/app-size/#optimizing-app-size):
@@ -257,5 +257,5 @@ Requires the EAS project to be connected to the github repository to be able to 
 
 ```bash
 # run manually
-$ eas workflow:run .eas/workflows/create-development-builds.yaml --non-interactive
+eas workflow:run .eas/workflows/create-development-builds.yaml --non-interactive
 ```

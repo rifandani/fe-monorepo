@@ -193,11 +193,17 @@ function MultipleSelect<T extends SelectedKey>({
           ref={triggerRef}
           className={twMerge(
             [
-              'relative flex min-h-10 flex-row flex-wrap items-center rounded-lg border px-1 shadow-xs transition',
+              `
+                relative flex min-h-10 flex-row flex-wrap items-center
+                rounded-lg border px-1 shadow-xs transition
+              `,
               'has-[input[focus=true]]:border-ring/70',
               'has-[input[data-invalid=true][focus=true]]:border-blue-500',
               'has-[input[data-invalid=true]]:border-danger',
-              'has-[input[focus=true]]:ring-4 has-[input[focus=true]]:ring-ring/20',
+              `
+                has-[input[focus=true]]:ring-4
+                has-[input[focus=true]]:ring-ring/20
+              `,
             ],
             className,
           )}
@@ -213,8 +219,13 @@ function MultipleSelect<T extends SelectedKey>({
               items={selectedItems.items}
               className={twMerge(
                 selectedItems.items.length !== 0 && 'px-1 py-1.5',
-                '[&_.jdt3lr2x]:last:-mr-1 gap-1.5 outline-hidden',
-                props.shape === 'square' && '[&_.jdt3lr2x]:rounded-[calc(var(--radius-lg)-4px)]',
+                `
+                  gap-1.5 outline-hidden
+                  [&_.jdt3lr2x]:last:-mr-1
+                `,
+                props.shape === 'square' && `
+                  [&_.jdt3lr2x]:rounded-[calc(var(--radius-lg)-4px)]
+                `,
               )}
             >
               {props.tag}
@@ -231,7 +242,10 @@ function MultipleSelect<T extends SelectedKey>({
             onSelectionChange={onSelectionChange}
             onInputChange={onInputChange}
           >
-            <div className={twMerge('inline-flex flex-1 flex-wrap items-center px-0', className)}>
+            <div className={twMerge(`
+              inline-flex flex-1 flex-wrap items-center px-0
+            `, className)}
+            >
               <Input
                 placeholder={props.placeholder}
                 className="ml-1 flex-1 px-0.5 py-1 shadow-none ring-0"
@@ -293,14 +307,27 @@ function MultipleSelect<T extends SelectedKey>({
               </ListBox>
             </PopoverContent>
           </ComboBox>
-          <div className="relative ml-auto flex items-center justify-center px-1" aria-hidden>
+          <div
+            className="relative ml-auto flex items-center justify-center px-1"
+            aria-hidden
+          >
             <button
               type="button"
-              className="-mr-2 grid size-8 place-content-center rounded-sm text-muted-fg hover:text-fg focus:text-fg"
+              className={`
+                -mr-2 grid size-8 place-content-center rounded-sm text-muted-fg
+                hover:text-fg
+                focus:text-fg
+              `}
               onClick={() => triggerButtonRef.current?.click()}
               tabIndex={-1}
             >
-              <Icon icon="mdi:chevron-down" className="size-4 peer/[data-open]:rotate-180" />
+              <Icon
+                icon="mdi:chevron-down"
+                className={`
+                  size-4
+                  peer/[data-open]:rotate-180
+                `}
+              />
             </button>
           </div>
         </div>

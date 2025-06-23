@@ -93,7 +93,10 @@ function Navbar({
           'relative isolate flex w-full flex-col',
           intent === 'navbar' && '',
           intent === 'floating' && 'px-2.5 pt-2',
-          intent === 'inset' && 'min-h-svh bg-navbar dark:bg-bg',
+          intent === 'inset' && `
+            min-h-svh bg-navbar
+            dark:bg-bg
+          `,
           className,
         )}
         {...props}
@@ -106,8 +109,15 @@ function Navbar({
 
 const navStyles = tv({
   base: [
-    'group peer hidden h-(--navbar-height) w-full items-center px-4 [--navbar-height:3.5rem] md:flex',
-    '[&>div]:mx-auto [&>div]:w-full [&>div]:max-w-[1680px] [&>div]:items-center md:[&>div]:flex',
+    `
+      group peer hidden h-(--navbar-height) w-full items-center px-4
+      [--navbar-height:3.5rem]
+      md:flex
+    `,
+    `
+      [&>div]:mx-auto [&>div]:w-full [&>div]:max-w-[1680px] [&>div]:items-center
+      md:[&>div]:flex
+    `,
   ],
   variants: {
     isSticky: {
@@ -115,11 +125,25 @@ const navStyles = tv({
     },
     intent: {
       floating:
-        'mx-auto w-full max-w-7xl rounded-xl border bg-navbar text-navbar-fg md:px-4 2xl:max-w-(--breakpoint-2xl)',
-      navbar: 'border-b bg-navbar text-navbar-fg md:px-6',
+        `
+          mx-auto w-full max-w-7xl rounded-xl border bg-navbar text-navbar-fg
+          md:px-4
+          2xl:max-w-(--breakpoint-2xl)
+        `,
+      navbar: `
+        border-b bg-navbar text-navbar-fg
+        md:px-6
+      `,
       inset: [
-        'mx-auto md:px-6',
-        '[&>div]:mx-auto [&>div]:w-full [&>div]:items-center md:[&>div]:flex 2xl:[&>div]:max-w-(--breakpoint-2xl)',
+        `
+          mx-auto
+          md:px-6
+        `,
+        `
+          [&>div]:mx-auto [&>div]:w-full [&>div]:items-center
+          md:[&>div]:flex
+          2xl:[&>div]:max-w-(--breakpoint-2xl)
+        `,
       ],
     },
   },
@@ -147,7 +171,13 @@ function NavbarNav({ useDefaultResponsive = true, className, ref, ...props }: Na
           }}
           isFloat={intent === 'floating'}
         >
-          <Sheet.Body className="px-2 md:px-4">{props.children}</Sheet.Body>
+          <Sheet.Body className={`
+            px-2
+            md:px-4
+          `}
+          >
+            {props.children}
+          </Sheet.Body>
         </Sheet.Content>
       </Sheet>
     )
@@ -223,11 +253,32 @@ function NavbarItem({ className, isCurrent, ...props }: NavbarItemProps) {
       className={composeTailwindRenderProps(
         className,
         twJoin(
-          '*:data-[slot=icon]:-mx-0.5 relative flex cursor-pointer items-center gap-x-2 px-2 text-muted-fg no-underline outline-hidden transition-colors md:text-sm forced-colors:transform-none forced-colors:outline-0 forced-colors:disabled:text-[GrayText]',
-          'pressed:text-fg hover:text-fg focus:text-fg data-focus-visible:outline-1 data-focus-visible:outline-primary',
-          '**:data-[slot=chevron]:size-4 **:data-[slot=chevron]:transition-transform',
-          '*:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0 pressed:**:data-[slot=chevron]:rotate-180',
-          'disabled:cursor-default disabled:opacity-50 disabled:forced-colors:text-[GrayText]',
+          `
+            relative flex cursor-pointer items-center gap-x-2 px-2 text-muted-fg
+            no-underline outline-hidden transition-colors
+            *:data-[slot=icon]:-mx-0.5
+            md:text-sm
+            forced-colors:transform-none forced-colors:outline-0
+            forced-colors:disabled:text-[GrayText]
+          `,
+          `
+            hover:text-fg
+            focus:text-fg
+            data-focus-visible:outline-1 data-focus-visible:outline-primary
+            pressed:text-fg
+          `,
+          `
+            **:data-[slot=chevron]:size-4
+            **:data-[slot=chevron]:transition-transform
+          `,
+          `
+            *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0
+            pressed:**:data-[slot=chevron]:rotate-180
+          `,
+          `
+            disabled:cursor-default disabled:opacity-50
+            disabled:forced-colors:text-[GrayText]
+          `,
           isCurrent && 'cursor-default text-navbar-fg',
         ),
       )}
@@ -241,7 +292,10 @@ function NavbarItem({ className, isCurrent, ...props }: NavbarItemProps) {
             <motion.span
               layoutId="current-indicator"
               data-slot="current-indicator"
-              className="absolute inset-x-2 bottom-[calc(var(--navbar-height)*-0.33)] h-0.5 rounded-full bg-fg"
+              className={`
+                absolute inset-x-2 bottom-[calc(var(--navbar-height)*-0.33)]
+                h-0.5 rounded-full bg-fg
+              `}
             />
           )}
         </>
@@ -264,7 +318,14 @@ function NavbarLogo({ className, ...props }: LinkProps) {
 
 function NavbarFlex({ className, ref, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div ref={ref} className={twMerge('flex items-center gap-2 md:gap-3', className)} {...props} />
+    <div
+      ref={ref}
+      className={twMerge(`
+        flex items-center gap-2
+        md:gap-3
+      `, className)}
+      {...props}
+    />
   )
 }
 
@@ -277,7 +338,11 @@ function NavbarCompact({ className, ref, ...props }: NavbarCompactProps) {
     <div
       ref={ref}
       className={twMerge(
-        'flex justify-between bg-navbar text-navbar-fg peer-has-[[data-navbar-intent=floating]]:border md:hidden',
+        `
+          flex justify-between bg-navbar text-navbar-fg
+          peer-has-[[data-navbar-intent=floating]]:border
+          md:hidden
+        `,
         intent === 'floating' && 'h-12 rounded-lg border px-3.5',
         intent === 'inset' && 'h-14 border-b px-4',
         intent === 'navbar' && 'h-14 border-b px-4',
@@ -294,7 +359,11 @@ const insetStyles = tv({
     intent: {
       floating: '',
       inset:
-        'bg-bg md:rounded-lg md:shadow-xs md:ring-1 md:ring-fg/15 dark:bg-navbar md:dark:ring-border',
+        `
+          bg-bg
+          md:rounded-lg md:shadow-xs md:ring-1 md:ring-fg/15 md:dark:ring-border
+          dark:bg-navbar
+        `,
       navbar: '',
     },
   },
@@ -308,7 +377,11 @@ function NavbarInset({ className, ref, ...props }: React.ComponentProps<'div'>) 
       data-navbar-intent={intent}
       className={twMerge(
         'flex flex-1 flex-col',
-        intent === 'inset' && 'bg-navbar pb-2 md:px-2 dark:bg-bg',
+        intent === 'inset' && `
+          bg-navbar pb-2
+          md:px-2
+          dark:bg-bg
+        `,
         className,
       )}
     >

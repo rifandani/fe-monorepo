@@ -29,7 +29,13 @@ function PaginationSection<T extends object>({
   ref,
   ...props
 }: PaginationSectionProps<T>) {
-  return <ListBoxSection ref={ref} {...props} className={twMerge('flex h-9 gap-[5px]', className)} />
+  return (
+    <ListBoxSection
+      ref={ref}
+      {...props}
+      className={twMerge(`flex h-9 gap-[5px]`, className)}
+    />
+  )
 }
 
 interface PaginationListProps<T> extends ListBoxProps<T> {
@@ -93,7 +99,11 @@ function PaginationItem({
           intent: 'outline',
           size: 'small',
           className: twMerge(
-            'cursor-pointer font-normal text-fg data-focus-visible:border-primary data-focus-visible:bg-primary/10 data-focus-visible:ring-4 data-focus-visible:ring-primary/20',
+            `
+              cursor-pointer font-normal text-fg
+              data-focus-visible:border-primary data-focus-visible:bg-primary/10
+              data-focus-visible:ring-4 data-focus-visible:ring-primary/20
+            `,
             className,
           ),
         }),
@@ -129,23 +139,52 @@ function PaginationItem({
         {
           textValue: 'More pages',
           className: twMerge(
-            'flex size-9 items-center justify-center rounded-lg border border-transparent focus:outline-hidden data-focus-visible:border-primary data-focus-visible:bg-primary/10 data-focus-visible:ring-4 data-focus-visible:ring-primary/20',
+            `
+              flex size-9 items-center justify-center rounded-lg border
+              border-transparent
+              focus:outline-hidden
+              data-focus-visible:border-primary data-focus-visible:bg-primary/10
+              data-focus-visible:ring-4 data-focus-visible:ring-primary/20
+            `,
             className,
           ),
           ...props,
         },
-        <span aria-hidden className={twMerge('flex size-9 items-center justify-center', className)}>
+        <span
+          aria-hidden
+          className={twMerge(`flex size-9 items-center justify-center`, className)}
+        >
           <Icon icon="mdi:dots-horizontal" className="size-4" />
         </span>,
       )
     case 'previous':
-      return renderPaginationIndicator(<Icon icon="mdi:chevron-left" className="size-4" />)
+      return renderPaginationIndicator(
+        <Icon
+          icon="mdi:chevron-left"
+          className="size-4"
+        />,
+      )
     case 'next':
-      return renderPaginationIndicator(<Icon icon="mdi:chevron-right" className="size-4" />)
+      return renderPaginationIndicator(
+        <Icon
+          icon="mdi:chevron-right"
+          className="size-4"
+        />,
+      )
     case 'first':
-      return renderPaginationIndicator(<Icon icon="tdesign:previous" className="size-4" />)
+      return renderPaginationIndicator(
+        <Icon
+          icon="tdesign:previous"
+          className="size-4"
+        />,
+      )
     case 'last':
-      return renderPaginationIndicator(<Icon icon="tdesign:next" className="size-4" />)
+      return renderPaginationIndicator(
+        <Icon
+          icon="tdesign:next"
+          className="size-4"
+        />,
+      )
     default:
       return renderListItem(
         {
@@ -156,7 +195,13 @@ function PaginationItem({
             intent: isCurrent ? 'primary' : intent,
             size,
             className: twMerge(
-              'cursor-pointer font-normal tabular-nums disabled:cursor-default disabled:opacity-100 data-focus-visible:border-primary data-focus-visible:bg-primary/10 data-focus-visible:ring-4 data-focus-visible:ring-primary/20',
+              `
+                cursor-pointer font-normal tabular-nums
+                disabled:cursor-default disabled:opacity-100
+                data-focus-visible:border-primary
+                data-focus-visible:bg-primary/10 data-focus-visible:ring-4
+                data-focus-visible:ring-primary/20
+              `,
               className,
             ),
           }),

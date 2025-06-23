@@ -7,7 +7,12 @@ function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
       data-slot="card"
       className={twMerge(
         className,
-        'rounded-lg border bg-bg text-fg shadow-xs has-[table]:overflow-hidden **:data-[slot=table-header]:bg-muted/50 has-[table]:**:data-[slot=card-footer]:border-t **:[table]:overflow-hidden',
+        `
+          rounded-lg border bg-bg text-fg shadow-xs
+          has-[table]:overflow-hidden
+          has-[table]:**:data-[slot=card-footer]:border-t
+          **:data-[slot=table-header]:bg-muted/50 **:[table]:overflow-hidden
+        `,
       )}
       {...props}
     />
@@ -38,7 +43,10 @@ function CardTitle({ className, level = 3, ...props }: React.ComponentProps<type
     <Heading
       data-slot="card-title"
       level={level}
-      className={twMerge('font-semibold leading-none tracking-tight sm:leading-6', className)}
+      className={twMerge(`
+        leading-none font-semibold tracking-tight
+        sm:leading-6
+      `, className)}
       {...props}
     />
   )
@@ -49,7 +57,7 @@ function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLDivEl
     <div
       {...props}
       data-slot="description"
-      className={twMerge('text-muted-fg text-sm', className)}
+      className={twMerge('text-sm text-muted-fg', className)}
       {...props}
     />
   )
@@ -60,7 +68,13 @@ function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
     <div
       data-slot="card-content"
       className={twMerge(
-        'px-6 pb-6 has-[table]:border-t has-[[data-slot=table-header]]:bg-muted/40 has-[table]:p-0 **:data-[slot=table-cell]:px-6 **:data-[slot=table-column]:px-6 [&:has(table)+[data-slot=card-footer]]:py-5',
+        `
+          px-6 pb-6
+          has-[[data-slot=table-header]]:bg-muted/40
+          has-[table]:border-t has-[table]:p-0
+          **:data-[slot=table-cell]:px-6 **:data-[slot=table-column]:px-6
+          [&:has(table)+[data-slot=card-footer]]:py-5
+        `,
         className,
       )}
       {...props}

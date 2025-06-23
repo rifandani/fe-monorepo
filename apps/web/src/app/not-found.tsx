@@ -21,8 +21,16 @@ export default async function NotFound() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col justify-center gap-4 sm:flex-row">
-          <Link intent="primary" href={session ? '/' : '/login'} className="flex items-center">
+        <div className={`
+          flex flex-col justify-center gap-4
+          sm:flex-row
+        `}
+        >
+          <Link
+            intent="primary"
+            href={session ? '/' : '/login'}
+            className="flex items-center"
+          >
             {t('backTo', {
               target: session ? t('title') : 'Login',
             })}

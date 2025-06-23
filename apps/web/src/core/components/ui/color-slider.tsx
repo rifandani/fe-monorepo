@@ -16,10 +16,13 @@ const trackStyles = tv({
   variants: {
     orientation: {
       horizontal: 'h-6 w-full',
-      vertical: '-translate-x-[50%] ml-[50%] h-56 w-6',
+      vertical: 'ml-[50%] h-56 w-6 -translate-x-[50%]',
     },
     isDisabled: {
-      true: 'bg-muted opacity-75 forced-colors:bg-[GrayText]',
+      true: `
+        bg-muted opacity-75
+        forced-colors:bg-[GrayText]
+      `,
     },
   },
 })
@@ -37,7 +40,10 @@ const colorSliderStyles = tv({
       vertical: 'flex flex-col items-center justify-center',
     },
     isDisabled: {
-      true: 'bg-muted opacity-75 forced-colors:bg-[GrayText]',
+      true: `
+        bg-muted opacity-75
+        forced-colors:bg-[GrayText]
+      `,
     },
   },
 })
@@ -50,9 +56,22 @@ function ColorSlider({ showOutput = true, label, className, ...props }: ColorSli
         colorSliderStyles({ ...renderProps, className }))}
     >
       <div className="flex items-center">
-        {label && <Label className="text-sm [grid-area:label]">{label}</Label>}
+        {label && (
+          <Label className={`
+            text-sm
+            [grid-area:label]
+          `}
+          >
+            {label}
+          </Label>
+        )}
         {showOutput && (
-          <SliderOutput className="text-sm [grid-area:output] data-[orientation=horizontal]:ml-auto" />
+          <SliderOutput className={`
+            text-sm
+            [grid-area:output]
+            data-[orientation=horizontal]:ml-auto
+          `}
+          />
         )}
       </div>
       <SliderTrack

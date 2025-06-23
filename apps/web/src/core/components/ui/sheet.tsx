@@ -9,17 +9,24 @@ import { Dialog } from './dialog'
 
 const overlayStyles = tv({
   base: [
-    'fixed top-0 left-0 isolate z-50 flex h-(--visual-viewport-height) w-full items-center justify-center bg-fg/15 p-4 dark:bg-bg/40',
+    `
+      fixed top-0 left-0 isolate z-50 flex h-(--visual-viewport-height) w-full
+      items-center justify-center bg-fg/15 p-4
+      dark:bg-bg/40
+    `,
   ],
   variants: {
     isBlurred: {
-      true: 'bg-bg/15 backdrop-blur dark:bg-bg/40',
+      true: `
+        bg-bg/15 backdrop-blur
+        dark:bg-bg/40
+      `,
     },
     isEntering: {
-      true: 'fade-in animate-in duration-300 ease-out',
+      true: 'duration-300 ease-out animate-in fade-in',
     },
     isExiting: {
-      true: 'fade-out animate-out duration-200 ease-in',
+      true: 'duration-200 ease-in animate-out fade-out',
     },
   },
 })
@@ -41,25 +48,51 @@ function generateCompoundVariants(sides: Array<Sides>) {
 }
 
 const contentStyles = tv({
-  base: 'fixed z-50 grid gap-4 border-fg/5 bg-overlay text-overlay-fg shadow-lg transition ease-in-out dark:border-border',
+  base: `
+    fixed z-50 grid gap-4 border-fg/5 bg-overlay text-overlay-fg shadow-lg
+    transition ease-in-out
+    dark:border-border
+  `,
   variants: {
     isEntering: {
-      true: 'animate-in duration-300 ',
+      true: 'duration-300 animate-in',
     },
     isExiting: {
-      true: 'animate-out duration-200',
+      true: 'duration-200 animate-out',
     },
     side: {
-      top: 'data-entering:slide-in-from-top data-exiting:slide-out-to-top inset-x-0 top-0 rounded-b-2xl border-b',
+      top: `
+        inset-x-0 top-0 rounded-b-2xl border-b
+        data-entering:slide-in-from-top
+        data-exiting:slide-out-to-top
+      `,
       bottom:
-        'data-entering:slide-in-from-bottom data-exiting:slide-out-to-bottom inset-x-0 bottom-0 rounded-t-2xl border-t',
-      left: 'data-entering:slide-in-from-left data-exiting:slide-out-to-left inset-y-0 left-0 h-auto w-full max-w-xs overflow-y-auto border-r',
+        `
+          inset-x-0 bottom-0 rounded-t-2xl border-t
+          data-entering:slide-in-from-bottom
+          data-exiting:slide-out-to-bottom
+        `,
+      left: `
+        inset-y-0 left-0 h-auto w-full max-w-xs overflow-y-auto border-r
+        data-entering:slide-in-from-left
+        data-exiting:slide-out-to-left
+      `,
       right:
-        'data-entering:slide-in-from-right data-exiting:slide-out-to-right inset-y-0 right-0 h-auto w-full max-w-xs overflow-y-auto border-l',
+        `
+          inset-y-0 right-0 h-auto w-full max-w-xs overflow-y-auto border-l
+          data-entering:slide-in-from-right
+          data-exiting:slide-out-to-right
+        `,
     },
     isFloat: {
-      false: 'border-fg/20 dark:border-border',
-      true: 'ring-fg/5 dark:ring-border',
+      false: `
+        border-fg/20
+        dark:border-border
+      `,
+      true: `
+        ring-fg/5
+        dark:ring-border
+      `,
     },
   },
   compoundVariants: generateCompoundVariants(['top', 'bottom', 'left', 'right']),
@@ -122,7 +155,11 @@ function SheetContent({
         {...props}
       >
         {values => (
-          <Dialog role={role} aria-label={props['aria-label'] ?? undefined} className="h-full">
+          <Dialog
+            role={role}
+            aria-label={props['aria-label'] ?? undefined}
+            className="h-full"
+          >
             <>
               {typeof children === 'function' ? children(values) : children}
               {closeButton && (

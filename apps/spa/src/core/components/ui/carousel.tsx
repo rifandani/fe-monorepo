@@ -183,7 +183,11 @@ function CarouselContent<T extends object>({ className, ...props }: ListBoxSecti
 
 const carouselItem = tv({
   base: [
-    'xd24r min-w-0 shrink-0 grow-0 basis-full focus:outline-hidden data-focus-visible:outline-hidden',
+    `
+      xd24r min-w-0 shrink-0 grow-0 basis-full
+      focus:outline-hidden
+      data-focus-visible:outline-hidden
+    `,
     'group relative',
   ],
   variants: {
@@ -258,7 +262,10 @@ function CarouselButton({
       onPress={scroll}
       {...props}
     >
-      <Icon icon={isNext ? 'ion:chevron-forward-outline' : 'ion:chevron-back-outline'} className="size-4" />
+      <Icon
+        icon={isNext ? 'ion:chevron-forward-outline' : 'ion:chevron-back-outline'}
+        className="size-4"
+      />
     </Button>
   )
 }

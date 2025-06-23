@@ -29,7 +29,11 @@ export default function Error({
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col justify-center gap-4 sm:flex-row">
+        <div className={`
+          flex flex-col justify-center gap-4
+          sm:flex-row
+        `}
+        >
           <Button
             intent="primary"
             className="flex items-center"

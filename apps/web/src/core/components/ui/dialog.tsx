@@ -24,7 +24,12 @@ function Dialog({
     <DialogPrimitive
       role={role}
       className={twMerge(
-        'peer/dialog group/dialog relative flex max-h-[inherit] flex-col overflow-hidden outline-hidden [scrollbar-width:thin] [&::-webkit-scrollbar]:size-0.5',
+        `
+          peer/dialog group/dialog relative flex max-h-[inherit] flex-col
+          overflow-hidden outline-hidden
+          [scrollbar-width:thin]
+          [&::-webkit-scrollbar]:size-0.5
+        `,
         className,
       )}
       {...props}
@@ -68,7 +73,11 @@ function Header({ className, ...props }: DialogHeaderProps) {
       data-slot="dialog-header"
       ref={headerRef}
       className={twMerge(
-        'relative flex flex-col gap-0.5 p-4 sm:gap-1 sm:p-6 [&[data-slot=dialog-header]:has(+[data-slot=dialog-footer])]:pb-0',
+        `
+          relative flex flex-col gap-0.5 p-4
+          sm:gap-1 sm:p-6
+          [&[data-slot=dialog-header]:has(+[data-slot=dialog-footer])]:pb-0
+        `,
         className,
       )}
     >
@@ -92,10 +101,19 @@ function Title({ level = 2, className, ref, ...props }: DialogTitleProps) {
       className={twMerge(
         twJoin(
           'flex flex-1 items-center text-fg',
-          level === 1 && 'font-semibold text-lg sm:text-xl',
-          level === 2 && 'font-semibold text-lg sm:text-xl',
-          level === 3 && 'font-semibold text-base sm:text-lg',
-          level === 4 && 'font-semibold text-base',
+          level === 1 && `
+            text-lg font-semibold
+            sm:text-xl
+          `,
+          level === 2 && `
+            text-lg font-semibold
+            sm:text-xl
+          `,
+          level === 3 && `
+            text-base font-semibold
+            sm:text-lg
+          `,
+          level === 4 && 'text-base font-semibold',
         ),
         className,
       )}
@@ -109,7 +127,7 @@ function Description({ className, ref, ...props }: DialogDescriptionProps) {
   return (
     <Text
       slot="description"
-      className={twMerge('text-muted-fg text-sm', className)}
+      className={twMerge('text-sm text-muted-fg', className)}
       ref={ref}
       {...props}
     />
@@ -123,7 +141,12 @@ function Body({ className, ref, ...props }: DialogBodyProps) {
       data-slot="dialog-body"
       ref={ref}
       className={twMerge(
-        'isolate flex max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding)-var(--dialog-header-height,0px)-var(--dialog-footer-height,0px))] flex-1 flex-col overflow-auto px-4 py-1 sm:px-6',
+        `
+          isolate flex
+          max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding)-var(--dialog-header-height,0px)-var(--dialog-footer-height,0px))]
+          flex-1 flex-col overflow-auto px-4 py-1
+          sm:px-6
+        `,
         className,
       )}
       {...props}
@@ -162,7 +185,10 @@ function Footer({ className, ...props }: DialogFooterProps) {
       ref={footerRef}
       data-slot="dialog-footer"
       className={twMerge(
-        'isolate mt-auto flex flex-col-reverse justify-between gap-3 p-4 pt-3 sm:flex-row sm:p-6 sm:pt-5',
+        `
+          isolate mt-auto flex flex-col-reverse justify-between gap-3 p-4 pt-3
+          sm:flex-row sm:p-6 sm:pt-5
+        `,
         className,
       )}
       {...props}

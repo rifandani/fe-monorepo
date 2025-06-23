@@ -1,13 +1,22 @@
 import { tv } from 'tailwind-variants'
 
 const headingStyles = tv({
-  base: 'font-sans text-fg tracking-tight',
+  base: 'font-sans tracking-tight text-fg',
   variants: {
     level: {
-      1: 'font-bold text-xl sm:text-2xl',
-      2: 'font-semibold text-lg sm:text-xl',
-      3: 'font-semibold text-base sm:text-lg',
-      4: 'font-semibold text-base',
+      1: `
+        text-xl font-bold
+        sm:text-2xl
+      `,
+      2: `
+        text-lg font-semibold
+        sm:text-xl
+      `,
+      3: `
+        text-base font-semibold
+        sm:text-lg
+      `,
+      4: 'text-base font-semibold',
     },
     tracking: {
       tighter: 'tracking-tighter',

@@ -50,7 +50,10 @@ function ColorPicker({
             size={label ? 'medium' : 'square-petite'}
             intent="plain"
             className={twJoin(
-              '*:data-[slot=color-swatch]:-mx-0.5 w-auto px-2.5',
+              `
+                w-auto px-2.5
+                *:data-[slot=color-swatch]:-mx-0.5
+              `,
               !label && 'size-10',
             )}
           >
@@ -58,7 +61,14 @@ function ColorPicker({
             {label && label}
           </Button>
           <PopoverContent
-            className="overflow-auto **:data-[slot=color-area]:w-full **:data-[slot=color-slider]:w-full sm:min-w-min sm:max-w-56 sm:**:data-[slot=color-area]:size-56 *:[[role=dialog]]:p-4 sm:*:[[role=dialog]]:p-3"
+            className={`
+              overflow-auto
+              **:data-[slot=color-area]:w-full
+              **:data-[slot=color-slider]:w-full
+              sm:max-w-56 sm:min-w-min sm:**:data-[slot=color-area]:size-56
+              sm:*:[[role=dialog]]:p-3
+              *:[[role=dialog]]:p-4
+            `}
             showArrow={showArrow}
             placement={placement}
           >

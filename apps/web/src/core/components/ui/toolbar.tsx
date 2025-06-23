@@ -21,9 +21,19 @@ function Toolbar({ orientation = 'horizontal', className, ...props }: ToolbarPro
         {...props}
         className={composeRenderProps(className, (className, { orientation }) =>
           twMerge(
-            'group flex flex-row gap-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            `
+              group flex flex-row gap-2
+              [-ms-overflow-style:none]
+              [scrollbar-width:none]
+              [&::-webkit-scrollbar]:hidden
+            `,
             orientation === 'horizontal'
-              ? 'flex-row [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+              ? `
+                flex-row
+                [-ms-overflow-style:none]
+                [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden
+              `
               : 'flex-col items-start',
           ))}
       />
@@ -64,7 +74,9 @@ function ToolbarSeparator({ className, ...props }: ToolbarSeparatorProps) {
   return (
     <Separator
       orientation={effectiveOrientation}
-      className={twMerge(effectiveOrientation === 'vertical' ? 'mx-1.5' : 'my-1.5 w-9', className)}
+      className={twMerge(effectiveOrientation === 'vertical'
+        ? 'mx-1.5'
+        : `my-1.5 w-9`, className)}
       {...props}
     />
   )

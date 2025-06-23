@@ -82,9 +82,26 @@ function TextField({
                         type="button"
                         aria-label="Toggle password visibility"
                         onPress={handleTogglePasswordVisibility}
-                        className="relative mr-1 grid shrink-0 place-content-center rounded-sm border-transparent outline-hidden data-focus-visible:*:data-[slot=icon]:text-primary *:data-[slot=icon]:text-muted-fg"
+                        className={`
+                          relative mr-1 grid shrink-0 place-content-center
+                          rounded-sm border-transparent outline-hidden
+                          *:data-[slot=icon]:text-muted-fg
+                          data-focus-visible:*:data-[slot=icon]:text-primary
+                        `}
                       >
-                        {isPasswordVisible ? <Icon icon="mdi:eye-off" className="size-4" /> : <Icon icon="mdi:eye" className="size-4" />}
+                        {isPasswordVisible
+                          ? (
+                              <Icon
+                                icon="mdi:eye-off"
+                                className="size-4"
+                              />
+                            )
+                          : (
+                              <Icon
+                                icon="mdi:eye"
+                                className="size-4"
+                              />
+                            )}
                       </ButtonPrimitive>
                     )
                   : isPending

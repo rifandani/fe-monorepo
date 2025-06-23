@@ -38,7 +38,10 @@ function DatePickerOverlay({
       isDismissable={false}
       showArrow={false}
       className={twJoin(
-        'flex min-w-auto max-w-none snap-x justify-center p-4 sm:min-w-[16.5rem] sm:p-2 sm:pt-3',
+        `
+          flex max-w-none min-w-auto snap-x justify-center p-4
+          sm:min-w-[16.5rem] sm:p-2 sm:pt-3
+        `,
         visibleDuration?.months === 1 ? 'sm:max-w-2xs' : 'sm:max-w-none',
       )}
       {...props}
@@ -51,7 +54,11 @@ function DatePickerOverlay({
             <Calendar />
           )}
       {closeButton && (
-        <div className="mx-auto flex w-full max-w-[inherit] justify-center py-2.5 sm:hidden">
+        <div className={`
+          mx-auto flex w-full max-w-[inherit] justify-center py-2.5
+          sm:hidden
+        `}
+        >
           <Popover.Close shape="circle" className="w-full">
             Close
           </Popover.Close>
@@ -66,9 +73,21 @@ function DatePickerIcon() {
     <Button
       size="square-petite"
       intent="plain"
-      className="mr-1 h-7 w-8 rounded outline-offset-0hover:bg-transparent pressed:bg-transparent **:data-[slot=icon]:text-muted-fg"
+      className={`
+        mr-1 h-7 w-8 rounded
+        outline-offset-0hover:bg-transparent
+        **:data-[slot=icon]:text-muted-fg
+        pressed:bg-transparent
+      `}
     >
-      <Icon icon="mdi:calendar-outline" aria-hidden className="ml-2 group-open:text-fg" />
+      <Icon
+        icon="mdi:calendar-outline"
+        aria-hidden
+        className={`
+          ml-2
+          group-open:text-fg
+        `}
+      />
     </Button>
   )
 }
@@ -93,7 +112,11 @@ function DatePicker<T extends DateValue>({
     >
       {label && <Label>{label}</Label>}
       <FieldGroup className="min-w-40">
-        <DateInput className="w-full px-2 text-base sm:text-sm" />
+        <DateInput className={`
+          w-full px-2 text-base
+          sm:text-sm
+        `}
+        />
         <DatePickerIcon />
       </FieldGroup>
       {description && <Description>{description}</Description>}

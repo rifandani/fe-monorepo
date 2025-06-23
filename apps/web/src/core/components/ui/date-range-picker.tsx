@@ -42,7 +42,12 @@ function DateRangePicker<T extends DateValue>({
         <DateInput slot="start" />
         <span
           aria-hidden="true"
-          className="text-fg group-disabled:text-muted-fg forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"
+          className={`
+            text-fg
+            group-disabled:text-muted-fg
+            forced-colors:text-[ButtonText]
+            forced-colors:group-disabled:text-[GrayText]
+          `}
         >
           –
         </span>

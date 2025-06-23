@@ -58,14 +58,22 @@ function DrawerContent({
           onOpenChange={props?.onOpenChange || state?.setOpen}
           animate={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
           exit={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
-          className="fixed inset-0 z-50 will-change-auto [--visual-viewport-vertical-padding:32px]"
+          className={`
+            fixed inset-0 z-50 will-change-auto
+            [--visual-viewport-vertical-padding:32px]
+          `}
         >
           {({ state }) => (
             <DrawerRoot
               className={twJoin(
-                'fixed max-h-full touch-none overflow-hidden bg-bg align-middle text-fg ring ring-input will-change-transform',
+                `
+                  fixed max-h-full touch-none overflow-hidden bg-bg align-middle
+                  text-fg ring ring-input will-change-transform
+                `,
                 side === 'top'
-                && (isFloat ? 'inset-x-2 top-2 rounded-lg' : 'inset-x-0 top-0 rounded-b-2xl'),
+                && (isFloat
+                  ? 'inset-x-2 top-2 rounded-lg'
+                  : `inset-x-0 top-0 rounded-b-2xl`),
                 side === 'right'
                 && [
                   'w-full max-w-xs overflow-y-auto',
@@ -73,7 +81,9 @@ function DrawerContent({
                   isFloat ? 'inset-y-2 right-2 rounded-lg' : 'inset-y-0 right-0 h-auto',
                 ].join(' '),
                 side === 'bottom'
-                && (isFloat ? 'inset-x-2 bottom-2 rounded-lg' : 'inset-x-0 bottom-0 rounded-t-2xl'),
+                && (isFloat
+                  ? 'inset-x-2 bottom-2 rounded-lg'
+                  : `inset-x-0 bottom-0 rounded-t-2xl`),
                 side === 'left'
                 && [
                   'w-full max-w-xs overflow-y-auto',
@@ -122,18 +132,33 @@ function DrawerContent({
                 aria-label="Drawer"
                 role="dialog"
                 className={twJoin(
-                  'relative flex flex-col overflow-hidden outline-hidden will-change-auto',
+                  `
+                    relative flex flex-col overflow-hidden outline-hidden
+                    will-change-auto
+                  `,
                   side === 'top' || side === 'bottom'
-                    ? 'mx-auto max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))] max-w-lg'
+                    ? `
+                      mx-auto
+                      max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))]
+                      max-w-lg
+                    `
                     : 'h-full',
                 )}
               >
                 {notch && side === 'bottom' && (
-                  <div className="notch sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
+                  <div className={`
+                    notch sticky top-0 mx-auto mt-2.5 h-1.5 w-10 shrink-0
+                    touch-pan-y rounded-full bg-fg/20
+                  `}
+                  />
                 )}
                 {children as React.ReactNode}
                 {notch && side === 'top' && (
-                  <div className="notch sticky bottom-0 mx-auto mb-2.5 h-1.5 w-10 shrink-0 touch-pan-y rounded-full bg-fg/20" />
+                  <div className={`
+                    notch sticky bottom-0 mx-auto mb-2.5 h-1.5 w-10 shrink-0
+                    touch-pan-y rounded-full bg-fg/20
+                  `}
+                  />
                 )}
               </Dialog>
             </DrawerRoot>
@@ -148,18 +173,21 @@ function DrawerHeader({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
   return (
     <div
       slot="header"
-      className={twMerge('flex flex-col p-4 text-center sm:text-left', className)}
+      className={twMerge(`
+        flex flex-col p-4 text-center
+        sm:text-left
+      `, className)}
       {...props}
     />
   )
 }
 
 function DrawerTitle({ className, ...props }: HeadingProps) {
-  return <Heading slot="title" className={twMerge('font-semibold text-lg/8', className)} {...props} />
+  return <Heading slot="title" className={twMerge('text-lg/8 font-semibold', className)} {...props} />
 }
 
 function DrawerDescription({ className, ...props }: TextProps) {
-  return <Text slot="description" className={twMerge('text-muted-fg text-sm', className)} {...props} />
+  return <Text slot="description" className={twMerge('text-sm text-muted-fg', className)} {...props} />
 }
 
 function DrawerBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -167,7 +195,11 @@ function DrawerBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement
     <div
       slot="body"
       className={twMerge(
-        'isolate flex max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))] flex-col overflow-auto px-4 py-1 will-change-scroll',
+        `
+          isolate flex
+          max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding))]
+          flex-col overflow-auto px-4 py-1 will-change-scroll
+        `,
         className,
       )}
       {...props}
@@ -180,7 +212,10 @@ function DrawerFooter({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
     <div
       slot="footer"
       className={twMerge(
-        'isolate mt-auto flex flex-col-reverse justify-end gap-2 p-4 sm:flex-row',
+        `
+          isolate mt-auto flex flex-col-reverse justify-end gap-2 p-4
+          sm:flex-row
+        `,
         className,
       )}
       {...props}

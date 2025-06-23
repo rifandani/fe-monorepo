@@ -34,14 +34,20 @@ function ScrollBar({ ref, className, orientation = 'vertical', ...props }: React
       ref={ref}
       orientation={orientation}
       className={twMerge(
-        'flex select-none data-[state=hidden]:animate-fd-fade-out',
+        `
+          flex select-none
+          data-[state=hidden]:animate-fd-fade-out
+        `,
         orientation === 'vertical' && 'h-full w-1.5',
         orientation === 'horizontal' && 'h-1.5 flex-col',
         className,
       )}
       {...props}
     >
-      <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-fd-border" />
+      <ScrollAreaPrimitive.ScrollAreaThumb className={`
+        bg-fd-border relative flex-1 rounded-full
+      `}
+      />
     </ScrollAreaPrimitive.Scrollbar>
   )
 }

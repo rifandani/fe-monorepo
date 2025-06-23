@@ -59,7 +59,10 @@ function ColorField({
               {enableColorPicker
                 ? (
                     <ColorPicker
-                      className="*:[button]:size-8 *:[button]:rounded-sm *:[button]:ring-0"
+                      className={`
+                        *:[button]:size-8 *:[button]:rounded-sm
+                        *:[button]:ring-0
+                      `}
                       onChange={props.onChange}
                       defaultValue={value}
                     />

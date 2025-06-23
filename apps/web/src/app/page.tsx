@@ -23,10 +23,24 @@ export default async function HomePage() {
 
   return (
     <div
-      className="container mx-auto flex flex-col items-center gap-y-2 py-24 duration-300"
+      className={`
+        container mx-auto flex flex-col items-center gap-y-2 py-24 duration-300
+      `}
     >
-      <h1 className="text-3xl sm:text-4xl">{t('title')}</h1>
-      <h2 className="font-mono text-xl sm:text-2xl">{t('welcome')}</h2>
+      <h1 className={`
+        text-3xl
+        sm:text-4xl
+      `}
+      >
+        {t('title')}
+      </h1>
+      <h2 className={`
+        font-mono text-xl
+        sm:text-2xl
+      `}
+      >
+        {t('welcome')}
+      </h2>
       <WelcomeMessage />
 
       <div className="flex items-center gap-x-2">

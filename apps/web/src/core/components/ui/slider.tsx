@@ -16,7 +16,7 @@ import { Description, Label } from './field'
 import { Tooltip } from './tooltip'
 
 const sliderStyles = tv({
-  base: 'group relative flex touch-none select-none flex-col',
+  base: 'group relative flex touch-none flex-col select-none',
   variants: {
     orientation: {
       horizontal: 'w-full min-w-56 gap-y-2',
@@ -108,7 +108,12 @@ function Slider({
       <div className="flex text-fg">
         {props.label && <Label>{props.label}</Label>}
         {output === 'inline' && (
-          <SliderOutput className="text-muted-fg text-sm tabular-nums data-[orientation=vertical]:mx-auto data-[orientation=horizontal]:ml-auto">
+          <SliderOutput className={`
+            text-sm text-muted-fg tabular-nums
+            data-[orientation=horizontal]:ml-auto
+            data-[orientation=vertical]:mx-auto
+          `}
+          >
             {({ state }) => state.values.map((_, i) => state.getThumbValueLabel(i)).join(' – ')}
           </SliderOutput>
         )}
@@ -132,13 +137,33 @@ function Slider({
 const controlsStyles = tv({
   slots: {
     filler: [
-      'rounded-full bg-primary group-data-disabled/track:opacity-60',
-      'group-data-[orientation=horizontal]/top-0 pointer-events-none absolute group-data-[orientation=vertical]/track:bottom-0 group-data-[orientation=horizontal]/track:h-full group-data-[orientation=vertical]/track:w-full',
+      `
+        rounded-full bg-primary
+        group-data-disabled/track:opacity-60
+      `,
+      `
+        group-data-[orientation=horizontal]/top-0 pointer-events-none absolute
+        group-data-[orientation=horizontal]/track:h-full
+        group-data-[orientation=vertical]/track:bottom-0
+        group-data-[orientation=vertical]/track:w-full
+      `,
     ],
     track: [
-      '[--slider:color-mix(in_oklab,var(--color-muted)_90%,black_10%)] dark:[--slider:color-mix(in_oklab,var(--color-muted)_90%,white_10%)]',
-      'group/track relative cursor-pointer rounded-full bg-(--slider) disabled:cursor-default disabled:opacity-60',
-      'grow group-data-[orientation=horizontal]:h-1.5 group-data-[orientation=horizontal]:w-full group-data-[orientation=vertical]:w-1.5 group-data-[orientation=vertical]:flex-1',
+      `
+        [--slider:color-mix(in_oklab,var(--color-muted)_90%,black_10%)]
+        dark:[--slider:color-mix(in_oklab,var(--color-muted)_90%,white_10%)]
+      `,
+      `
+        group/track relative cursor-pointer rounded-full bg-(--slider)
+        disabled:cursor-default disabled:opacity-60
+      `,
+      `
+        grow
+        group-data-[orientation=horizontal]:h-1.5
+        group-data-[orientation=horizontal]:w-full
+        group-data-[orientation=vertical]:w-1.5
+        group-data-[orientation=vertical]:flex-1
+      `,
     ],
   },
 })
@@ -176,17 +201,23 @@ function Filler({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
 
 const thumbStyles = tv({
   base: [
-    'top-[50%] left-[50%] size-[1.25rem] rounded-full border border-fg/10 bg-white outline-hidden ring-black transition-[width,height]',
+    `
+      top-[50%] left-[50%] size-[1.25rem] rounded-full border border-fg/10
+      bg-white ring-black outline-hidden transition-[width,height]
+    `,
   ],
   variants: {
     isFocusVisible: {
-      true: 'border-primary outline-hidden ring-primary/20',
+      true: 'border-primary ring-primary/20 outline-hidden',
     },
     isDragging: {
       true: 'size-[1.35rem] cursor-grabbing border-primary',
     },
     isDisabled: {
-      true: 'opacity-50 forced-colors:border-[GrayText]',
+      true: `
+        opacity-50
+        forced-colors:border-[GrayText]
+      `,
     },
   },
 })

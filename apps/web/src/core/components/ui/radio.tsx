@@ -33,7 +33,14 @@ function RadioGroup({
       className={composeTailwindRenderProps(props.className, 'group flex flex-col gap-2')}
     >
       {label && <Label>{label}</Label>}
-      <div className="flex select-none gap-2 group-data-[orientation=vertical]:flex-col group-data-[orientation=horizontal]:flex-wrap group-data-[orientation=horizontal]:gap-2 sm:group-data-[orientation=horizontal]:gap-4">
+      <div className={`
+        flex gap-2 select-none
+        group-data-[orientation=horizontal]:flex-wrap
+        group-data-[orientation=horizontal]:gap-2
+        group-data-[orientation=vertical]:flex-col
+        sm:group-data-[orientation=horizontal]:gap-4
+      `}
+      >
         {children}
       </div>
       {description && <Description>{description}</Description>}
@@ -52,7 +59,10 @@ const radioStyles = tv({
     isFocused: {
       true: [
         'border-ring bg-primary/20 ring-4 ring-primary/20',
-        'group-invalid:border-danger/70 group-invalid:bg-danger/20 group-invalid:ring-danger/20',
+        `
+          group-invalid:border-danger/70 group-invalid:bg-danger/20
+          group-invalid:ring-danger/20
+        `,
       ],
     },
     isInvalid: {

@@ -60,7 +60,11 @@ function ContextMenuTrigger({ className, ...props }: ContextMenuTriggerProps) {
   return (
     <button
       className={twMerge(
-        'cursor-default focus:outline-hidden disabled:opacity-60 disabled:forced-colors:disabled:text-[GrayText]',
+        `
+          cursor-default
+          focus:outline-hidden
+          disabled:opacity-60 disabled:forced-colors:disabled:text-[GrayText]
+        `,
         className,
       )}
       ref={buttonRef}

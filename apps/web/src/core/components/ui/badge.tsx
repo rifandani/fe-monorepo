@@ -26,7 +26,11 @@ const badgeShapes = {
   circle: 'px-2 rounded-full',
 }
 const badgeStyles = tv({
-  base: 'inline-flex items-center gap-x-1.5 py-0.5 font-medium text-xs/5 **:data-[slot=icon]:size-3 forced-colors:outline',
+  base: `
+    inline-flex items-center gap-x-1.5 py-0.5 text-xs/5 font-medium
+    **:data-[slot=icon]:size-3
+    forced-colors:outline
+  `,
   variants: {
     intent: { ...badgeIntents },
     shape: { ...badgeShapes },

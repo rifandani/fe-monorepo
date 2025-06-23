@@ -50,7 +50,7 @@ const tabListStyles = tv({
   base: 'flex forced-color-adjust-none',
   variants: {
     orientation: {
-      horizontal: 'flex-row gap-x-5 border-border border-b',
+      horizontal: 'flex-row gap-x-5 border-b border-border',
       vertical: 'flex-col items-start gap-y-4 border-l',
     },
   },
@@ -75,8 +75,18 @@ function TabList<T extends object>({ className, ref, ...props }: TabListProps<T>
 
 const tabStyles = tv({
   base: [
-    'relative flex cursor-default items-center whitespace-nowrap rounded-full font-medium text-sm outline-hidden transition hover:text-fg *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4',
-    'group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:py-0 group-data-[orientation=vertical]/tabs:pr-2 group-data-[orientation=vertical]/tabs:pl-4',
+    `
+      relative flex cursor-default items-center rounded-full text-sm font-medium
+      whitespace-nowrap outline-hidden transition
+      hover:text-fg
+      *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4
+    `,
+    `
+      group-data-[orientation=vertical]/tabs:w-full
+      group-data-[orientation=vertical]/tabs:py-0
+      group-data-[orientation=vertical]/tabs:pr-2
+      group-data-[orientation=vertical]/tabs:pl-4
+    `,
     'group-data-[orientation=horizontal]/tabs:pb-3',
   ],
   variants: {
@@ -114,9 +124,19 @@ function Tab({ children, ref, ...props }: TabProps) {
               className={twMerge(
                 'absolute rounded bg-fg',
                 // horizontal
-                'group-data-[orientation=horizontal]/tabs:-bottom-px group-data-[orientation=horizontal]/tabs:inset-x-0 group-data-[orientation=horizontal]/tabs:h-0.5 group-data-[orientation=horizontal]/tabs:w-full',
+                `
+                  group-data-[orientation=horizontal]/tabs:inset-x-0
+                  group-data-[orientation=horizontal]/tabs:-bottom-px
+                  group-data-[orientation=horizontal]/tabs:h-0.5
+                  group-data-[orientation=horizontal]/tabs:w-full
+                `,
                 // vertical
-                'group-data-[orientation=vertical]/tabs:left-0 group-data-[orientation=vertical]/tabs:h-[calc(100%-10%)] group-data-[orientation=vertical]/tabs:w-0.5 group-data-[orientation=vertical]/tabs:transform',
+                `
+                  group-data-[orientation=vertical]/tabs:left-0
+                  group-data-[orientation=vertical]/tabs:h-[calc(100%-10%)]
+                  group-data-[orientation=vertical]/tabs:w-0.5
+                  group-data-[orientation=vertical]/tabs:transform
+                `,
               )}
               layoutId="current-selected"
               transition={{ type: 'spring', stiffness: 500, damping: 40 }}

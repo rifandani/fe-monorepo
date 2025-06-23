@@ -20,8 +20,17 @@ function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
       className={composeTailwindRenderProps(
         className,
         twJoin(
-          'flex max-h-96 min-w-72 cursor-default flex-col overflow-auto rounded-lg border py-2 outline-hidden forced-color-adjust-none [scrollbar-width:thin] sm:text-sm [&::-webkit-scrollbar]:size-0.5',
-          'focus-visible:outline-2 focus-visible:outline-ring/70 focus-visible:outline-offset-[-1px]',
+          `
+            flex max-h-96 min-w-72 cursor-default flex-col overflow-auto
+            rounded-lg border py-2 outline-hidden forced-color-adjust-none
+            [scrollbar-width:thin]
+            sm:text-sm
+            [&::-webkit-scrollbar]:size-0.5
+          `,
+          `
+            focus-visible:outline-2 focus-visible:outline-offset-[-1px]
+            focus-visible:outline-ring/70
+          `,
         ),
       )}
       {...props}
@@ -33,19 +42,40 @@ function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
 
 const itemStyles = tv({
   base: [
-    'p-[0.286rem_0.286rem_0.286rem_0.571rem] pl-[calc((var(--tree-item-level)-1)*20px+0.571rem+var(--padding))] outline-hidden [--padding:20px] [&_[data-expanded]_[slot=chevron]_[data-slot=icon]]:rotate-90',
-    '[&_[slot=chevron]]:outline-hidden [&_[slot=chevron]_[data-slot=icon]]:text-muted-fg',
+    `
+      p-[0.286rem_0.286rem_0.286rem_0.571rem]
+      pl-[calc((var(--tree-item-level)-1)*20px+0.571rem+var(--padding))]
+      outline-hidden
+      [--padding:20px]
+      [&_[data-expanded]_[slot=chevron]_[data-slot=icon]]:rotate-90
+    `,
+    `
+      [&_[slot=chevron]]:outline-hidden
+      [&_[slot=chevron]_[data-slot=icon]]:text-muted-fg
+    `,
     'data-has-child-rows:[--padding:0px]',
   ],
   variants: {
     isExpanded: {
-      true: '[&_[slot=chevron]_[data-slot=icon]]:rotate-90 [&_[slot=chevron]_[data-slot=icon]]:text-fg [&_[slot=chevron]_[data-slot=icon]]:transition [&_[slot=chevron]_[data-slot=icon]]:duration-200',
+      true: `
+        [&_[slot=chevron]_[data-slot=icon]]:rotate-90
+        [&_[slot=chevron]_[data-slot=icon]]:text-fg
+        [&_[slot=chevron]_[data-slot=icon]]:transition
+        [&_[slot=chevron]_[data-slot=icon]]:duration-200
+      `,
     },
     isFocusVisible: {
-      true: 'focus:outline-hidden data-focus-visible:ring-1 data-focus-visible:ring-primary [&_[slot=chevron]_[data-slot=icon]]:text-fg',
+      true: `
+        focus:outline-hidden
+        data-focus-visible:ring-1 data-focus-visible:ring-primary
+        [&_[slot=chevron]_[data-slot=icon]]:text-fg
+      `,
     },
     isDisabled: {
-      true: 'opacity-50 forced-colors:text-[GrayText]',
+      true: `
+        opacity-50
+        forced-colors:text-[GrayText]
+      `,
     },
   },
 })

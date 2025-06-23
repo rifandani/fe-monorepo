@@ -171,7 +171,11 @@ function Tag({ className, intent, shape, ...props }: TagProps) {
             {allowsRemoving && (
               <Button
                 slot="remove"
-                className="-mr-0.5 grid size-3.5 place-content-center rounded outline-hidden [&>[data-slot=icon]]:size-3 [&>[data-slot=icon]]:shrink-0"
+                className={`
+                  -mr-0.5 grid size-3.5 place-content-center rounded
+                  outline-hidden
+                  [&>[data-slot=icon]]:size-3 [&>[data-slot=icon]]:shrink-0
+                `}
               >
                 <Icon icon="mdi:close" className="size-4" />
               </Button>

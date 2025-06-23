@@ -74,7 +74,11 @@ function ErrorRoute({ error, reset }: ErrorComponentProps) {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col justify-center gap-4 sm:flex-row">
+        <div className={`
+          flex flex-col justify-center gap-4
+          sm:flex-row
+        `}
+        >
           <Button
             intent="primary"
             className="flex items-center"
@@ -109,8 +113,16 @@ function NotFoundRoute() {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-col justify-center gap-4 sm:flex-row">
-          <Link intent="primary" href={userStore.user ? '/' : '/login'} className="flex items-center">
+        <div className={`
+          flex flex-col justify-center gap-4
+          sm:flex-row
+        `}
+        >
+          <Link
+            intent="primary"
+            href={userStore.user ? '/' : '/login'}
+            className="flex items-center"
+          >
             {t('backTo', {
               target: userStore.user ? 'Home' : 'Login',
             })}
