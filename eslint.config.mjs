@@ -3,7 +3,6 @@ import antfu from '@antfu/eslint-config'
 import { fixupConfigRules } from '@eslint/compat'
 import { FlatCompat } from '@eslint/eslintrc'
 import pluginRouter from '@tanstack/eslint-plugin-router'
-// import tailwind from 'eslint-plugin-tailwindcss'
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import depend from 'eslint-plugin-depend'
 import expoPlugin from 'eslint-plugin-expo'
@@ -16,6 +15,38 @@ const flatCompat = new FlatCompat({
   resolvePluginsRelativeTo: __dirname, // optional
 })
 const [nextRecommended, nextCoreWebVitals] = fixupConfigRules(flatCompat.extends('plugin:@next/next/core-web-vitals'))
+
+function getBetterTailwindConfig(appName) {
+  return {
+    name: `better-tailwindcss:${appName}`,
+    files: [`apps/${appName}/**/*.{jsx,tsx}`],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    plugins: {
+      'better-tailwindcss': eslintPluginBetterTailwindcss,
+    },
+    rules: {
+      // enable all recommended rules to report a warning
+      ...eslintPluginBetterTailwindcss.configs['recommended-warn'].rules,
+      // enable all recommended rules to report an error
+      ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
+
+      // or configure rules individually
+      'better-tailwindcss/no-unregistered-classes': ['warn'],
+    },
+    // it already handle the default callees (clsx, ctl, cva, cx, cn, twMerge, twJoin)
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: `./apps/${appName}/src/core/styles/globals.css`,
+      },
+    },
+  }
+}
 
 export default antfu(
   {
@@ -87,6 +118,7 @@ export default antfu(
   },
   // From the second arguments they are ESLint Flat Configs. You can have multiple configs
   {
+    name: 'jsx-a11y:recommended',
     files: ['**/*.{jsx,mjsx,tsx,mtsx}'],
     ...jsxA11y.flatConfigs.recommended,
     languageOptions: {
@@ -102,52 +134,8 @@ export default antfu(
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...depend.configs['flat/recommended'],
   },
-  // FIXME: v4 not yet supported: https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/381
-  // tailwind.configs['flat/recommended'][0],
-  // {
-  //   rules: {
-  //     ...tailwind.configs['flat/recommended'][1].rules,
-  //     'tailwindcss/no-custom-classname': 'off',
-  //   },
-  // },
-  // {
-  //   name: 'tailwindcss:settings',
-  //   settings: {
-  //     tailwindcss: {
-  //       callees: ['classnames', 'clsx', 'ctl', 'cn', 'twMerge', 'twJoin'],
-  //     },
-  //   },
-  // },
-  {
-    name: 'better-tailwindcss:recommended',
-    files: ['**/*.{jsx,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    plugins: {
-      'better-tailwindcss': eslintPluginBetterTailwindcss,
-    },
-    rules: {
-      // enable all recommended rules to report a warning
-      ...eslintPluginBetterTailwindcss.configs['recommended-warn'].rules,
-      // enable all recommended rules to report an error
-      ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
-
-      // or configure rules individually
-      'better-tailwindcss/no-unregistered-classes': ['warn'],
-    },
-    // it already handle the default callees (clsx, ctl, cva, cx, cn, twMerge, twJoin)
-    settings: {
-      'better-tailwindcss': {
-        // for now doesn't support monorepo
-        entryPoint: './apps/spa/src/core/styles/globals.css',
-      },
-    },
-  },
+  getBetterTailwindConfig('web'),
+  getBetterTailwindConfig('spa'),
   {
     name: 'next/recommended',
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
