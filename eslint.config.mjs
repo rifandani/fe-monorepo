@@ -102,6 +102,7 @@ export default antfu(
     ...depend.configs['flat/recommended'],
   },
   // FIXME: v4 not yet supported: https://github.com/francoismassart/eslint-plugin-tailwindcss/pull/381
+  // consider eslint-plugin-better-tailwindcss instead
   // tailwind.configs['flat/recommended'][0],
   // {
   //   name: 'tailwindcss:rules',
@@ -122,6 +123,12 @@ export default antfu(
     name: 'next/recommended',
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...nextRecommended,
+    settings: {
+      ...nextRecommended.settings,
+      next: {
+        rootDir: './apps/web',
+      },
+    },
   },
   {
     name: 'next/core-web-vitals',
