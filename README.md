@@ -2,7 +2,6 @@
 
 ### 🎯 Todo
 
-- [ ] use `changeset` to manage versioning and changelogs per package/app
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
