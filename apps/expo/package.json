@@ -56,7 +56,7 @@
     "@tamagui/babel-plugin": "1.126.16",
     "@tamagui/config": "1.126.16",
     "@tamagui/theme-builder": "1.126.16",
-    "@tamagui/toast": "1.126.16",
+    "@tamagui/toast": "1.129.11",
     "@tanstack/react-query": "5.81.5",
     "@workspace/core": "workspace:*",
     "burnt": "0.13.0",
