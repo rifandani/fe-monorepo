@@ -3,115 +3,137 @@
 import type {
   RadioGroupProps as RadioGroupPrimitiveProps,
   RadioProps as RadioPrimitiveProps,
-  ValidationResult,
 } from 'react-aria-components'
-import { RadioGroup as RadioGroupPrimitive, Radio as RadioPrimitive } from 'react-aria-components'
-import { tv } from 'tailwind-variants'
-import { Description, FieldError, Label } from './field'
-import { composeTailwindRenderProps } from './primitive'
+import {
+  composeRenderProps,
+  RadioGroup as RadioGroupPrimitive,
+  Radio as RadioPrimitive,
+} from 'react-aria-components'
+import { twMerge } from 'tailwind-merge'
+import { Description, FieldError, type FieldProps, Label } from '@/core/components/ui/field'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-interface RadioGroupProps extends Omit<RadioGroupPrimitiveProps, 'children'> {
-  label?: string
-  children?: React.ReactNode
-  description?: string
-  errorMessage?: string | ((validation: ValidationResult) => string)
-  ref?: React.Ref<HTMLDivElement>
-}
+interface RadioGroupProps extends RadioGroupPrimitiveProps, Omit<FieldProps, 'placeholder'> {}
 
 function RadioGroup({
+  className,
   label,
   description,
   errorMessage,
   children,
-  ref,
   ...props
 }: RadioGroupProps) {
   return (
     <RadioGroupPrimitive
-      ref={ref}
       {...props}
-      className={composeTailwindRenderProps(props.className, 'group flex flex-col gap-2')}
+      className={composeTailwindRenderProps(
+        className,
+        'space-y-3 has-[[slot=description]]:space-y-6 has-[[slot=description]]:**:data-[slot=label]:font-medium **:[[slot=description]]:block',
+      )}
     >
-      {label && <Label>{label}</Label>}
-      <div className={`
-        flex gap-2 select-none
-        group-data-[orientation=horizontal]:flex-wrap
-        group-data-[orientation=horizontal]:gap-2
-        group-data-[orientation=vertical]:flex-col
-        sm:group-data-[orientation=horizontal]:gap-4
-      `}
-      >
-        {children}
-      </div>
-      {description && <Description>{description}</Description>}
-      <FieldError>{errorMessage}</FieldError>
+      {values => (
+        <>
+          {label && <Label>{label}</Label>}
+          {description && <Description>{description}</Description>}
+          {typeof children === 'function' ? children(values) : children}
+          <FieldError>{errorMessage}</FieldError>
+        </>
+      )}
     </RadioGroupPrimitive>
   )
 }
 
-const radioStyles = tv({
-  base: 'size-4 shrink-0 rounded-full border bg-muted transition',
-  variants: {
-    isSelected: {
-      false: 'border-input',
-      true: 'border-[4.5px] border-primary',
-    },
-    isFocused: {
-      true: [
-        'border-ring bg-primary/20 ring-4 ring-primary/20',
-        `
-          group-invalid:border-danger/70 group-invalid:bg-danger/20
-          group-invalid:ring-danger/20
-        `,
-      ],
-    },
-    isInvalid: {
-      true: 'border-danger/70 bg-danger/20',
-    },
-    isDisabled: {
-      true: 'opacity-50',
-    },
-  },
-})
+interface RadioProps extends RadioPrimitiveProps, Pick<FieldProps, 'label' | 'description'> {}
 
-interface RadioProps extends RadioPrimitiveProps {
-  description?: string
-  label?: string
-  ref?: React.Ref<HTMLLabelElement>
-}
-
-function Radio({ description, label, ref, className, ...props }: RadioProps) {
+function Radio({ className, children, description, label, ...props }: RadioProps) {
   return (
     <RadioPrimitive
-      ref={ref}
-      className={composeTailwindRenderProps(
-        className,
-        'group flex items-center gap-2 text-fg text-sm transition disabled:text-fg/50 forced-colors:disabled:text-[GrayText]',
-      )}
       {...props}
+      className={composeTailwindRenderProps(className, 'group block disabled:opacity-50')}
     >
-      {renderProps => (
-        <div className="flex gap-2">
+      {composeRenderProps(children, (children, { isSelected, isFocusVisible, isInvalid }) => {
+        const isStringChild = typeof children === 'string'
+        const hasCustomChildren = typeof children !== 'undefined'
+
+        const content = hasCustomChildren
+          ? (
+              isStringChild
+                ? (
+                    <Label>{children}</Label>
+                  )
+                : (
+                    children
+                  )
+            )
+          : (
+              <>
+                {label && <Label>{label}</Label>}
+                {description && <Description>{description}</Description>}
+              </>
+            )
+
+        return (
           <div
-            className={radioStyles({
-              ...renderProps,
-              className: 'description' in props ? 'mt-1' : 'mt-0.5',
-            })}
-          />
-          <div className="flex flex-col gap-1">
-            {label || description
-              ? (
-                  <>
-                    {label && <Label>{label}</Label>}
-                    {description && <Description className="block">{description}</Description>}
-                  </>
-                )
-              : (
-                  (props.children as React.ReactNode)
-                )}
+            className={twMerge(
+              `
+                grid grid-cols-[1.125rem_1fr] gap-x-3 gap-y-1
+                sm:grid-cols-[1rem_1fr]
+              `,
+              `
+                *:data-[slot=indicator]:col-start-1
+                *:data-[slot=indicator]:row-start-1
+                *:data-[slot=indicator]:mt-0.75
+                sm:*:data-[slot=indicator]:mt-1
+              `,
+              '*:data-[slot=label]:col-start-2 *:data-[slot=label]:row-start-1',
+              `
+                *:[[slot=description]]:col-start-2
+                *:[[slot=description]]:row-start-2
+              `,
+              'has-[[slot=description]]:**:data-[slot=label]:font-medium',
+            )}
+          >
+            <span
+              data-slot="indicator"
+              className={twMerge([
+                `
+                  relative isolate flex size-4.5 shrink-0 items-center
+                  justify-center rounded-full bg-secondary text-bg inset-ring
+                  inset-ring-fg/10 transition
+                  sm:before:size-1.7 sm:size-4
+                  before:absolute before:inset-auto before:size-2
+                  before:shrink-0 before:rounded-full before:content-['']
+                  hover:before:bg-fg/10
+                `,
+                isSelected && [
+                  `
+                    bg-primary text-primary-fg
+                    before:bg-bg
+                    hover:before:bg-muted/90
+                    dark:inset-ring-primary
+                  `,
+                  `
+                    group-invalid:bg-danger group-invalid:text-danger-fg
+                    group-invalid:inset-ring-danger/70
+                  `,
+                ],
+                isFocusVisible && [
+                  'ring-3 ring-ring/20 inset-ring-primary',
+                  `
+                    group-invalid:text-danger-fg group-invalid:ring-danger/20
+                    group-invalid:inset-ring-danger/70
+                  `,
+                ],
+                isInvalid && `
+                  bg-danger/20 text-danger-fg ring-danger/20
+                  inset-ring-danger/70
+                `,
+              ])}
+            />
+            {content}
           </div>
-        </div>
-      )}
+        )
+      })}
     </RadioPrimitive>
   )
 }

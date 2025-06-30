@@ -1,12 +1,13 @@
 'use client'
 
-import type { ProgressBarProps as ProgressBarPrimitiveProps } from 'react-aria-components'
 import { motion } from 'motion/react'
 import {
   ProgressBar as ProgressBarPrimitive,
+  type ProgressBarProps as ProgressBarPrimitiveProps,
 } from 'react-aria-components'
-import { Label } from './field'
-import { composeTailwindRenderProps } from './primitive'
+
+import { Label } from '@/core/components/ui/field'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface ProgressBarProps extends ProgressBarPrimitiveProps {
   label?: string

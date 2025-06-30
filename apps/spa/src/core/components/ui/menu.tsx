@@ -6,12 +6,9 @@ import type {
   MenuProps as MenuPrimitiveProps,
   MenuSectionProps as MenuSectionPrimitiveProps,
   MenuTriggerProps as MenuTriggerPrimitiveProps,
-  PopoverProps,
 } from 'react-aria-components'
-
 import type { VariantProps } from 'tailwind-variants'
-import { Icon } from '@iconify/react'
-import { createContext, use } from 'react'
+import { IconBulletFill, IconCheck, IconChevronLgRight } from '@intentui/icons'
 import {
   Button,
   Collection,
@@ -24,34 +21,18 @@ import {
   SubmenuTrigger as SubmenuTriggerPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
 import {
-  DropdownItemDetails,
+  DropdownDescription,
   dropdownItemStyles,
   DropdownKeyboard,
   DropdownLabel,
   dropdownSectionStyles,
   DropdownSeparator,
-} from './dropdown'
-import { PopoverContent } from './popover'
+} from '@/core/components/ui/dropdown'
+import { PopoverContent, type PopoverContentProps } from '@/core/components/ui/popover'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-interface MenuContextProps {
-  respectScreen: boolean
-}
-
-const MenuContext = createContext<MenuContextProps>({ respectScreen: true })
-
-interface MenuProps extends MenuTriggerPrimitiveProps {
-  respectScreen?: boolean
-}
-
-function Menu({ respectScreen = true, ...props }: MenuProps) {
-  return (
-    <MenuContext value={{ respectScreen }}>
-      <MenuTriggerPrimitive {...props}>{props.children}</MenuTriggerPrimitive>
-    </MenuContext>
-  )
-}
+const Menu = (props: MenuTriggerPrimitiveProps) => <MenuTriggerPrimitive {...props} />
 
 function MenuSubMenu({ delay = 0, ...props }) {
   return (
@@ -61,49 +42,32 @@ function MenuSubMenu({ delay = 0, ...props }) {
   )
 }
 
-const menuStyles = tv({
-  slots: {
-    menu: `
-      grid max-h-[calc(var(--visual-viewport-height)-10rem)]
-      grid-cols-[auto_1fr] overflow-auto rounded-xl p-1 outline-hidden
-      [clip-path:inset(0_0_0_0_round_calc(var(--radius-lg)-2px))]
-      sm:max-h-[inherit]
-      *:[[role=\'group\']+[role=group]]:mt-4
-      *:[[role=\'group\']+[role=separator]]:mt-1
-    `,
-    popover: `
-      z-50 p-0 shadow-xs outline-hidden
-      sm:min-w-40
-    `,
-    trigger: [
-      `
-        relative inline text-left outline-hidden
-        data-focus-visible:ring-1 data-focus-visible:ring-primary
-      `,
-    ],
-  },
-})
-
-const { menu, popover, trigger } = menuStyles()
-
 interface MenuTriggerProps extends ButtonProps {
-  className?: string
   ref?: React.Ref<HTMLButtonElement>
 }
 
 function MenuTrigger({ className, ref, ...props }: MenuTriggerProps) {
   return (
-    <Button ref={ref} data-slot="menu-trigger" className={trigger({ className })} {...props}>
-      {values => (
-        <>{typeof props.children === 'function' ? props.children(values) : props.children}</>
+    <Button
+      ref={ref}
+      data-slot="menu-trigger"
+      className={composeTailwindRenderProps(
+        className,
+        'relative inline text-left outline-hidden focus-visible:ring-1 focus-visible:ring-primary',
       )}
-    </Button>
+      {...props}
+    />
   )
 }
 
 interface MenuContentProps<T>
-  extends Pick<
-    PopoverProps,
+  extends MenuPrimitiveProps<T>,
+  Pick<PopoverContentProps, 'placement'> {
+  className?: string
+  popover?: Pick<
+    PopoverContentProps,
+    | 'showArrow'
+    | 'className'
     | 'placement'
     | 'offset'
     | 'crossOffset'
@@ -112,38 +76,30 @@ interface MenuContentProps<T>
     | 'isOpen'
     | 'onOpenChange'
     | 'shouldFlip'
-  >,
-  MenuPrimitiveProps<T> {
-  className?: string
-  popoverClassName?: string
+  >
   showArrow?: boolean
-  respectScreen?: boolean
 }
 
 function MenuContent<T extends object>({
   className,
-  showArrow = false,
-  popoverClassName,
+  placement,
+  popover,
   ...props
 }: MenuContentProps<T>) {
-  const { respectScreen } = use(MenuContext)
   return (
     <PopoverContent
-      isOpen={props.isOpen}
-      onOpenChange={props.onOpenChange}
-      shouldFlip={props.shouldFlip}
-      respectScreen={respectScreen}
-      showArrow={showArrow}
-      offset={props.offset}
-      placement={props.placement}
-      crossOffset={props.crossOffset}
-      triggerRef={props.triggerRef}
-      arrowBoundaryOffset={props.arrowBoundaryOffset}
-      className={popover({
-        className: popoverClassName,
-      })}
+      className={composeTailwindRenderProps(popover?.className, 'min-w-40')}
+      placement={placement}
+      {...popover}
     >
-      <MenuPrimitive className={menu({ className })} {...props} />
+      <MenuPrimitive
+        data-slot="menu-content"
+        className={composeTailwindRenderProps(
+          className,
+          'grid max-h-[calc(var(--visual-viewport-height)-10rem)] grid-cols-[auto_1fr] overflow-y-auto overscroll-contain p-1 outline-hidden [clip-path:inset(0_0_0_0_round_calc(var(--radius-lg)-2px))] *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
+        )}
+        {...props}
+      />
     </PopoverContent>
   )
 }
@@ -156,22 +112,19 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
   const textValue = props.textValue || (typeof children === 'string' ? children : undefined)
   return (
     <MenuItemPrimitive
-      className={composeRenderProps(className, (className, renderProps) =>
+      className={composeRenderProps(className, (className, { hasSubmenu, ...renderProps }) =>
         dropdownItemStyles({
           ...renderProps,
-          className: renderProps.hasSubmenu
-            ? twMerge([
+          className: hasSubmenu
+            ? twMerge(
+                'open:data-danger:bg-danger/10 open:data-danger:text-danger',
                 `
-                  data-open:data-danger:bg-danger/10
-                  data-open:data-danger:text-danger
-                `,
-                `
-                  data-open:bg-accent data-open:text-accent-fg
-                  data-open:*:data-[slot=icon]:text-accent-fg
-                  data-open:*:[.text-muted-fg]:text-accent-fg
+                  open:bg-accent open:text-accent-fg
+                  open:*:data-[slot=icon]:text-accent-fg
+                  open:*:[.text-muted-fg]:text-accent-fg
                 `,
                 className,
-              ])
+              )
             : className,
         }))}
       textValue={textValue}
@@ -192,11 +145,11 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
                     **:data-[slot=indicator]:shrink-0
                   `}
                 >
-                  <Icon icon="mdi:circle-medium" data-slot="indicator" />
+                  <IconBulletFill data-slot="indicator" />
                 </span>
               )}
               {values.selectionMode === 'multiple' && (
-                <Icon icon="mdi:check" className="-mx-0.5 mr-2 size-4" data-slot="checked-icon" />
+                <IconCheck className="-mx-0.5 mr-2 size-4" data-slot="check-indicator" />
               )}
             </>
           )}
@@ -204,8 +157,7 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
           {typeof children === 'function' ? children(values) : children}
 
           {values.hasSubmenu && (
-            <Icon
-              icon="mdi:chevron-right"
+            <IconChevronLgRight
               data-slot="chevron"
               className="absolute right-2 size-3.5"
             />
@@ -256,9 +208,9 @@ function MenuSection<T extends object>({ className, ref, ...props }: MenuSection
 }
 
 const MenuSeparator = DropdownSeparator
-const MenuItemDetails = DropdownItemDetails
 const MenuKeyboard = DropdownKeyboard
 const MenuLabel = DropdownLabel
+const MenuDescription = DropdownDescription
 
 Menu.Keyboard = MenuKeyboard
 Menu.Content = MenuContent
@@ -266,10 +218,10 @@ Menu.Header = MenuHeader
 Menu.Item = MenuItem
 Menu.Section = MenuSection
 Menu.Separator = MenuSeparator
-Menu.ItemDetails = MenuItemDetails
 Menu.Label = MenuLabel
+Menu.Description = MenuDescription
 Menu.Trigger = MenuTrigger
 Menu.Submenu = MenuSubMenu
 
-export type { MenuContentProps, MenuItemProps, MenuProps, MenuSectionProps, MenuTriggerProps }
+export type { MenuContentProps, MenuItemProps, MenuSectionProps, MenuTriggerProps }
 export { Menu }

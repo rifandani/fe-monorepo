@@ -1,6 +1,6 @@
 'use client'
 
-import { Icon } from '@iconify/react'
+import { IconBulletFill } from '@intentui/icons'
 import { OTPInput, OTPInputContext } from 'input-otp'
 import { use } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -27,7 +27,7 @@ function InputOTP({
         containerClassName,
       )}
       className={twMerge(`
-        mt-auto h-[2.5rem] bg-red-500
+        mt-auto h-[2.5rem] bg-danger
         disabled:cursor-not-allowed
       `, className)}
       {...props}
@@ -62,7 +62,7 @@ function InputOTPSlot({ index, className, ref, ...props }: InputOTPSlotProps) {
           relative flex size-10 items-center justify-center rounded-md border
           border-input text-sm tabular-nums transition-all
         `,
-        isActive && 'z-10 border-ring/70 ring-4 ring-ring/20',
+        isActive && 'z-10 border-ring/70 ring-3 ring-ring/20',
         className,
       )}
       {...props}
@@ -73,7 +73,7 @@ function InputOTPSlot({ index, className, ref, ...props }: InputOTPSlotProps) {
           pointer-events-none absolute inset-0 flex items-center justify-center
         `}
         >
-          <div className="animate-caret-blink h-4 w-px bg-fg duration-1000" />
+          <div className="h-4 w-px animate-caret-blink bg-fg duration-1000" />
         </div>
       )}
     </div>
@@ -84,7 +84,7 @@ type InputOTPSeparatorProps = React.ComponentProps<'div'>
 function InputOTPSeparator({ ref, ...props }: InputOTPSeparatorProps) {
   return (
     <div ref={ref} {...props}>
-      <Icon icon="mdi:circle-medium" className="size-2" />
+      <IconBulletFill className="size-2" />
     </div>
   )
 }

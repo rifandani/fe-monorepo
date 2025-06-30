@@ -1,19 +1,22 @@
 'use client'
 
-import type { TimeFieldProps as TimeFieldPrimitiveProps, TimeValue, ValidationResult } from 'react-aria-components'
 import {
   TimeField as TimeFieldPrimitive,
+  type TimeFieldProps as TimeFieldPrimitiveProps,
+  type TimeValue,
+  type ValidationResult,
 } from 'react-aria-components'
-import { DateInput } from './date-field'
-import { Description, FieldError, FieldGroup, Label } from './field'
-import { composeTailwindRenderProps } from './primitive'
+
+import { DateInput } from '@/core/components/ui/date-field'
+import { Description, FieldError, FieldGroup, Label } from '@/core/components/ui/field'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface TimeFieldProps<T extends TimeValue> extends TimeFieldPrimitiveProps<T> {
   label?: string
   description?: string
   errorMessage?: string | ((validation: ValidationResult) => string)
-  prefix?: React.ReactNode
-  suffix?: React.ReactNode
+  prefix?: React.ReactNode | string
+  suffix?: React.ReactNode | string
 }
 
 function TimeField<T extends TimeValue>({
@@ -28,7 +31,10 @@ function TimeField<T extends TimeValue>({
   return (
     <TimeFieldPrimitive
       {...props}
-      className={composeTailwindRenderProps(className, 'group/time-field flex flex-col gap-y-1')}
+      className={composeTailwindRenderProps(
+        className,
+        'group/time-field flex flex-col gap-y-1 *:data-[slot=label]:font-medium',
+      )}
     >
       {label && <Label>{label}</Label>}
       <FieldGroup>
@@ -40,8 +46,7 @@ function TimeField<T extends TimeValue>({
               prefix
             )}
         <DateInput className={`
-          flex w-fit min-w-28 justify-around p-2 whitespace-nowrap
-          sm:text-sm
+          flex w-fit min-w-28 justify-around whitespace-nowrap
         `}
         />
         {suffix

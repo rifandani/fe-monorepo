@@ -1,15 +1,18 @@
 'use client'
 
-import type { ButtonProps, NumberFieldProps as NumberFieldPrimitiveProps, ValidationResult } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { IconChevronDown, IconChevronUp, IconMinus, IconPlus } from '@intentui/icons'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   Button,
+  type ButtonProps,
   NumberField as NumberFieldPrimitive,
+  type NumberFieldProps as NumberFieldPrimitiveProps,
+  type ValidationResult,
 } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import { Description, FieldError, FieldGroup, Input, Label } from './field'
-import { composeTailwindRenderProps } from './primitive'
+import { Description, FieldError, FieldGroup, Input, Label } from '@/core/components/ui/field'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 const fieldBorderStyles = tv({
   base: `
@@ -51,33 +54,39 @@ function NumberField({
       className={composeTailwindRenderProps(className, 'group flex flex-col gap-y-1.5')}
     >
       {label && <Label>{label}</Label>}
-      <FieldGroup className="overflow-hidden">
+      <FieldGroup
+        className={twJoin(
+          isMobile && [
+            `
+              **:[button]:grid **:[button]:size-8
+              **:[button]:place-content-center **:[button]:inset-ring
+              **:[button]:inset-ring-fg/5
+            `,
+            '*:[button]:first:ml-1 *:[button]:last:mr-1',
+            '**:[button]:bg-secondary **:[button]:pressed:bg-secondary/80',
+          ],
+        )}
+      >
         {renderProps => (
           <>
-            {isMobile ? <StepperButton slot="decrement" className="border-r" /> : null}
+            {isMobile ? <StepperButton slot="decrement" /> : null}
             <Input
-              className={`
-                px-13 tabular-nums
-                sm:px-2.5
-              `}
+              className="px-[calc(--spacing(12)-1px)] tabular-nums"
               placeholder={placeholder}
             />
-            <div
-              className={fieldBorderStyles({
-                ...renderProps,
-                className: 'grid h-10 place-content-center border-s',
-              })}
-            >
-              {isMobile
-                ? (
-                    <StepperButton slot="increment" />
-                  )
-                : (
+            {!isMobile
+              ? (
+                  <div
+                    className={fieldBorderStyles({
+                      ...renderProps,
+                      className: 'grid place-content-center sm:border-s',
+                    })}
+                  >
                     <div className="flex h-full flex-col">
                       <StepperButton
                         slot="increment"
                         emblemType="chevron"
-                        className="h-5 px-1"
+                        className="h-4 px-1"
                       />
                       <div
                         className={fieldBorderStyles({
@@ -88,11 +97,14 @@ function NumberField({
                       <StepperButton
                         slot="decrement"
                         emblemType="chevron"
-                        className="h-5 px-1"
+                        className="h-4 px-1"
                       />
                     </div>
-                  )}
-            </div>
+                  </div>
+                )
+              : (
+                  <StepperButton slot="increment" />
+                )}
           </>
         )}
       </FieldGroup>
@@ -119,24 +131,24 @@ function StepperButton({
       ? (
           slot === 'increment'
             ? (
-                <Icon icon="mdi:chevron-up" className="size-4" />
+                <IconChevronUp className="size-5" />
               )
             : (
-                <Icon icon="mdi:chevron-down" className="size-4" />
+                <IconChevronDown className="size-5" />
               )
         )
       : slot === 'increment'
         ? (
-            <Icon icon="mdi:plus" className="size-4" />
+            <IconPlus />
           )
         : (
-            <Icon icon="mdi:minus" className="size-4" />
+            <IconMinus />
           )
   return (
     <Button
       className={composeTailwindRenderProps(
         className,
-        'h-10 cursor-default pressed:bg-primary px-3 pressed:text-primary-fg text-muted-fg group-disabled:bg-secondary/70 forced-colors:group-disabled:text-[GrayText]',
+        'h-10 cursor-default pressed:text-primary-fg text-muted-fg group-disabled:bg-secondary/70 sm:pressed:bg-primary forced-colors:group-disabled:text-[GrayText]',
       )}
       slot={slot}
       {...props}

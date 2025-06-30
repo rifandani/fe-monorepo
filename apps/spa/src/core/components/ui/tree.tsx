@@ -1,18 +1,18 @@
 'use client'
 
 import type { TreeItemProps, TreeProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { IconChevronRight } from '@intentui/icons'
 import {
   Button,
   composeRenderProps,
-  TreeItemContent as TreeItemContentPrimitive,
+  TreeItemContent as TreeContentPrimitive,
   TreeItem as TreeItemPrimitive,
   Tree as TreePrimitive,
 } from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
+import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import { Checkbox } from './checkbox'
-import { composeTailwindRenderProps } from './primitive'
+import { Checkbox } from '@/core/components/ui/checkbox'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
   return (
@@ -34,13 +34,11 @@ function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
         ),
       )}
       {...props}
-    >
-      {props.children}
-    </TreePrimitive>
+    />
   )
 }
 
-const itemStyles = tv({
+const treeItemStyles = tv({
   base: [
     `
       p-[0.286rem_0.286rem_0.286rem_0.571rem]
@@ -67,7 +65,7 @@ const itemStyles = tv({
     isFocusVisible: {
       true: `
         focus:outline-hidden
-        data-focus-visible:ring-1 data-focus-visible:ring-primary
+        focus-visible:ring-1 focus-visible:ring-primary
         [&_[slot=chevron]_[data-slot=icon]]:text-fg
       `,
     },
@@ -84,7 +82,7 @@ function TreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
   return (
     <TreeItemPrimitive
       className={composeRenderProps(className, (className, renderProps) =>
-        itemStyles({
+        treeItemStyles({
           ...renderProps,
           className,
         }))}
@@ -95,34 +93,35 @@ function TreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
   )
 }
 
-function TreeItemContent(props: React.ComponentProps<typeof TreeItemContentPrimitive>) {
+interface TreeContentProps extends React.ComponentProps<typeof TreeContentPrimitive> {
+  className?: string
+}
+
+function TreeContent({ className, ...props }: TreeContentProps) {
   return (
-    <TreeItemContentPrimitive {...props}>
-      <div className="flex items-center">{props.children as React.ReactNode}</div>
-    </TreeItemContentPrimitive>
+    <TreeContentPrimitive {...props}>
+      <div className={twMerge('flex items-center', className)}>
+        {props.children as React.ReactNode}
+      </div>
+    </TreeContentPrimitive>
   )
 }
 
 function TreeIndicator() {
   return (
     <Button className="relative shrink-0" slot="chevron">
-      <Icon icon="mdi:chevron-right" className="size-5" />
+      <IconChevronRight className="size-5" />
     </Button>
   )
 }
 
-function TreeItemCheckbox() {
+function TreeCheckbox() {
   return <Checkbox slot="selection" />
 }
 
-function TreeItemLabel(props: React.ComponentProps<'span'>) {
+function TreeLabel(props: React.ComponentProps<'span'>) {
   return <span {...props} />
 }
 
-TreeItem.Label = TreeItemLabel
-TreeItem.Indicator = TreeIndicator
-TreeItem.Checkbox = TreeItemCheckbox
-TreeItem.Content = TreeItemContent
-
 export type { TreeItemProps, TreeProps }
-export { Tree, TreeItem }
+export { Tree, TreeCheckbox, TreeContent, TreeIndicator, TreeItem, TreeLabel }

@@ -13,7 +13,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { CalendarGridHeader, CalendarHeader } from './calendar'
+import { CalendarGridHeader, CalendarHeader } from '@/core/components/ui/calendar'
 
 interface RangeCalendarProps<T extends DateValue> extends RangeCalendarPrimitiveProps<T> {
   errorMessage?: string
@@ -38,7 +38,6 @@ function RangeCalendar<T extends DateValue>({
           const id = index + 1
           return (
             <CalendarGrid
-              // eslint-disable-next-line react/no-array-index-key
               key={index}
               offset={id >= 2 ? { months: id - 1 } : undefined}
               className="[&_td]:border-collapse [&_td]:px-0 [&_td]:py-0.5"
@@ -59,7 +58,7 @@ function RangeCalendar<T extends DateValue>({
                         dark:[--cell:color-mix(in_oklab,var(--color-primary)_30%,black_45%)]
                       `,
                       `
-                        group/calendar-cell relative size-10 cursor-default
+                        group/calendar-cell relative size-12 cursor-default
                         outline-hidden
                         [line-height:2.286rem]
                         data-outside-month:text-muted-fg

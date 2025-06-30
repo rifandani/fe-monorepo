@@ -1,18 +1,18 @@
 'use client'
 
-import type { GridListItemProps, GridListProps } from 'react-aria-components'
+import type { GridListItemProps, GridListProps, TextProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
-import { composeRenderProps, GridList, GridListItem } from 'react-aria-components'
+import { createContext, use } from 'react'
+import { composeRenderProps, GridList, GridListItem, Text } from 'react-aria-components'
+import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import { Checkbox } from './checkbox'
-import { Description, Label } from './field'
-import { focusStyles } from './primitive'
+import { Checkbox } from '@/core/components/ui/checkbox'
 
 const choiceboxStyles = tv({
   base: 'grid',
   variants: {
     columns: {
-      1: 'sm:grid-cols-1',
+      1: 'col-span-full grid-cols-[auto_1fr]',
       2: 'sm:grid-cols-2',
       3: 'sm:grid-cols-3',
       4: 'sm:grid-cols-4',
@@ -27,8 +27,8 @@ const choiceboxStyles = tv({
     },
   },
   defaultVariants: {
-    columns: 2,
-    gap: 4,
+    columns: 1,
+    gap: 0,
   },
   compoundVariants: [
     {
@@ -47,6 +47,10 @@ const choiceboxStyles = tv({
   ],
 })
 
+const ChoiceboxContext = createContext<{ columns?: number, gap?: number }>({})
+
+const useChoiceboxContext = () => use(ChoiceboxContext)
+
 interface ChoiceboxProps<T extends object>
   extends GridListProps<T>,
   VariantProps<typeof choiceboxStyles> {
@@ -54,31 +58,32 @@ interface ChoiceboxProps<T extends object>
 }
 
 function Choicebox<T extends object>({
-  columns,
-  gap,
+  columns = 1,
+  gap = 0,
   className,
-  selectionMode = 'multiple',
+  selectionMode = 'single',
   ...props
 }: ChoiceboxProps<T>) {
   return (
-    <GridList
-      layout={columns === 1 ? 'stack' : 'grid'}
-      selectionMode={selectionMode}
-      className={choiceboxStyles({
-        columns,
-        gap,
-        className,
-      })}
-      {...props}
-    />
+    <ChoiceboxContext value={{ columns, gap }}>
+      <GridList
+        layout={columns === 1 ? 'stack' : 'grid'}
+        selectionMode={selectionMode}
+        className={choiceboxStyles({
+          columns,
+          gap,
+          className,
+        })}
+        {...props}
+      />
+    </ChoiceboxContext>
   )
 }
 
 const choiceboxItemStyles = tv({
-  extend: focusStyles,
   base: [
     `
-      bg-bg
+      group outline-hidden
       [--choicebox-fg:var(--color-primary)]
       [--choicebox:color-mix(in_oklab,var(--color-primary)_4%,white_96%)]
     `,
@@ -93,82 +98,179 @@ const choiceboxItemStyles = tv({
       dark:[--choicebox:color-mix(in_oklab,var(--color-primary)_20%,black_70%)]
     `,
     `
-      cursor-pointer rounded-lg p-4 inset-ring inset-ring-border
-      [&_[slot=title]]:font-medium
+      rounded-lg p-4 inset-ring inset-ring-border
+      **:data-[slot=label]:font-medium
     `,
     `
-      **:data-[slot=choicebox-icon]:size-5
-      **:data-[slot=choicebox-icon]:shrink-0
-      **:data-[slot=choicebox-icon]:text-current/60
-      selected:**:data-[slot=choicebox-icon]:text-current/90
+      **:data-[slot=avatar]:size-5 **:data-[slot=avatar]:shrink-0
+      **:data-[slot=avatar]:*:size-6
     `,
+    `
+      **:data-[slot=icon]:mt-[--spacing(0.7)] **:data-[slot=icon]:size-5
+      **:data-[slot=icon]:shrink-0
+    `,
+    `
+      grid grid-cols-[1fr_auto] content-start items-start gap-x-4 gap-y-1
+      has-data-[slot=icon]:grid-cols-[auto_1fr_auto]
+    `,
+    'has-[[slot=description]]:**:data-[slot=label]:font-medium',
   ],
   variants: {
-    init: {
+    isLink: {
+      true: 'cursor-pointer',
+      false: 'cursor-default',
+    },
+    isFocused: { true: `
+      ring-3 ring-ring/20 inset-ring-ring/70
+      invalid:ring-danger/20
+    ` },
+    isInvalid: { true: 'ring-3 ring-danger/20' },
+    isOneColumn: {
+      true: 'col-span-full',
+    },
+    isHocuset: {
       true: [
         'bg-(--choicebox) text-(--choicebox-fg)',
         `
           z-20 inset-ring-ring/70
           hover:bg-(--choicebox-selected-hovered)
         `,
-        '[&_[slot=title]]:text-(--choicebox-fg)',
-        '[&_[slot=description]]:text-(--choicebox-fg)',
+        '**:data-[slot=label]:text-(--choicebox-fg)',
+        '**:[[slot=description]]:text-(--choicebox-fg)',
       ],
     },
     isDisabled: {
       true: `
-        z-10 cursor-default opacity-50
+        z-10 opacity-50
+        **:data-[slot=label]:text-muted-fg
+        **:[[slot=description]]:text-muted-fg/70
         forced-colors:text-[GrayText]
-        [&_[slot=description]]:text-muted-fg/70
-        [&_[slot=title]]:text-muted-fg
       `,
     },
   },
 })
 
 interface ChoiceboxItemProps extends GridListItemProps, VariantProps<typeof choiceboxItemStyles> {
-  title?: string
+  label?: string
   description?: string
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
-function ChoiceboxItem({ icon: Icon, className, ...props }: ChoiceboxItemProps) {
-  const textValue = props.title ?? props.textValue
+function ChoiceboxItem({
+  className,
+  label,
+  description,
+  children,
+  ...props
+}: ChoiceboxItemProps) {
+  const textValue = typeof children === 'string' ? children : undefined
+  const { columns } = useChoiceboxContext()
   return (
     <GridListItem
       textValue={textValue}
       data-slot="choicebox-item"
       {...props}
-      className={composeRenderProps(className, (className, renderProps) =>
-        choiceboxItemStyles({
-          ...renderProps,
-          init: renderProps.isSelected || renderProps.isHovered || renderProps.isFocusVisible,
-          className,
-        }))}
-    >
-      {values => (
-        <div className="flex w-full items-center justify-between gap-2">
-          <div className="flex gap-x-2.5">
-            {Icon && <Icon data-slot="choicebox-icon" />}
-            <div className="flex flex-col gap-y-1 pr-8">
-              <Label slot="title" className="text-sm/4" htmlFor={textValue}>
-                {props.title}
-              </Label>
-              {props.description && (
-                <Description className="text-sm/5">{props.description}</Description>
-              )}
-            </div>
-          </div>
-          {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
-            <Checkbox slot="selection" />
-          )}
-        </div>
+      className={composeRenderProps(
+        className,
+        (className, { isHovered, isFocusVisible, isSelected, ...renderProps }) =>
+          choiceboxItemStyles({
+            ...renderProps,
+            isOneColumn: columns === 1,
+            isLink: 'href' in props,
+            isHocuset: isSelected || isHovered || isFocusVisible,
+            className,
+          }),
       )}
+    >
+      {composeRenderProps(children, (children, { selectionMode }) => {
+        const isStringChild = typeof children === 'string'
+        const hasCustomChildren = typeof children !== 'undefined'
+
+        const content = hasCustomChildren
+          ? (
+              isStringChild
+                ? (
+                    <ChoiceboxLabel>{children}</ChoiceboxLabel>
+                  )
+                : (
+                    children
+                  )
+            )
+          : (
+              <>
+                {label && <ChoiceboxLabel>{label}</ChoiceboxLabel>}
+                {description && <ChoiceboxDescription>{description}</ChoiceboxDescription>}
+              </>
+            )
+        return (
+          <>
+            {content}
+            {selectionMode === 'multiple' && (
+              <Checkbox
+                className={`
+                  col-start-2 self-start
+                  group-has-data-[slot=icon]:col-start-3
+                  group-hover:not-group-selected:**:data-[slot=indicator]:bg-primary/15
+                  sm:mt-0.5
+                `}
+                slot="selection"
+              />
+            )}
+          </>
+        )
+      })}
     </GridListItem>
   )
 }
 
+interface ChoiceboxLabelProps extends TextProps {
+  ref?: React.Ref<HTMLDivElement>
+}
+
+function ChoiceboxLabel({ className, ref, ...props }: ChoiceboxLabelProps) {
+  return (
+    <Text
+      data-slot="label"
+      ref={ref}
+      className={twMerge(
+        `
+          text-base/6 text-fg select-none
+          group-disabled:opacity-50
+          sm:text-sm/6
+        `,
+        'col-start-1 row-start-1',
+        'group-has-data-[slot=icon]:col-start-2',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+type ChoiceboxDescriptionProps = ChoiceboxLabelProps
+
+function ChoiceboxDescription({ className, ref, ...props }: ChoiceboxDescriptionProps) {
+  return (
+    <Text
+      slot="description"
+      ref={ref}
+      className={twMerge(
+        'col-start-1 row-start-2',
+        'group-has-data-[slot=icon]:col-start-2',
+        `
+          text-base/6 text-muted-fg
+          sm:text-sm/6
+        `,
+        'group-disabled:opacity-50',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 Choicebox.Item = ChoiceboxItem
+Choicebox.Label = ChoiceboxLabel
+Choicebox.Description = ChoiceboxDescription
 
 export type { ChoiceboxItemProps, ChoiceboxProps }
 export { Choicebox }

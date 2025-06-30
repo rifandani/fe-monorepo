@@ -1,215 +1,222 @@
 'use client'
 
-import type { ButtonProps as ButtonPrimitiveProps } from 'react-aria-components'
 import {
   Button as ButtonPrimitive,
+  type ButtonProps as ButtonPrimitiveProps,
   composeRenderProps,
 } from 'react-aria-components'
-import { tv } from 'tailwind-variants'
+import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonStyles = tv({
   base: [
     `
-      outline-0 outline-offset-2
-      focus-visible:outline-2
-      forced-colors:outline-[Highlight]
+      [--btn-icon-active:var(--btn-fg)]
+      [--btn-outline:var(--btn-bg)]
+      [--btn-ring:var(--btn-bg)]/20
     `,
     `
-      relative inline-flex items-center justify-center gap-x-2 border
-      font-medium
+      bg-(--btn-bg) text-(--btn-fg) ring-(--btn-ring) outline-(--btn-outline)
+      hover:bg-(--btn-overlay)
+      pressed:bg-(--btn-overlay)
     `,
     `
+      relative isolate inline-flex items-center justify-center font-medium
+      inset-ring inset-ring-fg/15
+    `,
+    `
+      focus:outline-0
+      focus-visible:ring-2 focus-visible:ring-offset-3
+      focus-visible:ring-offset-bg focus-visible:outline
+      focus-visible:outline-offset-2
+    `,
+    `
+      *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:my-0.5
+      *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:self-center
+      *:data-[slot=icon]:text-(--btn-icon)
+      hover:*:data-[slot=icon]:text-(--btn-icon-active)/90
+      focus-visible:*:data-[slot=icon]:text-(--btn-icon-active)/80
+      sm:*:data-[slot=icon]:my-1
       forced-colors:[--btn-icon:ButtonText]
       forced-colors:hover:[--btn-icon:ButtonText]
+      pressed:*:data-[slot=icon]:text-(--btn-icon-active)
     `,
     `
-      *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:my-1
-      *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0
-      *:data-[slot=icon]:text-current/60 *:data-[slot=icon]:transition
-      hover:*:data-[slot=icon]:text-current/90
-      pressed:*:data-[slot=icon]:text-current
+      *:data-[slot=loader]:-mx-0.5 *:data-[slot=loader]:my-0.5
+      *:data-[slot=loader]:shrink-0 *:data-[slot=loader]:self-center
+      *:data-[slot=loader]:text-(--btn-icon)
+      sm:*:data-[slot=loader]:my-1
     `,
-    `
-      *:data-[slot=avatar]:-mx-0.5 *:data-[slot=avatar]:my-1
-      *:data-[slot=avatar]:*:size-4 *:data-[slot=avatar]:size-4
-      *:data-[slot=avatar]:shrink-0
-    `,
-    `
-      inset-ring-0
-      dark:border-0 dark:inset-ring
-    `,
-    `
-      border-(--btn-border) bg-(--btn-bg) text-(--btn-fg) inset-shadow-2xs
-      inset-ring-(--btn-border)
-    `,
-    'hover:bg-(--btn-bg-hovered) hover:ring-(--btn-border-hovered)',
-    'pressed:border-(--btn-border) pressed:bg-(--btn-bg)',
   ],
   variants: {
     intent: {
-      primary: [
+      primary:
         `
-          outline-ring
-          [--btn-bg:theme(--color-primary/95%)]
-          [--btn-border:var(--color-primary)]
+          [--btn-bg:var(--color-primary)]
           [--btn-fg:var(--color-primary-fg)]
-          dark:[--btn-bg:theme(--color-primary/90%)]
+          [--btn-icon:color-mix(in_oklab,var(--primary-fg)_60%,var(--primary))]
+          [--btn-overlay:var(--color-primary)]/85
         `,
+      secondary:
         `
-          [--btn-bg-hovered:theme(--color-primary/87%)]
-          [--btn-border-hovered:theme(--color-primary/87%)]
-          dark:[--btn-bg-hovered:theme(--color-primary)]
-          dark:[--btn-border-hovered:theme(--color-primary)]
-        `,
-        `
-          inset-shadow-primary-fg/20
-          hover:inset-shadow-primary-fg/25
-          pressed:inset-shadow-primary-fg/20
-        `,
-      ],
-      secondary: [
-        `
-          outline-ring
-          [--btn-bg:theme(--color-secondary/95%)]
-          [--btn-border:theme(--color-secondary-fg/10%)]
+          [--btn-bg:var(--color-secondary)]
           [--btn-fg:var(--color-secondary-fg)]
-          dark:[--btn-bg:theme(--color-secondary/85%)]
-          dark:[--btn-border:theme(--color-secondary-fg/7%)]
+          [--btn-icon:var(--color-muted-fg)]
+          [--btn-outline:var(--color-secondary-fg)]
+          [--btn-overlay:var(--color-secondary)]/85
+          [--btn-ring:var(--color-muted-fg)]/20
         `,
+      warning:
         `
-          [--btn-bg-hovered:color-mix(in_oklab,var(--color-secondary)_60%,white_20%)]
-          dark:[--btn-bg-hovered:color-mix(in_oklab,var(--color-secondary)_96%,white_4%)]
-        `,
-        `
-          inset-shadow-white/15
-          hover:inset-shadow-white/20
-          pressed:inset-shadow-white/15
-        `,
-      ],
-      warning: [
-        '[--btn-warning:theme(--color-warning/97%)]',
-        `
-          [--btn-warning-hovered:color-mix(in_oklab,var(--color-warning)_85%,white_15%)]
-        `,
-        `
-          dark:[--btn-warning-hovered:color-mix(in_oklab,var(--color-warning)_90%,white_10%)]
-        `,
-        `
-          outline-warning
-          [--btn-bg:var(--btn-warning)]
-          [--btn-border:var(--btn-warning)]
+          [--btn-bg:var(--color-warning)]
           [--btn-fg:var(--color-warning-fg)]
+          [--btn-icon:color-mix(in_oklab,var(--warning-fg)_60%,var(--warning))]
+          [--btn-overlay:var(--color-warning)]/85
         `,
+      danger:
         `
-          [--btn-bg-hovered:var(--btn-warning-hovered)]
-          [--btn-border-hovered:var(--btn-warning-hovered)]
-        `,
-        `
-          inset-shadow-white/25
-          hover:inset-shadow-white/30
-          pressed:inset-shadow-white/25
-        `,
-      ],
-      danger: [
-        `
-          outline-danger
-          [--btn-bg:theme(--color-danger/95%)]
-          [--btn-border:var(--color-danger)]
+          [--btn-bg:var(--color-danger)]
           [--btn-fg:var(--color-danger-fg)]
-          dark:[--btn-bg:var(--color-danger)]
+          [--btn-icon:color-mix(in_oklab,var(--danger-fg)_60%,var(--danger))]
+          [--btn-overlay:var(--color-danger)]/85
         `,
+      outline:
         `
-          [--btn-danger-hovered:color-mix(in_oklab,var(--color-danger)_93%,white_7%)]
+          inset-ring-border
+          [--btn-bg:transparent]
+          [--btn-icon:var(--color-muted-fg)]
+          [--btn-outline:var(--color-ring)]
+          [--btn-overlay:var(--color-muted)]
+          [--btn-ring:var(--color-ring)]/20
         `,
-        `
-          dark:[--btn-danger-hovered:color-mix(in_oklab,var(--color-danger)_96%,white_4%)]
-        `,
-        `
-          [--btn-bg-hovered:var(--btn-danger-hovered)]
-          [--btn-border-hovered:var(--btn-danger-hovered)]
-        `,
-        `
-          inset-shadow-danger-fg/30
-          hover:inset-shadow-danger-fg/35
-          pressed:inset-shadow-danger-fg/30
-        `,
-      ],
-      outline: [
-        `
-          inset-shadow-none inset-ring-0 outline-ring
-          [--btn-border:var(--color-border)]
-          hover:bg-secondary
-          pressed:bg-secondary
-        `,
-      ],
       plain:
         `
-          inset-shadow-none inset-ring-0 outline-ring
-          [--btn-border:transparent]
-          hover:bg-secondary
-          pressed:bg-secondary
+          inset-ring-transparent
+          [--btn-bg:transparent]
+          [--btn-icon:var(--color-muted-fg)]
+          [--btn-outline:var(--color-ring)]
+          [--btn-overlay:var(--color-muted)]
+          [--btn-ring:var(--color-ring)]/20
         `,
     },
     size: {
-      'extra-small':
+      'xs': [
         `
-          h-8 px-[calc(var(--spacing)*2.7)] text-xs/4
-          **:data-[slot=avatar]:size-3.5 **:data-[slot=avatar]:*:size-3.5
-          **:data-[slot=icon]:size-3
-          lg:text-[0.800rem]/4
+          gap-x-1 px-2.5 py-1.5 text-sm
+          sm:px-2 sm:py-[--spacing(1.4)] sm:text-xs/4
         `,
-      'small': `
-        h-9 px-3.5 text-sm/5
-        sm:text-sm/5
-      `,
-      'medium': `
-        h-10 px-4 text-base
-        sm:text-sm/6
-      `,
-      'large':
         `
-          h-11 px-4.5 text-base
-          *:data-[slot=icon]:mx-[-1.5px]
-          sm:*:data-[slot=icon]:size-5
-          lg:text-base/7
+          *:data-[slot=icon]:size-3.5
+          sm:*:data-[slot=icon]:size-3
         `,
-      'square-petite': 'size-9 shrink-0',
+        `
+          *:data-[slot=loader]:size-3.5
+          sm:*:data-[slot=loader]:size-3
+        `,
+      ],
+      'sm': [
+        `
+          gap-x-1.5 px-3 py-2
+          sm:px-2.5 sm:py-1.5 sm:text-sm/5
+        `,
+        `
+          *:data-[slot=icon]:size-4.5
+          sm:*:data-[slot=icon]:size-4
+        `,
+        `
+          *:data-[slot=loader]:size-4.5
+          sm:*:data-[slot=loader]:size-4
+        `,
+      ],
+      'md': [
+        `
+          gap-x-2 px-3.5 py-2
+          sm:px-3 sm:py-1.5 sm:text-sm/6
+        `,
+        `
+          *:data-[slot=icon]:size-5
+          sm:*:data-[slot=icon]:size-4
+        `,
+        `
+          *:data-[slot=loader]:size-5
+          sm:*:data-[slot=loader]:size-4
+        `,
+      ],
+      'lg': [
+        `
+          gap-x-2 px-4 py-2.5
+          sm:px-3.5 sm:py-2 sm:text-sm/6
+        `,
+        `
+          *:data-[slot=icon]:size-5
+          sm:*:data-[slot=icon]:size-4.5
+        `,
+        `
+          *:data-[slot=loader]:size-5
+          sm:*:data-[slot=loader]:size-4.5
+        `,
+      ],
+      'sq-xs':
+        `
+          size-8
+          *:data-[slot=icon]:size-3.5 *:data-[slot=loader]:size-3.5
+          sm:size-7 sm:*:data-[slot=icon]:size-3 sm:*:data-[slot=loader]:size-3
+        `,
+      'sq-sm':
+        `
+          size-9
+          *:data-[slot=icon]:size-4.5 *:data-[slot=loader]:size-4.5
+          sm:size-8 sm:*:data-[slot=icon]:size-4 sm:*:data-[slot=loader]:size-4
+        `,
+      'sq-md':
+        `
+          size-10
+          *:data-[slot=icon]:size-5 *:data-[slot=loader]:size-5
+          sm:size-9 sm:*:data-[slot=icon]:size-4 sm:*:data-[slot=loader]:size-4
+        `,
+      'sq-lg':
+        `
+          size-11
+          *:data-[slot=icon]:size-5 *:data-[slot=loader]:size-5
+          sm:size-10 sm:*:data-[slot=icon]:size-4.5
+          sm:*:data-[slot=loader]:size-4.5
+        `,
     },
-    shape: {
-      square: 'rounded-lg',
-      circle: 'rounded-full',
+
+    isCircle: {
+      true: 'rounded-full',
+      false: 'rounded-lg',
     },
     isDisabled: {
-      false: `
-        cursor-pointer
-        forced-colors:disabled:text-[GrayText]
-      `,
       true: `
-        cursor-default border-0 opacity-50 ring-0 inset-shadow-none
-        dark:inset-ring-0
-        forced-colors:disabled:text-[GrayText]
+        opacity-50 inset-ring-0
+        forced-colors:text-[GrayText]
       `,
     },
     isPending: {
-      true: 'cursor-default opacity-50',
+      true: 'opacity-50',
     },
   },
   defaultVariants: {
     intent: 'primary',
-    size: 'medium',
-    shape: 'square',
+    size: 'md',
+    isCircle: false,
   },
+  compoundVariants: [
+    {
+      size: ['xs', 'sq-xs'],
+      className: `
+        rounded-md
+        *:data-[slot=icon]:size-3.5
+      `,
+    },
+  ],
 })
 
-interface ButtonProps extends ButtonPrimitiveProps {
-  intent?: 'primary' | 'secondary' | 'danger' | 'warning' | 'outline' | 'plain'
-  size?: 'medium' | 'large' | 'square-petite' | 'extra-small' | 'small'
-  shape?: 'square' | 'circle'
-  appearance?: 'solid' | 'outline' | 'plain'
+interface ButtonProps extends ButtonPrimitiveProps, VariantProps<typeof buttonStyles> {
   ref?: React.Ref<HTMLButtonElement>
 }
 
-function Button({ className, intent, appearance, size, shape, ref, ...props }: ButtonProps) {
+function Button({ className, intent, size, isCircle, ref, ...props }: ButtonProps) {
   return (
     <ButtonPrimitive
       ref={ref}
@@ -219,7 +226,7 @@ function Button({ className, intent, appearance, size, shape, ref, ...props }: B
           ...renderProps,
           intent,
           size,
-          shape,
+          isCircle,
           className,
         }))}
     >
@@ -231,4 +238,4 @@ function Button({ className, intent, appearance, size, shape, ref, ...props }: B
 }
 
 export type { ButtonProps }
-export { Button, ButtonPrimitive, buttonStyles }
+export { Button, buttonStyles }

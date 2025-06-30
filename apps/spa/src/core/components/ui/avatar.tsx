@@ -1,74 +1,71 @@
-import type { VariantProps } from 'tailwind-variants'
-import { tv } from 'tailwind-variants'
+import { twMerge } from 'tailwind-merge'
 
-const avatar = tv({
-  base: [
-    `
-      inline-grid shrink-0 align-middle
-      [--avatar-radius:20%]
-      [--ring-opacity:20%]
-      *:col-start-1 *:row-start-1
-    `,
-    'outline-1 -outline-offset-1 outline-fg/(--ring-opacity)',
-  ],
-  variants: {
-    shape: {
-      square: `
-        rounded-(--avatar-radius)
-        *:rounded-(--avatar-radius)
-      `,
-      circle: `
-        rounded-full
-        *:rounded-full
-      `,
-    },
-    size: {
-      'extra-small': `
-        size-5
-        *:size-5
-      `,
-      'small': `
-        size-6
-        *:size-6
-      `,
-      'medium': `
-        size-8
-        *:size-8
-      `,
-      'large': `
-        size-10
-        *:size-10
-      `,
-      'extra-large': `
-        size-12
-        *:size-12
-      `,
-    },
-  },
-})
-
-interface AvatarProps extends VariantProps<typeof avatar> {
+interface AvatarProps {
   src?: string | null
   initials?: string
   alt?: string
   className?: string
+  isSquare?: boolean
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
 function Avatar({
   src = null,
-  shape = 'circle',
-  size = 'medium',
+  isSquare = false,
+  size = 'md',
   initials,
   alt = '',
   className,
   ...props
 }: AvatarProps & React.ComponentPropsWithoutRef<'span'>) {
   return (
-    <span data-slot="avatar" {...props} className={avatar({ shape, size, className })}>
+    <span
+      data-slot="avatar"
+      {...props}
+      className={twMerge(
+        `
+          inline-grid shrink-0 align-middle outline-1 -outline-offset-1
+          outline-fg/(--ring-opacity)
+          [--avatar-radius:20%]
+          [--ring-opacity:20%]
+          *:col-start-1 *:row-start-1
+        `,
+        size === 'xs' && `
+          size-5
+          *:size-5
+        `,
+        size === 'sm' && `
+          size-6
+          *:size-6
+        `,
+        size === 'md' && `
+          size-8
+          *:size-8
+        `,
+        size === 'lg' && `
+          size-10
+          *:size-10
+        `,
+        size === 'xl' && `
+          size-12
+          *:size-12
+        `,
+        isSquare
+          ? `
+            rounded-(--avatar-radius)
+            *:rounded-(--avatar-radius)
+          `
+          : `
+            rounded-full
+            *:rounded-full
+          `,
+        className,
+      )}
+    >
       {initials && (
         <svg
           className={`
-            size-full fill-current p-[5%] text-[48px] font-medium uppercase
+            font-md size-full fill-current p-[5%] text-[48px] uppercase
             select-none
           `}
           viewBox="0 0 100 100"
@@ -87,7 +84,7 @@ function Avatar({
           </text>
         </svg>
       )}
-      {src && <img className="size-full" src={src} alt={alt} />}
+      {src && <img className="size-full object-cover object-center" src={src} alt={alt} />}
     </span>
   )
 }

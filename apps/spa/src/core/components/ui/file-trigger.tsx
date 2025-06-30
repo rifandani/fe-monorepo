@@ -1,43 +1,54 @@
 'use client'
 
-import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
-import type { buttonStyles } from './button'
-import { Icon } from '@iconify/react'
+import { IconCamera, IconFolder, IconPaperclip45 } from '@intentui/icons'
 import {
   FileTrigger as FileTriggerPrimitive,
+  type FileTriggerProps as FileTriggerPrimitiveProps,
 } from 'react-aria-components'
-import { Button } from './button'
+import { Button, type buttonStyles } from '@/core/components/ui/button'
+import { Loader } from '@/core/components/ui/loader'
 
 interface FileTriggerProps extends FileTriggerPrimitiveProps, VariantProps<typeof buttonStyles> {
-  withIcon?: boolean
   isDisabled?: boolean
   ref?: React.RefObject<HTMLInputElement>
+  className?: string
 }
 
 function FileTrigger({
   intent = 'outline',
-  size = 'medium',
-  shape = 'square',
-  withIcon = true,
+  size = 'md',
+  isCircle = false,
   ref,
+  className,
   ...props
 }: FileTriggerProps) {
   return (
     <FileTriggerPrimitive ref={ref} {...props}>
-      <Button isDisabled={props.isDisabled} intent={intent} size={size} shape={shape}>
-        {withIcon
-          && (props.defaultCamera
-            ? (
-                <Icon icon="mdi:camera" />
-              )
-            : props.acceptDirectory
-              ? (
-                  <Icon icon="mdi:folder" />
-                )
-              : (
-                  <Icon icon="mdi:paperclip" />
-                ))}
+      <Button
+        className={className}
+        isDisabled={props.isDisabled}
+        intent={intent}
+        size={size}
+        isCircle={isCircle}
+      >
+        {!props.isPending
+          ? (
+              props.defaultCamera
+                ? (
+                    <IconCamera />
+                  )
+                : props.acceptDirectory
+                  ? (
+                      <IconFolder />
+                    )
+                  : (
+                      <IconPaperclip45 />
+                    )
+            )
+          : (
+              <Loader />
+            )}
         {props.children
           ? (
               props.children
