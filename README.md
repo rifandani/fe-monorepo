@@ -21,6 +21,8 @@
 - Run `bun web build`, `bun spa build`, and `bun expo build:android:dev:local` to build with development env
 - Run `bun lint-typecheck` for linting and type checking
 
+After making sure all changes are checked, run `bun cs` to create a new changeset and `bun cs:v` to version the changeset.
+
 ## @workspace/spa
 
 [See here](./apps/spa/README.md)

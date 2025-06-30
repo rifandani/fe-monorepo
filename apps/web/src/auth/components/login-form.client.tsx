@@ -23,6 +23,7 @@ export function LoginForm() {
       onSubmit={handleSubmitWithAction}
     >
       <Controller
+        // @ts-expect-error - adapter types needs to be updated
         control={form.control}
         name="username"
         render={({
@@ -48,6 +49,7 @@ export function LoginForm() {
       />
 
       <Controller
+        // @ts-expect-error - adapter types needs to be updated
         control={form.control}
         name="password"
         render={({

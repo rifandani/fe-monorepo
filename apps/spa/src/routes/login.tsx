@@ -1,3 +1,4 @@
+import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
@@ -98,7 +99,7 @@ function LoginForm() {
   const navigate = Route.useNavigate()
   const { setUser } = useAuthUserStore()
 
-  const form = useForm({
+  const form = useForm<AuthLoginRequestSchema>({
     mode: 'onChange',
     resolver: zodResolver(authLoginRequestSchema),
     defaultValues: {
