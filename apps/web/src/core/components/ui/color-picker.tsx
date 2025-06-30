@@ -1,11 +1,13 @@
 'use client'
 
+import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
+import type { PopoverContentProps } from '@/core/components/ui/popover'
 import { Icon } from '@iconify/react'
 import { parseColor } from '@react-stately/color'
 import { use } from 'react'
 import {
   ColorPicker as ColorPickerPrimitive,
-  type ColorPickerProps as ColorPickerPrimitiveProps,
+
   ColorPickerStateContext,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
@@ -15,7 +17,7 @@ import { ColorField } from '@/core/components/ui/color-field'
 import { ColorSlider } from '@/core/components/ui/color-slider'
 import { ColorSwatch } from '@/core/components/ui/color-swatch'
 import { Description } from '@/core/components/ui/field'
-import { Popover, PopoverContent, type PopoverContentProps } from '@/core/components/ui/popover'
+import { Popover, PopoverContent } from '@/core/components/ui/popover'
 
 interface ColorPickerProps
   extends ColorPickerPrimitiveProps,

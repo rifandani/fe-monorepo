@@ -2,11 +2,10 @@
 
 import type { DateDuration } from '@internationalized/date'
 import type { Placement } from '@react-types/overlays'
+import type { DateRangePickerProps as DateRangePickerPrimitiveProps, DateValue, ValidationResult } from 'react-aria-components'
 import {
   DateRangePicker as DateRangePickerPrimitive,
-  type DateRangePickerProps as DateRangePickerPrimitiveProps,
-  type DateValue,
-  type ValidationResult,
+
 } from 'react-aria-components'
 import { DateInput } from '@/core/components/ui/date-field'
 import { DatePickerIcon, DatePickerOverlay } from '@/core/components/ui/date-picker'

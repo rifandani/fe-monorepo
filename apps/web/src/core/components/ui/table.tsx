@@ -1,26 +1,27 @@
 'use client'
 
+import type { CellProps, ColumnProps, ColumnResizerProps, TableHeaderProps as HeaderProps, RowProps, TableBodyProps, TableProps as TablePrimitiveProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import { createContext, use } from 'react'
 import {
   Button,
   Cell,
-  type CellProps,
+
   Collection,
   Column,
-  type ColumnProps,
+
   ColumnResizer as ColumnResizerPrimitive,
-  type ColumnResizerProps,
+
   composeRenderProps,
-  type TableHeaderProps as HeaderProps,
+
   ResizableTableContainer,
   Row,
-  type RowProps,
+
   TableBody as TableBodyPrimitive,
-  type TableBodyProps,
+
   TableHeader as TableHeaderPrimitive,
   Table as TablePrimitive,
-  type TableProps as TablePrimitiveProps,
+
   useTableOptions,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'

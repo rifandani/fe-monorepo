@@ -1,17 +1,8 @@
 'use client'
 
-import type { SliderProps as SliderPrimitiveProps, SliderThumbProps } from 'react-aria-components'
+import type { composeRenderProps, SliderOutput, Slider as SliderPrimitive, SliderProps as SliderPrimitiveProps, SliderStateContext, SliderThumb as SliderThumbPrimitive, SliderThumbProps, SliderTrack as SliderTrackPrimitive, type SliderTrackProps } from 'react-aria-components'
 
 import React, { useState } from 'react'
-import {
-  composeRenderProps,
-  SliderOutput,
-  Slider as SliderPrimitive,
-  SliderStateContext,
-  SliderThumb as SliderThumbPrimitive,
-  SliderTrack as SliderTrackPrimitive,
-  type SliderTrackProps,
-} from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { Description, Label } from '@/core/components/ui/field'

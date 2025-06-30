@@ -1,10 +1,12 @@
 'use client'
 
+import type { UseEmblaCarouselType } from 'embla-carousel-react'
+import type { ButtonProps } from '@/core/components/ui/button'
 import { Icon } from '@iconify/react'
-import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
+import useEmblaCarousel from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { Button, type ButtonProps } from '@/core/components/ui/button'
+import { Button } from '@/core/components/ui/button'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 type CarouselApi = UseEmblaCarouselType[1]

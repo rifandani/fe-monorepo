@@ -1,12 +1,12 @@
 'use client'
 
+import type { ToggleButtonGroupProps, ToggleButtonProps } from 'react-aria-components'
 import { createContext, use } from 'react'
 import {
   composeRenderProps,
   ToggleButton,
   ToggleButtonGroup,
-  type ToggleButtonGroupProps,
-  type ToggleButtonProps,
+
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'

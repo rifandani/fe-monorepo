@@ -7,6 +7,7 @@ import type {
   ListBoxProps,
   PopoverProps,
 } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { Icon } from '@iconify/react'
 import {
   ComboBoxContext,
@@ -25,7 +26,7 @@ import {
   Description,
   FieldError,
   FieldGroup,
-  type FieldProps,
+
   Input,
   Label,
 } from '@/core/components/ui/field'

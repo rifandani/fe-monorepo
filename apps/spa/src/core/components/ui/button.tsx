@@ -1,11 +1,13 @@
 'use client'
 
+import type { ButtonProps as ButtonPrimitiveProps } from 'react-aria-components'
+import type { VariantProps } from 'tailwind-variants'
 import {
   Button as ButtonPrimitive,
-  type ButtonProps as ButtonPrimitiveProps,
+
   composeRenderProps,
 } from 'react-aria-components'
-import { tv, type VariantProps } from 'tailwind-variants'
+import { tv } from 'tailwind-variants'
 
 const buttonStyles = tv({
   base: [

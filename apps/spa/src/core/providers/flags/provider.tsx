@@ -1,6 +1,7 @@
+import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
 import { OpenFeature, OpenFeatureProvider, ProviderEvents } from '@openfeature/react-sdk'
 import { logger } from '@workspace/core/utils/logger'
-import { type ComponentPropsWithoutRef, type PropsWithChildren, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { flagsmithClientProvider } from './client'
 

@@ -1,8 +1,10 @@
 'use client'
 
-import { TextArea, TextField, type TextFieldProps } from 'react-aria-components'
+import type { TextFieldProps } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
+import { TextArea, TextField } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
-import { Description, FieldError, type FieldProps, Label } from '@/core/components/ui/field'
+import { Description, FieldError, Label } from '@/core/components/ui/field'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface TextareaProps extends Omit<TextFieldProps, 'className'>, FieldProps {

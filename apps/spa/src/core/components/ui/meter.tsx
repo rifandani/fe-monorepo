@@ -1,10 +1,11 @@
 'use client'
 
+import type { MeterProps as MeterPrimitiveProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import { motion } from 'motion/react'
 import {
   Meter as MeterPrimitive,
-  type MeterProps as MeterPrimitiveProps,
+
 } from 'react-aria-components'
 
 import { Label } from '@/core/components/ui/field'

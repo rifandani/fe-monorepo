@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin('./src/core/utils/i18n.ts')
 
+// eslint-disable-next-line import/no-mutable-exports
 let config: NextConfig = withNextIntl({
   eslint: {
     ignoreDuringBuilds: true,

@@ -1,6 +1,7 @@
 'use client'
 
 import type { HeadingProps } from 'react-aria-components'
+import type { ButtonProps } from '@/core/components/ui/button'
 import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { useEffect, useRef } from 'react'
@@ -11,7 +12,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { Button, type ButtonProps } from '@/core/components/ui/button'
+import { Button } from '@/core/components/ui/button'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 function Dialog({

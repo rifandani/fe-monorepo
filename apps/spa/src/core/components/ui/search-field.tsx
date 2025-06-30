@@ -1,13 +1,14 @@
 'use client'
 
 import type { SearchFieldProps as SearchFieldPrimitiveProps } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { Icon } from '@iconify/react'
 import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
 import {
   Description,
   FieldError,
   FieldGroup,
-  type FieldProps,
+
   Input,
   Label,
 } from '@/core/components/ui/field'

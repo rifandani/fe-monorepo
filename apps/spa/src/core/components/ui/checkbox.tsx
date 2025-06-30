@@ -4,6 +4,7 @@ import type {
   CheckboxGroupProps as CheckboxGroupPrimitiveProps,
   CheckboxProps as CheckboxPrimitiveProps,
 } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { Icon } from '@iconify/react'
 import {
   CheckboxGroup as CheckboxGroupPrimitive,
@@ -11,7 +12,7 @@ import {
   composeRenderProps,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { Description, FieldError, type FieldProps, Label } from '@/core/components/ui/field'
+import { Description, FieldError, Label } from '@/core/components/ui/field'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface CheckboxGroupProps extends CheckboxGroupPrimitiveProps, Omit<FieldProps, 'placeholder'> {}

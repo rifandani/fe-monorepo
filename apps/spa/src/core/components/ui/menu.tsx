@@ -8,6 +8,7 @@ import type {
   MenuTriggerProps as MenuTriggerPrimitiveProps,
 } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
+import type { PopoverContentProps } from '@/core/components/ui/popover'
 import { Icon } from '@iconify/react'
 import {
   Button,
@@ -29,7 +30,7 @@ import {
   dropdownSectionStyles,
   DropdownSeparator,
 } from '@/core/components/ui/dropdown'
-import { PopoverContent, type PopoverContentProps } from '@/core/components/ui/popover'
+import { PopoverContent } from '@/core/components/ui/popover'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 const Menu = (props: MenuTriggerPrimitiveProps) => <MenuTriggerPrimitive {...props} />

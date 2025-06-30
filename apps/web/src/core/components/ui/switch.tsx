@@ -1,8 +1,9 @@
 'use client'
 
+import type { SwitchProps as SwitchPrimitiveProps } from 'react-aria-components'
 import {
   Switch as SwitchPrimitive,
-  type SwitchProps as SwitchPrimitiveProps,
+
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { Label } from '@/core/components/ui/field'

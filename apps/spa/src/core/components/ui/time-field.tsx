@@ -1,10 +1,9 @@
 'use client'
 
+import type { TimeFieldProps as TimeFieldPrimitiveProps, TimeValue, ValidationResult } from 'react-aria-components'
 import {
   TimeField as TimeFieldPrimitive,
-  type TimeFieldProps as TimeFieldPrimitiveProps,
-  type TimeValue,
-  type ValidationResult,
+
 } from 'react-aria-components'
 
 import { DateInput } from '@/core/components/ui/date-field'

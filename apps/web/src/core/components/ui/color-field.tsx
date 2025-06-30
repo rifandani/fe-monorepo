@@ -1,6 +1,7 @@
 'use client'
 
 import type { ColorFieldProps as ColorFieldPrimitiveProps } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { ColorField as ColorFieldPrimitive } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
 import { ColorPicker } from '@/core/components/ui/color-picker'
@@ -9,7 +10,7 @@ import {
   Description,
   FieldError,
   FieldGroup,
-  type FieldProps,
+
   Input,
   Label,
 } from '@/core/components/ui/field'

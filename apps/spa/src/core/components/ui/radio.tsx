@@ -4,13 +4,14 @@ import type {
   RadioGroupProps as RadioGroupPrimitiveProps,
   RadioProps as RadioPrimitiveProps,
 } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import {
   composeRenderProps,
   RadioGroup as RadioGroupPrimitive,
   Radio as RadioPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { Description, FieldError, type FieldProps, Label } from '@/core/components/ui/field'
+import { Description, FieldError, Label } from '@/core/components/ui/field'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface RadioGroupProps extends RadioGroupPrimitiveProps, Omit<FieldProps, 'placeholder'> {}

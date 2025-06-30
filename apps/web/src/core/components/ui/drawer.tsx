@@ -7,6 +7,7 @@ import type {
   ModalOverlayProps,
   TextProps,
 } from 'react-aria-components'
+import type { ButtonProps } from '@/core/components/ui/button'
 import { AnimatePresence, motion } from 'motion/react'
 import { use } from 'react'
 import {
@@ -20,7 +21,7 @@ import {
   Text,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { Button, type ButtonProps } from '@/core/components/ui/button'
+import { Button } from '@/core/components/ui/button'
 
 const DrawerRoot = motion.create(ModalPrimitive)
 const DrawerOverlay = motion.create(ModalOverlay)

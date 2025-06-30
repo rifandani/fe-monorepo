@@ -1,11 +1,13 @@
 'use client'
 
 import type { ComponentProps } from 'react'
+import type { LineProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { Line, LineChart as LineChartPrimitive, type LineProps } from 'recharts'
+import type { BaseChartProps } from './chart'
+import { Line, LineChart as LineChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
-  type BaseChartProps,
+
   CartesianGrid,
   Chart,
   ChartLegend,

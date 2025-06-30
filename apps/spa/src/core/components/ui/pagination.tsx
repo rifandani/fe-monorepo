@@ -1,12 +1,13 @@
 'use client'
 
 import type { ListBoxItemProps, ListBoxProps, ListBoxSectionProps } from 'react-aria-components'
+import type { ButtonProps } from '@/core/components/ui/button'
 import {
   Icon,
 } from '@iconify/react'
 import { ListBox, ListBoxItem, ListBoxSection, Separator } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { type ButtonProps, buttonStyles } from '@/core/components/ui/button'
+import { buttonStyles } from '@/core/components/ui/button'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 type PaginationProps = React.ComponentProps<'nav'>

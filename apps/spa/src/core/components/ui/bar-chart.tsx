@@ -1,11 +1,13 @@
 'use client'
 
+import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { type ComponentProps, startTransition } from 'react'
+import type { BaseChartProps } from './chart'
+import { startTransition } from 'react'
 import { Bar, BarChart as BarChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
-  type BaseChartProps,
+
   CartesianGrid,
   Chart,
   ChartLegend,

@@ -1,9 +1,10 @@
 'use client'
 
+import type { CalendarDate } from '@internationalized/date'
 import type { CalendarState } from '@react-stately/calendar'
 import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
 import { Icon } from '@iconify/react'
-import { type CalendarDate, getLocalTimeZone, today } from '@internationalized/date'
+import { getLocalTimeZone, today } from '@internationalized/date'
 import { useDateFormatter } from '@react-aria/i18n'
 import { use } from 'react'
 import {

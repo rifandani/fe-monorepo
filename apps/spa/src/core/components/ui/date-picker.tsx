@@ -1,20 +1,19 @@
 'use client'
 
 import type { DateDuration } from '@internationalized/date'
+import type { DatePickerProps as DatePickerPrimitiveProps, DateValue, PopoverProps, ValidationResult } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   DatePicker as DatePickerPrimitive,
-  type DatePickerProps as DatePickerPrimitiveProps,
-  type DateValue,
-  type PopoverProps,
-  type ValidationResult,
+
 } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
 import { Button } from '@/core/components/ui/button'
 import { Calendar } from '@/core/components/ui/calendar'
 import { DateInput } from '@/core/components/ui/date-field'
-import { Description, FieldError, FieldGroup, type FieldProps, Label } from '@/core/components/ui/field'
+import { Description, FieldError, FieldGroup, Label } from '@/core/components/ui/field'
 import { Modal } from '@/core/components/ui/modal'
 import { PopoverContent } from '@/core/components/ui/popover'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'

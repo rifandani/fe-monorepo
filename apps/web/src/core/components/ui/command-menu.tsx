@@ -7,6 +7,7 @@ import type {
   MenuTriggerProps,
   SearchFieldProps,
 } from 'react-aria-components'
+import type { MenuSectionProps } from '@/core/components/ui/menu'
 import { Icon } from '@iconify/react'
 import { createContext, use, useEffect } from 'react'
 import {
@@ -30,7 +31,7 @@ import {
 import { twMerge } from 'tailwind-merge'
 import { DropdownKeyboard } from '@/core/components/ui/dropdown'
 import { Loader } from '@/core/components/ui/loader'
-import { Menu, type MenuSectionProps } from '@/core/components/ui/menu'
+import { Menu } from '@/core/components/ui/menu'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface CommandMenuProviderProps {

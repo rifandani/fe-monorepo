@@ -1,13 +1,13 @@
 'use client'
 
+import type { ButtonProps, NumberFieldProps as NumberFieldPrimitiveProps, ValidationResult } from 'react-aria-components'
 import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   Button,
-  type ButtonProps,
+
   NumberField as NumberFieldPrimitive,
-  type NumberFieldProps as NumberFieldPrimitiveProps,
-  type ValidationResult,
+
 } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'

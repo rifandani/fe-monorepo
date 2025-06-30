@@ -1,12 +1,14 @@
 'use client'
 
+import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { CurveType } from 'recharts/types/shape/Curve'
-import { type ComponentProps, Fragment, useId } from 'react'
+import type { BaseChartProps } from './chart'
+import { Fragment, useId } from 'react'
 import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
-  type BaseChartProps,
+
   CartesianGrid,
   Chart,
   ChartLegend,

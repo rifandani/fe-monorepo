@@ -2,10 +2,11 @@
 
 import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
+import type { BaseChartProps } from './chart.js'
 import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
-  type BaseChartProps,
+
   Chart,
   ChartTooltip,
   ChartTooltipContent,

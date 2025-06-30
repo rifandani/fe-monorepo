@@ -1,19 +1,20 @@
 'use client'
 
+import type { KeyboardEvent, RefObject } from 'react'
 import type { ComboBoxProps, GroupProps, Key, ListBoxProps, Selection } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
 import { Icon } from '@iconify/react'
 import {
   Children,
   isValidElement,
-  type KeyboardEvent,
-  type RefObject,
+
   useEffect,
   useRef,
   useState,
 } from 'react'
 import { Button, ComboBox, Group, ListBox } from 'react-aria-components'
 import { DropdownItem, DropdownLabel, DropdownSection } from '@/core/components/ui/dropdown'
-import { Description, FieldGroup, type FieldProps, Input, Label } from '@/core/components/ui/field'
+import { Description, FieldGroup, Input, Label } from '@/core/components/ui/field'
 
 import { PopoverContent } from '@/core/components/ui/popover'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'

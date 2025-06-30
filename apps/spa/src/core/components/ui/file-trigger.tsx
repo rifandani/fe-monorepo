@@ -1,12 +1,14 @@
 'use client'
 
+import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
+import type { buttonStyles } from '@/core/components/ui/button'
 import { Icon } from '@iconify/react'
 import {
   FileTrigger as FileTriggerPrimitive,
-  type FileTriggerProps as FileTriggerPrimitiveProps,
+
 } from 'react-aria-components'
-import { Button, type buttonStyles } from '@/core/components/ui/button'
+import { Button } from '@/core/components/ui/button'
 import { Loader } from '@/core/components/ui/loader'
 
 interface FileTriggerProps extends FileTriggerPrimitiveProps, VariantProps<typeof buttonStyles> {

@@ -2,12 +2,13 @@
 
 import type { GroupProps, SeparatorProps, ToolbarProps } from 'react-aria-components'
 
+import type { ToggleProps } from '@/core/components/ui/toggle'
 import { createContext, use } from 'react'
 import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 import { Separator } from '@/core/components/ui/separator'
-import { Toggle, type ToggleProps } from '@/core/components/ui/toggle'
+import { Toggle } from '@/core/components/ui/toggle'
 
 const ToolbarContext = createContext<{ orientation?: ToolbarProps['orientation'] }>({
   orientation: 'horizontal',
