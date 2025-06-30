@@ -7,7 +7,7 @@ import type {
   MenuTriggerProps,
   SearchFieldProps,
 } from 'react-aria-components'
-import { IconSearch } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { createContext, use, useEffect } from 'react'
 import {
   Autocomplete,
@@ -178,7 +178,8 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
             <Loader className="size-4.5" variant="spin" />
           )
         : (
-            <IconSearch
+            <Icon
+              icon="lucide:search"
               data-slot="command-menu-search-icon"
               className="size-5 shrink-0 text-muted-fg"
             />

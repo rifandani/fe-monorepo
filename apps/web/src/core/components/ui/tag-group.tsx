@@ -4,7 +4,7 @@ import type {
   TagListProps,
   TagProps as TagPrimitiveProps,
 } from 'react-aria-components'
-import { IconX } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   Button,
   composeRenderProps,
@@ -91,7 +91,7 @@ function Tag({ className, children, ...props }: TagProps) {
                 hover:text-fg
               `}
             >
-              <IconX data-slot="close" className="size-3" />
+              <Icon icon="lucide:x" data-slot="close" className="size-3" />
             </Button>
           )}
         </>

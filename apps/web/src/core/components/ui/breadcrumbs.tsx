@@ -1,6 +1,6 @@
 'use client'
 import type { BreadcrumbProps, BreadcrumbsProps, LinkProps } from 'react-aria-components'
-import { IconChevronLgRight } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { createContext, use } from 'react'
 import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
@@ -62,7 +62,7 @@ function Separator({
 }) {
   return (
     <span className="*:shrink-0 *:text-muted-fg *:data-[slot=icon]:size-3.5">
-      {separator === 'chevron' && <IconChevronLgRight />}
+      {separator === 'chevron' && <Icon icon="lucide:chevron-right" />}
       {separator === 'slash' && <span className="text-muted-fg">/</span>}
     </span>
   )

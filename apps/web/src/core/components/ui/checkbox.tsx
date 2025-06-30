@@ -4,7 +4,7 @@ import type {
   CheckboxGroupProps as CheckboxGroupPrimitiveProps,
   CheckboxProps as CheckboxPrimitiveProps,
 } from 'react-aria-components'
-import { IconCheck, IconMinus } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   CheckboxGroup as CheckboxGroupPrimitive,
   Checkbox as CheckboxPrimitive,
@@ -53,11 +53,11 @@ function Checkbox({ className, children, description, label, ...props }: Checkbo
 
           const indicator = isIndeterminate
             ? (
-                <IconMinus data-slot="check-indicator" />
+                <Icon icon="lucide:minus" data-slot="check-indicator" />
               )
             : isSelected
               ? (
-                  <IconCheck data-slot="check-indicator" />
+                  <Icon icon="lucide:check" data-slot="check-indicator" />
                 )
               : null
 

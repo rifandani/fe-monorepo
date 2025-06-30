@@ -1,7 +1,7 @@
 'use client'
 
 import type { ComboBoxProps, GroupProps, Key, ListBoxProps, Selection } from 'react-aria-components'
-import { IconChevronsY } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   Children,
   isValidElement,
@@ -189,7 +189,8 @@ function MultipleSelect<T extends object>({
                     text-muted-fg outline-hidden
                   `}
                 >
-                  <IconChevronsY
+                  <Icon
+                    icon="lucide:chevron-down"
                     data-slot="chevron"
                     className={`
                       size-4 text-muted-fg

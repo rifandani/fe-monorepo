@@ -1,7 +1,7 @@
 'use client'
 
 import type { ListBoxItemProps, ListBoxProps } from 'react-aria-components'
-import { IconCheck, IconHamburger } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   composeRenderProps,
   ListBoxItem as ListBoxItemPrimitive,
@@ -46,7 +46,8 @@ function ListBoxItem<T extends object>({ children, className, ...props }: ListBo
         return (
           <>
             {allowsDragging && (
-              <IconHamburger
+              <Icon
+                icon="lucide:menu"
                 className={twMerge(
                   'size-4 shrink-0 text-muted-fg transition',
                   isFocused && 'text-fg',
@@ -55,7 +56,7 @@ function ListBoxItem<T extends object>({ children, className, ...props }: ListBo
                 )}
               />
             )}
-            {isSelected && <IconCheck className="-mx-0.5 mr-2" data-slot="checked-icon" />}
+            {isSelected && <Icon icon="lucide:check" className="-mx-0.5 mr-2" data-slot="checked-icon" />}
             {typeof children === 'function'
               ? (
                   children(renderProps)

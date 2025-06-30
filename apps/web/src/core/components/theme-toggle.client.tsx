@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   return (
     <Menu>
-      <Button appearance="outline" data-slot="menu-trigger">
+      <Button intent="outline" data-slot="menu-trigger">
         <Icon
           icon={
             theme === 'system'

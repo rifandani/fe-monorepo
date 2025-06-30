@@ -1,6 +1,6 @@
 'use client'
 
-import { IconChevronDown, IconChevronUp, IconMinus, IconPlus } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   Button,
@@ -131,18 +131,18 @@ function StepperButton({
       ? (
           slot === 'increment'
             ? (
-                <IconChevronUp className="size-5" />
+                <Icon icon="lucide:chevron-up" className="size-5" />
               )
             : (
-                <IconChevronDown className="size-5" />
+                <Icon icon="lucide:chevron-down" className="size-5" />
               )
         )
       : slot === 'increment'
         ? (
-            <IconPlus />
+            <Icon icon="lucide:plus" />
           )
         : (
-            <IconMinus />
+            <Icon icon="lucide:minus" />
           )
   return (
     <Button

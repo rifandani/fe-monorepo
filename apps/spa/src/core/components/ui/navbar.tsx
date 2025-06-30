@@ -1,7 +1,7 @@
 'use client'
 
 import type { LinkProps } from 'react-aria-components'
-import { IconHamburger } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { createContext, use, useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-aria-components'
@@ -325,7 +325,7 @@ function NavbarTrigger({ className, onPress, ref, ...props }: NavbarTriggerProps
       }}
       {...props}
     >
-      <IconHamburger />
+      <Icon icon="lucide:menu" />
       <span className="sr-only">Toggle Navbar</span>
     </Button>
   )

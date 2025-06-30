@@ -1,7 +1,7 @@
 'use client'
 
 import type { VariantProps } from 'tailwind-variants'
-import { IconCamera, IconFolder, IconPaperclip45 } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   FileTrigger as FileTriggerPrimitive,
   type FileTriggerProps as FileTriggerPrimitiveProps,
@@ -36,14 +36,14 @@ function FileTrigger({
           ? (
               props.defaultCamera
                 ? (
-                    <IconCamera />
+                    <Icon icon="lucide:camera" />
                   )
                 : props.acceptDirectory
                   ? (
-                      <IconFolder />
+                      <Icon icon="lucide:folder" />
                     )
                   : (
-                      <IconPaperclip45 />
+                      <Icon icon="lucide:paperclip" />
                     )
             )
           : (

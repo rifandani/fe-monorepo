@@ -28,7 +28,7 @@ import {
 } from 'recharts'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
-import { Separator } from './separator'
+import { Separator } from './separator.js'
 
 // #region Chart Types
 type ChartType = 'default' | 'stacked' | 'percent'

@@ -2,12 +2,8 @@
 
 import type { ListBoxItemProps, ListBoxProps, ListBoxSectionProps } from 'react-aria-components'
 import {
-  IconChevronLgLeft,
-  IconChevronLgRight,
-  IconChevronWallLeft,
-  IconChevronWallRight,
-  IconDotsHorizontal,
-} from '@intentui/icons'
+  Icon,
+} from '@iconify/react'
 import { ListBox, ListBoxItem, ListBoxSection, Separator } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { type ButtonProps, buttonStyles } from '@/core/components/ui/button'
@@ -157,17 +153,17 @@ function PaginationItem({
           aria-hidden
           className={twMerge(`flex size-9 items-center justify-center`, className)}
         >
-          <IconDotsHorizontal />
+          <Icon icon="mdi:dots-horizontal" />
         </span>,
       )
     case 'previous':
-      return renderPaginationIndicator(<IconChevronLgLeft />)
+      return renderPaginationIndicator(<Icon icon="lucide:chevron-left" />)
     case 'next':
-      return renderPaginationIndicator(<IconChevronLgRight />)
+      return renderPaginationIndicator(<Icon icon="lucide:chevron-right" />)
     case 'first':
-      return renderPaginationIndicator(<IconChevronWallLeft />)
+      return renderPaginationIndicator(<Icon icon="mdi:skip-previous-outline" />)
     case 'last':
-      return renderPaginationIndicator(<IconChevronWallRight />)
+      return renderPaginationIndicator(<Icon icon="mdi:skip-next-outline" />)
     default:
       return renderListItem(
         {

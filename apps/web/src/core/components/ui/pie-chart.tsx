@@ -11,7 +11,7 @@ import {
   ChartTooltipContent,
   DEFAULT_COLORS,
   getColorValue,
-} from './chart'
+} from './chart.js'
 
 const sumNumericArray = (arr: number[]): number => arr.reduce((sum, num) => sum + num, 0)
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { IconChevronLgDown, IconHamburger } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { createContext, use } from 'react'
 import {
   Button,
@@ -156,7 +156,8 @@ function TableColumn({ isResizable = false, className, ...props }: TableColumnPr
                 className,
               )}
             >
-              <IconChevronLgDown
+              <Icon
+                icon="lucide:chevron-down"
                 className={values.sortDirection === 'ascending' ? 'rotate-180' : ''}
               />
             </span>
@@ -281,7 +282,7 @@ function TableRow<T extends object>({
               focus-visible:ring focus-visible:ring-ring
             `}
           >
-            <IconHamburger />
+            <Icon icon="lucide:menu" />
           </Button>
         </TableCell>
       )}

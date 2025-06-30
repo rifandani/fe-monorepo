@@ -1,6 +1,6 @@
 'use client'
 
-import { IconBulletFill } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { OTPInput, OTPInputContext } from 'input-otp'
 import { use } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -84,7 +84,7 @@ type InputOTPSeparatorProps = React.ComponentProps<'div'>
 function InputOTPSeparator({ ref, ...props }: InputOTPSeparatorProps) {
   return (
     <div ref={ref} {...props}>
-      <IconBulletFill className="size-2" />
+      <Icon icon="mdi:circle-medium" className="size-2" />
     </div>
   )
 }

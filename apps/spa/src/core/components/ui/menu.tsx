@@ -8,7 +8,7 @@ import type {
   MenuTriggerProps as MenuTriggerPrimitiveProps,
 } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
-import { IconBulletFill, IconCheck, IconChevronLgRight } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   Button,
   Collection,
@@ -145,11 +145,11 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
                     **:data-[slot=indicator]:shrink-0
                   `}
                 >
-                  <IconBulletFill data-slot="indicator" />
+                  <Icon icon="mdi:circle-medium" data-slot="indicator" />
                 </span>
               )}
               {values.selectionMode === 'multiple' && (
-                <IconCheck className="-mx-0.5 mr-2 size-4" data-slot="check-indicator" />
+                <Icon icon="lucide:check" className="-mx-0.5 mr-2 size-4" data-slot="check-indicator" />
               )}
             </>
           )}
@@ -157,7 +157,8 @@ function MenuItem({ className, isDanger = false, children, ...props }: MenuItemP
           {typeof children === 'function' ? children(values) : children}
 
           {values.hasSubmenu && (
-            <IconChevronLgRight
+            <Icon
+              icon="lucide:chevron-right"
               data-slot="chevron"
               className="absolute right-2 size-3.5"
             />

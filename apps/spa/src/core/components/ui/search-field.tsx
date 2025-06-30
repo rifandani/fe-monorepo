@@ -1,7 +1,7 @@
 'use client'
 
 import type { SearchFieldProps as SearchFieldPrimitiveProps } from 'react-aria-components'
-import { IconSearch, IconX } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
 import {
   Description,
@@ -46,7 +46,7 @@ function SearchField({
             : children || (
               <FieldGroup>
                 {label && <Label>{label}</Label>}
-                {isPending ? <Loader variant="spin" /> : <IconSearch />}
+                {isPending ? <Loader variant="spin" /> : <Icon icon="lucide:search" />}
                 <Input placeholder={placeholder ?? 'Search...'} />
 
                 <Button className={`
@@ -56,7 +56,7 @@ function SearchField({
                   pressed:text-fg
                 `}
                 >
-                  <IconX />
+                  <Icon icon="lucide:x" />
                 </Button>
                 {description && <Description>{description}</Description>}
                 <FieldError>{errorMessage}</FieldError>

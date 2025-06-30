@@ -1,7 +1,7 @@
 'use client'
 
 import type { DateDuration } from '@internationalized/date'
-import { IconCalendarDays } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import {
   DatePicker as DatePickerPrimitive,
@@ -84,7 +84,8 @@ function DatePickerIcon() {
         pressed:bg-transparent
       `}
     >
-      <IconCalendarDays
+      <Icon
+        icon="lucide:calendar-days"
         aria-hidden
         className={`
           ml-2

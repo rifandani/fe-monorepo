@@ -5,7 +5,7 @@ import type {
   SelectProps as SelectPrimitiveProps,
 } from 'react-aria-components'
 import type { FieldProps } from '@/core/components/ui/field'
-import { IconChevronsY } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { Button, ListBox, Select as SelectPrimitive, SelectValue } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
 import {
@@ -182,7 +182,8 @@ function SelectTrigger({ children, className, ...props }: SelectTriggerProps) {
                   `,
                 ])}
               />
-              <IconChevronsY
+              <Icon
+                icon="lucide:chevron-down"
                 data-slot="chevron"
                 className={`
                   -mr-1 shrink-0 text-muted-fg

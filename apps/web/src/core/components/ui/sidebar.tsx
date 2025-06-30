@@ -8,7 +8,7 @@ import type {
   LinkRenderProps,
   SeparatorProps as SidebarSeparatorProps,
 } from 'react-aria-components'
-import { IconChevronLgDown, IconHamburger, IconSidebarFill } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
 import {
@@ -805,7 +805,8 @@ function SidebarDisclosureTrigger({ className, ref, ...props }: SidebarDisclosur
           <>
             {typeof props.children === 'function' ? props.children(values) : props.children}
             {state !== 'collapsed' && (
-              <IconChevronLgDown
+              <Icon
+                icon="lucide:chevron-down"
                 data-slot="chevron"
                 className={`
                   z-10 ml-auto size-3.5 transition-transform
@@ -868,15 +869,19 @@ function SidebarTrigger({ onPress, children, ...props }: React.ComponentProps<ty
     >
       {children || (
         <>
-          <IconSidebarFill className={`
-            hidden
-            md:inline
-          `}
+          <Icon
+            icon="lucide:sidebar"
+            className={`
+              hidden
+              md:inline
+            `}
           />
-          <IconHamburger className={`
-            inline
-            md:hidden
-          `}
+          <Icon
+            icon="lucide:menu"
+            className={`
+              inline
+              md:hidden
+            `}
           />
           <span className="sr-only">Toggle Sidebar</span>
         </>

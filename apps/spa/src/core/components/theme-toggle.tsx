@@ -13,7 +13,7 @@ export function ThemeToggle() {
 
   return (
     <Menu>
-      <Button appearance="outline">
+      <Button intent="outline">
         <Icon
           icon={
             theme === 'auto'

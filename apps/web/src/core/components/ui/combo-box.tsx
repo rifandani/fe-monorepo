@@ -7,7 +7,7 @@ import type {
   ListBoxProps,
   PopoverProps,
 } from 'react-aria-components'
-import { IconChevronsY } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   ComboBoxContext,
   ComboBox as ComboboxPrimitive,
@@ -117,7 +117,8 @@ function ComboBoxInput(props: InputProps) {
         `}
       >
         {!context?.inputValue && (
-          <IconChevronsY
+          <Icon
+            icon="lucide:chevron-down"
             data-slot="chevron"
             className={`
               size-4 shrink-0 text-muted-fg

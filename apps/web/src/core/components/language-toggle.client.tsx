@@ -17,7 +17,7 @@ export function LanguageToggle() {
 
   return (
     <Menu>
-      <Button appearance="outline" data-slot="menu-trigger">
+      <Button intent="outline" data-slot="menu-trigger">
         <Icon
           icon={locale === 'en' ? 'flag:us-1x1' : 'flag:id-1x1'}
           className="size-6"

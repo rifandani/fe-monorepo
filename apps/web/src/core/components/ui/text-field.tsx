@@ -2,7 +2,7 @@
 
 import type { InputProps, TextFieldProps as TextFieldPrimitiveProps } from 'react-aria-components'
 import type { FieldProps } from '@/core/components/ui/field'
-import { IconEye, IconEyeClosed } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import { TextField as TextFieldPrimitive } from 'react-aria-components'
 import { Description, FieldError, FieldGroup, Input, Label } from '@/core/components/ui/field'
@@ -79,7 +79,7 @@ function TextField({
                           focus-visible:*:data-[slot=icon]:text-primary
                         `}
                       >
-                        {isPasswordVisible ? <IconEyeClosed /> : <IconEye />}
+                        {isPasswordVisible ? <Icon icon="lucide:eye-off" /> : <Icon icon="lucide:eye" />}
                       </button>
                     )
                   : isPending

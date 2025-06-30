@@ -1,7 +1,7 @@
 'use client'
 
 import type { TreeItemProps, TreeProps } from 'react-aria-components'
-import { IconChevronRight } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   Button,
   composeRenderProps,
@@ -110,7 +110,7 @@ function TreeContent({ className, ...props }: TreeContentProps) {
 function TreeIndicator() {
   return (
     <Button className="relative shrink-0" slot="chevron">
-      <IconChevronRight className="size-5" />
+      <Icon icon="lucide:chevron-right" className="size-5" />
     </Button>
   )
 }

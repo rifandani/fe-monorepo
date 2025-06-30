@@ -1,6 +1,6 @@
 'use client'
 
-import { IconCircleExclamation } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { motion } from 'motion/react'
 import {
   Meter as MeterPrimitive,
@@ -33,7 +33,8 @@ function Meter({ label, className, ...props }: MeterProps) {
               `}
             >
               {percentage >= 80 && (
-                <IconCircleExclamation
+                <Icon
+                  icon="lucide:alert-circle"
                   aria-label="Alert"
                   className={`
                     inline-block size-4 fill-danger/20 align-text-bottom

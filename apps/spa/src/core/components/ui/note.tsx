@@ -1,5 +1,6 @@
-import { IconCircleCheckFill, IconCircleExclamationFill, IconCircleInfoFill } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { twMerge } from 'tailwind-merge'
+import { match } from 'ts-pattern'
 
 interface NoteProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
   intent?: 'default' | 'info' | 'warning' | 'danger' | 'success'
@@ -7,16 +8,6 @@ interface NoteProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
 }
 
 function Note({ indicator = true, intent = 'default', className, ...props }: NoteProps) {
-  const iconMap: Record<string, React.ElementType | null> = {
-    info: IconCircleInfoFill,
-    warning: IconCircleExclamationFill,
-    danger: IconCircleExclamationFill,
-    success: IconCircleCheckFill,
-    default: null,
-  }
-
-  const IconComponent = iconMap[intent] || null
-
   return (
     <div
       className={twMerge([
@@ -68,9 +59,32 @@ function Note({ indicator = true, intent = 'default', className, ...props }: Not
       ])}
       {...props}
     >
-      {IconComponent && indicator && (
-        <IconComponent className="col-start-1 size-5 shrink-0" />
-      )}
+      {indicator && match(intent)
+        .with('info', () => (
+          <Icon
+            icon="mdi:alert-circle-outline"
+            className="col-start-1 size-5 shrink-0"
+          />
+        ))
+        .with('warning', () => (
+          <Icon
+            icon="mdi:alert-outline"
+            className="col-start-1 size-5 shrink-0"
+          />
+        ))
+        .with('danger', () => (
+          <Icon
+            icon="mdi:alert-outline"
+            className="col-start-1 size-5 shrink-0"
+          />
+        ))
+        .with('success', () => (
+          <Icon
+            icon="mdi:check-circle-outline"
+            className="col-start-1 size-5 shrink-0"
+          />
+        ))
+        .otherwise(() => null)}
       <div className={`
         text-base/6 text-pretty
         group-has-data-[slot=icon]:col-start-2

@@ -1,6 +1,6 @@
 'use client'
 
-import { IconEyeDropper } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { parseColor } from '@react-stately/color'
 import { use } from 'react'
 import {
@@ -115,7 +115,7 @@ function EyeDropper() {
         eyeDropper?.open().then(result => state.setColor(parseColor(result.sRGBHex)))
       }}
     >
-      <IconEyeDropper />
+      <Icon icon="mdi:eyedropper" />
     </Button>
   )
 }

@@ -8,14 +8,12 @@ import {
   useState,
 } from 'react'
 
-const TranslationContext = createContext<
-  | (ReturnType<typeof initI18n> & {
-    setLocale: (locale: string) => void
-    locale: string
-    userLocale: string
-  })
-  | null
->(null)
+const TranslationContext = createContext<(ReturnType<typeof initI18n> & {
+  setLocale: (locale: string) => void
+  locale: string
+  userLocale: string
+}) | null
+  >(null)
 
 export function TranslationProvider({
   defaultLocale,

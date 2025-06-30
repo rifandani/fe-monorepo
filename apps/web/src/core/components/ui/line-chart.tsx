@@ -18,7 +18,7 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from './chart'
+} from './chart.js'
 
 interface LineChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {

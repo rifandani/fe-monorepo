@@ -2,7 +2,7 @@
 
 import type { CalendarState } from '@react-stately/calendar'
 import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
-import { IconChevronLgLeft, IconChevronLgRight } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import { type CalendarDate, getLocalTimeZone, today } from '@internationalized/date'
 import { useDateFormatter } from '@react-aria/i18n'
 import { use } from 'react'
@@ -135,7 +135,7 @@ function CalendarHeader({
           intent="plain"
           slot="previous"
         >
-          {direction === 'rtl' ? <IconChevronLgRight /> : <IconChevronLgLeft />}
+          {direction === 'rtl' ? <Icon icon="lucide:chevron-right" /> : <Icon icon="lucide:chevron-left" />}
         </Button>
         <Button
           size="sq-sm"
@@ -148,7 +148,7 @@ function CalendarHeader({
           intent="plain"
           slot="next"
         >
-          {direction === 'rtl' ? <IconChevronLgLeft /> : <IconChevronLgRight />}
+          {direction === 'rtl' ? <Icon icon="lucide:chevron-left" /> : <Icon icon="lucide:chevron-right" />}
         </Button>
       </div>
     </header>

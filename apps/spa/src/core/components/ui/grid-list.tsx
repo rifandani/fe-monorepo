@@ -1,6 +1,6 @@
 import type React from 'react'
 import type { GridListItemProps, GridListProps } from 'react-aria-components'
-import { IconHamburger } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   Button,
   composeRenderProps,
@@ -83,7 +83,7 @@ function GridListItem({ className, children, ...props }: GridListItemProps) {
                 *:data-[slot=icon]:text-muted-fg
               `}
             >
-              <IconHamburger />
+              <Icon icon="lucide:menu" />
             </Button>
           )}
 

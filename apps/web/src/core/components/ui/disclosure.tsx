@@ -6,7 +6,7 @@ import type {
   DisclosureProps as CollapsibleProps,
   DisclosurePanelProps as DisclosurePanelPrimitiveProps,
 } from 'react-aria-components'
-import { IconChevronLeft } from '@intentui/icons'
+import { Icon } from '@iconify/react'
 import {
   DisclosureGroup as Accordion,
   Button,
@@ -76,7 +76,8 @@ function DisclosureTrigger({ className, ref, ...props }: DisclosureTriggerProps)
         {values => (
           <>
             {typeof props.children === 'function' ? props.children(values) : props.children}
-            <IconChevronLeft
+            <Icon
+              icon="lucide:chevron-left"
               data-slot="disclosure-chevron"
               className={`
                 internal-chevron ml-auto size-4 shrink-0 transition duration-300
