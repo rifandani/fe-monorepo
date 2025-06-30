@@ -1,3 +1,5 @@
+'use client'
+
 import { Icon } from '@iconify/react'
 import { twMerge } from 'tailwind-merge'
 import { match } from 'ts-pattern'

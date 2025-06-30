@@ -1,3 +1,5 @@
+'use client'
+
 import type React from 'react'
 import type { GridListItemProps, GridListProps } from 'react-aria-components'
 import { Icon } from '@iconify/react'
