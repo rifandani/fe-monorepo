@@ -4,7 +4,6 @@
 
 ### 🎯 Todo
 
-- [ ] Upgrade `intentui` to v3 next start of month
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 

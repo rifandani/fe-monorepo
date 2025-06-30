@@ -2,13 +2,14 @@
 
 import { composeRenderProps, Text, ToggleButton } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-import { buttonStyles } from './button'
+
+import { buttonStyles } from '@/core/components/ui/button'
 
 const showMoreStyles = tv({
   base: `
     text-sm leading-6
-    before:border-muted
-    after:border-muted
+    before:border-border
+    after:border-border
   `,
   variants: {
     orientation: {
@@ -50,6 +51,7 @@ interface ShowMoreProps extends React.ComponentProps<typeof ToggleButton> {
 
 function ShowMore({
   as = 'button',
+  children,
   orientation = 'horizontal',
   className,
   ...props
@@ -60,11 +62,9 @@ function ShowMore({
         ? (
             <ToggleButton
               {...props}
-              className={buttonStyles({ shape: 'circle', intent: 'outline', size: 'small' })}
+              className={buttonStyles({ isCircle: true, intent: 'outline', size: 'sm' })}
             >
-              {composeRenderProps(props.children, children => (
-                <>{children}</>
-              ))}
+              {composeRenderProps(children, children => children)}
             </ToggleButton>
           )
         : (

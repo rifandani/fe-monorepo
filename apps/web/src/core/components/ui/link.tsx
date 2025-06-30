@@ -1,9 +1,8 @@
 'use client'
 
-import type { LinkProps as LinkPrimitiveProps } from 'react-aria-components'
-import { Link as LinkPrimitive } from 'react-aria-components'
+import { Link as LinkPrimitive, type LinkProps as LinkPrimitiveProps } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
-import { composeTailwindRenderProps } from './primitive'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface LinkProps extends LinkPrimitiveProps {
   intent?: 'primary' | 'secondary' | 'unstyled'
@@ -30,11 +29,11 @@ function Link({ className, ref, intent = 'unstyled', ...props }: LinkProps) {
           intent === 'unstyled' && 'text-current',
           intent === 'primary' && `
             text-primary
-            hover:underline
+            hover:text-primary/80
           `,
           intent === 'secondary' && `
-            text-secondary-fg
-            hover:underline
+            text-muted-fg
+            hover:text-fg
           `,
         ]),
       )}

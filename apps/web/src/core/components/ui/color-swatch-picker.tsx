@@ -6,8 +6,8 @@ import {
   ColorSwatchPicker as ColorSwatchPickerPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { ColorSwatch } from './color-swatch'
-import { composeTailwindRenderProps } from './primitive'
+import { ColorSwatch } from '@/core/components/ui/color-swatch'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 function ColorSwatchPicker({
   children,
@@ -31,7 +31,7 @@ function ColorSwatchPickerItem({ className, children, ...props }: ColorSwatchPic
     <ColorSwatchPickerItemPrimitive
       className={composeTailwindRenderProps(
         className,
-        'relative overflow-hidden rounded-md outline-hidden disabled:opacity-50',
+        'relative overflow-hidden rounded-sm outline-hidden disabled:opacity-50',
       )}
       {...props}
     >

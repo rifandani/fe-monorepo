@@ -1,17 +1,18 @@
 'use client'
 
+import type { ClassNameValue } from 'tailwind-merge'
 import { composeRenderProps } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 
-function composeTailwindRenderProps<T>(
+export function composeTailwindRenderProps<T>(
   className: string | ((v: T) => string) | undefined,
-  tailwind: string,
+  tailwind: ClassNameValue,
 ): string | ((v: T) => string) {
   return composeRenderProps(className, className => twMerge(tailwind, className))
 }
 
-const focusRing = tv({
+export const focusRing = tv({
   variants: {
     isFocused: { true: `
       ring-4 ring-ring/20 outline-hidden
@@ -22,7 +23,7 @@ const focusRing = tv({
   },
 })
 
-const focusStyles = tv({
+export const focusStyles = tv({
   extend: focusRing,
   variants: {
     isFocused: { true: `
@@ -35,5 +36,3 @@ const focusStyles = tv({
     ` },
   },
 })
-
-export { composeTailwindRenderProps, focusRing, focusStyles }

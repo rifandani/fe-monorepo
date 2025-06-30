@@ -2,7 +2,7 @@ import { twMerge } from 'tailwind-merge'
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   constrained?: boolean
-  ref?: React.Ref<HTMLDivElement>
+  ref?: React.RefObject<HTMLDivElement>
 }
 
 function Container({ className, constrained = false, ref, ...props }: ContainerProps) {
@@ -11,18 +11,13 @@ function Container({ className, constrained = false, ref, ...props }: ContainerP
       className={twMerge(
         `
           mx-auto w-full max-w-7xl
-          lg:max-w-(--breakpoint-xl)
           2xl:max-w-(--breakpoint-2xl)
         `,
         constrained
-          ? `
-            sm:px-6
-            lg:px-8
-          `
+          ? 'sm:px-6'
           : `
             px-4
             sm:px-6
-            lg:px-8
           `,
         className,
       )}

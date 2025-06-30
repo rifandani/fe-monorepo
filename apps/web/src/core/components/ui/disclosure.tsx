@@ -6,7 +6,7 @@ import type {
   DisclosureProps as CollapsibleProps,
   DisclosurePanelProps as DisclosurePanelPrimitiveProps,
 } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { IconChevronLeft } from '@intentui/icons'
 import {
   DisclosureGroup as Accordion,
   Button,
@@ -14,7 +14,7 @@ import {
   DisclosurePanel as CollapsiblePanel,
   Heading,
 } from 'react-aria-components'
-import { composeTailwindRenderProps } from './primitive'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface DisclosureGroupProps extends AccordionProps {
   ref?: React.RefObject<HTMLDivElement>
@@ -27,7 +27,7 @@ function DisclosureGroup({ children, ref, className, ...props }: DisclosureGroup
       {...props}
       className={composeTailwindRenderProps(
         className,
-        'peer cursor-pointer disabled:cursor-not-allowed disabled:opacity-75',
+        'peer cursor-default disabled:cursor-not-allowed disabled:opacity-75',
       )}
     >
       {values => (
@@ -76,8 +76,7 @@ function DisclosureTrigger({ className, ref, ...props }: DisclosureTriggerProps)
         {values => (
           <>
             {typeof props.children === 'function' ? props.children(values) : props.children}
-            <Icon
-              icon="mdi:chevron-left"
+            <IconChevronLeft
               data-slot="disclosure-chevron"
               className={`
                 internal-chevron ml-auto size-4 shrink-0 transition duration-300

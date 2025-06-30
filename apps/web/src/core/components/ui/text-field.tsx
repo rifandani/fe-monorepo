@@ -1,39 +1,25 @@
 'use client'
 
-import type { TextInputDOMProps } from '@react-types/shared'
-import type { TextFieldProps as TextFieldPrimitiveProps } from 'react-aria-components'
-import type { FieldProps } from './field'
-import { Icon } from '@iconify/react'
+import type { InputProps, TextFieldProps as TextFieldPrimitiveProps } from 'react-aria-components'
+import type { FieldProps } from '@/core/components/ui/field'
+import { IconEye, IconEyeClosed } from '@intentui/icons'
 import { useState } from 'react'
-import {
-  Button as ButtonPrimitive,
-  TextField as TextFieldPrimitive,
+import { TextField as TextFieldPrimitive } from 'react-aria-components'
+import { Description, FieldError, FieldGroup, Input, Label } from '@/core/components/ui/field'
+import { Loader } from '@/core/components/ui/loader'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-} from 'react-aria-components'
-import { Description, FieldError, FieldGroup, Input, Label } from './field'
-import { Loader } from './loader'
-import { composeTailwindRenderProps } from './primitive'
-
-type InputType = Exclude<TextInputDOMProps['type'], 'password'>
+type InputType = Exclude<InputProps['type'], 'password'>
 
 interface BaseTextFieldProps extends TextFieldPrimitiveProps, FieldProps {
-  prefix?: React.ReactNode
-  suffix?: React.ReactNode
+  prefix?: React.ReactNode | string
+  suffix?: React.ReactNode | string
   isPending?: boolean
-  className?: string
 }
 
-interface RevealableTextFieldProps extends BaseTextFieldProps {
-  isRevealable: true
-  type: 'password'
-}
-
-interface NonRevealableTextFieldProps extends BaseTextFieldProps {
-  isRevealable?: never
-  type?: InputType
-}
-
-type TextFieldProps = RevealableTextFieldProps | NonRevealableTextFieldProps
+type TextFieldProps
+  = | (BaseTextFieldProps & { isRevealable: true, type: 'password' })
+    | (BaseTextFieldProps & { isRevealable?: never, type?: InputType })
 
 function TextField({
   placeholder,
@@ -57,7 +43,10 @@ function TextField({
     <TextFieldPrimitive
       type={inputType}
       {...props}
-      className={composeTailwindRenderProps(className, 'group flex flex-col gap-y-1')}
+      className={composeTailwindRenderProps(
+        className,
+        'group flex flex-col gap-y-1 *:data-[slot=label]:font-medium',
+      )}
     >
       {!props.children
         ? (
@@ -70,7 +59,7 @@ function TextField({
               >
                 {prefix && typeof prefix === 'string'
                   ? (
-                      <span className="ml-2 text-muted-fg">{prefix}</span>
+                      <span className="pl-2 text-muted-fg">{prefix}</span>
                     )
                   : (
                       prefix
@@ -78,31 +67,20 @@ function TextField({
                 <Input placeholder={placeholder} />
                 {isRevealable
                   ? (
-                      <ButtonPrimitive
+                      <button
                         type="button"
+                        tabIndex={-1}
                         aria-label="Toggle password visibility"
-                        onPress={handleTogglePasswordVisibility}
+                        onClick={handleTogglePasswordVisibility}
                         className={`
-                          relative mr-1 grid shrink-0 place-content-center
+                          relative mr-0.5 grid shrink-0 place-content-center
                           rounded-sm border-transparent outline-hidden
                           *:data-[slot=icon]:text-muted-fg
-                          data-focus-visible:*:data-[slot=icon]:text-primary
+                          focus-visible:*:data-[slot=icon]:text-primary
                         `}
                       >
-                        {isPasswordVisible
-                          ? (
-                              <Icon
-                                icon="mdi:eye-off"
-                                className="size-4"
-                              />
-                            )
-                          : (
-                              <Icon
-                                icon="mdi:eye"
-                                className="size-4"
-                              />
-                            )}
-                      </ButtonPrimitive>
+                        {isPasswordVisible ? <IconEyeClosed /> : <IconEye />}
+                      </button>
                     )
                   : isPending
                     ? (

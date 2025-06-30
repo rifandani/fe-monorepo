@@ -1,22 +1,21 @@
 'use client'
 
-import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
-import type { PopoverContentProps } from './popover'
-import { Icon } from '@iconify/react'
+import { IconEyeDropper } from '@intentui/icons'
 import { parseColor } from '@react-stately/color'
 import { use } from 'react'
 import {
   ColorPicker as ColorPickerPrimitive,
+  type ColorPickerProps as ColorPickerPrimitiveProps,
   ColorPickerStateContext,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { Button } from './button'
-import { ColorArea } from './color-area'
-import { ColorField } from './color-field'
-import { ColorSlider } from './color-slider'
-import { ColorSwatch } from './color-swatch'
-import { Description } from './field'
-import { Popover, PopoverContent } from './popover'
+import { Button } from '@/core/components/ui/button'
+import { ColorArea } from '@/core/components/ui/color-area'
+import { ColorField } from '@/core/components/ui/color-field'
+import { ColorSlider } from '@/core/components/ui/color-slider'
+import { ColorSwatch } from '@/core/components/ui/color-swatch'
+import { Description } from '@/core/components/ui/field'
+import { Popover, PopoverContent, type PopoverContentProps } from '@/core/components/ui/popover'
 
 interface ColorPickerProps
   extends ColorPickerPrimitiveProps,
@@ -42,22 +41,23 @@ function ColorPicker({
   ...props
 }: ColorPickerProps) {
   return (
-    <div className={twMerge('flex flex-col items-start gap-y-1.5', className)}>
+    <div className={twMerge('flex flex-col items-start gap-y-1', className)}>
       <ColorPickerPrimitive {...props}>
         <Popover>
           <Button
             isDisabled={isDisabled}
-            size={label ? 'medium' : 'square-petite'}
+            size={label ? 'md' : 'sq-sm'}
             intent="plain"
             className={twJoin(
               `
                 w-auto px-2.5
                 *:data-[slot=color-swatch]:-mx-0.5
+                *:data-[slot=color-swatch]:size-5
               `,
               !label && 'size-10',
             )}
           >
-            <ColorSwatch className="size-6" />
+            <ColorSwatch />
             {label && label}
           </Button>
           <PopoverContent
@@ -108,14 +108,14 @@ function EyeDropper() {
   return (
     <Button
       aria-label="Eye dropper"
-      size="square-petite"
+      size="sq-sm"
       intent="outline"
       onPress={() => {
         const eyeDropper = window.EyeDropper ? new window.EyeDropper() : null
         eyeDropper?.open().then(result => state.setColor(parseColor(result.sRGBHex)))
       }}
     >
-      <Icon icon="mdi:eyedropper" className="size-4" />
+      <IconEyeDropper />
     </Button>
   )
 }

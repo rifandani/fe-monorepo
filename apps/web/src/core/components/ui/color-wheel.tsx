@@ -1,11 +1,12 @@
 'use client'
 
-import type { ColorWheelProps as ColorWheelPrimitiveProps } from 'react-aria-components'
 import {
   ColorWheel as ColorWheelPrimitive,
+  type ColorWheelProps as ColorWheelPrimitiveProps,
   ColorWheelTrack,
 } from 'react-aria-components'
-import { ColorThumb } from './color-thumb'
+
+import { ColorThumb } from '@/core/components/ui/color-thumb'
 
 type ColorWheelProps = Omit<ColorWheelPrimitiveProps, 'outerRadius' | 'innerRadius'>
 

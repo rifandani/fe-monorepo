@@ -1,61 +1,40 @@
 'use client'
 
+import type React from 'react'
 import type {
   ComboBoxProps as ComboboxPrimitiveProps,
   InputProps,
   ListBoxProps,
-  ValidationResult,
+  PopoverProps,
 } from 'react-aria-components'
-import type { PopoverContentProps } from './popover'
-import { Icon } from '@iconify/react'
-import React from 'react'
+import { IconChevronsY } from '@intentui/icons'
 import {
-  Button as ButtonPrimitive,
   ComboBoxContext,
   ComboBox as ComboboxPrimitive,
-  ComboBoxStateContext,
+  ListBox,
   useSlottedContext,
 } from 'react-aria-components'
-import { tv } from 'tailwind-variants'
-import { Button } from './button'
-import { DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
-import { Description, FieldError, FieldGroup, Input, Label } from './field'
-import { ListBox } from './list-box'
-import { PopoverContent } from './popover'
-import { composeTailwindRenderProps } from './primitive'
+import { Button } from '@/core/components/ui/button'
+import {
+  DropdownDescription,
+  DropdownItem,
+  DropdownLabel,
+  DropdownSection,
+} from '@/core/components/ui/dropdown'
+import {
+  Description,
+  FieldError,
+  FieldGroup,
+  type FieldProps,
+  Input,
+  Label,
+} from '@/core/components/ui/field'
+import { PopoverContent } from '@/core/components/ui/popover'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-const comboboxStyles = tv({
-  slots: {
-    base: 'group flex w-full flex-col gap-y-1.5',
-    chevronButton:
-      `
-        h-7 w-8 rounded outline-offset-0
-        hover:bg-transparent
-        active:bg-transparent
-        **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:hover:text-fg
-        **:data-[slot=icon]:pressed:text-fg
-        pressed:bg-transparent
-      `,
-    chevronIcon: `
-      size-4 shrink-0 transition duration-200
-      group-open:rotate-180 group-open:text-fg
-    `,
-    clearButton:
-      `
-        absolute inset-y-0 right-0 flex items-center pr-2 text-muted-fg
-        hover:text-fg
-        focus:outline-hidden
-      `,
-  },
-})
-
-const { base, chevronButton, chevronIcon, clearButton } = comboboxStyles()
-
-interface ComboBoxProps<T extends object> extends Omit<ComboboxPrimitiveProps<T>, 'children'> {
-  label?: string
-  placeholder?: string
-  description?: string | null
-  errorMessage?: string | ((validation: ValidationResult) => string)
+interface ComboBoxProps<T extends object>
+  extends Omit<ComboboxPrimitiveProps<T>, 'children'>,
+  FieldProps {
   children: React.ReactNode
 }
 
@@ -68,7 +47,11 @@ function ComboBox<T extends object>({
   ...props
 }: ComboBoxProps<T>) {
   return (
-    <ComboboxPrimitive {...props} className={composeTailwindRenderProps(className, base())}>
+    <ComboboxPrimitive
+      data-slot="combo-box"
+      {...props}
+      className={composeTailwindRenderProps(className, 'group flex w-full flex-col gap-y-1')}
+    >
       {label && <Label>{label}</Label>}
       {children}
       {description && <Description>{description}</Description>}
@@ -78,28 +61,33 @@ function ComboBox<T extends object>({
 }
 
 interface ComboBoxListProps<T extends object>
-  extends ListBoxProps<T>,
-  Pick<PopoverContentProps, 'placement'> {
-  popoverClassName?: PopoverContentProps['className']
+  extends Omit<ListBoxProps<T>, 'layout' | 'orientation'>,
+  Pick<PopoverProps, 'placement'> {
+  popover?: Omit<PopoverProps, 'children'>
 }
 
 function ComboBoxList<T extends object>({
   children,
   items,
   className,
-  popoverClassName,
+  popover,
   ...props
 }: ComboBoxListProps<T>) {
   return (
     <PopoverContent
-      showArrow={false}
-      respectScreen={false}
-      isNonModal
-      className={composeTailwindRenderProps(popoverClassName, 'sm:min-w-(--trigger-width)')}
-      placement={props.placement}
+      className={composeTailwindRenderProps(
+        popover?.className,
+        'min-w-(--trigger-width) scroll-py-1 overflow-y-auto overscroll-contain',
+      )}
+      {...popover}
     >
       <ListBox
-        className={composeTailwindRenderProps(className, 'border-0')}
+        layout="stack"
+        orientation="vertical"
+        className={composeTailwindRenderProps(
+          className,
+          'grid max-h-96 w-full grid-cols-[auto_1fr] flex-col gap-y-1 p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
+        )}
         items={items}
         {...props}
       >
@@ -112,42 +100,46 @@ function ComboBoxList<T extends object>({
 function ComboBoxInput(props: InputProps) {
   const context = useSlottedContext(ComboBoxContext)!
   return (
-    <FieldGroup className="relative pl-0">
+    <FieldGroup>
       <Input {...props} placeholder={props?.placeholder} />
-      <Button size="square-petite" intent="plain" className={chevronButton()}>
-        {!context?.inputValue && <Icon icon="mdi:chevron-down" className={chevronIcon()} />}
+      <Button
+        size="sq-xs"
+        intent="plain"
+        className={`
+          rounded outline-offset-0
+          hover:bg-transparent
+          active:bg-transparent
+          **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:hover:text-fg
+          **:data-[slot=icon]:pressed:text-fg
+          forced-colors:group-disabled:border-[GrayText]
+          forced-colors:group-disabled:text-[GrayText]
+          pressed:bg-transparent
+        `}
+      >
+        {!context?.inputValue && (
+          <IconChevronsY
+            data-slot="chevron"
+            className={`
+              size-4 shrink-0 text-muted-fg
+              group-open:text-fg
+            `}
+          />
+        )}
       </Button>
-      {context?.inputValue && <ComboBoxClearButton />}
     </FieldGroup>
   )
 }
 
-function ComboBoxClearButton() {
-  const state = React.use(ComboBoxStateContext)
-
-  return (
-    <ButtonPrimitive
-      className={clearButton()}
-      slot={null}
-      aria-label="Clear"
-      onPress={() => {
-        state?.setSelectedKey(null)
-        state?.open()
-      }}
-    >
-      <Icon icon="mdi:close" className="size-4 animate-in" />
-    </ButtonPrimitive>
-  )
-}
-
+const ComboBoxSection = DropdownSection
 const ComboBoxOption = DropdownItem
 const ComboBoxLabel = DropdownLabel
-const ComboBoxSection = DropdownSection
+const ComboBoxDescription = DropdownDescription
 
 ComboBox.Input = ComboBoxInput
 ComboBox.List = ComboBoxList
 ComboBox.Option = ComboBoxOption
 ComboBox.Label = ComboBoxLabel
+ComboBox.Description = ComboBoxDescription
 ComboBox.Section = ComboBoxSection
 
 export type { ComboBoxListProps, ComboBoxProps }

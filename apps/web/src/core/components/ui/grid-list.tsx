@@ -1,8 +1,6 @@
-'use client'
-
 import type React from 'react'
 import type { GridListItemProps, GridListProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { IconHamburger } from '@intentui/icons'
 import {
   Button,
   composeRenderProps,
@@ -11,15 +9,15 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import { Checkbox } from './checkbox'
-import { composeTailwindRenderProps } from './primitive'
+import { Checkbox } from '@/core/components/ui/checkbox'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 function GridList<T extends object>({ children, className, ...props }: GridListProps<T>) {
   return (
     <GridListPrimitive
       className={composeTailwindRenderProps(
         className,
-        'relative max-h-96 overflow-auto rounded-lg border [scrollbar-width:thin] *:data-drop-target:border *:data-drop-target:border-accent [&::-webkit-scrollbar]:size-0.5',
+        'relative max-h-96 scroll-py-1 overflow-y-auto overscroll-contain rounded-lg border *:data-drop-target:border *:data-drop-target:border-accent',
       )}
       {...props}
     >
@@ -32,8 +30,8 @@ const itemStyles = tv({
   base: `
     group relative -mb-px flex cursor-default gap-3 border-y px-3 py-2 text-fg
     outline-hidden -outline-offset-2 transition select-none
-    [--selected-item-hovered:theme(--color-muted/70%)]
-    [--selected-item:theme(--color-muted/80%)]
+    [--selected-item-hovered:--color-muted]/70
+    [--selected-item:var(--color-muted)]/80
     first:rounded-t-md first:border-t-0
     last:mb-0 last:rounded-b-md last:border-b-0
     sm:text-sm
@@ -65,8 +63,8 @@ const itemStyles = tv({
   },
 })
 
-function GridListItem({ className, ...props }: GridListItemProps) {
-  const textValue = typeof props.children === 'string' ? props.children : undefined
+function GridListItem({ className, children, ...props }: GridListItemProps) {
+  const textValue = props.textValue || (typeof children === 'string' ? children : undefined)
   return (
     <GridListItemPrimitive
       textValue={textValue}
@@ -85,7 +83,7 @@ function GridListItem({ className, ...props }: GridListItemProps) {
                 *:data-[slot=icon]:text-muted-fg
               `}
             >
-              <Icon icon="mdi:drag" />
+              <IconHamburger />
             </Button>
           )}
 
@@ -99,7 +97,7 @@ function GridListItem({ className, ...props }: GridListItemProps) {
           {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
             <Checkbox className="-mr-2" slot="selection" />
           )}
-          {typeof props.children === 'function' ? props.children(values) : props.children}
+          {typeof children === 'function' ? children(values) : children}
         </>
       )}
     </GridListItemPrimitive>

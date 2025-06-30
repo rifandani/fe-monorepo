@@ -41,7 +41,7 @@ interface DrawerContentProps
 function DrawerContent({
   side = 'bottom',
   isFloat = false,
-  isBlurred,
+  isBlurred: _isBlurred = true,
   notch = true,
   children,
   className,

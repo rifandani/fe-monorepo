@@ -1,22 +1,11 @@
 'use client'
 
-import type { UseEmblaCarouselType } from 'embla-carousel-react'
-import type { HTMLAttributes } from 'react'
-import type { ListBoxItemProps, ListBoxSectionProps } from 'react-aria-components'
-import type { ButtonProps } from './button'
-import { Icon } from '@iconify/react'
-import useEmblaCarousel from 'embla-carousel-react'
-import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  composeRenderProps,
-  ListBox,
-  ListBoxItem,
-  ListBoxSection,
-} from 'react-aria-components'
+import { IconChevronLgLeft, IconChevronLgRight } from '@intentui/icons'
+import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
+import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
-import { Button } from './button'
-import { composeTailwindRenderProps } from './primitive'
+import { Button, type ButtonProps } from '@/core/components/ui/button'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -51,7 +40,7 @@ interface CarouselRootProps {
   CarouselButton?: typeof CarouselButton
 }
 
-interface CarouselProps extends HTMLAttributes<HTMLDivElement>, CarouselRootProps {
+interface CarouselProps extends React.HTMLAttributes<HTMLDivElement>, CarouselRootProps {
   opts?: CarouselOptions
   plugins?: CarouselPlugin
   orientation?: 'horizontal' | 'vertical'
@@ -108,17 +97,6 @@ function Carousel({
     [scrollPrev, scrollNext],
   )
 
-  const value = useMemo(() => ({
-    carouselRef,
-    api,
-    opts,
-    orientation: orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
-    scrollPrev,
-    scrollNext,
-    canScrollPrev,
-    canScrollNext,
-  }), [carouselRef, api, opts, orientation, scrollPrev, scrollNext, canScrollPrev, canScrollNext])
-
   useEffect(() => {
     if (!api || !setApi) {
       return
@@ -143,7 +121,16 @@ function Carousel({
 
   return (
     <CarouselContext
-      value={value}
+      value={{
+        carouselRef,
+        api,
+        opts,
+        orientation: orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+      }}
     >
       <div
         onKeyDownCapture={handleKeyDown}
@@ -158,18 +145,12 @@ function Carousel({
   )
 }
 
-function CarouselContent<T extends object>({ className, ...props }: ListBoxSectionProps<T>) {
+function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
   const { carouselRef, orientation } = useCarousel()
 
   return (
-    <ListBox
-      layout={orientation === 'vertical' ? 'stack' : 'grid'}
-      aria-label="Slides"
-      orientation={orientation}
-      ref={carouselRef}
-      className="overflow-hidden"
-    >
-      <ListBoxSection
+    <div ref={carouselRef} className="overflow-hidden">
+      <div
         className={twMerge(
           'flex',
           orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
@@ -177,40 +158,24 @@ function CarouselContent<T extends object>({ className, ...props }: ListBoxSecti
         )}
         {...props}
       />
-    </ListBox>
+    </div>
   )
 }
 
-const carouselItem = tv({
-  base: [
-    `
-      xd24r min-w-0 shrink-0 grow-0 basis-full
-      focus:outline-hidden
-      data-focus-visible:outline-hidden
-    `,
-    'group relative',
-  ],
-  variants: {
-    orientation: {
-      horizontal: 'pl-4',
-      vertical: 'pt-4',
-    },
-  },
-})
-
-function CarouselItem({ className, ...props }: ListBoxItemProps) {
+function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   const { orientation } = useCarousel()
 
   return (
-    <ListBoxItem
-      aria-label={`Slide ${props.id}`}
-      aria-roledescription="slide"
-      className={composeRenderProps(className, (className, renderProps) =>
-        carouselItem({
-          ...renderProps,
-          orientation,
-          className,
-        }))}
+    <div
+      className={twMerge(
+        `
+          xd24r group relative min-w-0 shrink-0 grow-0 basis-full
+          focus:outline-hidden
+          focus-visible:outline-hidden
+        `,
+        orientation === 'horizontal' ? 'pl-4' : 'pt-4',
+        className,
+      )}
       {...props}
     />
   )
@@ -236,8 +201,8 @@ function CarouselButton({
   segment,
   className,
   intent = 'outline',
-  shape = 'circle',
-  size = 'square-petite',
+  isCircle = true,
+  size = 'sq-sm',
   ref,
   ...props
 }: ButtonProps & { segment: 'previous' | 'next' }) {
@@ -245,6 +210,7 @@ function CarouselButton({
   const isNext = segment === 'next'
   const canScroll = isNext ? canScrollNext : canScrollPrev
   const scroll = isNext ? scrollNext : scrollPrev
+  const Icon = isNext ? IconChevronLgRight : IconChevronLgLeft
 
   return (
     <Button
@@ -253,7 +219,7 @@ function CarouselButton({
       intent={intent}
       ref={ref}
       size={size}
-      shape={shape}
+      isCircle={isCircle}
       className={composeTailwindRenderProps(
         className,
         orientation === 'vertical' ? 'rotate-90' : '',
@@ -262,10 +228,7 @@ function CarouselButton({
       onPress={scroll}
       {...props}
     >
-      <Icon
-        icon={isNext ? 'ion:chevron-forward-outline' : 'ion:chevron-back-outline'}
-        className="size-4"
-      />
+      <Icon className="size-4" />
     </Button>
   )
 }
@@ -276,4 +239,4 @@ Carousel.Item = CarouselItem
 Carousel.Button = CarouselButton
 
 export type { CarouselApi }
-export { Carousel }
+export { Carousel, CarouselButton, CarouselContent, CarouselHandler, CarouselItem }

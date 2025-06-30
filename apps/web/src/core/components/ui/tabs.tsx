@@ -6,8 +6,6 @@ import type {
   TabProps as TabPrimitiveProps,
   TabsProps as TabsPrimitiveProps,
 } from 'react-aria-components'
-import { LayoutGroup, motion } from 'motion/react'
-import { useId } from 'react'
 import {
   composeRenderProps,
   TabList as TabListPrimitive,
@@ -15,19 +13,9 @@ import {
   Tab as TabPrimitive,
   Tabs as TabsPrimitive,
 } from 'react-aria-components'
-import { twJoin, twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
-import { composeTailwindRenderProps } from './primitive'
+import { twMerge } from 'tailwind-merge'
 
-const tabsStyles = tv({
-  base: 'group/tabs flex gap-4 forced-color-adjust-none',
-  variants: {
-    orientation: {
-      horizontal: 'flex-col',
-      vertical: 'w-[800px] flex-row',
-    },
-  },
-})
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface TabsProps extends TabsPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
@@ -35,111 +23,75 @@ interface TabsProps extends TabsPrimitiveProps {
 function Tabs({ className, ref, ...props }: TabsProps) {
   return (
     <TabsPrimitive
-      className={composeRenderProps(className, (className, renderProps) =>
-        tabsStyles({
-          ...renderProps,
-          className,
-        }))}
+      className={composeTailwindRenderProps(
+        className,
+        'group/tabs flex orientation-vertical:w-[800px] orientation-vertical:flex-row orientation-horizontal:flex-col gap-4 forced-color-adjust-none',
+      )}
       ref={ref}
       {...props}
     />
   )
 }
 
-const tabListStyles = tv({
-  base: 'flex forced-color-adjust-none',
-  variants: {
-    orientation: {
-      horizontal: 'flex-row gap-x-5 border-b border-border',
-      vertical: 'flex-col items-start gap-y-4 border-l',
-    },
-  },
-})
-
 interface TabListProps<T extends object> extends TabListPrimitiveProps<T> {
   ref?: React.RefObject<HTMLDivElement>
 }
 function TabList<T extends object>({ className, ref, ...props }: TabListProps<T>) {
-  const id = useId()
   return (
-    <LayoutGroup id={id}>
-      <TabListPrimitive
-        ref={ref}
-        {...props}
-        className={composeRenderProps(className, (className, renderProps) =>
-          tabListStyles({ ...renderProps, className }))}
-      />
-    </LayoutGroup>
+    <TabListPrimitive
+      ref={ref}
+      {...props}
+      className={composeRenderProps(className, (className, { orientation }) =>
+        twMerge([
+          'flex forced-color-adjust-none',
+          orientation === 'horizontal' && `
+            flex-row gap-x-5 border-b border-border
+          `,
+          orientation === 'vertical' && 'flex-col items-start gap-y-4 border-l',
+          className,
+        ]))}
+    />
   )
 }
-
-const tabStyles = tv({
-  base: [
-    `
-      relative flex cursor-default items-center rounded-full text-sm font-medium
-      whitespace-nowrap outline-hidden transition
-      hover:text-fg
-      *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4
-    `,
-    `
-      group-data-[orientation=vertical]/tabs:w-full
-      group-data-[orientation=vertical]/tabs:py-0
-      group-data-[orientation=vertical]/tabs:pr-2
-      group-data-[orientation=vertical]/tabs:pl-4
-    `,
-    'group-data-[orientation=horizontal]/tabs:pb-3',
-  ],
-  variants: {
-    isSelected: {
-      false: 'text-muted-fg',
-      true: 'text-fg',
-    },
-    isFocused: { false: 'ring-0', true: 'text-fg' },
-    isDisabled: {
-      true: 'text-muted-fg/50',
-    },
-  },
-})
 
 interface TabProps extends TabPrimitiveProps {
   ref?: React.RefObject<HTMLButtonElement>
 }
-function Tab({ children, ref, ...props }: TabProps) {
+function Tab({ children, className, ref, ...props }: TabProps) {
   return (
     <TabPrimitive
       ref={ref}
       {...props}
-      className={composeRenderProps(props.className, (_className, renderProps) =>
-        tabStyles({
-          ...renderProps,
-          className: twJoin('href' in props && 'cursor-pointer', _className),
-        }))}
+      className={composeTailwindRenderProps(className, [
+        'relative flex cursor-default items-center whitespace-nowrap rounded-full font-medium text-fg text-sm outline-hidden transition hover:text-fg *:data-[slot=icon]:mr-2 *:data-[slot=icon]:size-4',
+        'group-orientation-vertical/tabs:w-full group-orientation-vertical/tabs:py-0 group-orientation-vertical/tabs:pr-2 group-orientation-vertical/tabs:pl-4',
+        'group-orientation-horizontal/tabs:pb-3',
+        'selected:text-fg text-muted-fg focus:ring-0',
+        'disabled:opacity-50',
+        'href' in props && 'cursor-pointer',
+      ])}
     >
       {({ isSelected }) => (
         <>
-          {children as React.ReactNode}
+          {children}
           {isSelected && (
-            <motion.span
+            <span
               data-slot="selected-indicator"
               className={twMerge(
                 'absolute rounded bg-fg',
-                // horizontal
                 `
-                  group-data-[orientation=horizontal]/tabs:inset-x-0
-                  group-data-[orientation=horizontal]/tabs:-bottom-px
-                  group-data-[orientation=horizontal]/tabs:h-0.5
-                  group-data-[orientation=horizontal]/tabs:w-full
+                  group-orientation-horizontal/tabs:inset-x-0
+                  group-orientation-horizontal/tabs:-bottom-px
+                  group-orientation-horizontal/tabs:h-0.5
+                  group-orientation-horizontal/tabs:w-full
                 `,
-                // vertical
                 `
-                  group-data-[orientation=vertical]/tabs:left-0
-                  group-data-[orientation=vertical]/tabs:h-[calc(100%-10%)]
-                  group-data-[orientation=vertical]/tabs:w-0.5
-                  group-data-[orientation=vertical]/tabs:transform
+                  group-orientation-vertical/tabs:left-0
+                  group-orientation-vertical/tabs:h-[calc(100%-10%)]
+                  group-orientation-vertical/tabs:w-0.5
+                  group-orientation-vertical/tabs:transform
                 `,
               )}
-              layoutId="current-selected"
-              transition={{ type: 'spring', stiffness: 500, damping: 40 }}
             />
           )}
         </>
@@ -158,15 +110,11 @@ function TabPanel({ className, ref, ...props }: TabPanelProps) {
       ref={ref}
       className={composeTailwindRenderProps(
         className,
-        'flex-1 text-fg text-sm data-focus-visible:outline-hidden',
+        'flex-1 text-fg text-sm focus-visible:outline-hidden',
       )}
     />
   )
 }
 
-Tabs.List = TabList
-Tabs.Tab = Tab
-Tabs.Panel = TabPanel
-
 export type { TabListProps, TabPanelProps, TabProps, TabsProps }
-export { Tabs }
+export { Tab, TabList, TabPanel, Tabs }

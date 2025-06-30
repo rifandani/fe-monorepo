@@ -7,8 +7,7 @@ import type {
   MenuTriggerProps,
   SearchFieldProps,
 } from 'react-aria-components'
-import type { MenuSectionProps } from './menu'
-import { Icon } from '@iconify/react'
+import { IconSearch } from '@intentui/icons'
 import { createContext, use, useEffect } from 'react'
 import {
   Autocomplete,
@@ -29,10 +28,10 @@ import {
   useFilter,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { DropdownKeyboard } from './dropdown'
-import { Loader } from './loader'
-import { Menu } from './menu'
-import { composeTailwindRenderProps } from './primitive'
+import { DropdownKeyboard } from '@/core/components/ui/dropdown'
+import { Loader } from '@/core/components/ui/loader'
+import { Menu, type MenuSectionProps } from '@/core/components/ui/menu'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface CommandMenuProviderProps {
   isPending?: boolean
@@ -40,6 +39,18 @@ interface CommandMenuProviderProps {
 }
 
 const CommandMenuContext = createContext<CommandMenuProviderProps | undefined>(undefined)
+
+const renderer: CollectionRenderer = {
+  CollectionRoot(props) {
+    if (props.collection.size === 0) {
+      return (
+        <div className="col-span-full p-4 text-center text-sm text-muted-fg">No results found.</div>
+      )
+    }
+    return <DefaultCollectionRenderer.CollectionRoot {...props} />
+  },
+  CollectionBranch: DefaultCollectionRenderer.CollectionBranch,
+}
 
 function useCommandMenu() {
   const context = use(CommandMenuContext)
@@ -56,15 +67,12 @@ interface CommandMenuProps extends AutocompleteProps, MenuTriggerProps, CommandM
   'aria-label'?: string
   'shortcut'?: string
   'isBlurred'?: boolean
-  'classNames'?: {
-    overlay?: string
-    content?: string
-  }
+  'className'?: string
 }
 
 function CommandMenu({
   onOpenChange,
-  classNames,
+  className,
   isDismissable = true,
   escapeButton = true,
   isPending,
@@ -98,11 +106,10 @@ function CommandMenu({
               dark:bg-black/40
             `,
             `
-              data-entering:animate-in data-entering:fade-in
-              data-exiting:animate-in data-exiting:fade-out
+              entering:animate-in entering:fade-in
+              exiting:animate-in exiting:fade-out
             `,
             isBlurred && props.isOpen ? 'backdrop-blur' : '',
-            classNames?.overlay ?? '',
           ])}
         >
           <Modal
@@ -112,31 +119,31 @@ function CommandMenu({
                 w-full max-w-full translate-x-[-50%] gap-4 overflow-hidden
                 rounded-t-2xl bg-overlay text-overlay-fg shadow-lg ring-1
                 ring-fg/10
-                sm:top-[6rem] sm:bottom-auto sm:h-auto sm:w-full sm:max-w-2xl
+                sm:top-[6rem] sm:bottom-auto sm:h-auto sm:w-full sm:max-w-xl
                 sm:rounded-xl
                 dark:ring-border
                 forced-colors:border
               `,
               `
-                data-entering:duration-300 data-entering:animate-in
-                data-entering:fade-in-0 data-entering:slide-in-from-bottom
-                sm:data-entering:duration-300
-                sm:data-entering:slide-in-from-bottom-0
-                sm:data-entering:zoom-in-95
+                entering:animate-in entering:duration-300 entering:fade-in-0
+                entering:slide-in-from-bottom
+                sm:entering:duration-300 sm:entering:slide-in-from-bottom-0
+                sm:entering:zoom-in-95
               `,
               `
-                data-exiting:duration-200 data-exiting:animate-out
-                data-exiting:fade-out data-exiting:slide-out-to-bottom-56
-                sm:data-exiting:slide-out-to-bottom-0
-                sm:data-exiting:zoom-out-95
+                exiting:animate-out exiting:duration-200 exiting:fade-out
+                exiting:slide-out-to-bottom-56
+                sm:exiting:slide-out-to-bottom-0 sm:exiting:zoom-out-95
               `,
-              classNames?.content ?? '',
+              className,
             ])}
             {...props}
           >
             <Dialog
               aria-label={props['aria-label'] ?? 'Command Menu'}
-              className="overflow-hidden outline-hidden"
+              className={`
+                flex max-h-[inherit] flex-col overflow-hidden outline-hidden
+              `}
             >
               <Autocomplete filter={filter} {...props} />
             </Dialog>
@@ -171,8 +178,7 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
             <Loader className="size-4.5" variant="spin" />
           )
         : (
-            <Icon
-              icon="mdi:magnify"
+            <IconSearch
               data-slot="command-menu-search-icon"
               className="size-5 shrink-0 text-muted-fg"
             />
@@ -183,7 +189,7 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
           w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg
           placeholder-muted-fg outline-hidden
           focus:outline-hidden
-          sm:text-sm
+          sm:px-2 sm:py-1.5 sm:text-sm
           [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden
         `}
       />
@@ -191,7 +197,7 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
         <Button
           onPress={() => state?.close()}
           className={`
-            hidden cursor-pointer rounded border text-current/90
+            hidden cursor-default rounded border text-current/90
             hover:bg-muted
             lg:inline lg:px-1.5 lg:py-0.5 lg:text-xs
           `}
@@ -203,31 +209,13 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
   )
 }
 
-const renderer: CollectionRenderer = {
-  CollectionRoot(props) {
-    if (props.collection.size === 0) {
-      return (
-        // biome-ignore lint/a11y/useFocusableInteractive: <explanation>
-        <div
-          role="menuitem"
-          className="col-span-full p-4 text-center text-sm text-muted-fg"
-        >
-          No results found.
-        </div>
-      )
-    }
-    return <DefaultCollectionRenderer.CollectionRoot {...props} />
-  },
-  CollectionBranch: DefaultCollectionRenderer.CollectionBranch,
-}
-
 function CommandMenuList<T extends object>({ className, ...props }: MenuProps<T>) {
   return (
     <CollectionRendererContext value={renderer}>
       <MenuPrimitive
         className={composeTailwindRenderProps(
           className,
-          'grid max-h-full grid-cols-[auto_1fr] overflow-y-auto p-2 sm:max-h-110 *:[[role=group]]:mb-6 *:[[role=group]]:last:mb-0',
+          'grid max-h-full flex-1 grid-cols-[auto_1fr] content-start overflow-y-auto p-2 sm:max-h-110 *:[[role=group]]:mb-6 *:[[role=group]]:last:mb-0',
         )}
         {...props}
       />
@@ -244,11 +232,11 @@ function CommandMenuSection<T extends object>({
     <MenuSection
       ref={ref}
       className={twMerge(
-        className,
         `
-          col-span-full grid grid-cols-[auto_1fr]
+          col-span-full grid grid-cols-[auto_1fr] content-start
           gap-y-[calc(var(--spacing)*0.25)]
         `,
+        className,
       )}
       {...props}
     >
@@ -273,51 +261,24 @@ function CommandMenuItem({ className, ...props }: React.ComponentProps<typeof Me
     <Menu.Item
       {...props}
       textValue={textValue}
-      className={composeTailwindRenderProps(className, 'gap-y-0.5 px-2.5 py-2')}
+      className={composeTailwindRenderProps(className, 'items-center gap-y-0.5')}
     />
   )
 }
 
-interface CommandMenuDescriptionProps extends React.ComponentProps<'span'> {
-  intent?: 'danger' | 'warning' | 'primary' | 'secondary' | 'success'
-}
+interface CommandMenuDescriptionProps extends React.ComponentProps<typeof Menu.Description> {}
 
-function CommandMenuDescription({ intent, className, ...props }: CommandMenuDescriptionProps) {
+function CommandMenuDescription({ className, ...props }: CommandMenuDescriptionProps) {
   return (
-    <span
-      {...props}
-      slot="command-menu-description"
+    <Menu.Description
       className={twMerge(
         `
-          ml-auto hidden text-sm
-          sm:inline
+          col-start-2 row-start-2
+          sm:col-start-3 sm:row-start-1 sm:ml-auto
         `,
-        intent === 'danger'
-          ? `
-            text-danger/90
-            group-selected:text-fg/70
-          `
-          : intent === 'warning'
-            ? `
-              text-warning/90
-              group-selected:text-fg/70
-            `
-            : intent === 'success'
-              ? `
-                text-success/90
-                group-selected:text-fg/70
-              `
-              : intent === 'primary'
-                ? `
-                  text-fg/90
-                  group-selected:text-white/70
-                `
-                : `
-                  text-muted-fg
-                  group-selected:text-fg/70
-                `,
         className,
       )}
+      {...props}
     />
   )
 }
@@ -329,7 +290,25 @@ function CommandMenuSeparator({
   return <Menu.Separator className={twMerge('-mx-2', className)} {...props} />
 }
 
+function CommandMenuFooter({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      className={twMerge(
+        'col-span-full flex-none border-t px-2 py-1.5 text-sm text-muted-fg',
+        `
+          *:[kbd]:mx-1 *:[kbd]:inline-grid *:[kbd]:h-4 *:[kbd]:min-w-4
+          *:[kbd]:place-content-center *:[kbd]:rounded-xs *:[kbd]:bg-secondary
+          *:[kbd]:inset-ring *:[kbd]:inset-ring-fg/10
+        `,
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 const CommandMenuLabel = Menu.Label
+const CommandMenuKeyboard = DropdownKeyboard
 
 CommandMenu.Search = CommandMenuSearch
 CommandMenu.List = CommandMenuList
@@ -337,8 +316,9 @@ CommandMenu.Item = CommandMenuItem
 CommandMenu.Label = CommandMenuLabel
 CommandMenu.Section = CommandMenuSection
 CommandMenu.Description = CommandMenuDescription
-CommandMenu.Keyboard = DropdownKeyboard
+CommandMenu.Keyboard = CommandMenuKeyboard
 CommandMenu.Separator = CommandMenuSeparator
+CommandMenu.Footer = CommandMenuFooter
 
 export type { CommandMenuDescriptionProps, CommandMenuProps, CommandMenuSearchProps }
 export { CommandMenu }

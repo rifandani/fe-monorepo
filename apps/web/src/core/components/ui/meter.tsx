@@ -1,11 +1,14 @@
 'use client'
 
-import type { MeterProps as MeterPrimitiveProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { IconCircleExclamation } from '@intentui/icons'
 import { motion } from 'motion/react'
-import { Meter as MeterPrimitive } from 'react-aria-components'
-import { Label } from './field'
-import { composeTailwindRenderProps } from './primitive'
+import {
+  Meter as MeterPrimitive,
+  type MeterProps as MeterPrimitiveProps,
+} from 'react-aria-components'
+
+import { Label } from '@/core/components/ui/field'
+import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 interface MeterProps extends MeterPrimitiveProps {
   label?: string
@@ -30,8 +33,7 @@ function Meter({ label, className, ...props }: MeterProps) {
               `}
             >
               {percentage >= 80 && (
-                <Icon
-                  icon="mdi:alert-circle-outline"
+                <IconCircleExclamation
                   aria-label="Alert"
                   className={`
                     inline-block size-4 fill-danger/20 align-text-bottom
