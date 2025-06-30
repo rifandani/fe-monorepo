@@ -1,7 +1,10 @@
 # fe-monorepo
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rifandani/fe-monorepo)
+
 ### 🎯 Todo
 
+- [ ] Upgrade `intentui` to v3 next start of month
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
