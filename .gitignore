@@ -132,3 +132,6 @@ buck-out/
 *.db
 *.db-journal
 prisma/_sqlite/migrations
+
+# docker
+otel-lgtm

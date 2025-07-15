@@ -1,5 +1,24 @@
-# See https://docs.flagsmith.com/deployment/docker for more information on running Flagsmith in Docker
+name: fe-monorepo
+
 services:
+  otel-lgtm:
+    image: docker.io/grafana/otel-lgtm:latest
+    ports:
+      - "3111:3000" # Grafana UI
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+    volumes:
+      - ./otel-lgtm/grafana:/data/grafana
+      - ./otel-lgtm/prometheus:/data/prometheus
+      - ./otel-lgtm/loki:/data/loki
+    environment:
+      - GF_PATHS_DATA=/data/grafana
+    env_file:
+      - ./.env
+    # stdin_open: true
+    # tty: true
+
+  # See https://docs.flagsmith.com/deployment/docker for more information on running Flagsmith in Docker
   postgres:
     image: postgres:15.5-alpine
     environment:

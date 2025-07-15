@@ -2,7 +2,7 @@
 
 ## 🎯 Todo
 
-~
+- [ ] Fix build error (might be related to PWA)
 
 ## 📦 Prerequisite
 
@@ -21,8 +21,8 @@
 To run the app:
 
 ```bash
-# spin up flagsmith self-hosted using docker compose (run this in root project)
-bun flagsmith:up
+# spin up all services using docker compose (run this in root project)
+bun compose:up
 
 # run the app with development env in port 3001
 bun dev
@@ -183,7 +183,7 @@ We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and
 
 ```bash
 # spin up flagsmith self-hosted using docker compose (run this in root project)
-bun flagsmith:up
+bun compose:up
 ```
 
 Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
