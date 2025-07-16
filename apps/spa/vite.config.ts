@@ -5,7 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import replace from '@rollup/plugin-replace'
 import tailwindcss from '@tailwindcss/vite'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
@@ -95,7 +95,7 @@ export default defineConfig({
     tailwindcss(),
     replace(replaceOptions) as unknown as PluginOption,
     react(),
-    TanStackRouterVite(),
+    tanstackRouter(),
     visualizer({
       filename: 'html/visualizer-stats.html',
     }) as unknown as PluginOption,

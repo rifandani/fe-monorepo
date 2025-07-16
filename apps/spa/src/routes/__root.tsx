@@ -68,7 +68,7 @@ function ErrorRoute({ error, reset }: ErrorComponentProps) {
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-fg">
             Something went wrong
           </p>
         </div>
@@ -107,7 +107,7 @@ function NotFoundRoute() {
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">404</h1>
           <h2 className="text-2xl font-semibold">{t('notFound')}</h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-fg">
             {t('gone')}
           </p>
         </div>

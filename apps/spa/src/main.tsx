@@ -1,8 +1,18 @@
-import { logger } from '@workspace/core/utils/logger'
-import { createRoot } from 'react-dom/client'
-import { Entry } from '@/core/entry'
 import '@/core/styles/globals.css'
+import './instrumentation'
 
+import { trace } from '@opentelemetry/api'
+import { createRoot } from 'react-dom/client'
+import {
+  TRACER_REACT_ENTRY,
+  TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
+  TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
+  TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
+} from '@/core/constants/global'
+import { Entry } from '@/core/entry'
+import { recordException } from '@/core/utils/telemetry'
+
+const tracer = trace.getTracer(TRACER_REACT_ENTRY)
 const root = document.getElementById('root')
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
@@ -13,10 +23,37 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 createRoot(root as HTMLElement, {
   onCaughtError(error, errorInfo) {
-    logger.error('[root]: Caught Error', { error, errorInfo })
+    recordException({
+      tracer,
+      name: TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
+      error: {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
+      },
+    })
   },
   onUncaughtError(error, errorInfo) {
-    logger.error('[root]: Uncaught Error', { error, errorInfo })
+    recordException({
+      tracer,
+      name: TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
+      error: {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
+      },
+    })
+  },
+  onRecoverableError(error, errorInfo) {
+    recordException({
+      tracer,
+      name: TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
+      error: {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
+      },
+    })
   },
 }).render(
   <Entry />,

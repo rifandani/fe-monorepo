@@ -188,6 +188,33 @@ bun compose:up
 
 Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
 
+## 📊 How to Observability
+
+You can check the traces and metrics in the Grafana dashboard.
+As of now, otel in web browser does not support logs.
+
+### Grafana
+
+Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana/docker-otel-lgtm/) container. This will spin up a OpenTelemetry backend including [Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/) (metrics database), [Tempo](https://grafana.com/docs/grafana/latest/datasources/tempo/) (traces database), [Loki](https://grafana.com/docs/grafana/latest/datasources/loki/) (logs database), and [Pyroscope](https://grafana.com/docs/grafana/latest/datasources/pyroscope/) (profiling database). It also spin up Grafana Dashboard for visualization at `http://localhost:3111`. If you haven't logged in, use the following credentials:
+
+- Username: `admin`
+- Password: `admin`
+
+```bash
+# cd into root of the workspace
+cd ../..
+
+# run the docker compose file
+bun compose:up
+```
+
+Then, start the dev server to start sending the metrics, and traces to otel collector.
+
+```bash
+# running in port 3001
+bun spa dev
+```
+
 ## 📱 Progressive Web App (PWA)
 
 Coming Soon

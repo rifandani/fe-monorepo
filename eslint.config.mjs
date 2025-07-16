@@ -90,6 +90,23 @@ export default antfu(
     rules: {
       'node/prefer-global/process': 'off',
       'react-refresh/only-export-components': 'off',
+      'perfectionist/sort-imports': ['error', {
+        // partitionByNewLine: true,
+        groups: [
+          'side-effect',
+          'type',
+          ['parent-type', 'sibling-type', 'index-type', 'internal-type'],
+          'builtin',
+          'external',
+          'internal',
+          ['parent', 'sibling', 'index'],
+          'object',
+          'unknown',
+        ],
+        newlinesBetween: 'ignore',
+        order: 'asc',
+        type: 'natural',
+      }],
     },
 
     // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
