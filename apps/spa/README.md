@@ -192,6 +192,8 @@ Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Cr
 
 You can check the traces and metrics in the Grafana dashboard.
 As of now, otel in web browser does not support logs.
+Use logger from `@workspace/core/utils/logger` to normally console.log.
+Do not log using `diag` from `@opentelemetry/api` because we only use it for internal otel logs.
 
 ### Grafana
 

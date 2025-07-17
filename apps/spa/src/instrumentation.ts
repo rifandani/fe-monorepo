@@ -1,4 +1,4 @@
-import { metrics } from '@opentelemetry/api'
+import { diag, DiagConsoleLogger, DiagLogLevel, metrics } from '@opentelemetry/api'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
@@ -23,6 +23,19 @@ import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 
 const TRACE_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
 const METRICS_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics`
+
+const logLevelMap: Record<string, DiagLogLevel> = {
+  ALL: DiagLogLevel.ALL,
+  VERBOSE: DiagLogLevel.VERBOSE,
+  DEBUG: DiagLogLevel.DEBUG,
+  INFO: DiagLogLevel.INFO, // default
+  WARN: DiagLogLevel.WARN,
+  ERROR: DiagLogLevel.ERROR,
+  NONE: DiagLogLevel.NONE,
+}
+
+// for troubleshooting the internal otel logs, set the log level to DEBUG
+diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.VITE_OTEL_LOG_LEVEL])
 
 let resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: SERVICE_NAME,
@@ -75,4 +88,4 @@ registerInstrumentations({
   ],
 })
 
-logger.log('Instrumentation completed')
+logger.log('[instrumentation]: Client started')
