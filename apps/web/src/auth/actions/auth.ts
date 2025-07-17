@@ -1,8 +1,8 @@
 'use server'
 
 import type { ActionResult } from '@/core/utils/action'
+import { metrics, SpanStatusCode, trace } from '@opentelemetry/api'
 import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth'
-import { logger } from '@workspace/core/utils/logger'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { tryit } from 'radashi'
@@ -10,6 +10,19 @@ import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { http } from '@/core/services/http'
 import { actionClient } from '@/core/utils/action'
 import { repositoryErrorMapper } from '@/core/utils/error'
+import { Logger } from '@/core/utils/logger'
+import { recordSpan } from '@/core/utils/telemetry'
+
+const logger = new Logger('authAction')
+const meter = metrics.getMeter('authAction')
+
+const loginCounter = meter.createCounter('login', {
+  description: 'How many times the login action is called',
+})
+
+const logoutCounter = meter.createCounter('logout', {
+  description: 'How many times the logout action is called',
+})
 
 /**
  * Server action to handle user login.
@@ -26,24 +39,47 @@ export const loginAction = actionClient
   .metadata({ actionName: 'login' })
   .inputSchema(authLoginRequestSchema)
   .action<ActionResult<null>>(async ({ parsedInput }) => {
-    logger.log(`[login]: Start login`, parsedInput)
-    const [error, response] = await tryit(authRepositories(http).login)({ json: parsedInput })
-    if (error) {
-      return await repositoryErrorMapper(error)
-    }
+    const result = await recordSpan({
+      name: 'loginAction',
+      tracer: trace.getTracer('auth'),
+      attributes: parsedInput,
+      fn: async (span) => {
+        loginCounter.add(1)
+        logger.log('loginAction', { parsedInput })
 
-    logger.log(`[login]: Start set session cookie`, response)
-    const cookie = await cookies()
-    cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 1, // 1 days
-      path: '/',
+        const [error, response] = await tryit(authRepositories(http).login)({ json: parsedInput })
+        if (error) {
+          span.recordException({
+            name: error.name,
+            message: error.message,
+            stack: error.stack,
+          })
+          span.setStatus({
+            code: SpanStatusCode.ERROR,
+            message: error.message,
+          })
+          return await repositoryErrorMapper(error)
+        }
+
+        span.addEvent('Start set session cookie', response)
+        const cookie = await cookies()
+        cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          maxAge: 60 * 60 * 24 * 1, // 1 days
+          path: '/',
+        })
+
+        // INFO: we can't use redirect in try catch block, because redirect will throw an error object
+        span.addEvent('Start redirect to /')
+      },
     })
 
-    // INFO: we can't use redirect in try catch block, because redirect will throw an error object
-    logger.log(`[login]: Start redirect to /`)
+    if (result) {
+      return result
+    }
+
     redirect('/')
   })
 
@@ -59,10 +95,19 @@ export const loginAction = actionClient
 export const logoutAction = actionClient
   .metadata({ actionName: 'logoutAction' })
   .action(async () => {
-    logger.log(`[logout]: Start clearing auth cookie`)
-    const cookie = await cookies()
-    cookie.delete(AUTH_COOKIE_NAME)
+    await recordSpan({
+      name: 'logoutAction',
+      tracer: trace.getTracer('auth'),
+      fn: async (span) => {
+        logoutCounter.add(1)
+        logger.log('logoutAction')
 
-    logger.log(`[logout]: Start redirect to /login`)
+        const cookie = await cookies()
+        cookie.delete(AUTH_COOKIE_NAME)
+
+        span.addEvent('Start redirect to /login')
+      },
+    })
+
     redirect('/login')
   })

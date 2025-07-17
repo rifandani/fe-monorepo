@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
 import type { Thing } from 'schema-dts'
 import { assign, uid } from 'radashi'
+import { ENV } from '@/core/constants/env'
 
-const applicationName = '@workspace/web'
+const applicationName = ENV.NEXT_PUBLIC_APP_TITLE
 const author = {
   name: 'Rizeki Rifandani',
   url: 'https://rifandani.com',
 }
 const publisher = 'Rizeki Rifandani'
 const twitterHandle = '@tri_rizeki'
-const appUrl = 'https://rifandani.com'
+const appUrl = ENV.NEXT_PUBLIC_APP_URL
 
 /**
  * Creates metadata for SEO optimization and social sharing.

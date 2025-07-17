@@ -4,6 +4,9 @@ import { logger } from '@workspace/core/utils/logger'
 import { useEffect } from 'react'
 import { Button } from '@/core/components/ui'
 
+/**
+ * designed to catch errors during rendering (not inside event handlers) to show a fallback UI instead of crashing the whole app.
+ */
 export default function Error({
   error,
   reset,
@@ -23,7 +26,7 @@ export default function Error({
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-fg">
             Something went wrong
           </p>
         </div>
