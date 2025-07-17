@@ -122,7 +122,7 @@ export async function register() {
     })
     metrics.setGlobalMeterProvider(meterProvider)
 
-    logger.log('Server instrumentation started')
+    logger.log('[instrumentation]: Server started')
   }
 }
 
