@@ -1,7 +1,7 @@
+import 'server-only'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { cookies } from 'next/headers'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import 'server-only'
 
 /**
  * Get the authenticated user from the cookie

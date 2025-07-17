@@ -1,10 +1,10 @@
+import 'server-only'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { ActionResult } from '@/core/utils/action'
 import { logger } from '@workspace/core/utils/logger'
 import { HTTPError, TimeoutError } from 'ky'
 import { match, P } from 'ts-pattern'
 import { z } from 'zod/v4'
-import 'server-only'
 
 /**
  * Map thrown repository error to action result

@@ -1,3 +1,4 @@
+import '@/core/styles/globals.css'
 import type { Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
@@ -8,7 +9,6 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { getAuthUser } from '@/auth/utils/auth'
 import { AppProviders } from '@/core/providers/providers.client'
 import { createMetadata } from '@/core/utils/seo'
-import '@/core/styles/globals.css'
 
 const fontSans = Geist({
   subsets: ['latin'],

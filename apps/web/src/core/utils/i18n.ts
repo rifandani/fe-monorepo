@@ -1,8 +1,8 @@
+import 'server-only'
 import type { Formats, Locale } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
 import { cookies } from 'next/headers'
 import { I18N_COOKIE_NAME, I18N_DEFAULT_LOCALE } from '@/core/constants/i18n'
-import 'server-only'
 
 export const formats = {
   dateTime: {

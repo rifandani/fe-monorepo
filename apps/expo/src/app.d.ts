@@ -1,5 +1,5 @@
-import type { resources } from '@/core/providers/i18n/client'
 import 'i18next'
+import type { resources } from '@/core/providers/i18n/client'
 
 declare module '*.png' {
   const value: any

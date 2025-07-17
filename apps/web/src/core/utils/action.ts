@@ -1,10 +1,10 @@
+import 'server-only'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { logger } from '@workspace/core/utils/logger'
 import { createSafeActionClient, DEFAULT_SERVER_ERROR_MESSAGE } from 'next-safe-action'
 import { cookies } from 'next/headers'
 import { z } from 'zod/v4'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import 'server-only'
 
 export interface ActionResult<T> {
   data: T | null
