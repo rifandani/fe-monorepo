@@ -21,6 +21,9 @@ import { logger } from '@workspace/core/utils/logger'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 
+const TRACE_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
+const METRICS_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics`
+
 let resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: SERVICE_NAME,
   [ATTR_SERVICE_VERSION]: SERVICE_VERSION,
@@ -37,7 +40,7 @@ const tracerProvider = new WebTracerProvider({
   resource,
   spanProcessors: [
     new BatchSpanProcessor(new OTLPTraceExporter({
-      url: ENV.VITE_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,
+      url: TRACE_EXPORTER_URL,
     })),
     // new SimpleSpanProcessor(new ConsoleSpanExporter()),
   ],
@@ -48,7 +51,7 @@ const meterProvider = new MeterProvider({
   readers: [
     new PeriodicExportingMetricReader({
       exporter: new OTLPMetricExporter({
-        url: ENV.VITE_OTEL_EXPORTER_OTLP_METRICS_ENDPOINT,
+        url: METRICS_EXPORTER_URL,
       }),
       exportIntervalMillis: 10_000,
     }),
