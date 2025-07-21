@@ -4,13 +4,14 @@
 
 ## 🎯 Todo
 
-- [ ] Consider using Bun `catalog` to manage monorepo dependencies
+- [ ] `eslint-plugin-better-tailwindcss` is not working since we use `linker = "isolated"` in `bunfig.toml`
+- [ ] Consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
 ## 📦 Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
-- Run `bun outdated` to check for outdated dependencies in root and run `bun update --latest` to upgrade all dependencies in root to the latest version
+- Run `bun outdated` to check for outdated dependencies in root and run `bun update --latest` to upgrade all dependencies in root to the latest version or `bun update --interactive` to upgrade dependencies interactively
 - Run `bun outdated --cwd packages/core` to check for outdated dependencies and run `bun update --latest --cwd packages/core` to upgrade all dependencies to the latest version. Make sure to also update the `peerDependencies`
 - Run `bun outdated --cwd apps/web` to check for outdated dependencies and run `bun update --latest --cwd apps/web` to upgrade all dependencies to the latest version
 - Run `bun outdated --cwd apps/spa` to check for outdated dependencies and run `bun update --latest --cwd apps/spa` to upgrade all dependencies to the latest version

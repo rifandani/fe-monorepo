@@ -2,7 +2,7 @@
   "name": "fe-monorepo",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "bun@1.2.17",
+  "packageManager": "bun@1.2.19",
   "description": "React.js, Next.js, and Expo Monorepo Template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
@@ -11,7 +11,7 @@
   "scripts": {
     "prepare": "husky",
     "compose:up": "docker compose -f docker/docker-compose.yml up --build",
-    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/build\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" && bun install",
+    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/build\" \"**/html\" \"**/playwright\" \"**/playwright-report\" \"**/playwright-test-results\" \"**/bun.lock\" \"**/.next\" \"**/.tanstack\" \"**/.expo\" \"**/.tamagui\" && bun install",
     "cs": "changeset",
     "cs:v": "changeset version",
     "lint": "eslint .",

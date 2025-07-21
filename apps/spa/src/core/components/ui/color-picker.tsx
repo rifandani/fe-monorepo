@@ -3,13 +3,13 @@
 import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
 import type { PopoverContentProps } from '@/core/components/ui/popover'
 import { Icon } from '@iconify/react'
-import { parseColor } from '@react-stately/color'
 import { use } from 'react'
 import {
   ColorPicker as ColorPickerPrimitive,
 
   ColorPickerStateContext,
 } from 'react-aria-components'
+import { parseColor } from 'react-stately'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { Button } from '@/core/components/ui/button'
 import { ColorArea } from '@/core/components/ui/color-area'

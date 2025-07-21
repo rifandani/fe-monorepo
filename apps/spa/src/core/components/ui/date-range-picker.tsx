@@ -1,7 +1,7 @@
 'use client'
 
 import type { DateDuration } from '@internationalized/date'
-import type { Placement } from '@react-types/overlays'
+import type { Placement } from 'react-aria'
 import type { DateRangePickerProps as DateRangePickerPrimitiveProps, DateValue, ValidationResult } from 'react-aria-components'
 import {
   DateRangePicker as DateRangePickerPrimitive,
