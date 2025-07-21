@@ -42,6 +42,7 @@
         "@expo-google-fonts/space-grotesk": "0.3.0",
         "@expo/vector-icons": "14.1.0",
         "@hookform/resolvers": "5.1.1",
+        "@react-navigation/native": "7.1.14",
         "@t3-oss/env-core": "0.13.8",
         "@tamagui/animations-moti": "1.126.16",
         "@tamagui/babel-plugin": "1.126.16",
@@ -285,7 +286,6 @@
     "@tailwindcss/oxide",
     "sharp",
     "esbuild",
-    "@swc/core",
   ],
   "packages": {
     "@0no-co/graphql.web": ["@0no-co/graphql.web@1.1.2", "", { "peerDependencies": { "graphql": "^14.0.0 || ^15.0.0 || ^16.0.0" }, "optionalPeers": ["graphql"] }, "sha512-N2NGsU5FLBhT8NZ+3l2YrzZSHITjNXNuDhC4iDiikv0IujaJ0Xc6xIxQZ/Ek3Cb+rgPjnLHYyJm11tInuJn+cw=="],
