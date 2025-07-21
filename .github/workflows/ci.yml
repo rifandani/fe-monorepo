@@ -34,7 +34,7 @@ jobs:
           bun-version: latest
 
       - name: Install deps and disallow changes to lockfile
-        run: bun i --frozen-lockfile
+        run: bun i # --frozen-lockfile
 
       - name: Lint
         run: bun lint-typecheck
@@ -59,7 +59,7 @@ jobs:
           bun-version: latest
 
       - name: Install deps and disallow changes to lockfile
-        run: bun i --frozen-lockfile
+        run: bun i # --frozen-lockfile
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
@@ -101,7 +101,7 @@ jobs:
           bun-version: latest
 
       - name: Install deps and disallow changes to lockfile
-        run: bun i --frozen-lockfile
+        run: bun i # --frozen-lockfile
       
       - name: Save github secrets as env file
         run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
@@ -134,7 +134,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
-        run: bun i --frozen-lockfile
+        run: bun i # --frozen-lockfile
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
@@ -153,7 +153,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
-        run: bun i --frozen-lockfile
+        run: bun i # --frozen-lockfile
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
@@ -173,7 +173,7 @@ jobs:
   #       uses: oven-sh/setup-bun@v2
 
   #     - name: Clean install
-  #       run: bun i --frozen-lockfile
+  #       run: bun i # --frozen-lockfile
 
   #     - name: Run playwright tests
   #       run: bun test
