@@ -65,7 +65,6 @@
     "packages/*"
   ],
   "trustedDependencies": [
-    "@swc/core",
     "@tailwindcss/oxide",
     "esbuild",
     "sharp",
