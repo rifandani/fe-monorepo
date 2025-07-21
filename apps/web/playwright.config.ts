@@ -80,6 +80,7 @@ export default defineConfig<TestOptions>({
 
   /* Run your local dev server before starting the tests */
   webServer: {
+    timeout: 5 * 60 * 1_000, // default is 60s
     url: baseURL,
     // in CI, we run `build-and-preview` instead of `dev`
     command: process.env.CI ? 'bun build-and-preview' : 'bun dev',
