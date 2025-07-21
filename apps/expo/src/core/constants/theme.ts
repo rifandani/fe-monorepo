@@ -1,4 +1,4 @@
-import * as Colors from '@tamagui/colors'
+// import * as Colors from '@tamagui/colors' // install this if you want to use colors
 import { createThemes, defaultComponentThemes } from '@tamagui/theme-builder'
 
 const darkPalette = ['hsla(0, 15%, 1%, 1)', 'hsla(0, 15%, 6%, 1)', 'hsla(0, 15%, 12%, 1)', 'hsla(0, 15%, 17%, 1)', 'hsla(0, 15%, 23%, 1)', 'hsla(0, 15%, 28%, 1)', 'hsla(0, 15%, 34%, 1)', 'hsla(0, 15%, 39%, 1)', 'hsla(0, 15%, 45%, 1)', 'hsla(0, 15%, 50%, 1)', 'hsla(0, 15%, 93%, 1)', 'hsla(0, 15%, 99%, 1)']
@@ -35,16 +35,16 @@ const builtThemes = createThemes({
 
     extra: {
       light: {
-        ...Colors.green,
-        ...Colors.red,
-        ...Colors.yellow,
+        // ...Colors.green,
+        // ...Colors.red,
+        // ...Colors.yellow,
         ...lightShadows,
         shadowColor: lightShadows.shadow1,
       },
       dark: {
-        ...Colors.greenDark,
-        ...Colors.redDark,
-        ...Colors.yellowDark,
+        // ...Colors.greenDark,
+        // ...Colors.redDark,
+        // ...Colors.yellowDark,
         ...darkShadows,
         shadowColor: darkShadows.shadow1,
       },
@@ -61,22 +61,22 @@ const builtThemes = createThemes({
   childrenThemes: {
     warning: {
       palette: {
-        dark: Object.values(Colors.yellowDark),
-        light: Object.values(Colors.yellow),
+        dark: [], // Object.values(Colors.yellowDark),
+        light: [], // Object.values(Colors.yellow),
       },
     },
 
     error: {
       palette: {
-        dark: Object.values(Colors.redDark),
-        light: Object.values(Colors.red),
+        dark: [], // Object.values(Colors.redDark),
+        light: [], // Object.values(Colors.red),
       },
     },
 
     success: {
       palette: {
-        dark: Object.values(Colors.greenDark),
-        light: Object.values(Colors.green),
+        dark: [], // Object.values(Colors.greenDark),
+        light: [], // Object.values(Colors.green),
       },
     },
   },

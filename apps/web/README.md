@@ -3,11 +3,12 @@
 ## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
+- [ ] upgrade nextjs to v15.4
 
 ## 📦 Prerequisite
 
-- Node >=22.15.0
-- Bun 1.2.17+
+- Node >=22.17.1
+- Bun 1.2.19+
 
 ### Environment Variables
 

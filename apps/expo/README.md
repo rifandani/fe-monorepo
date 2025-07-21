@@ -19,8 +19,8 @@
 
 [Expo reference](https://docs.expo.dev/get-started/set-up-your-environment/) or [React Native reference](https://reactnative.dev/docs/set-up-your-environment).
 
-- Node >=22.15.0
-- Bun 1.2.17+
+- Node >=22.17.1
+- Bun 1.2.19+
 - Java 17+ (as of Expo SDK 50)
 - Install EAS CLI globally using `npm i -g eas-cli`
 - **Don't use VPN**, or `fetch` will not work

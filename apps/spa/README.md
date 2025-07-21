@@ -6,8 +6,8 @@
 
 ## 📦 Prerequisite
 
-- Node >=22.15.0
-- Bun 1.2.17+
+- Node >=22.17.1
+- Bun 1.2.19+
 
 ### Environment Variables
 
