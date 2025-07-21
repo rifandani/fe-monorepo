@@ -8,7 +8,12 @@
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
-## 📦 Upgrading Dependencies
+## 📦 Prerequisite
+
+- Node >=22.17.1
+- Bun 1.2.19+
+
+## 🛠️ Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
 - Run `bun outdated` to check for outdated dependencies in root and run `bun update --latest` to upgrade all dependencies in root to the latest version or `bun update --latest --interactive` to upgrade dependencies interactively

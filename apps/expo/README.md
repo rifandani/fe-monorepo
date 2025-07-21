@@ -14,16 +14,19 @@
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
+- [ ] Otel for observability
+- [ ] Feature flags
 
 ## 📦 Prerequisite
 
-[Expo reference](https://docs.expo.dev/get-started/set-up-your-environment/) or [React Native reference](https://reactnative.dev/docs/set-up-your-environment).
-
-- Node >=22.17.1
-- Bun 1.2.19+
 - Java 17+ (as of Expo SDK 50)
 - Install EAS CLI globally using `npm i -g eas-cli`
 - **Don't use VPN**, or `fetch` will not work
+
+> References:
+>
+> - [Expo](https://docs.expo.dev/get-started/set-up-your-environment/)
+> - [React Native](https://reactnative.dev/docs/set-up-your-environment)
 
 ### Setup EAS
 
@@ -108,7 +111,9 @@ Everytime we change the app icon, we need to clean re-build the app.
 bun prebuild
 ```
 
-## 🔨 Development Build
+## 🔨 Build
+
+### Development Build
 
 Development Build requires a "development build" app and a development server to be running. There are 2 build profiles, `development` and `development-simulator`. For further details, please check `eas.json` file.
 
@@ -143,7 +148,7 @@ If we run `bun build:ios:dev-sim:local`, you will get a `build-*.tar.gz` file. W
 bun ios:sim:install
 ```
 
-## 🔨 Preview Build
+### Preview Build
 
 This build often referred as "internal distribution" which can be distributed to Google Play Beta (android) and TestFlight (iOS). [Reference](https://docs.expo.dev/tutorial/eas/internal-distribution-builds/).
 
@@ -165,7 +170,7 @@ bun build:android:preview:local
 bun build:ios:preview:local # (iphone device, requires apple developer account)
 ```
 
-## 🔨 Production Build
+### Production Build
 
 Production builds must be installed through their respective app stores. They cannot be installed directly on your Android Emulator or device, or iOS Simulator or device.
 
@@ -189,6 +194,14 @@ bun build:android:prod:local
 
 # this will create a .ipa file in the root directory (can't be installed directly on ios simulator/device)
 bun build:ios:prod:local # (requires apple developer account)
+```
+
+### Analyze Build Bundle Size
+
+```bash
+# analyze Javascript bundle size mimicking the production build
+# this will start the dev server. Click `shift+m` on the terminal and choose to open expo-atlas. This will open a new tab on the browser.
+bun analyze
 ```
 
 ## 🔄 Updates
@@ -215,14 +228,6 @@ bun submit:android
 
 # submit the app to the Apple App Store
 bun submit:ios
-```
-
-## 📊 Analyze Bundle Size
-
-```bash
-# analyze Javascript bundle size mimicking the production build
-# this will start the dev server. Click `shift+m` on the terminal and choose to open expo-atlas. This will open a new tab on the browser.
-bun analyze
 ```
 
 [Best practices for reducing bundle size](https://docs.expo.dev/distribution/app-size/#optimizing-app-size):

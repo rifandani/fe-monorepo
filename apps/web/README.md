@@ -4,11 +4,9 @@
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
 - [ ] upgrade nextjs to v15.4
+- [ ] make this as fullstack template instead of just frontend-only template
 
 ## 📦 Prerequisite
-
-- Node >=22.17.1
-- Bun 1.2.19+
 
 ### Environment Variables
 
@@ -23,6 +21,7 @@ To run the app:
 
 ```bash
 # spin up all services using docker compose (run this in root project)
+# services includes: grafana otel for observability, flagsmith for feature flags.
 bun compose:up
 
 # run the app with development env in port 3002
@@ -32,25 +31,19 @@ bun dev
 bun dev:prod
 ```
 
-## 🔨 Development Build
-
-To build the app:
+## 🔨 Build
 
 ```bash
 # build the app with development env
 bun build
 ```
 
-## 🔨 Production Build
-
-To build the app:
-
 ```bash
 # build the app with production env
 bun build:prod
 ```
 
-## 📊 Analyze Bundle Size
+### Analyze Build Bundle Size
 
 To analyze the production bundle size:
 
@@ -196,14 +189,9 @@ To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.o
 
 We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
 
-> We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
-
-```bash
-# spin up flagsmith self-hosted using docker compose (run this in root project)
-bun compose:up
-```
-
 Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
+
+> We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
 
 ## 📊 How to Observability
 
@@ -218,18 +206,3 @@ Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana
 
 - Username: `admin`
 - Password: `admin`
-
-```bash
-# cd into root of the workspace
-cd ../..
-
-# run the docker compose file
-bun compose:up
-```
-
-Then, start the dev server to start sending the metrics, and traces to otel collector.
-
-```bash
-# running in port 3002
-bun web dev
-```

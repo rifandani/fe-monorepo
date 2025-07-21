@@ -2,12 +2,9 @@
 
 ## 🎯 Todo
 
-- [ ] Fix build error (might be related to PWA)
+~
 
 ## 📦 Prerequisite
-
-- Node >=22.17.1
-- Bun 1.2.19+
 
 ### Environment Variables
 
@@ -31,25 +28,19 @@ bun dev
 bun dev:prod
 ```
 
-## 🔨 Development Build
-
-To build the app:
+## 🔨 Build
 
 ```bash
 # build the app with development env
 bun build
 ```
 
-## 🔨 Production Build
-
-To build the app:
-
 ```bash
 # build the app with production env
 bun build:prod
 ```
 
-## 📊 Analyze Bundle Size
+### Analyze Build Bundle Size
 
 Everytime we build the app, we can see the HTML report of the bundle size by checking the `html` folder.
 
@@ -185,11 +176,6 @@ To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.o
 
 We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
 
-```bash
-# spin up flagsmith self-hosted using docker compose (run this in root project)
-bun compose:up
-```
-
 Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
 
 ## 📊 How to Observability
@@ -205,21 +191,6 @@ Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana
 
 - Username: `admin`
 - Password: `admin`
-
-```bash
-# cd into root of the workspace
-cd ../..
-
-# run the docker compose file
-bun compose:up
-```
-
-Then, start the dev server to start sending the metrics, and traces to otel collector.
-
-```bash
-# running in port 3001
-bun spa dev
-```
 
 ## 📱 Progressive Web App (PWA)
 
