@@ -109,6 +109,10 @@ Resources:
 
 Coming Soon
 
+Resources:
+
+- [ ] [Web Vitals](https://web.dev/explore/learn-core-web-vitals)
+
 ## ⌨️ Accessibility
 
 Coming Soon.
@@ -220,3 +224,9 @@ bun spa dev
 ## 📱 Progressive Web App (PWA)
 
 Coming Soon
+
+Resources:
+
+- [Learn PWA](https://web.dev/learn/pwa/welcome)
+- [PWA Checklist](https://web.dev/articles/pwa-checklist)
+- [What PWA Can Do Today](https://whatpwacando.today/)

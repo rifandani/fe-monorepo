@@ -13,8 +13,8 @@ import { repositoryErrorMapper } from '@/core/utils/error'
 import { Logger } from '@/core/utils/logger'
 import { recordSpan } from '@/core/utils/telemetry'
 
-const logger = new Logger('authAction')
-const meter = metrics.getMeter('authAction')
+const logger = new Logger('auth.action')
+const meter = metrics.getMeter('auth.action')
 
 const loginCounter = meter.createCounter('login', {
   description: 'How many times the login action is called',
@@ -41,7 +41,7 @@ export const loginAction = actionClient
   .action<ActionResult<null>>(async ({ parsedInput }) => {
     const result = await recordSpan({
       name: 'loginAction',
-      tracer: trace.getTracer('auth'),
+      tracer: trace.getTracer('auth.action'),
       attributes: parsedInput,
       fn: async (span) => {
         loginCounter.add(1)
@@ -97,7 +97,7 @@ export const logoutAction = actionClient
   .action(async () => {
     await recordSpan({
       name: 'logoutAction',
-      tracer: trace.getTracer('auth'),
+      tracer: trace.getTracer('auth.action'),
       fn: async (span) => {
         logoutCounter.add(1)
         logger.log('logoutAction')

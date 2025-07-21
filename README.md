@@ -2,13 +2,12 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rifandani/fe-monorepo)
 
-### 🎯 Todo
+## 🎯 Todo
 
-- [ ] otel in browser
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 
-### 📦 Upgrading Dependencies
+## 📦 Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
 - Run `bun outdated` to check for outdated dependencies in root and run `bun update --latest` to upgrade all dependencies in root to the latest version
@@ -24,7 +23,7 @@
 
 After making sure all changes are checked, run `bun cs` to create a new changeset and `bun cs:v` to version the changeset.
 
-### 📝 Environment Variables
+## 📝 Environment Variables
 
 For first timer, you need to create the 2 environments in your github repo.
 First is `dev` environment, and second is `prod` environment (that's why in `.github/workflows/ci.yml` we stated `environment: dev`).
@@ -35,14 +34,26 @@ The value for `WEB_ENV_FILE` in `dev` environment is `.env.dev`, and the value f
 
 Everytime there is a change in the local env variables, you need to also update the env variables in the github repo.
 
-## @workspace/spa
+## 📱 Apps
+
+### @workspace/spa
 
 [See here](./apps/spa/README.md)
 
-## @workspace/web
+### @workspace/web
 
 [See here](./apps/web/README.md)
 
-## @workspace/expo
+### @workspace/expo
 
 [See here](./apps/expo/README.md)
+
+## 📦 Packages
+
+### @workspace/core
+
+[See here](./packages/core/README.md)
+
+### @workspace/typescript-config
+
+[See here](./packages/typescript-config/README.md)
