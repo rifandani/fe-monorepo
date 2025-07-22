@@ -248,10 +248,7 @@ bun web db:pull
 
 ### Database Seeding
 
-```bash
-# reset and seed the images table
-bun web db:seed-images
-```
+Coming Soon
 
 ### Database Studio
 

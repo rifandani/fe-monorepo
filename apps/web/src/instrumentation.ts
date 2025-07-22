@@ -1,6 +1,5 @@
 import type { Instrumentation } from 'next'
 import { DiagLogLevel } from '@opentelemetry/api'
-import { logger } from '@workspace/core/utils/logger'
 import { ENV } from '@/core/constants/env'
 import { Logger } from '@/core/utils/logger'
 
@@ -61,11 +60,19 @@ export async function register() {
         new HttpInstrumentation({
           ignoreIncomingRequestHook: (request) => {
             const openApiRegex = /^\/openapi(?:\/.*)?$/
+            const nextStaticRegex = /^\/_next\/static\/.*/
+            const nextSourceMapRegex = /^\/__nextjs_source-map\//
+            const nextStackFramesRegex = /^\/__nextjs_original-stack-frames\//
+            const wellKnownRegex = /^\/\.well-known\/.*/
             const imageRegex = /\.(?:png|jpg|jpeg|gif|svg|ico|webp)$/i
 
             return (
               request.url === '/manifest.webmanifest'
               || openApiRegex.test(request.url ?? '')
+              || nextStaticRegex.test(request.url ?? '')
+              || nextSourceMapRegex.test(request.url ?? '')
+              || nextStackFramesRegex.test(request.url ?? '')
+              || wellKnownRegex.test(request.url ?? '')
               || imageRegex.test(request.url ?? '')
             )
           },
@@ -121,8 +128,6 @@ export async function register() {
       ],
     })
     metrics.setGlobalMeterProvider(meterProvider)
-
-    logger.log('[instrumentation]: Server started')
   }
 }
 
