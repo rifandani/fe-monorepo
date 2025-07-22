@@ -27,8 +27,10 @@
   "newContentAvailable":
     "New content is available, click the reload button to update",
 
-  "username": "Username",
-  "usernamePlaceholder": "Your username...",
+  "name": "Name",
+  "namePlaceholder": "Your name...",
+  "email": "Email",
+  "emailPlaceholder": "Your email...",
   "password": "Password",
   "passwordPlaceholder": "Your password...",
   "loginLoading": "Logging in...",
@@ -39,6 +41,8 @@
   "welcome": "Welcome Back",
   "noAccount": "Don\"t have an account?",
   "registerHere": "Register here",
+  "register": "Register",
+  "registerLoading": "Registering...",
 
   "title": "Home"
 }

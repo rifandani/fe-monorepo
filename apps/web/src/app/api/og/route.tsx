@@ -1,7 +1,10 @@
 import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
-import { logger } from '@workspace/core/utils/logger'
 import { ImageResponse } from 'next/og'
+import { simplifyErrorObject } from '@/core/utils/error'
+import { Logger } from '@/core/utils/logger'
+
+const logger = new Logger('api.og')
 
 // NOTE: vercel-related
 // export const runtime = 'edge'
@@ -70,11 +73,11 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
       },
     )
   }
-  catch (e) {
-    if (!(e instanceof Error))
-      throw e
+  catch (err) {
+    if (!(err instanceof Error))
+      throw err
 
-    logger.error('Failed to generate the image', e.message)
+    logger.error('Failed to generate the image', simplifyErrorObject(err))
     return new Response(`Failed to generate the image`, {
       status: 500,
     })

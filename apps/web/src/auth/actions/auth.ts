@@ -1,19 +1,16 @@
 'use server'
 
 import type { ActionResult } from '@/core/utils/action'
-import { metrics, SpanStatusCode, trace } from '@opentelemetry/api'
-import { authLoginRequestSchema, authRepositories } from '@workspace/core/apis/auth'
-import { cookies } from 'next/headers'
+import { metrics, trace } from '@opentelemetry/api'
+import { authSignInEmailRequestSchema, authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { tryit } from 'radashi'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
-import { http } from '@/core/services/http'
+import { auth } from '@/auth/utils/auth'
 import { actionClient } from '@/core/utils/action'
-import { repositoryErrorMapper } from '@/core/utils/error'
-import { Logger } from '@/core/utils/logger'
+import { serverErrorMapper } from '@/core/utils/error'
 import { recordSpan } from '@/core/utils/telemetry'
 
-const logger = new Logger('auth.action')
 const meter = metrics.getMeter('auth.action')
 
 const loginCounter = meter.createCounter('login', {
@@ -24,20 +21,23 @@ const logoutCounter = meter.createCounter('logout', {
   description: 'How many times the logout action is called',
 })
 
+const registerCounter = meter.createCounter('register', {
+  description: 'How many times the register action is called',
+})
+
 /**
  * Server action to handle user login.
  *
  * @description
- * 1. Validates the login form data
- * 2. Attempts to authenticate with the server
- * 3. On success: Sets an HTTP-only auth cookie and redirects to home
- * 4. On failure: Returns validation or server error messages
+ * 1. Save session to database
+ * 2. Set an HTTP-only auth cookie
+ * 3. Redirect user to home page
  *
  * @returns {Promise<LoginActionResult | void>} Returns error object if login fails (zod error or server error), void if successful (redirects)
  */
 export const loginAction = actionClient
   .metadata({ actionName: 'login' })
-  .inputSchema(authLoginRequestSchema)
+  .inputSchema(authSignInEmailRequestSchema)
   .action<ActionResult<null>>(async ({ parsedInput }) => {
     const result = await recordSpan({
       name: 'loginAction',
@@ -45,34 +45,76 @@ export const loginAction = actionClient
       attributes: parsedInput,
       fn: async (span) => {
         loginCounter.add(1)
-        logger.log('loginAction', { parsedInput })
 
-        const [error, response] = await tryit(authRepositories(http).login)({ json: parsedInput })
-        if (error) {
-          span.recordException({
-            name: error.name,
-            message: error.message,
-            stack: error.stack,
-          })
-          span.setStatus({
-            code: SpanStatusCode.ERROR,
-            message: error.message,
-          })
-          return await repositoryErrorMapper(error)
-        }
-
-        span.addEvent('Start set session cookie', response)
-        const cookie = await cookies()
-        cookie.set(AUTH_COOKIE_NAME, btoa(JSON.stringify(response)), {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'strict',
-          maxAge: 60 * 60 * 24 * 1, // 1 days
-          path: '/',
+        // cookie automatically set by plugin nextCookies
+        const [error, response] = await tryit(auth.api.signInEmail)({
+          headers: await headers(),
+          body: {
+            email: parsedInput.email,
+            password: parsedInput.password,
+            callbackURL: '/',
+          },
         })
 
-        // INFO: we can't use redirect in try catch block, because redirect will throw an error object
-        span.addEvent('Start redirect to /')
+        if (error) {
+          return await serverErrorMapper(error, span)
+        }
+
+        span.addEvent('Login success', {
+          'token': response.token,
+          'user.id': response.user.id,
+          'user.email': response.user.email,
+        })
+      },
+    })
+
+    if (result) {
+      return result
+    }
+
+    redirect('/')
+  })
+
+/**
+ * Server action to handle user register.
+ *
+ * @description
+ * 1. Save session to database
+ * 2. Set an HTTP-only auth cookie
+ * 3. Redirect user to home page
+ *
+ * @returns {Promise<LoginActionResult | void>} Returns error object if login fails (zod error or server error), void if successful (redirects)
+ */
+export const registerAction = actionClient
+  .metadata({ actionName: 'register' })
+  .inputSchema(authSignUpEmailRequestSchema)
+  .action<ActionResult<null>>(async ({ parsedInput }) => {
+    const result = await recordSpan({
+      name: 'registerAction',
+      tracer: trace.getTracer('auth.action'),
+      attributes: parsedInput,
+      fn: async (span) => {
+        registerCounter.add(1)
+
+        // cookie automatically set by plugin nextCookies
+        const [error, response] = await tryit(auth.api.signUpEmail)({
+          headers: await headers(),
+          body: {
+            name: parsedInput.name,
+            email: parsedInput.email,
+            password: parsedInput.password,
+            callbackURL: '/',
+          },
+        })
+
+        if (error) {
+          return await serverErrorMapper(error, span)
+        }
+
+        span.addEvent('Register success', {
+          'user.id': response.user.id,
+          'user.email': response.user.email,
+        })
       },
     })
 
@@ -87,27 +129,38 @@ export const loginAction = actionClient
  * Server action to handle user logout.
  *
  * @description
- * 1. Removes the authentication cookie
- * 2. Redirects user to the login page
+ * 1. Remove session from database
+ * 2. Remove authentication cookie
+ * 3. Redirect user to the login page
  *
  * @returns {Promise<void>} Redirects to login page
  */
 export const logoutAction = actionClient
   .metadata({ actionName: 'logoutAction' })
   .action(async () => {
-    await recordSpan({
+    const result = await recordSpan({
       name: 'logoutAction',
       tracer: trace.getTracer('auth.action'),
       fn: async (span) => {
         logoutCounter.add(1)
-        logger.log('logoutAction')
 
-        const cookie = await cookies()
-        cookie.delete(AUTH_COOKIE_NAME)
+        const [error, response] = await tryit(auth.api.signOut)({
+          headers: await headers(),
+        })
 
-        span.addEvent('Start redirect to /login')
+        if (error) {
+          return await serverErrorMapper(error, span)
+        }
+
+        span.addEvent('Logout success', {
+          success: response.success,
+        })
       },
     })
+
+    if (result) {
+      return result
+    }
 
     redirect('/login')
   })

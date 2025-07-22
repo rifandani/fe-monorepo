@@ -39,7 +39,7 @@ export default function LoginPage() {
           <Link
             aria-label={t('registerHere')}
             className="hover:underline"
-            href="/"
+            href="/register"
           >
             {t('registerHere')}
           </Link>

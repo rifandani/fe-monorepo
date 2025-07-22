@@ -1,4 +1,8 @@
 import { getTranslations } from 'next-intl/server'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { toast } from 'sonner'
+import { auth } from '@/auth/utils/auth'
 import { LanguageToggle } from '@/core/components/language-toggle.client'
 import { ProfileMenu } from '@/core/components/profile-menu.client'
 import { ThemeToggle } from '@/core/components/theme-toggle.client'
@@ -19,7 +23,15 @@ export const metadata = createMetadata({
 })
 
 export default async function HomePage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
   const t = await getTranslations()
+
+  if (!session) {
+    toast.error(t('unauthorized'))
+    redirect('/login')
+  }
 
   return (
     <div
@@ -46,7 +58,7 @@ export default async function HomePage() {
       <div className="flex items-center gap-x-2">
         <ThemeToggle />
         <LanguageToggle />
-        <ProfileMenu username="Get From Cookies" />
+        <ProfileMenu username={session?.user?.name ?? 'Get From Cookies'} />
       </div>
 
       <JsonLd

@@ -1,6 +1,20 @@
 name: fe-monorepo
 
 services:
+  pgvector_db:
+    image: pgvector/pgvector:pg17 # PostgreSQL with pgvector support
+    environment:
+      POSTGRES_DB: pgvector_db
+      POSTGRES_USER: pgvector_db
+      POSTGRES_PASSWORD: pgvector_db
+    # DATABASE_URL === postgres://pgvector_db:pgvector_db@db:5432/pgvector_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_db_data:/var/lib/postgresql/data
+      - ./pgvector.sql:/docker-entrypoint-initdb.d/pgvector.sql # init pgvector extension
+    restart: always
+
   otel-lgtm:
     image: docker.io/grafana/otel-lgtm:latest
     ports:
@@ -90,3 +104,4 @@ services:
 
 volumes:
   pgdata:
+  pgvector_db_data:

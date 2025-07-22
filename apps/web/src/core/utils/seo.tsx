@@ -100,7 +100,7 @@ export function createMetadata({
   }
 
   // Return the final merged metadata object
-  return metadata
+  return metadata as Metadata
 }
 
 /**

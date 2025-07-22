@@ -1,22 +1,25 @@
 import 'server-only'
-import { authLoginResponseSchema } from '@workspace/core/apis/auth'
-import { logger } from '@workspace/core/utils/logger'
 import { createSafeActionClient, DEFAULT_SERVER_ERROR_MESSAGE } from 'next-safe-action'
-import { cookies } from 'next/headers'
+import { headers } from 'next/headers'
+import { tryit } from 'radashi'
 import { z } from 'zod/v4'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
+import { auth } from '@/auth/utils/auth'
+import { simplifyErrorObject } from '@/core/utils/error'
+import { Logger } from '@/core/utils/logger'
 
 export interface ActionResult<T> {
   data: T | null
   error: string | null
 }
 
+const logger = new Logger('action.client')
+
 /**
  * Default action client with logging middleware
  */
 export const actionClient = createSafeActionClient({
   handleServerError: (error) => {
-    logger.error('[actionClient]: Error default server error handler', error instanceof Error ? error.message : error)
+    logger.error('[actionClient]: Error default server error handler', simplifyErrorObject(error))
 
     if (error instanceof Error) {
       return error.message
@@ -45,26 +48,32 @@ export const actionClient = createSafeActionClient({
   })
 
 /**
- * Action client based on default `actionClient` with authentication middleware that parses the session from the cookie and returns the session in the context
+ * Action client based on default `actionClient` with authentication middleware
+ *
+ * @description
+ * 1. Get session from database
+ * 2. Validate session
+ * 3. Return session in action context
  */
 export const authActionClient = actionClient
   // Define authorization middleware
   .use(async ({ next }) => {
-    const cookie = await cookies()
+    // built-in session validation/parsing
+    const [error, session] = await tryit(auth.api.getSession)({
+      headers: await headers(),
+    })
 
-    const session = cookie.get(AUTH_COOKIE_NAME)?.value
+    if (error) {
+      logger.error('[authActionClient]: Unauthorized: Error getting session', simplifyErrorObject(error))
+      throw new Error('[authActionClient]: Unauthorized: Error getting session')
+    }
+
     if (!session) {
       logger.error('[authActionClient]: Unauthorized: No session found')
       throw new Error('[authActionClient]: Unauthorized: No session found')
     }
 
-    const parsedSession = authLoginResponseSchema.safeParse(JSON.parse(atob(session)))
-    if (parsedSession.error) {
-      logger.error('[authActionClient]: Unauthorized: Session is not valid', parsedSession.error)
-      throw new Error('[authActionClient]: Unauthorized: Session is not valid')
-    }
-
     logger.log('[authActionClient]: Authorized: Session is valid')
     // Return the next middleware with `userId` value in the context
-    return next({ ctx: { session: parsedSession.data } })
+    return next({ ctx: session })
   })

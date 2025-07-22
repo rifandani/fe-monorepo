@@ -1,26 +1,29 @@
 import 'server-only'
-import { authLoginResponseSchema } from '@workspace/core/apis/auth'
-import { cookies } from 'next/headers'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
+import { openAPI } from 'better-auth/plugins'
+import { ENV } from '@/core/constants/env'
+import { db } from '@/core/db'
+import * as schema from '@/core/db/schema'
 
-/**
- * Get the authenticated user from the cookie
- *
- * @returns {Promise<AuthLoginResponse | null>} The authenticated user or null if not authenticated or the session data is invalid
- */
-export async function getAuthUser() {
-  const cookie = await cookies()
-  const session = cookie.get(AUTH_COOKIE_NAME)?.value
-
-  if (!session) {
-    return null
-  }
-
-  const parsedSession = authLoginResponseSchema.safeParse(JSON.parse(atob(session)))
-
-  if (!parsedSession.success) {
-    return null
-  }
-
-  return parsedSession.data
-}
+export const auth = betterAuth({
+  appName: ENV.NEXT_PUBLIC_APP_TITLE,
+  secret: ENV.BETTER_AUTH_SECRET,
+  baseURL: ENV.NEXT_PUBLIC_APP_URL,
+  database: drizzleAdapter(db, {
+    provider: 'pg',
+    schema: {
+      user: schema.userTable,
+      session: schema.sessionTable,
+      account: schema.accountTable,
+      verification: schema.verificationTable,
+    },
+  }),
+  trustedOrigins: [ENV.NEXT_PUBLIC_APP_URL, 'http://localhost:3002'],
+  emailAndPassword: { enabled: true },
+  plugins: [
+    openAPI(), // at /api/auth/reference
+    nextCookies(), // make sure this is the last plugin in the array
+  ],
+})

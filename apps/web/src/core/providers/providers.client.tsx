@@ -1,6 +1,6 @@
 'use client'
 
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
+import type { AuthGetSessionResponseSchema } from '@workspace/core/apis/better-auth'
 import dynamic from 'next/dynamic'
 import * as React from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
@@ -13,7 +13,7 @@ import { WebVitals } from '@/core/providers/web-vitals.client'
 const FlagsProvider = dynamic(() => import('@/core/providers/flags/provider.client').then(module => ({ default: module.FlagsProvider })), { ssr: false })
 // const LazyFlagsProvider = React.lazy(() => import('@/core/providers/flags/provider.client').then(module => ({ default: module.FlagsProvider })))
 
-export function AppProviders({ children, locale, user }: { children: React.ReactNode, locale: string, user: AuthLoginResponseSchema | null }) {
+export function AppProviders({ children, locale, user }: { children: React.ReactNode, locale: string, user: NonNullable<AuthGetSessionResponseSchema>['user'] | null }) {
   return (
     <>
       <AriaI18nProvider locale={locale}>

@@ -26,8 +26,10 @@
   "appReady": "Aplikasi siap digunakan secara offline",
   "newContentAvailable": "Konten baru tersedia, klik tombol muat ulang untuk memperbarui",
 
-  "username": "Username",
-  "usernamePlaceholder": "Username anda...",
+  "name": "Nama",
+  "namePlaceholder": "Nama anda...",
+  "email": "Email",
+  "emailPlaceholder": "Email anda...",
   "password": "Password",
   "passwordPlaceholder": "Password anda...",
   "loginLoading": "Sedang masuk...",
@@ -38,6 +40,8 @@
   "welcome": "Selamat Datang Kembali",
   "noAccount": "Tidak punya akun?",
   "registerHere": "Daftar disini",
+  "register": "Daftar",
+  "registerLoading": "Mendaftar...",
 
   "title": "Beranda"
 }

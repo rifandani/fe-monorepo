@@ -4,9 +4,10 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { headers } from 'next/headers'
 import { connection } from 'next/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { getAuthUser } from '@/auth/utils/auth'
+import { auth } from '@/auth/utils/auth'
 import { AppProviders } from '@/core/providers/providers.client'
 import { createMetadata } from '@/core/utils/seo'
 
@@ -45,7 +46,17 @@ export default async function RootLayout({
 
   const locale = await getLocale()
   const messages = await getMessages()
-  const user = await getAuthUser()
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+  const user = session?.user
+    ? {
+        ...session.user,
+        image: session.user.image ?? null,
+        createdAt: session.user.createdAt.toISOString(),
+        updatedAt: session.user.updatedAt?.toISOString() ?? null,
+      }
+    : null
 
   return (
     // suppressHydrationWarning for next-themes

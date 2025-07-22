@@ -1,11 +1,5 @@
 import type { MiddlewareConfig, NextRequest } from 'next/server'
 import { createMiddleware, defaults } from '@nosecone/next'
-import { NextResponse } from 'next/server'
-import { getAuthUser } from '@/auth/utils/auth'
-
-// Specify protected and public routes
-const protectedRoutes = ['/']
-const publicRoutes = ['/login']
 
 // const noseconeOptionsWithToolbar: NoseconeOptions = withVercelToolbar({
 //   ...defaults,
@@ -26,30 +20,25 @@ const securityMiddleware = createMiddleware({
  * Middleware allows you to run code before a request is completed.
  * Then, based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.
  * Middleware runs before cached content and ANY routes are matched.
+ *
+ * Make sure middleware runs FAST, try to use it for:
+ * - Security headers
+ * - Basic redirects based on URL patterns
+ * - Geolocation-based routing
+ * - Simple request/response modifications
+ *
+ * Other than that, use RSC to make it SECURE:
+ * - Authentication validation
+ * - Database queries
+ * - Complex business logic
+ * - Third-party integrations
  */
-export async function middleware(req: NextRequest) {
-  // Check if the current route is protected or public
-  const path = req.nextUrl.pathname
-  const isProtectedRoute = protectedRoutes.includes(path)
-  const isPublicRoute = publicRoutes.includes(path)
-
-  // Parse the session from the cookie
-  const user = await getAuthUser()
-
-  // Redirect to login if there is no session or the session is invalid
-  if (!user && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/login', req.url))
-  }
-
-  // Redirect to home if session is valid and in public route
-  if (user && isPublicRoute) {
-    return NextResponse.redirect(new URL('/', req.url))
-  }
-
+export async function middleware(_: NextRequest) {
   return securityMiddleware()
 }
 
 export const config: MiddlewareConfig = {
+  // runtime: 'nodejs', // experimental since v15.2
   /*
    * Match all request paths except for the ones starting with:
    * - api (API routes)

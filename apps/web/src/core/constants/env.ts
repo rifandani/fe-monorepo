@@ -3,7 +3,10 @@ import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod/v4'
 
 export const ENV = createEnv({
-  server: {},
+  server: {
+    DATABASE_URL: z.string().min(1),
+    BETTER_AUTH_SECRET: z.string().min(1),
+  },
   client: {
     NEXT_PUBLIC_APP_TITLE: z.string().min(1),
     NEXT_PUBLIC_APP_URL: z.url(),

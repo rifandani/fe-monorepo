@@ -1,6 +1,6 @@
 'use client'
 
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
+import type { AuthGetSessionResponseSchema } from '@workspace/core/apis/better-auth'
 import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
 import { OpenFeature, OpenFeatureProvider, ProviderEvents } from '@openfeature/react-sdk'
 import { logger } from '@workspace/core/utils/logger'
@@ -17,12 +17,15 @@ OpenFeature.addHandler(ProviderEvents.Error, (event) => {
   logger.error('[OpenFeatureHandler]: error', event)
 })
 
-export function FlagsProvider({ children, user, ...props }: PropsWithChildren<ComponentPropsWithoutRef<typeof OpenFeatureProvider>> & { user: AuthLoginResponseSchema | null }) {
+export function FlagsProvider({ children, user, ...props }: PropsWithChildren<ComponentPropsWithoutRef<typeof OpenFeatureProvider>> & { user: NonNullable<AuthGetSessionResponseSchema>['user'] | null }) {
   // sync user context to feature flags context
   useEffect(() => {
     if (user) {
-      const { accessToken, refreshToken, ...traits } = user
-      OpenFeature.setContext({ targetingKey: user.username, traits })
+      const { id, ...traits } = user
+      OpenFeature.setContext({
+        targetingKey: id,
+        traits,
+      })
     }
     else {
       OpenFeature.clearContext()
