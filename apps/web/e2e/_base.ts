@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { test as base, expect } from '@playwright/test'
-
-const username = 'emilys'
-const password = 'emilyspass'
+import { expect } from '@playwright/test'
+import { test as base } from 'next/experimental/testmode/playwright.js'
+import { validUser } from './_helper'
 
 export interface TestOptions {
-  user: { username: string, password: string }
+  user: { username: string, email: string, password: string }
 }
 
 export const test = base.extend<TestOptions>({
@@ -22,10 +21,7 @@ export const test = base.extend<TestOptions>({
     expect(errors).toHaveLength(0)
   },
   user: [
-    {
-      username,
-      password,
-    },
+    validUser,
     {
       option: true,
     },

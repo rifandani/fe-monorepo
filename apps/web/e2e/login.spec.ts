@@ -1,20 +1,19 @@
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { expect, test } from './_base'
+import { validUser } from './_helper'
 
-const validUsername = 'emilys'
-const validPassword = 'emilyspass'
-const invalidUsername = 'km'
-const invalidPassword = '0lelp'
-const errorUsername = '1emilys'
-const errorPassword = '1emilyspass'
+const invalidEmail = 'va'
+const invalidPassword = 'vaand'
+const errorEmail = '1vaandani@gmail.com'
+const errorPassword = '1vaandani'
 
 test.describe('authorized', () => {
   test('should redirect back to home page', async ({ page }) => {
-    const usernameInput = page.getByRole('textbox', { name: /username/i })
+    const emailInput = page.getByRole('textbox', { name: /email/i })
     const passwordInput = page.getByRole('textbox', { name: /password/i })
     const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
-    await expect(usernameInput).toBeHidden()
+    await expect(emailInput).toBeHidden()
     await expect(passwordInput).toBeHidden()
     await expect(submitBtn).toBeHidden()
   })
@@ -41,61 +40,61 @@ test.describe('unauthorized', () => {
   })
 
   test('should success to login', async ({ page }) => {
-    const usernameInput = page.getByRole('textbox', { name: /username/i })
-    const usernameAlert = page.getByRole('alert', { name: /username/i })
+    const emailInput = page.getByRole('textbox', { name: /email/i })
+    const emailAlert = page.getByRole('alert', { name: /email/i })
     const passwordInput = page.getByRole('textbox', { name: /password/i })
     const passwordAlert = page.getByRole('alert', { name: /password/i })
     const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     // default form state
-    await expect(usernameInput).toBeVisible()
-    await expect(usernameAlert).toBeHidden()
+    await expect(emailInput).toBeVisible()
+    await expect(emailAlert).toBeHidden()
     await expect(passwordInput).toBeVisible()
     await expect(passwordAlert).toBeHidden()
     await expect(submitBtn).toBeVisible()
 
     // fill with valid values
-    await usernameInput.fill(validUsername)
-    await passwordInput.fill(validPassword)
-    await expect(usernameAlert).toBeHidden()
+    await emailInput.fill(validUser.email)
+    await passwordInput.fill(validUser.password)
+    await expect(emailAlert).toBeHidden()
     await expect(passwordAlert).toBeHidden()
     await expect(submitBtn).toBeEnabled()
 
     // after submit, should be redirected to home
     await submitBtn.click()
     await page.waitForURL('')
-    await expect(usernameInput).toBeHidden({ timeout: 10_000 })
+    await expect(emailInput).toBeHidden({ timeout: 10_000 })
     await expect(passwordInput).toBeHidden()
     await expect(submitBtn).toBeHidden()
   })
 
   test('should failed to login', async ({ page }) => {
-    const usernameInput = page.getByRole('textbox', { name: /username/i })
-    const usernameAlert = page.getByText(/username must contain at least/i)
+    const emailInput = page.getByRole('textbox', { name: /email/i })
+    const emailAlert = page.getByText(/invalid email address/i)
     const passwordInput = page.getByRole('textbox', { name: /password/i })
-    const passwordAlert = page.getByText(/password must contain at least/i)
+    const passwordAlert = page.getByText(/too small: expected string to have >=8 characters/i)
     const errorAlert = page.getByTestId('mutation-error')
     const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     // default form state
-    await expect(usernameInput).toBeVisible()
-    await expect(usernameAlert).toBeHidden()
+    await expect(emailInput).toBeVisible()
+    await expect(emailAlert).toBeHidden()
     await expect(passwordInput).toBeVisible()
     await expect(passwordAlert).toBeHidden()
     await expect(errorAlert).toBeHidden()
     await expect(submitBtn).toBeVisible()
 
     // fill with invalid form values
-    await usernameInput.fill(invalidUsername)
+    await emailInput.fill(invalidEmail)
     await passwordInput.fill(invalidPassword)
-    await expect(usernameAlert).toBeVisible()
+    await expect(emailAlert).toBeVisible()
     await expect(passwordAlert).toBeVisible()
     await expect(submitBtn).toBeDisabled()
 
     // fill with valid form values, but not valid as request payload
-    await usernameInput.fill(errorUsername)
+    await emailInput.fill(errorEmail)
     await passwordInput.fill(errorPassword)
-    await expect(usernameAlert).toBeHidden()
+    await expect(emailAlert).toBeHidden()
     await expect(passwordAlert).toBeHidden()
     await expect(submitBtn).toBeEnabled()
 

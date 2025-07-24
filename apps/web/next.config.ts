@@ -26,7 +26,7 @@ let config: NextConfig = withNextIntl({
   //   },
   // },
   experimental: {
-    // testProxy: true, // need to enable for e2e testing
+    testProxy: true, // for e2e testing server side
     optimizePackageImports: ['@workspace/core'],
   },
 })

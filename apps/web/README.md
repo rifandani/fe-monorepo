@@ -3,6 +3,8 @@
 ## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
+- [ ] turbopack dev and build
+- [ ] fix e2e tests
 - [ ] upgrade nextjs to v15.4
 - [ ] make this as fullstack template instead of just frontend-only template
 
@@ -88,6 +90,12 @@ To show the test report:
 # show the test report
 bun test:report
 ```
+
+As of now, we can't test in CI because in order to do that we need to be able to mock the authentication response when we call auth api on the server-side (RSC and server actions).
+But, `next.onFetch` from `next/experimental/testmode/playwright` only intercepts external `fetch` requests (for both client and server).
+For example, if you `fetch` a relative URL (e.g. `/api/hello`) from the client that's handled by a Next.js route handler (e.g. `app/api/hello/route.ts`), it won't be intercepted.
+
+That's why currently we test only on local with a local database.
 
 ## 🚀 Deployment
 
