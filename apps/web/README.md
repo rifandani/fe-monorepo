@@ -3,9 +3,7 @@
 ## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
-- [ ] turbopack dev and build
 - [ ] fix e2e tests
-- [ ] upgrade nextjs to v15.4
 - [ ] make this as fullstack template instead of just frontend-only template
 
 ## 📦 Prerequisite
