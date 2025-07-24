@@ -1,5 +1,8 @@
 import { Icon } from '@iconify/react'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { RegisterForm } from '@/auth/components/register-form.client'
+import { auth } from '@/auth/utils/auth'
 import { Link } from '@/core/components/ui'
 import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
 
@@ -16,7 +19,15 @@ export const metadata = createMetadata({
   description,
 })
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (session) {
+    redirect('/')
+  }
+
   return (
     <div className="flex min-h-screen w-full">
       {/* form */}

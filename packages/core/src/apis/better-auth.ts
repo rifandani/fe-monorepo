@@ -1,14 +1,14 @@
 import type { Http } from '@workspace/core/services/http'
 import type { Options } from 'ky'
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 // #region ENTITY
 export const authSessionSchema = z.object({
   id: z.string(),
-  expiresAt: z.string().date(),
+  expiresAt: z.iso.date(),
   token: z.string(),
-  createdAt: z.string().date(),
-  updatedAt: z.string().date(),
+  createdAt: z.iso.date(),
+  updatedAt: z.iso.date(),
   ipAddress: z.string(),
   userAgent: z.string(),
   userId: z.string(),
@@ -18,11 +18,11 @@ export type AuthSessionSchema = z.infer<typeof authSessionSchema>
 export const authUserSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   emailVerified: z.boolean(),
   image: z.string().nullable(),
-  createdAt: z.string().date(),
-  updatedAt: z.string().date(),
+  createdAt: z.iso.date(),
+  updatedAt: z.iso.date(),
 })
 export type AuthUserSchema = z.infer<typeof authUserSchema>
 // #endregion ENTITY
@@ -39,7 +39,7 @@ export type AuthGetSessionResponseSchema = z.infer<
 >
 
 export const authSignUpEmailRequestSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(8),
   name: z.string().min(3),
   callbackURL: z.string().optional(),
@@ -60,7 +60,7 @@ export const authSignInEmailRequestSchema = authSignUpEmailRequestSchema
     name: true,
   })
   .extend({
-    rememberMe: z.boolean(),
+    rememberMe: z.boolean().optional(),
   })
 export type AuthSignInEmailRequestSchema = z.infer<
   typeof authSignInEmailRequestSchema

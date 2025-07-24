@@ -58,6 +58,7 @@ function Note({ indicator = true, intent = 'default', className, ...props }: Not
           dark:**:data-[slot=icon]:text-emerald-400 dark:[&_a]:text-emerald-50
           [&_a]:text-emerald-600
         `,
+        className,
       ])}
       {...props}
     >

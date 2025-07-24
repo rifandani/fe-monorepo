@@ -1,6 +1,9 @@
 import { Icon } from '@iconify/react'
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { LoginForm } from '@/auth/components/login-form.client'
+import { auth } from '@/auth/utils/auth'
 import { Link } from '@/core/components/ui'
 import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
 
@@ -17,8 +20,15 @@ export const metadata = createMetadata({
   description,
 })
 
-export default function LoginPage() {
-  const t = useTranslations()
+export default async function LoginPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+  const t = await getTranslations()
+
+  if (session) {
+    redirect('/')
+  }
 
   return (
     <div className="flex min-h-screen w-full">

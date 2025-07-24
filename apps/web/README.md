@@ -271,3 +271,5 @@ bun hono db:gen
 # run drizzle migrations
 bun hono db:migrate
 ```
+
+To see the openapi reference, visit `http://localhost:3002/api/auth/reference`.
