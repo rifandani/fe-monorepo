@@ -119,6 +119,7 @@ export default antfu(
       '**/dist/**',
       '**/build/**',
       '**/out/**',
+      '**/migrations/**',
       '**/coverage/**',
       '**/__mocks__/**',
       '**/.next/**',
