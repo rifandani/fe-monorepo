@@ -218,7 +218,7 @@ Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana
 
 We use `postgres@17` as RDBMS, `drizzle` as ORM, and `node-postgres` as driver.
 
-Config file for drizzle-kit is in `./drizzle.config.ts`. Entry file for drizzle-orm is in `./src/core/db/index.ts`. Migration files are in `./src/core/db/migrations` folder.
+Config file for drizzle-kit is in `./drizzle.config.ts`. Entry file for drizzle-orm is in `./src/db/index.ts`. Migration files are in `./src/db/migrations` folder.
 
 Follow below conventions:
 
