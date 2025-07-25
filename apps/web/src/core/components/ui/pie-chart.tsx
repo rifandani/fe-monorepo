@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { BaseChartProps } from './chart.js'
+import type { BaseChartProps } from './chart'
 import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
@@ -12,7 +12,7 @@ import {
   ChartTooltipContent,
   DEFAULT_COLORS,
   getColorValue,
-} from './chart.js'
+} from './chart'
 
 const sumNumericArray = (arr: number[]): number => arr.reduce((sum, num) => sum + num, 0)
 

@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { BaseChartProps } from './chart.js'
+import type { BaseChartProps } from './chart'
 import { startTransition } from 'react'
 import { Bar, BarChart as BarChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
@@ -20,7 +20,7 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from './chart.js'
+} from './chart'
 
 interface BarChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {

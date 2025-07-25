@@ -3,7 +3,7 @@
 import type { ComponentProps } from 'react'
 import type { LineProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { BaseChartProps } from './chart.js'
+import type { BaseChartProps } from './chart'
 import { Line, LineChart as LineChartPrimitive } from 'recharts'
 import { twMerge } from 'tailwind-merge'
 import {
@@ -20,7 +20,7 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from './chart.js'
+} from './chart'
 
 interface LineChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {
