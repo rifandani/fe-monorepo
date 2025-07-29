@@ -11,28 +11,22 @@
     "./assets/*": "./src/assets/*",
     "./constants/*": "./src/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
-    "./locales/*": "./src/locales/*.ts",
+    "./libs/*": "./src/libs/*.ts",
     "./services/*": "./src/services/*.ts",
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },
   "peerDependencies": {
-    "ky": ">=1.8.2",
-    "radashi": ">=12.6.0",
-    "react": ">=19.0.0",
-    "type-fest": ">=4.41.0",
-    "zod": ">=4.0.8"
+    "ky": "1.8.2",
+    "radashi": "12.6.0",
+    "react": "19.0.0",
+    "type-fest": "4.41.0",
+    "zod": "4.0.8"
   },
   "devDependencies": {
     "@types/node": "24.1.0",
     "@types/react": "19.1.8",
     "@workspace/typescript-config": "workspace:*",
-    "ky": "1.8.2",
-    "radashi": "12.6.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "type-fest": "4.41.0",
-    "typescript": "5.8.3",
-    "zod": "4.0.8"
+    "typescript": "5.8.3"
   }
 }

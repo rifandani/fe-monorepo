@@ -1,5 +1,5 @@
-import type { defineTranslation, ParamOptions } from '@workspace/core/libs/i18n/define-translation.js'
-import type { Register } from '@workspace/core/libs/i18n/my-translations.js'
+import type { defineTranslation, ParamOptions } from '@workspace/core/libs/i18n/define-translation'
+import type { Register } from '@workspace/core/libs/i18n/my-translations.d'
 
 export type LocaleDictLanguage = 'en-us' | 'id-id'
 

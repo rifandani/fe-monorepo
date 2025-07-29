@@ -5,7 +5,7 @@
 ## 🎯 Todo
 
 - [ ] Fix `eslint-plugin-better-tailwindcss` is not working since we use `linker = "isolated"` in `bunfig.toml`
-- [ ] Consider moving `ui` into `@workspace/ui`
+- [ ] Consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 

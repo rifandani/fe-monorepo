@@ -7,7 +7,7 @@ const applicationName = ENV.NEXT_PUBLIC_APP_TITLE
 const author = {
   name: 'Rizeki Rifandani',
   url: 'https://rifandani.com',
-}
+} satisfies Metadata['authors']
 const publisher = 'Rizeki Rifandani'
 const twitterHandle = '@tri_rizeki'
 const appUrl = ENV.NEXT_PUBLIC_APP_URL
