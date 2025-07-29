@@ -10,6 +10,7 @@
 
 ## 🎯 Todo
 
+- [ ] Use our own i18n library from `@workspace/core` instead of `i18next`
 - [ ] Use `expo-secure-store` to store sensitive data in android keystore or ios keychain instead of encrypted `mmkv`
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
