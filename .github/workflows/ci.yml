@@ -64,7 +64,7 @@ jobs:
         run: bun install # --frozen-lockfile
 
       - name: Save github secrets as env file
-        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
+        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
 
       - name: Install playwright browsers
         run: bun spa:ci test:install
@@ -142,7 +142,7 @@ jobs:
         run: bun install # --frozen-lockfile
 
       - name: Save github secrets as env file
-        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.development
+        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
 
       - name: Build
         run: bun spa:ci build
