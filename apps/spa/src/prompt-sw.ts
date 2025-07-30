@@ -1,11 +1,6 @@
-// eslint-disable-next-line ts/ban-ts-comment
-// @ts-nocheck I'm not sure how to fix this
+/// <reference lib="webworker" />
 
-import {
-  cleanupOutdatedCaches,
-  createHandlerBoundToURL,
-  precacheAndRoute,
-} from 'workbox-precaching'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 
 declare let self: ServiceWorkerGlobalScope
@@ -15,11 +10,21 @@ self.addEventListener('message', (event) => {
     self.skipWaiting()
 })
 
-// self.__WB_MANIFEST is default injection point
+// self.__WB_MANIFEST is the default injection point
 precacheAndRoute(self.__WB_MANIFEST)
 
-// clean old caches
+// clean old assets
 cleanupOutdatedCaches()
 
+let allowlist: RegExp[] | undefined
+// in dev mode, we disable precaching to avoid caching issues
+if (import.meta.env.DEV)
+  allowlist = [/^\/$/]
+
 // to allow work offline
-registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html')))
+registerRoute(
+  new NavigationRoute(
+    createHandlerBoundToURL('index.html'),
+    { allowlist },
+  ),
+)

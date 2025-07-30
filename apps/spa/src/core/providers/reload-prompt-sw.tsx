@@ -3,27 +3,59 @@ import { toast } from 'sonner'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { useTranslation } from '@/core/providers/i18n/context'
 
-// replaced dynamically
-const buildDate = '__DATE__' as '__DATE__' | Omit<string, '__DATE__'>
-const reloadSW = '__RELOAD_SW__' as '__RELOAD_SW__' | 'true'
+/**
+ * This function will register a periodic sync check every hour, you can modify the interval as needed.
+ */
+function registerPeriodicSync(period: number, swUrl: string, r: ServiceWorkerRegistration) {
+  // eslint-disable-next-line no-console
+  console.log('✅ SW activated', r)
+
+  if (period <= 0)
+    return
+
+  setInterval(async () => {
+    if ('onLine' in navigator && !navigator.onLine)
+      return
+
+    // eslint-disable-next-line no-console
+    console.log('🔵 Checking for SW updates...')
+    const resp = await fetch(swUrl, {
+      cache: 'no-store',
+      headers: {
+        'cache': 'no-store',
+        'cache-control': 'no-cache',
+      },
+    })
+
+    if (resp?.status === 200) {
+      // eslint-disable-next-line no-console
+      console.log('🔵 Updating SW...')
+      await r.update()
+    }
+  }, period)
+}
 
 export function ReloadPromptSw() {
+  // check for updates every hour
+  const period = 60 * 60 * 1_000
+
   const onRegisteredSW = useCallback(
-    (_swUrl: string, registration: ServiceWorkerRegistration | undefined) => {
-      // in `vite.config.ts`, the `reloadSW` could be `'true'` if `process.env.RELOAD_SW === 'true'`
-      if (reloadSW === 'true' && registration) {
-        setInterval(() => {
-          // eslint-disable-next-line no-console
-          console.log('🔵 Updating Service Worker...')
-          void registration.update()
-        }, 10_000 /* 10s for testing purposes */)
+    (swUrl: string, r: ServiceWorkerRegistration | undefined) => {
+      if (period <= 0)
+        return
+      if (r?.active?.state === 'activated') {
+        registerPeriodicSync(period, swUrl, r)
       }
-      else {
-        // eslint-disable-next-line no-console
-        console.log('✅ Service Worker registered', registration)
+      else if (r?.installing) {
+        r.installing.addEventListener('statechange', (e) => {
+          const sw = e.target as ServiceWorker
+          if (sw.state === 'activated') {
+            registerPeriodicSync(period, swUrl, r)
+          }
+        })
       }
     },
-    [],
+    [period],
   )
 
   const onRegisterError = useCallback((error: unknown) => {
@@ -46,7 +78,7 @@ export function ReloadPromptSw() {
     if (offlineReady || needRefresh) {
       toast(offlineReady ? t('appReady') : t('newContentAvailable'), {
         closeButton: true,
-        duration: 60 * 1_000,
+        duration: 60 * 1_000, // 1 minute
         onDismiss: () => {
           setOfflineReady(false)
           setNeedRefresh(false)
@@ -63,8 +95,6 @@ export function ReloadPromptSw() {
   }, [offlineReady, needRefresh])
 
   return (
-    <aside id="ReloadPromptSW" className="hidden">
-      {buildDate}
-    </aside>
+    <aside id="ReloadPromptSW" className="hidden" />
   )
 }

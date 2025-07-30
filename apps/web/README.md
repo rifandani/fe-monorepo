@@ -145,7 +145,7 @@ To regenerate your app icon assets, change the `public/favicon.svg` and run:
 
 ```bash
 # this will generate the app icon assets in public folder
-bun pwa:assets-gen
+bun pwa-assets:gen
 ```
 
 ### Open Graph & Twitter Images
@@ -195,7 +195,7 @@ To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.o
 
 We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
 
-Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
+Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` in `.env.dev` and `.env.prod`.
 
 > We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
 

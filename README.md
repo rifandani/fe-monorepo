@@ -33,8 +33,8 @@ For first timer, you need to create the 2 environments in your github repo.
 First is `dev` environment, and second is `prod` environment (that's why in `.github/workflows/ci.yml` we stated `environment: dev`).
 In both environments, name it `SPA_ENV_FILE` and `WEB_ENV_FILE` (that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE` and `secrets.WEB_ENV_FILE`).
 
-The value for `SPA_ENV_FILE` in `dev` environment is `.env.development`, and the value for `SPA_ENV_FILE` in `prod` environment is `.env.production` for @workspace/spa.
-The value for `WEB_ENV_FILE` in `dev` environment is `.env.dev`, and the value for `WEB_ENV_FILE` in `prod` environment is `.env.prod` for @workspace/web.
+The value for `SPA_ENV_FILE` in `dev` environment is `.env.dev`, and the value for `SPA_ENV_FILE` in `prod` environment is `.env.prod` for `@workspace/spa`.
+The value for `WEB_ENV_FILE` in `dev` environment is `.env.dev`, and the value for `WEB_ENV_FILE` in `prod` environment is `.env.prod` for `@workspace/web`.
 
 Everytime there is a change in the local env variables, you need to also update the env variables in the github repo.
 

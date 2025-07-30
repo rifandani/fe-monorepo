@@ -10,8 +10,8 @@
 
 > The source of truth is the local env files, so the process is whenever we change the local env files, we need to also update the deployment CI/CD project env
 
-- `.env.development.example` and `.env.production.example` are just an example to show the available env variables, it's not used in any possible way
-- if you're new, rename the `.env.development.example` and `.env.production.example` to `.env.development` and `.env.production` respectively
+- `.env.dev.example` and `.env.prod.example` are just an example to show the available env variables, it's not used in any possible way
+- if you're new, rename the `.env.dev.example` and `.env.prod.example` to `.env.dev` and `.env.prod` respectively
 
 ## 💻 Development
 
@@ -129,7 +129,7 @@ To regenerate your app icon assets, change the `public/favicon.svg` and run:
 
 ```bash
 # this will generate the app icon assets in public folder
-bun pwa:assets-gen
+bun pwa-assets:gen
 ```
 
 ### Open Graph & Twitter Images
@@ -176,7 +176,7 @@ To play around with JSON-LD markup, visit [JSON-LD Playground](https://json-ld.o
 
 We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
 
-Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.development` and `.env.production`.
+Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.dev` and `.env.prod`.
 
 ## 📊 How to Observability
 

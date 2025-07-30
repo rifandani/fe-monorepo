@@ -35,6 +35,7 @@
     "dev-dist",
     "dist",
     "vite.config.*",
-    "playwright.config.*"
+    "playwright.config.*",
+    "pwa-assets.config.*"
   ]
 }
