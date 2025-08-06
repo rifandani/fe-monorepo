@@ -79,7 +79,7 @@ bun test:report
 
 ## 🚀 Deployment
 
-This app supposed to be a full client-side app. After we build the app, we can deploy the static files in `dist` folder to any hosting service.
+After we build this full client-side app, we can deploy the static files in `dist` folder to any CDN or hosting service.
 
 ---
 
@@ -87,26 +87,40 @@ This app supposed to be a full client-side app. After we build the app, we can d
 
 Coming Soon.
 
+> Resources:
+>
+> - [Security](https://web.dev/learn/privacy/welcome)
+
 ## ⚙️ Performance
 
 Coming Soon.
 
-Resources:
-
-- [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.
-- [Unlighthouse](https://unlighthouse.dev/) is a good reference for measuring the performance of all pages.
+> Resources:
+>
+> - [Capo.js](https://rviscomi.github.io/capo.js/) for enhancing the performance of HTML `<head>` by reordering it.
+> - [Unlighthouse](https://unlighthouse.dev/) for measuring the performance of all pages.
+> - [Web.dev Performance](https://web.dev/learn/performance/welcome)
 
 ### Web Vitals
 
 Coming Soon
 
-Resources:
-
-- [ ] [Web Vitals](https://web.dev/explore/learn-core-web-vitals)
+> Resources:
+>
+> - [Web Vitals](https://web.dev/explore/learn-core-web-vitals)
 
 ## ⌨️ Accessibility
 
+Accessibility (a11y) is about designing and building websites and web apps that people with disabilities can interact with in a meaningful and equivalent way.
+[Web Content Accessibility Guidelines (WCAG)](https://www.w3.org/WAI/standards-guidelines/wcag/) is considered the "gold standard" for conformance testing.
+The WCAG guidelines have three levels of success criteria: A (30 success criteria), AA (20 success criteria), and AAA (28 success criteria).
+
 Coming Soon.
+
+> Resources:
+>
+> - [Accessibility](https://web.dev/learn/accessibility/welcome)
+> - [WCAG 2.2](https://www.w3.org/TR/WCAG22)
 
 ## 🌎 Metadata ~ SEO (Search Engine Optimization) & GEO (Generative Engine Optimization)
 
@@ -117,9 +131,9 @@ Use `useSeo` in `src/core/hooks/use-seo.ts` to generate metadata for each page a
 bun meta
 ```
 
-Resources:
-
-- [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
+> Resources:
+>
+> - [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
 
 ### Favicons
 
@@ -140,11 +154,13 @@ To play around with og image generation, we can visit [OG Playground](https://og
 
 ### Robots.txt
 
-A file that matches the [Robots Exclusion Standard](https://en.wikipedia.org/wiki/Robots.txt#Standard). Used to tell search engine crawlers which URLs they can access on our site.
+A file that matches the [Robots Exclusion Standard](https://en.wikipedia.org/wiki/Robots.txt#Standard).
+Used to tell search engine crawlers which URLs they can access on our site.
 
 ### Sitemap.xml
 
-A file that matches the [Sitemaps XML format](https://www.sitemaps.org/protocol.html). Used to help search engine crawlers index our site more efficiently.
+A file that matches the [Sitemaps XML format](https://www.sitemaps.org/protocol.html).
+Used to help search engine crawlers index our site more efficiently.
 
 Everytime we add a new page, we need to regenerate the `sitemap.xml` by running:
 
@@ -178,7 +194,7 @@ We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and
 
 Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` in `.env.dev` and `.env.prod`.
 
-## 📊 How to Observability
+## 📊 Observability
 
 You can check the traces and metrics in the Grafana dashboard.
 As of now, otel in web browser does not support logs.
@@ -192,12 +208,20 @@ Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana
 - Username: `admin`
 - Password: `admin`
 
+---
+
 ## 📱 Progressive Web App (PWA)
 
-Coming Soon
+This app can be installed on a device and work offline.
+At a high level, a PWA consists of a web app manifest to give the browser information about your app, and a service worker to manage the offline experience.
 
-Resources:
+This app is using [vite-plugin-pwa](https://github.com/vite-pwa/vite-plugin-pwa) to generate the web app manifest and service worker & [@vite-pwa/assets-generator](https://github.com/vite-pwa/assets-generator) to generate the icon assets.
+You can check the PWA config in `vite.config.ts` and assets generator config in `pwa-assets.config.ts`.
+This app using [`generateSW` strategy](https://vite-pwa-org.netlify.app/guide/service-worker-strategies-and-behaviors.html) to generate the service worker and with [`prompt` behavior](https://vite-pwa-org.netlify.app/guide/prompt-for-update.html) registration type.
+The reload prompt toast component is in `src/core/providers/reload-prompt-sw.tsx`.
 
-- [Learn PWA](https://web.dev/learn/pwa/welcome)
-- [PWA Checklist](https://web.dev/articles/pwa-checklist)
-- [What PWA Can Do Today](https://whatpwacando.today/)
+> Resources:
+>
+> - [Learn PWA](https://web.dev/learn/pwa/welcome)
+> - [PWA Checklist](https://web.dev/articles/pwa-checklist)
+> - [What PWA Can Do Today](https://whatpwacando.today/)

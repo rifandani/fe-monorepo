@@ -103,18 +103,28 @@ Coming Soon
 
 ## 🔒 Security
 
+Coming Soon.
+
+> Resources:
+>
+> - [Security](https://web.dev/learn/privacy/welcome)
+
 ### Content Security Policy (CSP)
 
-Coming Soon. [Reference here](https://nextjs.org/docs/app/guides/content-security-policy)
+Coming Soon.
+
+> Resources:
+>
+> - [Content Security Policy](https://nextjs.org/docs/app/guides/content-security-policy)
 
 ## ⚙️ Performance
 
 Coming Soon.
 
-Resources:
-
-- [Capo.js](https://rviscomi.github.io/capo.js/) is a good reference for enhancing the performance of HTML `<head>` by reordering it.
-- [Unlighthouse](https://unlighthouse.dev/) is a good reference for measuring the performance of all pages.
+> Resources:
+>
+> - [Capo.js](https://rviscomi.github.io/capo.js/) for enhancing the performance of HTML `<head>` by reordering it.
+> - [Unlighthouse](https://unlighthouse.dev/) for measuring the performance of all pages.
 
 ### Web Vitals
 
@@ -122,7 +132,17 @@ Coming Soon
 
 ## ⌨️ Accessibility
 
-Coming Soon. [Reference here](https://nextjs.org/docs/app/building-your-application/optimizing/accessibility)
+Accessibility (a11y) is about designing and building websites and web apps that people with disabilities can interact with in a meaningful and equivalent way.
+[Web Content Accessibility Guidelines (WCAG)](https://www.w3.org/WAI/standards-guidelines/wcag/) is considered the "gold standard" for conformance testing.
+The WCAG guidelines have three levels of success criteria: A (30 success criteria), AA (20 success criteria), and AAA (28 success criteria).
+
+Coming Soon.
+
+> Resources:
+>
+> - [Next.js Accessibility](https://nextjs.org/docs/app/building-your-application/optimizing/accessibility)
+> - [Web.dev Accessibility](https://web.dev/learn/accessibility/welcome)
+> - [WCAG 2.2](https://www.w3.org/TR/WCAG22)
 
 ## 🌎 Metadata ~ SEO (Search Engine Optimization) & GEO (Generative Engine Optimization)
 
@@ -133,9 +153,9 @@ Use `createMetadata` in `src/core/utils/seo.tsx` to generate metadata for each p
 bun meta
 ```
 
-Resources:
-
-- [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
+> Resources:
+>
+> - [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
 
 ### Favicons
 
@@ -199,7 +219,7 @@ Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Cr
 
 > We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
 
-## 📊 How to Observability
+## 📊 Observability
 
 You can check the traces, metrics, and logs in the Grafana dashboard.
 Use logger from `@workspace/core/utils/logger` to normally console.log that works in browser and server.
@@ -214,7 +234,9 @@ Run docker compose to start the [`grafana/otel-lgtm`](https://github.dev/grafana
 - Username: `admin`
 - Password: `admin`
 
-## 💾 How to Database
+---
+
+## 🗃️ Database
 
 We use `postgres@17` as RDBMS, `drizzle` as ORM, and `node-postgres` as driver.
 
@@ -263,7 +285,7 @@ Coming Soon
 bun web db:studio
 ```
 
-## 🔒 How to Auth
+## 🔐 Auth
 
 We use `better-auth` for authentication.
 
