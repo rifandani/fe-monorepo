@@ -4,11 +4,12 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { openAPI } from 'better-auth/plugins'
 import { ENV } from '@/core/constants/env'
+import { SERVICE_NAME } from '@/core/constants/global'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
 
 export const auth = betterAuth({
-  appName: ENV.NEXT_PUBLIC_APP_TITLE,
+  appName: SERVICE_NAME,
   secret: ENV.BETTER_AUTH_SECRET,
   baseURL: ENV.NEXT_PUBLIC_APP_URL,
   database: drizzleAdapter(db, {
@@ -20,7 +21,7 @@ export const auth = betterAuth({
       verification: schema.verificationTable,
     },
   }),
-  trustedOrigins: [ENV.NEXT_PUBLIC_APP_URL, 'http://localhost:3002'],
+  trustedOrigins: [ENV.NEXT_PUBLIC_APP_URL],
   emailAndPassword: { enabled: true },
   plugins: [
     openAPI(), // at /api/auth/reference

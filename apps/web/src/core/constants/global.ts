@@ -1,7 +1,9 @@
+import metadata from '../../../package.json' with { type: 'json' }
+
 export const PORT = 3002
 
-export const SERVICE_NAME = 'feMonorepoWeb'
-export const SERVICE_VERSION = '1.0.0'
+export const SERVICE_NAME = metadata.name
+export const SERVICE_VERSION = metadata.version
 
 export const METRICS_METER_WEB_VITALS = 'webVitals'
 export const METRICS_METER_WEB_VITALS_LCP = 'webVitals.lcp'

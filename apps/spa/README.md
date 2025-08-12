@@ -2,7 +2,7 @@
 
 ## 🎯 Todo
 
-- [ ] replace `SERVICE_NAME` into `ENV.VITE_APP_TITLE`
+~
 
 ## 📦 Prerequisite
 

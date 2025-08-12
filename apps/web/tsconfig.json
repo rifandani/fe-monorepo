@@ -6,6 +6,7 @@
       "@/*": ["./src/*"],
       "@workspace/core/*": ["../../packages/core/src/*"]
     },
+    "resolveJsonModule": true,
     "plugins": [
       {
         "name": "next"
@@ -17,6 +18,7 @@
     "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.json",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

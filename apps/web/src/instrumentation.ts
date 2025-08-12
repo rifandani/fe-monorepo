@@ -1,6 +1,7 @@
 import type { Instrumentation } from 'next'
 import { DiagLogLevel } from '@opentelemetry/api'
 import { ENV } from '@/core/constants/env'
+import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 import { Logger } from '@/core/utils/logger'
 
 /**
@@ -40,7 +41,7 @@ export async function register() {
     diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.NEXT_PUBLIC_OTEL_LOG_LEVEL])
 
     registerOTel({
-      serviceName: ENV.NEXT_PUBLIC_APP_TITLE,
+      serviceName: SERVICE_NAME,
       traceExporter: new OTLPHttpJsonTraceExporter(),
       // doesn't work because the @vercel/otel is using v1.9 and we're using v2.0+, so we need to set the global meter provider manually
       // metricReader: new PeriodicExportingMetricReader({
@@ -117,9 +118,9 @@ export async function register() {
         'vercel.deployment_id': process.env.VERCEL_DEPLOYMENT_ID || undefined,
 
         // custom attributes
-        [ATTR_SERVICE_NAME]: ENV.NEXT_PUBLIC_APP_TITLE,
+        [ATTR_SERVICE_NAME]: SERVICE_NAME,
         [ATTR_SERVICE_VERSION]:
-          process.env.VERCEL_DEPLOYMENT_ID,
+          process.env.VERCEL_DEPLOYMENT_ID || SERVICE_VERSION,
       }),
       readers: [
         new PeriodicExportingMetricReader({

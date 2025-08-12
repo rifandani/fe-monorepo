@@ -2,10 +2,11 @@ import { useSeoMeta } from '@unhead/react'
 import { defineWebPage, defineWebSite, useSchemaOrg } from '@unhead/schema-org/react'
 import { assign } from 'radashi'
 import { ENV } from '@/core/constants/env'
+import { SERVICE_NAME } from '@/core/constants/global'
 
 type UseSeoMetaParams = Parameters<typeof useSeoMeta>[0]
 
-const appName = '@workspace/spa'
+const appName = SERVICE_NAME
 const appDescription = 'Bulletproof React.js 19 Template'
 const appBaseUrl = ENV.VITE_APP_URL
 const appOgImage = '/og.png'

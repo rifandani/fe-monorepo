@@ -11,8 +11,8 @@
 
 ## 📦 Prerequisite
 
-- Node >=22.17.1
-- Bun 1.2.20+
+- Node >=24.4.1
+- Bun >=1.2.20
 
 ## 🛠️ Upgrading Dependencies
 
