@@ -3,8 +3,10 @@
 ## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
+- [ ] add better-auth
 - [ ] fix e2e tests
-- [ ] make this as fullstack template instead of just frontend-only template
+- [ ] install orpc
+- [ ] replace `SERVICE_NAME` into `ENV.NEXT_PUBLIC_APP_TITLE`
 
 ## 📦 Prerequisite
 

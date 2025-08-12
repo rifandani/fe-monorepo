@@ -2,7 +2,7 @@ import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
 import { authLoginResponseSchema } from '@workspace/core/apis/auth'
 import { isFunction } from 'radashi'
 import React from 'react'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { create, createStore, useStore } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 

@@ -1,6 +1,6 @@
 import { createEnv } from '@t3-oss/env-core'
 import { vite } from '@t3-oss/env-core/presets-zod'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 
 export const ENV = createEnv({
   clientPrefix: 'VITE_',

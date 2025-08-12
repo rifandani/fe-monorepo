@@ -3,7 +3,7 @@ import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { TimeoutError } from 'ky'
 import type { Except } from 'type-fest'
-import type { z } from 'zod/v4'
+import type { z } from 'zod'
 import type { ToastCustomData } from '@/core/providers/toast/the-toast'
 import { useToastController } from '@tamagui/toast'
 import {

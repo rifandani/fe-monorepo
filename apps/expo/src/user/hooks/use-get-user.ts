@@ -5,7 +5,7 @@ import type { ToastCustomData } from '@/core/providers/toast/the-toast'
 import { useToastController } from '@tamagui/toast'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { userApi, userKeys } from '@/user/api/user'
 
 type Params = Parameters<typeof userKeys.detail>[0]

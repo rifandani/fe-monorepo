@@ -1,7 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { I18N_COOKIE_NAME, I18N_DEFAULT_LOCALE, I18N_LOCALES } from '@/core/constants/i18n'
 import { actionClient } from '@/core/utils/action'
 

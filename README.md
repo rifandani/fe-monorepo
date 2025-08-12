@@ -12,7 +12,7 @@
 ## 📦 Prerequisite
 
 - Node >=22.17.1
-- Bun 1.2.19+
+- Bun 1.2.20+
 
 ## 🛠️ Upgrading Dependencies
 
@@ -37,6 +37,21 @@ The value for `SPA_ENV_FILE` in `dev` environment is `.env.dev`, and the value f
 The value for `WEB_ENV_FILE` in `dev` environment is `.env.dev`, and the value for `WEB_ENV_FILE` in `prod` environment is `.env.prod` for `@workspace/web`.
 
 Everytime there is a change in the local env variables, you need to also update the env variables in the github repo.
+
+<!-- For first timer, you need to create 2 environments in your github repo.
+Go to your Github repo -> `Settings` tabs -> `Environments` -> `New environment` -> `dev` and `prod` (that's why in `.github/workflows/ci.yml` we stated `environment: dev` and `environment: prod`).
+
+To push our local env variables to the github repo, run:
+
+```bash
+# that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE` and `secrets.WEB_ENV_FILE`
+gh secret set SPA_ENV_FILE -e dev -f ./apps/spa/.env.dev
+gh secret set SPA_ENV_FILE -e prod -f ./apps/spa/.env.prod
+gh secret set WEB_ENV_FILE -e dev -f ./apps/web/.env.dev
+gh secret set WEB_ENV_FILE -e prod -f ./apps/web/.env.prod
+```
+
+Everytime there is a change in the local env variables, you need to also push those changes to the github repo by running the command above. -->
 
 ## 📱 Apps
 

@@ -1,4 +1,4 @@
-import { z } from 'zod/v4'
+import { z } from 'zod'
 
 // #region COMMON SCHEMAS
 export const errorResponseSchema = z.object({

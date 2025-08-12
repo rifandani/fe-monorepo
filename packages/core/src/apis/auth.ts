@@ -1,6 +1,6 @@
 import type { Http } from '@workspace/core/services/http'
 import type { Options } from 'ky'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 
 // #region API SCHEMAS
 export const authLoginRequestSchema = z.object({
