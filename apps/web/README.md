@@ -3,6 +3,7 @@
 ## 🎯 Todo
 
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
+- [ ] upgrade nextjs to 15.5
 - [ ] add better-auth rate limit
 - [ ] fix e2e tests
 - [ ] install orpc

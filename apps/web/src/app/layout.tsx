@@ -36,11 +36,7 @@ export function generateViewport(): Viewport {
   }
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default async function RootLayout({ children }: LayoutProps<'/'>) {
   // Opt-out of static generation for every page so the CSP nonce can be applied
   await connection()
 

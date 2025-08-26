@@ -37,8 +37,8 @@ export async function middleware(_: NextRequest) {
   return securityMiddleware()
 }
 
-export const config: MiddlewareConfig = {
-  // runtime: 'nodejs', // experimental since v15.2
+export const config = {
+  runtime: 'nodejs', // stable since v15.5
   /*
    * Match all request paths except for the ones starting with:
    * - api (API routes)
@@ -48,5 +48,5 @@ export const config: MiddlewareConfig = {
    */
   matcher: [
     '/((?!api|_next/static|_next/image|ingest|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|sitemap.xml|robots.txt).*)',
-  ],
+  ] as MiddlewareConfig['matcher'],
 }

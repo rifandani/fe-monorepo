@@ -6,7 +6,6 @@ import pluginRouter from '@tanstack/eslint-plugin-router'
 // import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import depend from 'eslint-plugin-depend'
 import expoPlugin from 'eslint-plugin-expo'
-import jsxA11y from 'eslint-plugin-jsx-a11y'
 import globals from 'globals'
 
 const __dirname = url.fileURLToPath(new URL('apps/web', import.meta.url))
@@ -85,6 +84,9 @@ export default antfu(
     },
 
     typescript: true,
+    jsx: {
+      a11y: true,
+    },
     vue: false,
     react: true,
     jsonc: true,
@@ -138,18 +140,6 @@ export default antfu(
     ],
   },
   // From the second arguments they are ESLint Flat Configs. You can have multiple configs
-  {
-    name: 'jsx-a11y:recommended',
-    files: ['**/*.{jsx,mjsx,tsx,mtsx}'],
-    ...jsxA11y.flatConfigs.recommended,
-    languageOptions: {
-      ...jsxA11y.flatConfigs.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-    },
-  },
   {
     name: 'e18e/depend',
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
