@@ -8,6 +8,8 @@
 - [ ] Consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
 - [ ] Consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
+- [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo
+- [ ] create `playground-monorepo` repo isinya nyobain `node-oidc-provider`, mcp oauth dari neko
 
 ## 📦 Prerequisite
 

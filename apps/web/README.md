@@ -6,6 +6,7 @@
 - [ ] add better-auth rate limit
 - [ ] fix e2e tests
 - [ ] install orpc
+- [ ] <https://nextjs.org/blog/next-15-5>
 
 ## 📦 Prerequisite
 
