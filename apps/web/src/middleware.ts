@@ -1,4 +1,4 @@
-import type { MiddlewareConfig, NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { createMiddleware, defaults } from '@nosecone/next'
 
 // const noseconeOptionsWithToolbar: NoseconeOptions = withVercelToolbar({
@@ -48,5 +48,5 @@ export const config = {
    */
   matcher: [
     '/((?!api|_next/static|_next/image|ingest|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|sitemap.xml|robots.txt).*)',
-  ] as MiddlewareConfig['matcher'],
+  ],
 }
