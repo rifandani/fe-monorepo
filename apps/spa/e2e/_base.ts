@@ -27,7 +27,12 @@ export const test = base.extend<TestOptions>({
       errors.push(error)
     })
     page.on('response', (response) => {
-      if (response.status() >= 400) {
+      /**
+       * we test the login error response
+       */
+      const excludedUrls = ['https://dummyjson.com/auth/login']
+
+      if (response.status() >= 400 && !excludedUrls.includes(response.url())) {
         networkErrors.push({
           url: response.url(),
           method: response.request().method(),

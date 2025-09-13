@@ -6,7 +6,7 @@
   "description": "React.js, Next.js, and Expo Monorepo Template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
     "prepare": "husky",

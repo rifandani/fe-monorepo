@@ -3,10 +3,10 @@ import type {
   ConfigType,
   Store,
 } from './types'
-import { logger } from '@workspace/core/utils/logger.js'
+import { logger } from '@workspace/core/utils/logger'
 import { eq, sql } from 'drizzle-orm'
-import { db } from '@/db/index.js'
-import { rateLimitTable } from '@/db/schema.js'
+import { db } from '@/db/index'
+import { rateLimitTable } from '@/db/schema'
 
 /**
  * A `Store` that stores the hit count for each client in a PostgreSQL database.

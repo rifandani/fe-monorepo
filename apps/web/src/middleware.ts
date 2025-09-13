@@ -38,7 +38,7 @@ export default async function middleware(_: NextRequest) {
 }
 
 export const config = {
-  runtime: 'nodejs', // stable since v15.5
+  // runtime: 'nodejs', // stable since v15.5
   /*
    * Match all request paths except for the ones starting with:
    * - api (API routes)

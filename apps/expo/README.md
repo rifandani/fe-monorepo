@@ -2,6 +2,7 @@
 
 ## 🔧 Fixme
 
+- [ ] tsconfig `expo/tsconfig.base` not found
 - [ ] Can not open preview build on Android device & simulator. Maybe try to use only 1 route first.
 - [ ] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead. Happens again on 19 May 2025.
 - [x] `Invalid hook call. Hooks can only be called inside of the body of a function component. Call Stack - AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)`. Resolved by not preserving the original code in `metro.config.js`
