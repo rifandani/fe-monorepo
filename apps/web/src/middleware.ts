@@ -33,7 +33,7 @@ const securityMiddleware = createMiddleware({
  * - Complex business logic
  * - Third-party integrations
  */
-export async function middleware(_: NextRequest) {
+export default async function middleware(_: NextRequest) {
   return securityMiddleware()
 }
 
