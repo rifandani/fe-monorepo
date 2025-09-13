@@ -34,7 +34,7 @@ jobs:
           bun-version: latest
 
       - name: Install deps and disallow changes to lockfile
-        run: bun install # --frozen-lockfile
+        run: bun ci
 
       - name: Lint
         run: bun lint-typecheck
@@ -61,7 +61,7 @@ jobs:
           bun-version: latest
 
       - name: Install deps and disallow changes to lockfile
-        run: bun install # --frozen-lockfile
+        run: bun ci
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
@@ -106,7 +106,7 @@ jobs:
   #         bun-version: latest
 
   #     - name: Install deps and disallow changes to lockfile
-  #       run: bun install # --frozen-lockfile
+  #       run: bun ci
       
   #     - name: Save github secrets as env file
   #       run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
@@ -139,7 +139,7 @@ jobs:
         uses: oven-sh/setup-bun@v2.0.2
 
       - name: Install deps and disallow changes to lockfile
-        run: bun install # --frozen-lockfile
+        run: bun ci
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
@@ -158,7 +158,7 @@ jobs:
         uses: oven-sh/setup-bun@v2.0.2
 
       - name: Install deps and disallow changes to lockfile
-        run: bun install # --frozen-lockfile
+        run: bun ci
 
       - name: Save github secrets as env file
         run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
