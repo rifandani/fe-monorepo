@@ -1,9 +1,12 @@
 import type { z } from 'zod'
 import {
+  bigint,
   boolean,
+  integer,
   pgTable,
   text,
   timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core'
 import { createSelectSchema } from 'drizzle-zod'
 
@@ -71,3 +74,12 @@ export const selectVerificationTableSchema
   = createSelectSchema(verificationTable)
 export type VerificationTable = z.infer<typeof selectVerificationTableSchema>
 // #endregion AUTH
+
+// #region RATE LIMIT
+export const rateLimitTable = pgTable('rate_limit', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  key: text('key').notNull().unique(), // unique identifier for each rate limit key
+  count: integer('count').default(0).notNull(), // number of requests in current window
+  lastRequest: bigint('last_request', { mode: 'number' }).notNull(), // timestamp of last request
+})
+// #endregion RATE LIMIT

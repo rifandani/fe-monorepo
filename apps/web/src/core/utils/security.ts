@@ -3,25 +3,10 @@
  *
  * This file provides:
  * - Bot detection (using User-Agent heuristics)
- * - Rate limiting (in-memory store with customizable parameters)
  * - Attack protection (basic input sanitization)
  *
  * Customize each function based on your needs.
  */
-
-interface RateLimitOptions {
-  limit: number
-  timeframe: number // timeframe in milliseconds
-}
-
-interface RateLimitRecord {
-  count: number
-  firstRequest: number
-}
-
-// Simple in-memory rate limit store by IP address.
-// NOTE: In production, use a distributed store like Redis.
-const rateLimitStore = new Map<string, RateLimitRecord>()
 
 /**
  * Detects if a request might be coming from a bot.
@@ -41,43 +26,6 @@ export function isBot(userAgent: string): boolean {
     /mediapartners/i,
   ]
   return botPatterns.some(pattern => pattern.test(userAgent))
-}
-
-/**
- * Rate limits requests by a key (commonly an IP address).
- *
- * @remarks
- * This in-memory example should be replaced with a persistent store in production.
- *
- * @param key - Identifier for the client (e.g. IP address).
- * @param options - Customizable options for the rate limiter.
- * @returns true if the request exceeds the limit, false otherwise.
- */
-export function rateLimit(key: string, options: RateLimitOptions): boolean {
-  const now = Date.now()
-  const record = rateLimitStore.get(key)
-
-  if (!record) {
-    // First request from this key
-    rateLimitStore.set(key, { count: 1, firstRequest: now })
-    return false
-  }
-
-  const elapsed = now - record.firstRequest
-
-  if (elapsed > options.timeframe) {
-    // Reset count after timeframe has passed
-    rateLimitStore.set(key, { count: 1, firstRequest: now })
-    return false
-  }
-  else {
-    record.count += 1
-    if (record.count > options.limit) {
-      return true
-    }
-    rateLimitStore.set(key, record)
-    return false
-  }
 }
 
 /**

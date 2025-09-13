@@ -7,7 +7,6 @@
   "author": "Tri Rizeki Rifandani",
   "license": "MIT",
   "scripts": {
-    "auth:gen": "dotenvx run --env-file=.env.dev -- bunx @better-auth/cli generate --config ./src/auth/utils/auth.ts",
     "pwa-assets:gen": "pwa-assets-generator",
     "typecheck": "next typegen && tsc --noEmit",
     "db:pull": "dotenvx run --env-file=.env.dev -- drizzle-kit pull",
@@ -15,6 +14,7 @@
     "db:gen": "dotenvx run --env-file=.env.dev -- drizzle-kit generate",
     "db:migrate": "dotenvx run --env-file=.env.dev -- drizzle-kit migrate",
     "db:studio": "dotenvx run --env-file=.env.dev -- drizzle-kit studio --port 3003 --verbose",
+    "auth:gen": "dotenvx run --env-file=.env.dev -- bunx @better-auth/cli generate --config ./src/auth/utils/auth.ts --output ./src/db/auth-schema.ts --yes",
     "test:install": "playwright install --with-deps chromium",
     "test:report": "dotenvx run --env-file=.env.dev -- playwright show-report",
     "test": "dotenvx run --env-file=.env.dev -- playwright test",
