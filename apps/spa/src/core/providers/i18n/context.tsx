@@ -13,7 +13,7 @@ const TranslationContext = createContext<(ReturnType<typeof initI18n> & {
   locale: string
   userLocale: string
 }) | null
-  >(null)
+>(null)
 
 export function TranslationProvider({
   defaultLocale,
