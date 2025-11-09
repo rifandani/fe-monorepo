@@ -4,12 +4,13 @@ import { redirect } from 'next/navigation'
 import { RegisterForm } from '@/auth/components/register-form.client'
 import { auth } from '@/auth/utils/auth'
 import { Link } from '@/core/components/ui'
+import { ENV } from '@/core/constants/env'
 import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
 
 const title = 'Register'
 const description = 'Create an account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.'
 const ldParams = {
-  url: process.env.NODE_ENV === 'production' ? 'https://rifandani.com/register' : 'http://localhost:3002/register',
+  url: `${ENV.NEXT_PUBLIC_APP_URL}/register`,
   title,
   description,
 }

@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react'
 import { Loader } from '@/core/components/ui'
+import { TRACER_REACT_ENTRY } from '@/core/constants/global'
 import { FlagsProvider } from '@/core/providers/flags/provider'
 import { AppHeadProvider } from '@/core/providers/head/provider'
 import { AppI18nProvider, AppTranslationProvider } from '@/core/providers/i18n/provider'
@@ -17,7 +18,7 @@ export function Entry() {
             <AppI18nProvider>
               <AppToastProvider>
                 <FlagsProvider>
-                  <Suspense fallback={<Loader className="size-4.5" variant="spin" />}>
+                  <Suspense name={TRACER_REACT_ENTRY} fallback={<Loader className="size-4.5" variant="spin" />}>
                     {/* Router entry point */}
                     <AppRouterProvider />
 

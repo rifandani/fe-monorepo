@@ -1,7 +1,7 @@
 import type { Instrumentation } from 'next'
 import { DiagLogLevel } from '@opentelemetry/api'
 import { ENV } from '@/core/constants/env'
-import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
+import { SERVICE_NAME } from '@/core/constants/global'
 import { Logger } from '@/core/utils/logger'
 
 /**
@@ -11,12 +11,12 @@ import { Logger } from '@/core/utils/logger'
 export async function register() {
   // we import dynamically because this function could run on edge runtime, and running on edge runtime will not work
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const { diag, metrics, DiagConsoleLogger } = await import('@opentelemetry/api')
+    const { diag, DiagConsoleLogger } = await import('@opentelemetry/api')
     const { OTLPLogExporter } = await import('@opentelemetry/exporter-logs-otlp-http')
     const { OTLPMetricExporter } = await import('@opentelemetry/exporter-metrics-otlp-http')
     const { envDetector, hostDetector, osDetector, processDetector, serviceInstanceIdDetector } = await import('@opentelemetry/resources')
     const { BatchLogRecordProcessor } = await import('@opentelemetry/sdk-logs')
-    const { PeriodicExportingMetricReader, MeterProvider } = await import('@opentelemetry/sdk-metrics')
+    const { PeriodicExportingMetricReader } = await import('@opentelemetry/sdk-metrics')
     const { OTLPHttpJsonTraceExporter, registerOTel } = await import('@vercel/otel')
     const { DnsInstrumentation } = await import('@opentelemetry/instrumentation-dns')
     const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
@@ -24,8 +24,6 @@ export async function register() {
     const { PgInstrumentation } = await import('@opentelemetry/instrumentation-pg')
     const { RuntimeNodeInstrumentation } = await import('@opentelemetry/instrumentation-runtime-node')
     const { UndiciInstrumentation } = await import('@opentelemetry/instrumentation-undici')
-    const { resourceFromAttributes } = await import('@opentelemetry/resources')
-    const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = await import('@opentelemetry/semantic-conventions')
 
     const logLevelMap: Record<string, DiagLogLevel> = {
       ALL: DiagLogLevel.ALL,
@@ -43,11 +41,12 @@ export async function register() {
     registerOTel({
       serviceName: SERVICE_NAME,
       traceExporter: new OTLPHttpJsonTraceExporter(),
-      // doesn't work because the @vercel/otel is using v1.9 and we're using v2.0+, so we need to set the global meter provider manually
-      // metricReader: new PeriodicExportingMetricReader({
-      //   exporter: new OTLPMetricExporter(),
-      // }),
-      logRecordProcessor: new BatchLogRecordProcessor(new OTLPLogExporter()),
+      metricReaders: [
+        new PeriodicExportingMetricReader({
+          exporter: new OTLPMetricExporter(),
+        }),
+      ],
+      logRecordProcessors: [new BatchLogRecordProcessor(new OTLPLogExporter())],
       resourceDetectors: [
         envDetector,
         hostDetector,
@@ -89,46 +88,46 @@ export async function register() {
     })
 
     /**
-     * set the global meter provider manually
+     * if @vercel/otel is < v2.0, we need to set the global meter provider manually
      * downsides are, we can't shutdown gracefully this meter provider
      */
-    const meterProvider = new MeterProvider({
-      resource: resourceFromAttributes({
-        // Node
-        'node.ci': process.env.CI ? true : undefined,
-        'node.env': process.env.NODE_ENV,
+    // const meterProvider = new MeterProvider({
+    //   resource: resourceFromAttributes({
+    //     // Node
+    //     'node.ci': process.env.CI ? true : undefined,
+    //     'node.env': process.env.NODE_ENV,
 
-        // Vercel
-        // https://vercel.com/docs/projects/environment-variables/system-environment-variables
-        // Vercel Env set as top level attribute for simplicity. One of 'production', 'preview' or 'development'.
-        'env': process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV,
-        'vercel.region': process.env.VERCEL_REGION,
-        'vercel.runtime': 'nodejs',
-        'vercel.sha':
-          process.env.VERCEL_GIT_COMMIT_SHA
-          || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
-        'vercel.host':
-          process.env.VERCEL_URL
-          || process.env.NEXT_PUBLIC_VERCEL_URL
-          || undefined,
-        'vercel.branch_host':
-          process.env.VERCEL_BRANCH_URL
-          || process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
-          || undefined,
-        'vercel.deployment_id': process.env.VERCEL_DEPLOYMENT_ID || undefined,
+    //     // Vercel
+    //     // https://vercel.com/docs/projects/environment-variables/system-environment-variables
+    //     // Vercel Env set as top level attribute for simplicity. One of 'production', 'preview' or 'development'.
+    //     'env': process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV,
+    //     'vercel.region': process.env.VERCEL_REGION,
+    //     'vercel.runtime': 'nodejs',
+    //     'vercel.sha':
+    //       process.env.VERCEL_GIT_COMMIT_SHA
+    //       || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+    //     'vercel.host':
+    //       process.env.VERCEL_URL
+    //       || process.env.NEXT_PUBLIC_VERCEL_URL
+    //       || undefined,
+    //     'vercel.branch_host':
+    //       process.env.VERCEL_BRANCH_URL
+    //       || process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
+    //       || undefined,
+    //     'vercel.deployment_id': process.env.VERCEL_DEPLOYMENT_ID || undefined,
 
-        // custom attributes
-        [ATTR_SERVICE_NAME]: SERVICE_NAME,
-        [ATTR_SERVICE_VERSION]:
-          process.env.VERCEL_DEPLOYMENT_ID || SERVICE_VERSION,
-      }),
-      readers: [
-        new PeriodicExportingMetricReader({
-          exporter: new OTLPMetricExporter(),
-        }),
-      ],
-    })
-    metrics.setGlobalMeterProvider(meterProvider)
+    //     // custom attributes
+    //     [ATTR_SERVICE_NAME]: SERVICE_NAME,
+    //     [ATTR_SERVICE_VERSION]:
+    //       process.env.VERCEL_DEPLOYMENT_ID || SERVICE_VERSION,
+    //   }),
+    //   readers: [
+    //     new PeriodicExportingMetricReader({
+    //       exporter: new OTLPMetricExporter(),
+    //     }),
+    //   ],
+    // })
+    // metrics.setGlobalMeterProvider(meterProvider)
   }
 }
 

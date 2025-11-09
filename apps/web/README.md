@@ -5,8 +5,6 @@
 - [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
 - [ ] fix e2e tests
 - [ ] install orpc
-- [ ] react compiler
-- [ ] nextjs v16
 
 ## 📦 Prerequisite
 

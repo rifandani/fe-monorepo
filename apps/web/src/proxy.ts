@@ -33,12 +33,11 @@ const securityMiddleware = createMiddleware({
  * - Complex business logic
  * - Third-party integrations
  */
-export default async function middleware(_: NextRequest) {
+export default async function proxy(_: NextRequest) {
   return securityMiddleware()
 }
 
 export const config = {
-  // runtime: 'nodejs', // stable since v15.5
   /*
    * Match all request paths except for the ones starting with:
    * - api (API routes)

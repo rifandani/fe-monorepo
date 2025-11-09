@@ -69,15 +69,12 @@ export function useCreateToastContext() {
     },
   })
 
-  const actions = React.useMemo(
-    () => ({
-      setToastConfig,
-      resetToastConfig,
-    }),
-    [setToastConfig, resetToastConfig],
-  )
+  const actions = {
+    setToastConfig,
+    resetToastConfig,
+  }
 
-  return React.useMemo(() => [toastConfig, actions] as const, [toastConfig, actions])
+  return [toastConfig, actions] as const
 }
 
 export const ToastContext = React.createContext<ToastContextInterface>(

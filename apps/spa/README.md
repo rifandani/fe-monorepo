@@ -3,6 +3,7 @@
 ## 🎯 Todo
 
 - react compiler
+- tanstack devtools
 
 ## 📦 Prerequisite
 

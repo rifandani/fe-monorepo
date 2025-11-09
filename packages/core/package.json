@@ -17,16 +17,16 @@
     "./utils/*": "./src/utils/*.ts"
   },
   "peerDependencies": {
-    "ky": "1.10.0",
-    "radashi": "12.6.2",
+    "ky": "1.14.0",
+    "radashi": "12.7.0",
     "react": ">=19.0.0",
-    "type-fest": "5.0.0",
-    "zod": "4.1.8"
+    "type-fest": "5.2.0",
+    "zod": "4.1.12"
   },
   "devDependencies": {
-    "@types/node": "24.3.3",
-    "@types/react": "19.1.13",
+    "@types/node": "24.10.0",
+    "@types/react": "19.2.2",
     "@workspace/typescript-config": "workspace:*",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   }
 }

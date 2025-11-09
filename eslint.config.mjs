@@ -1,19 +1,10 @@
-import url from 'node:url'
 import antfu from '@antfu/eslint-config'
-import { fixupConfigRules } from '@eslint/compat'
-import { FlatCompat } from '@eslint/eslintrc'
+import nextPlugin from '@next/eslint-plugin-next'
 import pluginRouter from '@tanstack/eslint-plugin-router'
 // import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import depend from 'eslint-plugin-depend'
 import expoPlugin from 'eslint-plugin-expo'
 import globals from 'globals'
-
-const __dirname = url.fileURLToPath(new URL('apps/web', import.meta.url))
-const flatCompat = new FlatCompat({
-  baseDirectory: __dirname, // optional; default: process.cwd()
-  resolvePluginsRelativeTo: __dirname, // optional
-})
-const [nextRecommended, nextCoreWebVitals] = fixupConfigRules(flatCompat.extends('plugin:@next/next/core-web-vitals'))
 
 /**
  * FIXME: Can't resolve 'tailwindcss/package.json'
@@ -148,20 +139,18 @@ export default antfu(
   // getBetterTailwindConfig('web'),
   // getBetterTailwindConfig('spa'),
   {
-    name: 'next/recommended',
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-    ...nextRecommended,
+    ...nextPlugin.configs.recommended,
     settings: {
-      ...nextRecommended.settings,
+      ...nextPlugin.configs.recommended.settings,
       next: {
         rootDir: './apps/web',
       },
     },
   },
   {
-    name: 'next/core-web-vitals',
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
-    ...nextCoreWebVitals,
+    ...nextPlugin.configs['core-web-vitals'],
   },
   {
     name: 'web/overrides',
