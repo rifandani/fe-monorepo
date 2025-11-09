@@ -125,6 +125,8 @@ export default antfu(
       '**/routeTree.gen.ts',
       '**/*.queries.ts',
       '.vscode/**',
+      '.github/chatmodes/**',
+      '.cursor/commands/**',
       '.husky/**',
       'babel.config.js',
       'commitlint.config.js',

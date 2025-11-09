@@ -52,6 +52,7 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
    * @returns The updated selected items
    */
   const select = (item: T) => {
+    // eslint-disable-next-line react-hooks/immutability
     selectedSet.add(item)
     return setSelected(Array.from(selectedSet))
   }
@@ -62,6 +63,7 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
    * @returns The updated selected items
    */
   const unSelect = (item: T) => {
+    // eslint-disable-next-line react-hooks/immutability
     selectedSet.delete(item)
     return setSelected(Array.from(selectedSet))
   }

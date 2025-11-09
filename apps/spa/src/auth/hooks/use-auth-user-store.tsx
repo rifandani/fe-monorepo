@@ -104,12 +104,15 @@ export function UserProvider({
   const storeRef = React.useRef<ReturnType<typeof createUserStore> | null>(
     null,
   )
+  // eslint-disable-next-line react-hooks/refs
   if (!storeRef.current) {
     storeRef.current = createUserStore(initialState)
   }
 
   return (
+    // eslint-disable-next-line react-hooks/refs
     <UserContext value={storeRef.current}>
+      {/* eslint-disable-next-line react-hooks/refs */}
       {isFunction(children) ? children(storeRef.current) : children}
     </UserContext>
   )

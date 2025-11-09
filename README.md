@@ -18,7 +18,7 @@
 ## 🛠️ Upgrading Dependencies
 
 - Remember to always use EXACT version for each dependency
-- Run `bun bump-deps` to check for outdated dependencies, then run `bun install` to install it
+- Run `bun bump:deps` to check for outdated dependencies, then run `bun install` to install it
 - To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
 - To upgrade IntentUI components, run interactively `bunx @intentui/cli@latest add -o`
 - If there's MINOR upgrade in `playwright`, run `bun web test:install` to install new version of chromium

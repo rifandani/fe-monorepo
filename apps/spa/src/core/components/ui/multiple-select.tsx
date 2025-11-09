@@ -61,6 +61,7 @@ function MultipleSelect<T extends object>({
   const isMax = [...selectedKeys].length >= maxItems
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputValue('')
     return () => {
       inputRef.current?.focus()

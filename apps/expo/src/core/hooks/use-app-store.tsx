@@ -128,12 +128,15 @@ export function AppProvider({
   const storeRef = React.useRef<ReturnType<typeof createAppStore> | null>(
     null,
   )
+  // eslint-disable-next-line react-hooks/refs
   if (!storeRef.current) {
     storeRef.current = createAppStore(initialState)
   }
 
   return (
+    // eslint-disable-next-line react-hooks/refs
     <AppContext value={storeRef.current}>
+      {/* eslint-disable-next-line react-hooks/refs */}
       {isFunction(children) ? children(storeRef.current) : children}
     </AppContext>
   )

@@ -35,7 +35,7 @@ export function useAuthLogin(
   return useMutation<Success, Error, Exclude<Params, undefined>>({
     mutationKey: authKeys.login(params),
     mutationFn: json => authRepositories(http).login({ json }),
-    onError: async (error, variables, context) => {
+    onError: async (error, variables, onMutateResult, context) => {
       let message = error.message
       if (error instanceof HTTPError) {
         const json = (await error.response.json())
@@ -47,7 +47,7 @@ export function useAuthLogin(
           preset: 'error',
         } as ToastCustomData,
       })
-      onError?.(error, variables, context)
+      onError?.(error, variables, onMutateResult, context)
     },
     ..._mutationOptions,
   })

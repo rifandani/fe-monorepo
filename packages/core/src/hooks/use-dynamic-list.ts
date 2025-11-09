@@ -49,6 +49,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
   }, [])
 
   // Current list
+  // eslint-disable-next-line react-hooks/refs
   const [list, setList] = useState(() => {
     initialList.forEach((_, index) => {
       setKey(index)

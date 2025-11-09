@@ -117,7 +117,7 @@ export function initI18n({
   function t<S extends PathsWithNoParams>(key: S): string
   function t<S extends PathsWithParams, A extends Params<S>>(
     key: S,
-    args: A
+    args: A,
   ): string
   function t<S extends DotPathsFor, A extends Params<S>>(key: S, args?: A) {
     for (const locale of orderedLocales) {

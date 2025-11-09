@@ -39,9 +39,10 @@ export function useCdnFileQuery(
   // create file object from blob
   const file = query.data?.blob
     ? new File([query.data.blob], opt.filename ?? 'unknown-filename', {
-      type: query.data.blob.type,
-      lastModified: Date.now(),
-    })
+        type: query.data.blob.type,
+        // eslint-disable-next-line react-hooks/purity
+        lastModified: Date.now(),
+      })
     : null
 
   return { ...query, file }
