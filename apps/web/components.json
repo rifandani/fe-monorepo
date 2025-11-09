@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "default",
-  "rsc": false,
+  "rsc": true,
   "tsx": true,
   "tailwind": {
     "config": "",
@@ -12,10 +12,10 @@
   },
   "aliases": {
     "components": "@/core/components",
-    "utils": "@/core/utils",
-    "ui": "@/core/components/ui",
     "lib": "@/core/lib",
-    "hooks": "@/core/hooks"
+    "hooks": "@/core/hooks",
+    "utils": "@/core/utils",
+    "ui": "@/core/components/ui"
   },
-  "iconLibrary": "@intentui/icons"
+  "iconLibrary": "@heroicons/react"
 }

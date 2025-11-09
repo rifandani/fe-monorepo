@@ -12,10 +12,10 @@
   },
   "aliases": {
     "components": "@/core/components",
-    "utils": "@/core/utils",
-    "ui": "@/core/components/ui",
     "lib": "@/core/lib",
-    "hooks": "@/core/hooks"
+    "hooks": "@/core/hooks",
+    "utils": "@/core/utils",
+    "ui": "@/core/components/ui"
   },
-  "iconLibrary": "@intentui/icons"
+  "iconLibrary": "@heroicons/react"
 }
