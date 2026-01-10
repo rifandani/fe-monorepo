@@ -16,7 +16,7 @@ export function AppAriaProvider({ locale, children}: PropsWithChildren<{ locale:
 
   return (
     <I18nProvider locale={locale}>
-      <RouterProvider navigate={router.push}>
+      <RouterProvider navigate={(path, routerOptions) => router.push(path as __next_route_internal_types__.RouteImpl<string>, routerOptions)}>
         {children}
       </RouterProvider>
     </I18nProvider>
