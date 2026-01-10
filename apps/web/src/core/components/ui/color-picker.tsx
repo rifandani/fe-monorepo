@@ -6,7 +6,6 @@ import { Icon } from '@iconify/react'
 import { use } from 'react'
 import {
   ColorPicker as ColorPickerPrimitive,
-
   ColorPickerStateContext,
 } from 'react-aria-components'
 import { parseColor } from 'react-stately'
@@ -20,7 +19,7 @@ import { Description } from '@/core/components/ui/field'
 import { Popover, PopoverContent } from '@/core/components/ui/popover'
 
 interface ColorPickerProps
-  extends ColorPickerPrimitiveProps,
+  extends Omit<ColorPickerPrimitiveProps, 'children'>,
   Pick<PopoverContentProps, 'placement'> {
   label?: string
   className?: string
