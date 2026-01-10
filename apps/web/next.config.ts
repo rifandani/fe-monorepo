@@ -1,11 +1,9 @@
 import type { NextConfig } from 'next'
-import withBundleAnalyzer from '@next/bundle-analyzer'
 import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin('./src/core/utils/i18n.ts')
 
-// eslint-disable-next-line import/no-mutable-exports
-let config: NextConfig = withNextIntl({
+const config: NextConfig = withNextIntl({
   typedRoutes: true, // stable since v15.5
   reactCompiler: true,
   output: 'standalone', // for deploying
@@ -30,13 +28,5 @@ let config: NextConfig = withNextIntl({
     optimizePackageImports: ['@workspace/core'],
   },
 })
-
-function withAnalyzer(sourceConfig: NextConfig): NextConfig {
-  return withBundleAnalyzer()(sourceConfig)
-}
-
-if (process.env.ANALYZE === 'true') {
-  config = withAnalyzer(withNextIntl(config))
-}
 
 export default config

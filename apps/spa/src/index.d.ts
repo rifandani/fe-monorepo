@@ -7,14 +7,5 @@ declare module 'react' {
 }
 
 declare global {
-  interface Window {
-    /**
-     * Toggle react query devtools in production
-     */
-    toggleRqDevtools: () => void
-    /**
-     * Toggle tanstack router devtools in production
-     */
-    toggleRrDevtools: () => void
-  }
+  interface Window {}
 }

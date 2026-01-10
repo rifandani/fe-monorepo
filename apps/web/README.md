@@ -49,9 +49,7 @@ To analyze the production bundle size:
 
 ```bash
 # analyze Javascript bundle size mimicking the production build
-# this will open 3 new tabs on the browser, one for nodejs build, one for edge build, and one for browser build
-# the html report will be saved in the `.next/analyze` folder
-bun build:prod:analyze
+bun analyze
 ```
 
 [Best practices for reducing bundle size](https://nextjs.org/docs/app/guides/package-bundling)

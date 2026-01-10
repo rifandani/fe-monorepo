@@ -1,6 +1,6 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 /**
  * the lazy version of `useQuery`
@@ -15,10 +15,10 @@ export function useLazyQuery<TData, TError>(
     enabled,
   })
 
-  const trigger = useCallback(() => {
+  const trigger = () => {
     if (!enabled)
       setEnabled(true)
-  }, [enabled])
+  }
 
   return [trigger, query] as const
 }

@@ -1,10 +1,8 @@
-import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
+import { useForm } from '@tanstack/react-form'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
-import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
@@ -99,20 +97,24 @@ function LoginForm() {
   const navigate = Route.useNavigate()
   const { setUser } = useAuthUserStore()
 
-  const form = useForm<AuthLoginRequestSchema>({
-    mode: 'onChange',
-    resolver: zodResolver(authLoginRequestSchema),
-    defaultValues: {
-      username: '',
-      password: '',
-    },
-  })
-
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
       // set user to local storage and navigate to home
       setUser(user)
       await navigate({ to: '/' })
+    },
+  })
+
+  const form = useForm({
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+    validators: {
+      onChange: authLoginRequestSchema,
+    },
+    onSubmit: ({ value }) => {
+      loginMutation.mutate(value)
     },
   })
 
@@ -122,42 +124,31 @@ function LoginForm() {
         flex flex-col pt-3
         md:pt-8
       `}
-      onSubmit={form.handleSubmit(async (values) => {
-        loginMutation.mutate(values)
-      })}
+      onSubmit={(ev) => {
+        ev.preventDefault()
+        form.handleSubmit()
+      }}
     >
-      <Controller
-        name="username"
-        control={form.control}
-        render={({
-          field: { disabled, ...field },
-          fieldState: { invalid, error },
-        }) => (
+      <form.Field name="username">
+        {field => (
           <TextField
             className="group/username pt-4"
             // let RHF handle validation instead of the browser.
             validationBehavior="aria"
             label={t('username')}
             placeholder={t('usernamePlaceholder')}
-            {...field}
             isRequired
-            isInvalid={invalid}
-            isDisabled={disabled}
-            errorMessage={error?.message}
-          >
-            {/* <Input ref={ref} /> */}
-          </TextField>
+            value={field.state.value}
+            onChange={field.handleChange}
+            isInvalid={!field.state.meta.isValid}
+            errorMessage={field.state.meta.errorMap.onChange?.[0]?.message}
+          />
         )}
-      />
+      </form.Field>
 
       {/* password */}
-      <Controller
-        control={form.control}
-        name="password"
-        render={({
-          field: { disabled, ...field },
-          fieldState: { invalid, error },
-        }) => (
+      <form.Field name="password">
+        {field => (
           <TextField
             className="group/password pt-4"
             // Let React Hook Form handle validation instead of the browser.
@@ -165,17 +156,15 @@ function LoginForm() {
             label={t('password')}
             placeholder={t('passwordPlaceholder')}
             type="password"
-            {...field}
             isRevealable
             isRequired
-            isInvalid={invalid}
-            isDisabled={disabled}
-            errorMessage={error?.message}
-          >
-            {/* <Input ref={ref} /> */}
-          </TextField>
+            value={field.state.value}
+            onChange={field.handleChange}
+            isInvalid={!field.state.meta.isValid}
+            errorMessage={field.state.meta.errorMap.onChange?.[0]?.message}
+          />
         )}
-      />
+      </form.Field>
 
       {loginMutation.error && (
         <Note
@@ -188,15 +177,20 @@ function LoginForm() {
         </Note>
       )}
 
-      <Button
-        type="submit"
-        className="mt-8"
-        isDisabled={loginMutation.isPending || !form.formState.isValid}
-      >
-        {t(loginMutation.isPending ? 'loginLoading' : 'login')}
-        {' '}
-        (emilyspass)
-      </Button>
+      <form.Subscribe
+        selector={state => [state.canSubmit, state.isSubmitting]}
+        children={([canSubmit, isSubmitting]) => (
+          <Button
+            type="submit"
+            className="mt-8"
+            isDisabled={!canSubmit || isSubmitting}
+          >
+            {t(isSubmitting ? 'loginLoading' : 'login')}
+            {' '}
+            (emilyspass)
+          </Button>
+        )}
+      />
     </form>
   )
 }

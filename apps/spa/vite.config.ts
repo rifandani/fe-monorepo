@@ -2,6 +2,7 @@ import type { PluginOption } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
 import tailwindcss from '@tailwindcss/vite'
+import { devtools } from '@tanstack/devtools-vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -19,8 +20,13 @@ export default defineConfig({
     port: 3001,
   },
   plugins: [
+    devtools(),
     tailwindcss(),
-    react(),
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
     tanstackRouter(),
     visualizer({
       filename: 'html/visualizer-stats.html',

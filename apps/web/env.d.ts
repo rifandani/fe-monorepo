@@ -15,9 +15,7 @@ declare module 'next-intl' {
 }
 
 declare global {
-  interface Window {
-    toggleRqDevtools: () => void
-  }
+  interface Window {}
 }
 
 declare namespace NodeJS {
