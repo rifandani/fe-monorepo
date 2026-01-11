@@ -5,16 +5,15 @@
 ## 🎯 Todo
 
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767)
-- [ ] Fix `eslint-plugin-better-tailwindcss` is not working since we use `linker = "isolated"` in `bunfig.toml`
-- [ ] Consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
-- [ ] Consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
-- [ ] Consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
+- [ ] fix `eslint-plugin-better-tailwindcss` is not working since we use `linker = "isolated"` in `bunfig.toml`
+- [ ] consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
+- [ ] consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo
 
 ## 📦 Prerequisite
 
-- Node >=24.10.0
-- Bun >=1.3.1
+- Node >=24.12.0
+- Bun >=1.3.5
 
 ## 🛠️ Upgrading Dependencies
 
