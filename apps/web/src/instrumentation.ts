@@ -1,5 +1,4 @@
 import type { Instrumentation } from 'next'
-import { DiagLogLevel } from '@opentelemetry/api'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME } from '@/core/constants/global'
 import { Logger } from '@/core/utils/logger'
@@ -11,7 +10,6 @@ import { Logger } from '@/core/utils/logger'
 export async function register() {
   // we import dynamically because this function could run on edge runtime, and running on edge runtime will not work
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    const { diag, DiagConsoleLogger } = await import('@opentelemetry/api')
     const { OTLPLogExporter } = await import('@opentelemetry/exporter-logs-otlp-http')
     const { OTLPMetricExporter } = await import('@opentelemetry/exporter-metrics-otlp-http')
     const { envDetector, hostDetector, osDetector, processDetector, serviceInstanceIdDetector } = await import('@opentelemetry/resources')
@@ -25,18 +23,10 @@ export async function register() {
     const { RuntimeNodeInstrumentation } = await import('@opentelemetry/instrumentation-runtime-node')
     const { UndiciInstrumentation } = await import('@opentelemetry/instrumentation-undici')
 
-    const logLevelMap: Record<string, DiagLogLevel> = {
-      ALL: DiagLogLevel.ALL,
-      VERBOSE: DiagLogLevel.VERBOSE,
-      DEBUG: DiagLogLevel.DEBUG,
-      INFO: DiagLogLevel.INFO, // default
-      WARN: DiagLogLevel.WARN,
-      ERROR: DiagLogLevel.ERROR,
-      NONE: DiagLogLevel.NONE,
+    // NodeSDK will automatically configure the logger based on this env var
+    if (!process.env.OTEL_LOG_LEVEL) {
+      process.env.OTEL_LOG_LEVEL = ENV.NEXT_PUBLIC_OTEL_LOG_LEVEL
     }
-
-    // for troubleshooting the internal otel logs, set the log level to DEBUG
-    diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.NEXT_PUBLIC_OTEL_LOG_LEVEL])
 
     registerOTel({
       serviceName: SERVICE_NAME,
