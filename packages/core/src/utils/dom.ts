@@ -19,7 +19,10 @@ export function doDownload(url: string) {
   link.target = '_blank'
   document.body.appendChild(link)
   link.click()
-  document.body.removeChild(link)
+  // Delay removal to ensure download has started
+  setTimeout(() => {
+    document.body.removeChild(link)
+  }, 100)
 }
 
 /**
@@ -117,25 +120,54 @@ interface ExperimentalNavigator {
 export function getPlatform(): string {
   const nav = navigator as ExperimentalNavigator
 
+  // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
     return nav.userAgentData.platform
   }
 
-  let platform = ''
-
-  nav.userAgentData
-    ?.getHighEntropyValues(['platform'])
-    .then((highEntropyValues: { platform: string }) => {
-      if (highEntropyValues.platform) {
-        platform = highEntropyValues.platform
-      }
-    })
-
+  // Fallback to navigator.platform (deprecated but widely supported)
   if (typeof navigator.platform === 'string') {
     return navigator.platform
   }
 
-  return platform
+  return ''
+}
+
+/**
+ * Retrieves the current platform asynchronously with high entropy values
+ *
+ * This function uses the `UserAgentData` API's getHighEntropyValues method
+ * for more accurate platform detection, with fallbacks to synchronous methods
+ *
+ * @returns {Promise<string>} The platform name
+ */
+export async function getPlatformAsync(): Promise<string> {
+  const nav = navigator as ExperimentalNavigator
+
+  // First, try the synchronous userAgentData.platform
+  if (nav?.userAgentData?.platform) {
+    return nav.userAgentData.platform
+  }
+
+  // Try high entropy values for more accurate platform info
+  if (nav?.userAgentData?.getHighEntropyValues) {
+    try {
+      const highEntropyValues = await nav.userAgentData.getHighEntropyValues(['platform'])
+      if (highEntropyValues.platform) {
+        return highEntropyValues.platform
+      }
+    }
+    catch {
+      // Fall through to next fallback
+    }
+  }
+
+  // Fallback to navigator.platform (deprecated but widely supported)
+  if (typeof navigator.platform === 'string') {
+    return navigator.platform
+  }
+
+  return ''
 }
 
 /**

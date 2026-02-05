@@ -52,9 +52,9 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
    * @returns The updated selected items
    */
   const select = (item: T) => {
-    // eslint-disable-next-line react-hooks/immutability
-    selectedSet.add(item)
-    return setSelected(Array.from(selectedSet))
+    const newSet = new Set(selectedSet)
+    newSet.add(item)
+    return setSelected(Array.from(newSet))
   }
 
   /**
@@ -63,9 +63,9 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
    * @returns The updated selected items
    */
   const unSelect = (item: T) => {
-    // eslint-disable-next-line react-hooks/immutability
-    selectedSet.delete(item)
-    return setSelected(Array.from(selectedSet))
+    const newSet = new Set(selectedSet)
+    newSet.delete(item)
+    return setSelected(Array.from(newSet))
   }
 
   /**
@@ -85,20 +85,22 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
    * Select all items in the list
    */
   const selectAll = () => {
+    const newSet = new Set(selectedSet)
     items.forEach((o) => {
-      selectedSet.add(o)
+      newSet.add(o)
     })
-    setSelected(Array.from(selectedSet))
+    setSelected(Array.from(newSet))
   }
 
   /**
    * UnSelect all items in the list
    */
   const unSelectAll = () => {
+    const newSet = new Set(selectedSet)
     items.forEach((o) => {
-      selectedSet.delete(o)
+      newSet.delete(o)
     })
-    setSelected(Array.from(selectedSet))
+    setSelected(Array.from(newSet))
   }
 
   /**

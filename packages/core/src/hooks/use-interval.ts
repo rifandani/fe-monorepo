@@ -66,8 +66,8 @@ export function useInterval(
       if (timerRef.current)
         clearInterval(timerRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delay, options.immediate])
+  // timerCallback is memoized via useMemoizedFn but included for completeness
+  }, [delay, options.immediate, timerCallback])
 
   return clear
 }

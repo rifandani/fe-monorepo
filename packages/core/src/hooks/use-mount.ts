@@ -9,8 +9,10 @@ export function useMount(fn: () => void) {
     console.error(
       `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`,
     )
+    return
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     fn()
   // eslint-disable-next-line react-hooks/exhaustive-deps
