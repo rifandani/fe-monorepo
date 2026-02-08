@@ -216,13 +216,13 @@ function Chart({
         ref={ref}
         className={twMerge(
           'z-20 flex w-full justify-center text-xs',
-          // replaced by custom tailwindcss classes in globals.css
-          // '[&_.recharts-cartesian-axis-tick_text]:fill-muted-fg [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden',
-          // '[&_.recharts-dot[fill=\'#fff\']]:fill-(--line-color)',
-          // '[&_.recharts-active-dot>.recharts-dot]:stroke-fg/10',
-          // '[&_.recharts-surface_g]:focus:outline-hidden',
           className,
         )}
+        // replaced by custom tailwindcss classes in globals.css (do not put this in className or it will cause warnings in build)
+        // '[&_.recharts-cartesian-axis-tick_text]:fill-muted-fg [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden',
+        // '[&_.recharts-dot[fill=\'#fff\']]:fill-(--line-color)',
+        // '[&_.recharts-active-dot>.recharts-dot]:stroke-fg/10',
+        // '[&_.recharts-surface_g]:focus:outline-hidden',
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
