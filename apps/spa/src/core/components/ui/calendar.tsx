@@ -5,8 +5,8 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger } from '.
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import type { CalendarDate } from '@internationalized/date'
 import { getLocalTimeZone, today } from '@internationalized/date'
-import { useDateFormatter } from '@react-aria/i18n'
 import { use } from 'react'
+import { useDateFormatter } from 'react-aria'
 import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
 import {
   CalendarCell,
