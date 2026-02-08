@@ -1,11 +1,11 @@
 'use client' // Error boundaries must be Client Components
 
-import { trace } from '@opentelemetry/api'
-import { logger } from '@workspace/core/utils/logger'
-import { useEffect } from 'react'
 import { Button } from '@/core/components/ui'
 import { TRACER_ROOT_ROUTE, TRACER_ROOT_ROUTE_ON_ERROR } from '@/core/constants/global'
 import { recordException } from '@/core/utils/telemetry'
+import { trace } from '@opentelemetry/api'
+import { logger } from '@workspace/core/utils/logger'
+import { useEffect } from 'react'
 
 const tracer = trace.getTracer(TRACER_ROOT_ROUTE)
 

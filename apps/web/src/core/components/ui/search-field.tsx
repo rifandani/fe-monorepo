@@ -1,73 +1,36 @@
 'use client'
-
-import type { SearchFieldProps as SearchFieldPrimitiveProps } from 'react-aria-components'
-import type { FieldProps } from '@/core/components/ui/field'
-import { Icon } from '@iconify/react'
+import { Input, InputGroup } from './input'
+import { fieldStyles } from '@/core/components/ui/field'
+import { cx } from '@/core/utils/primitive'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import type { InputProps, SearchFieldProps } from 'react-aria-components'
 import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
-import {
-  Description,
-  FieldError,
-  FieldGroup,
+import { twJoin } from 'tailwind-merge'
 
-  Input,
-  Label,
-} from '@/core/components/ui/field'
-import { Loader } from '@/core/components/ui/loader'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
-
-interface SearchFieldProps extends SearchFieldPrimitiveProps, FieldProps {
-  isPending?: boolean
-}
-
-function SearchField({
-  children,
-  className,
-  placeholder,
-  label,
-  description,
-  errorMessage,
-  isPending,
-  ...props
-}: SearchFieldProps) {
+export function SearchField({ className, ...props }: SearchFieldProps) {
   return (
     <SearchFieldPrimitive
-      aria-label={placeholder ?? props['aria-label'] ?? 'Search...'}
+      data-slot="control"
       {...props}
-      className={composeTailwindRenderProps(
-        className,
-        'group/search-field relative flex flex-col gap-y-1 *:data-[slot=label]:font-medium',
-      )}
-    >
-      {values => (
-        <>
-          {typeof children === 'function'
-            ? (
-                children(values)
-              )
-            : children || (
-              <FieldGroup>
-                {label && <Label>{label}</Label>}
-                {isPending ? <Loader variant="spin" /> : <Icon icon="lucide:search" />}
-                <Input placeholder={placeholder ?? 'Search...'} />
-
-                <Button className={`
-                  grid place-content-center text-muted-fg
-                  group-empty/search-field:invisible
-                  hover:text-fg
-                  pressed:text-fg
-                `}
-                >
-                  <Icon icon="lucide:x" />
-                </Button>
-                {description && <Description>{description}</Description>}
-                <FieldError>{errorMessage}</FieldError>
-              </FieldGroup>
-            )}
-        </>
-      )}
-    </SearchFieldPrimitive>
+      aria-label={props['aria-label'] ?? 'Search'}
+      className={cx(fieldStyles({ className: 'group/search-field' }), className)}
+    />
   )
 }
 
-export type { SearchFieldProps }
-export { SearchField }
+export function SearchInput(props: InputProps) {
+  return (
+    <InputGroup className="[--input-gutter-end:--spacing(8)]">
+      <MagnifyingGlassIcon className="in-disabled:opacity-50" />
+      <Input {...props} />
+      <Button
+        className={twJoin(
+          'touch-target grid place-content-center pressed:text-fg text-muted-fg hover:text-fg group-empty/search-field:invisible',
+          'px-3 py-2 sm:px-2.5 sm:py-1.5 sm:text-sm/5',
+        )}
+      >
+        <XMarkIcon className="size-5 sm:size-4" />
+      </Button>
+    </InputGroup>
+  )
+}

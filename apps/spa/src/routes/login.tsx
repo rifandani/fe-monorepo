@@ -1,18 +1,24 @@
-import type { ErrorResponseSchema } from '@workspace/core/apis/core'
-import { Icon } from '@iconify/react'
-import { useForm } from '@tanstack/react-form'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { authLoginRequestSchema } from '@workspace/core/apis/auth'
-import { toast } from 'sonner'
 import { useAuthLogin } from '@/auth/hooks/use-auth-login'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { validateAuthUser } from '@/auth/utils/storage'
-import { Note, TextField } from '@/core/components/ui'
+import {
+  FieldError,
+  Input,
+  Label,
+  Note,
+  TextField,
+} from '@/core/components/ui'
 import { Button } from '@/core/components/ui/button'
 import { Link } from '@/core/components/ui/link'
 import { useSeo } from '@/core/hooks/use-seo'
 import { useTranslation } from '@/core/providers/i18n/context'
 import { reportWebVitals } from '@/core/utils/web-vitals'
+import { Icon } from '@iconify/react'
+import { useForm } from '@tanstack/react-form'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { authLoginRequestSchema } from '@workspace/core/apis/auth'
+import type { ErrorResponseSchema } from '@workspace/core/apis/core'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: ({ location }) => {
@@ -135,14 +141,17 @@ function LoginForm() {
             className="group/username pt-4"
             // let RHF handle validation instead of the browser.
             validationBehavior="aria"
-            label={t('username')}
-            placeholder={t('usernamePlaceholder')}
             isRequired
             value={field.state.value}
             onChange={field.handleChange}
             isInvalid={!field.state.meta.isValid}
-            errorMessage={field.state.meta.errorMap.onChange?.[0]?.message}
-          />
+          >
+            <Label htmlFor="username">{t('username')}</Label>
+            <Input id="username" aria-label={t('username')} placeholder={t('usernamePlaceholder')} />
+            <FieldError>
+              {field.state.meta.errorMap.onChange?.[0]?.message}
+            </FieldError>
+          </TextField>
         )}
       </form.Field>
 
@@ -153,16 +162,18 @@ function LoginForm() {
             className="group/password pt-4"
             // Let React Hook Form handle validation instead of the browser.
             validationBehavior="aria"
-            label={t('password')}
-            placeholder={t('passwordPlaceholder')}
             type="password"
-            isRevealable
             isRequired
             value={field.state.value}
             onChange={field.handleChange}
             isInvalid={!field.state.meta.isValid}
-            errorMessage={field.state.meta.errorMap.onChange?.[0]?.message}
-          />
+          >
+            <Label htmlFor="password">{t('password')}</Label>
+            <Input id="password" aria-label={t('password')} placeholder={t('passwordPlaceholder')} type="password" />
+            <FieldError>
+              {field.state.meta.errorMap.onChange?.[0]?.message}
+            </FieldError>
+          </TextField>
         )}
       </form.Field>
 

@@ -1,94 +1,24 @@
 'use client'
-
-import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
-import type { PopoverContentProps } from '@/core/components/ui/popover'
-import { Icon } from '@iconify/react'
+import { Button } from './button'
+import { fieldStyles } from './field'
+import { EyeDropperIcon } from '@heroicons/react/24/solid'
 import { use } from 'react'
+import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
 import {
   ColorPicker as ColorPickerPrimitive,
   ColorPickerStateContext,
 } from 'react-aria-components'
 import { parseColor } from 'react-stately'
-import { twJoin, twMerge } from 'tailwind-merge'
-import { Button } from '@/core/components/ui/button'
-import { ColorArea } from '@/core/components/ui/color-area'
-import { ColorField } from '@/core/components/ui/color-field'
-import { ColorSlider } from '@/core/components/ui/color-slider'
-import { ColorSwatch } from '@/core/components/ui/color-swatch'
-import { Description } from '@/core/components/ui/field'
-import { Popover, PopoverContent } from '@/core/components/ui/popover'
+import { twMerge } from 'tailwind-merge'
 
-interface ColorPickerProps
-  extends Omit<ColorPickerPrimitiveProps, 'children'>,
-  Pick<PopoverContentProps, 'placement'> {
-  label?: string
+interface ColorPickerProps extends ColorPickerPrimitiveProps {
   className?: string
-  children?: React.ReactNode
-  showArrow?: boolean
-  isDisabled?: boolean
-  description?: string
-  eyeDropper?: boolean
 }
 
-function ColorPicker({
-  showArrow = false,
-  placement = 'bottom start',
-  label,
-  isDisabled,
-  children,
-  description,
-  eyeDropper,
-  className,
-  ...props
-}: ColorPickerProps) {
+function ColorPicker({ className, ...props }: ColorPickerProps) {
   return (
-    <div className={twMerge('flex flex-col items-start gap-y-1', className)}>
-      <ColorPickerPrimitive {...props}>
-        <Popover>
-          <Button
-            isDisabled={isDisabled}
-            size={label ? 'md' : 'sq-sm'}
-            intent="plain"
-            className={twJoin(
-              `
-                w-auto px-2.5
-                *:data-[slot=color-swatch]:-mx-0.5
-                *:data-[slot=color-swatch]:size-5
-              `,
-              !label && 'size-10',
-            )}
-          >
-            <ColorSwatch />
-            {label && label}
-          </Button>
-          <PopoverContent
-            className={`
-              overflow-auto
-              **:data-[slot=color-area]:w-full
-              **:data-[slot=color-slider]:w-full
-              sm:max-w-56 sm:min-w-min sm:**:data-[slot=color-area]:size-56
-              sm:*:[[role=dialog]]:p-3
-              *:[[role=dialog]]:p-4
-            `}
-            showArrow={showArrow}
-            placement={placement}
-          >
-            <div className="flex flex-col gap-y-1.5">
-              {children || (
-                <>
-                  <ColorArea colorSpace="hsb" xChannel="saturation" yChannel="brightness" />
-                  <ColorSlider showOutput={false} colorSpace="hsb" channel="hue" />
-                  <div className="flex items-center gap-1.5">
-                    {eyeDropper && <EyeDropper />}
-                    <ColorField className="h-9" aria-label="Hex" />
-                  </div>
-                </>
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </ColorPickerPrimitive>
-      {description && <Description>{description}</Description>}
+    <div data-slot="control" className={twMerge(fieldStyles({ className: 'w-fit' }), className)}>
+      <ColorPickerPrimitive {...props} />
     </div>
   )
 }
@@ -108,15 +38,16 @@ function EyeDropper() {
 
   return (
     <Button
+      className="shrink-0"
       aria-label="Eye dropper"
-      size="sq-sm"
+      size="sq-md"
       intent="outline"
       onPress={() => {
         const eyeDropper = window.EyeDropper ? new window.EyeDropper() : null
         eyeDropper?.open().then(result => state.setColor(parseColor(result.sRGBHex)))
       }}
     >
-      <Icon icon="mdi:eyedropper" />
+      <EyeDropperIcon />
     </Button>
   )
 }

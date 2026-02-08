@@ -1,12 +1,12 @@
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { nextCookies } from 'better-auth/next-js'
-import { openAPI } from 'better-auth/plugins'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME } from '@/core/constants/global'
 import { ipAddressHeaders } from '@/core/utils/net'
 import { db } from '@/db'
 import * as schema from '@/db/schema'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
+import { openAPI } from 'better-auth/plugins'
 
 const RATE_LIMIT_WINDOW_SECONDS = 15 // 15 seconds
 const RATE_LIMIT_MAX_REQUESTS = 10 * RATE_LIMIT_WINDOW_SECONDS // 10 req/s

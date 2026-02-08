@@ -1,6 +1,6 @@
-import type { ThemeName } from 'tamagui'
 import Feather from '@expo/vector-icons/Feather'
 import { Toast, useToastState } from '@tamagui/toast'
+import type { ThemeName } from 'tamagui'
 import { YStack } from 'tamagui'
 
 /**

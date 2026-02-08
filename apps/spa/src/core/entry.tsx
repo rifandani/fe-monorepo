@@ -1,4 +1,3 @@
-import React, { Suspense } from 'react'
 import { Loader } from '@/core/components/ui'
 import { TRACER_REACT_ENTRY } from '@/core/constants/global'
 import { FlagsProvider } from '@/core/providers/flags/provider'
@@ -8,6 +7,8 @@ import { AppQueryProvider } from '@/core/providers/query/provider'
 import { ReloadPromptSw } from '@/core/providers/reload-prompt-sw'
 import { AppRouterProvider } from '@/core/providers/router/provider'
 import { AppToastProvider } from '@/core/providers/toast/provider'
+import * as React from 'react'
+import { Suspense } from 'react'
 
 export function Entry() {
   return (

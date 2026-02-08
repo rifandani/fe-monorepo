@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
-import type { Thing } from 'schema-dts'
-import { assign, uid } from 'radashi'
 import { ENV } from '@/core/constants/env'
+import type { Metadata } from 'next'
+import { assign, uid } from 'radashi'
+import type { Thing } from 'schema-dts'
 
 const applicationName = ENV.NEXT_PUBLIC_APP_TITLE
 const author = {

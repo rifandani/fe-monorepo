@@ -20,20 +20,20 @@ type EffectHookType = typeof useEffect | typeof useLayoutEffect
 export const createUpdateEffect: (hook: EffectHookType) => EffectHookType
   = hook => (effect, deps) => {
     // Track whether component has mounted
-    const isMounted = useRef(false)
+    const isMountedRef = useRef(false)
 
     // Reset mounted state when component unmounts (helps with React strict mode)
     hook(() => {
       return () => {
-        isMounted.current = false
+        isMountedRef.current = false
       }
     }, [])
 
     // Only execute effect if component has already mounted once
     hook(() => {
-      if (!isMounted.current) {
+      if (!isMountedRef.current) {
         // Skip effect on initial mount and set mounted flag
-        isMounted.current = true
+        isMountedRef.current = true
       }
       else {
         // Run effect on subsequent updates

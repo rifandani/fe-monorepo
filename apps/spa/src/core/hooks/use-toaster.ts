@@ -1,5 +1,5 @@
-import React from 'react'
 import { ToastContext } from '@/core/providers/toast/context'
+import * as React from 'react'
 
 /**
  * Hooks to get access to the ToastContext which is used for sonner props

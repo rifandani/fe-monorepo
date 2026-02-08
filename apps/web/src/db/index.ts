@@ -1,7 +1,7 @@
+import * as schema from './schema'
+import { ENV } from '@/core/constants/env'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
-import { ENV } from '@/core/constants/env'
-import * as schema from './schema'
 
 export const dbPool = new Pool({
   connectionString: ENV.DATABASE_URL,

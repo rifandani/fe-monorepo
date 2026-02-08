@@ -1,13 +1,11 @@
-'use client'
-
+import type { ButtonProps } from './button'
+import { Button } from './button'
+import { cx } from '@/core/utils/primitive'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import type { UseEmblaCarouselType } from 'embla-carousel-react'
-import type { ButtonProps } from '@/core/components/ui/button'
-import { Icon } from '@iconify/react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { Button } from '@/core/components/ui/button'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -112,7 +110,6 @@ function Carousel({
       return
     }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     onSelect(api)
     api.on('reInit', onSelect)
     api.on('select', onSelect)
@@ -156,7 +153,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
       <div
         className={twMerge(
           'flex',
-          orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
+          orientation === 'horizontal' ? '-ms-4' : '-mt-4 flex-col',
           className,
         )}
         {...props}
@@ -171,12 +168,8 @@ function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       className={twMerge(
-        `
-          xd24r group relative min-w-0 shrink-0 grow-0 basis-full
-          focus:outline-hidden
-          focus-visible:outline-hidden
-        `,
-        orientation === 'horizontal' ? 'pl-4' : 'pt-4',
+        'group/carousel-item relative min-w-0 shrink-0 grow-0 basis-full focus:outline-hidden focus-visible:outline-hidden',
+        orientation === 'horizontal' ? 'ps-4' : 'pt-4',
         className,
       )}
       {...props}
@@ -213,6 +206,7 @@ function CarouselButton({
   const isNext = segment === 'next'
   const canScroll = isNext ? canScrollNext : canScrollPrev
   const scroll = isNext ? scrollNext : scrollPrev
+  const Icon = isNext ? ChevronRightIcon : ChevronLeftIcon
 
   return (
     <Button
@@ -222,26 +216,15 @@ function CarouselButton({
       ref={ref}
       size={size}
       isCircle={isCircle}
-      className={composeTailwindRenderProps(
-        className,
-        orientation === 'vertical' ? 'rotate-90' : '',
-      )}
+      className={cx([orientation === 'vertical' ? 'rotate-90' : '', 'shrink-0'], className)}
       isDisabled={!canScroll}
       onPress={scroll}
       {...props}
     >
-      <Icon
-        icon={isNext ? 'lucide:chevron-right' : 'lucide:chevron-left'}
-        className="size-4"
-      />
+      <Icon className="size-4" />
     </Button>
   )
 }
-
-Carousel.Content = CarouselContent
-Carousel.Handler = CarouselHandler
-Carousel.Item = CarouselItem
-Carousel.Button = CarouselButton
 
 export type { CarouselApi }
 export { Carousel, CarouselButton, CarouselContent, CarouselHandler, CarouselItem }

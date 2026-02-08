@@ -1,7 +1,7 @@
-import type { ErrorBoundaryProps } from 'expo-router'
-import Feather from '@expo/vector-icons/Feather'
-import { H5, Paragraph, YStack } from 'tamagui'
 import { BaseButton } from '@/core/components/button/base-button'
+import Feather from '@expo/vector-icons/Feather'
+import type { ErrorBoundaryProps } from 'expo-router'
+import { H5, Paragraph, YStack } from 'tamagui'
 
 /**
  * to catch expo-router route error

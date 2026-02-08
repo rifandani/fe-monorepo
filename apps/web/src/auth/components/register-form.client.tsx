@@ -1,12 +1,12 @@
 'use client'
 
+import { registerAction } from '@/auth/actions/auth'
+import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { useTranslations } from 'next-intl'
 import { Controller } from 'react-hook-form'
-import { registerAction } from '@/auth/actions/auth'
-import { Button, Form, Note, TextField } from '@/core/components/ui'
 
 export function RegisterForm() {
   const t = useTranslations()
@@ -19,7 +19,7 @@ export function RegisterForm() {
   )
 
   return (
-    <Form
+    <form
       className="flex flex-col pt-3 md:pt-8"
       onSubmit={handleSubmitWithAction}
     >
@@ -31,20 +31,20 @@ export function RegisterForm() {
           fieldState: { error, invalid },
         }) => (
           <TextField
-            type="text"
             className="group/name pt-4"
-            label={t('name')}
-            placeholder={t('namePlaceholder')}
-            // Let React Hook Form handle validation instead of the browser.
+            // let RHF handle validation instead of the browser.
             validationBehavior="aria"
-            isPending={action.isPending}
-            isInvalid={invalid}
-            name={name}
+            isRequired
             value={value}
             onChange={onChange}
             onBlur={onBlur}
-            errorMessage={error?.message}
-          />
+            isInvalid={invalid}
+            isDisabled={action.isPending}
+          >
+            <Label htmlFor={name}>{t('name')}</Label>
+            <Input id={name} aria-label={t('name')} placeholder={t('namePlaceholder')} type="text" />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
         )}
       />
 
@@ -56,20 +56,20 @@ export function RegisterForm() {
           fieldState: { error, invalid },
         }) => (
           <TextField
-            type="text"
             className="group/email pt-4"
-            label={t('email')}
-            placeholder={t('emailPlaceholder')}
-            // Let React Hook Form handle validation instead of the browser.
+            // let RHF handle validation instead of the browser.
             validationBehavior="aria"
-            isPending={action.isPending}
-            isInvalid={invalid}
-            name={name}
+            isRequired
             value={value}
             onChange={onChange}
             onBlur={onBlur}
-            errorMessage={error?.message}
-          />
+            isInvalid={invalid}
+            isDisabled={action.isPending}
+          >
+            <Label htmlFor={name}>{t('email')}</Label>
+            <Input id={name} aria-label={t('email')} placeholder={t('emailPlaceholder')} type="email" />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
         )}
       />
 
@@ -81,21 +81,21 @@ export function RegisterForm() {
           fieldState: { error, invalid },
         }) => (
           <TextField
-            type="password"
             className="group/password pt-4"
-            label={t('password')}
-            placeholder={t('passwordPlaceholder')}
             // Let React Hook Form handle validation instead of the browser.
             validationBehavior="aria"
-            isRevealable
-            isPending={action.isPending}
-            isInvalid={invalid}
-            name={name}
+            type="password"
+            isRequired
             value={value}
             onChange={onChange}
             onBlur={onBlur}
-            errorMessage={error?.message}
-          />
+            isInvalid={invalid}
+            isDisabled={action.isPending}
+          >
+            <Label htmlFor={name}>{t('password')}</Label>
+            <Input id={name} aria-label={t('password')} placeholder={t('passwordPlaceholder')} type="password" />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
         )}
       />
 
@@ -110,6 +110,6 @@ export function RegisterForm() {
       >
         {action.isPending ? t('registerLoading') : t('register')}
       </Button>
-    </Form>
+    </form>
   )
 }

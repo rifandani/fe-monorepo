@@ -1,6 +1,6 @@
+import { ToastContext, useCreateToastContext } from './context'
 import type { PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
-import { ToastContext, useCreateToastContext } from './context'
 
 export function AppToastProvider({ children }: PropsWithChildren) {
   const value = useCreateToastContext()

@@ -1,3 +1,5 @@
+import { ENV } from '@/core/constants/env'
+import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 import { diag, DiagConsoleLogger, DiagLogLevel, metrics } from '@opentelemetry/api'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
@@ -18,8 +20,6 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions'
 import { logger } from '@workspace/core/utils/logger'
-import { ENV } from '@/core/constants/env'
-import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 
 const TRACE_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
 const METRICS_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics`

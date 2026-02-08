@@ -1,11 +1,11 @@
 'use client'
 
-import type { AuthGetSessionResponseSchema } from '@workspace/core/apis/better-auth'
-import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
-import { OpenFeature, OpenFeatureProvider, ProviderEvents } from '@openfeature/react-sdk'
-import { logger } from '@workspace/core/utils/logger'
-import { useEffect } from 'react'
 import { flagsmithClientProvider } from './client'
+import { OpenFeature, OpenFeatureProvider, ProviderEvents } from '@openfeature/react-sdk'
+import type { AuthGetSessionResponseSchema } from '@workspace/core/apis/better-auth'
+import { logger } from '@workspace/core/utils/logger'
+import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
+import { useEffect } from 'react'
 
 // Instantiate and set our provider (be sure this only happens once)!
 // Note: there's no need to await its initialization, the React SDK handles re-rendering and suspense for you!

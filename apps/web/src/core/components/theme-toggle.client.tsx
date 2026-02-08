@@ -1,11 +1,11 @@
 'use client'
 
-import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
-import type { Selection } from 'react-stately'
+import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import { Icon } from '@iconify/react'
+import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
-import { Button, Menu } from '@/core/components/ui'
+import type { Selection } from 'react-stately'
 
 export function ThemeToggle() {
   const t = useTranslations()
@@ -26,7 +26,7 @@ export function ThemeToggle() {
         />
       </Button>
 
-      <Menu.Content
+      <MenuContent
         selectionMode="single"
         selectedKeys={new Set([theme as string])}
         onSelectionChange={(_selection) => {
@@ -36,14 +36,14 @@ export function ThemeToggle() {
           setTheme(selection.currentKey)
         }}
       >
-        <Menu.Section>
-          <Menu.Header separator>{t('theme')}</Menu.Header>
+        <MenuSection>
+          <MenuHeader separator>{t('theme')}</MenuHeader>
 
-          <Menu.Item id="system">{t('system')}</Menu.Item>
-          <Menu.Item id="light">{t('light')}</Menu.Item>
-          <Menu.Item id="dark">{t('dark')}</Menu.Item>
-        </Menu.Section>
-      </Menu.Content>
+          <MenuItem id="system">{t('system')}</MenuItem>
+          <MenuItem id="light">{t('light')}</MenuItem>
+          <MenuItem id="dark">{t('dark')}</MenuItem>
+        </MenuSection>
+      </MenuContent>
     </Menu>
   )
 }

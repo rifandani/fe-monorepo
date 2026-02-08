@@ -1,12 +1,12 @@
-import type { UseQueryOptions } from '@tanstack/react-query'
-import type { HTTPError, TimeoutError } from 'ky'
-import type { Except } from 'type-fest'
 import type { ToastCustomData } from '@/core/providers/toast/the-toast'
-import { useToastController } from '@tamagui/toast'
-import { skipToken, useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
-import { z } from 'zod'
 import { userApi, userKeys } from '@/user/api/user'
+import { useToastController } from '@tamagui/toast'
+import type { UseQueryOptions } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
+import type { HTTPError, TimeoutError } from 'ky'
+import { useEffect } from 'react'
+import type { Except } from 'type-fest'
+import { z } from 'zod'
 
 type Params = Parameters<typeof userKeys.detail>[0]
 type Success = Awaited<

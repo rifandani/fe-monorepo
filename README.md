@@ -11,6 +11,8 @@
 - [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo
 - [ ] we might want to add lint and test in pre-commit hook for AI agents feedback loop
 - [ ] remove feature flag (flagsmith) related things, but before that fork this repo and create another repo so that we can still have example repo for feature flag
+- [ ] better auth agent skills
+- [ ] playwright creating & verifying E2E test
 
 ## 📦 Prerequisite
 
@@ -22,7 +24,7 @@
 - Remember to always use EXACT version for each dependency
 - Run `bun bump:deps` to check for outdated dependencies, then run `bun install` to install it
 - To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
-- To upgrade IntentUI components, run interactively `bunx @intentui/cli@latest add -o`
+- To upgrade IntentUI components, run interactively `bunx @intentui/cli@latest add -o` (copy changes in the props into `providers/toast/context.tsx` and remove generated `toast.tsx` file) (use `react-stately` instead of `@react-stately/color`) (use `react-aria` instead of `@react-aria/i18n`)
 - If there's MINOR upgrade in `playwright`, run `bun web test:install` to install new version of chromium
 - Run `bun web test`, `bun spa test`, and `bun expo test:dev` to run E2E tests (run the dev server / emulator first)
 - Run `bun web build`, `bun spa build`, and `bun expo build:android:dev:local` to build with development env

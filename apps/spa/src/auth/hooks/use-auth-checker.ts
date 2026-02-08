@@ -1,9 +1,9 @@
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
+import { useTranslation } from '@/core/providers/i18n/context'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useMount } from '@workspace/core/hooks/use-mount'
 import { toast } from 'sonner'
 import { match, P } from 'ts-pattern'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
-import { useTranslation } from '@/core/providers/i18n/context'
 
 /**
  * Hooks to check the authentication of your user, wheter they're logged in or not

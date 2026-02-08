@@ -1,50 +1,27 @@
 'use client'
 
+import { cx } from '@/core/utils/primitive'
 import type { LinkProps as LinkPrimitiveProps } from 'react-aria-components'
 import { Link as LinkPrimitive } from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-interface LinkProps extends LinkPrimitiveProps {
-  intent?: 'primary' | 'secondary' | 'unstyled'
+export interface LinkProps extends LinkPrimitiveProps {
   ref?: React.RefObject<HTMLAnchorElement>
 }
 
-function Link({ className, ref, intent = 'unstyled', ...props }: LinkProps) {
+export function Link({ className, ref, ...props }: LinkProps) {
   return (
     <LinkPrimitive
       ref={ref}
-      {...props}
-      className={composeTailwindRenderProps(
+      className={cx(
+        [
+          'font-medium text-(--text)',
+          'outline-0 outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring forced-colors:outline-[Highlight]',
+          'disabled:cursor-default disabled:opacity-50 forced-colors:disabled:text-[GrayText]',
+          'href' in props && 'cursor-pointer',
+        ],
         className,
-        twJoin([
-          `
-            outline-0 outline-offset-2 transition-[color,_opacity]
-            focus-visible:outline-2 focus-visible:outline-ring
-            forced-colors:outline-[Highlight]
-          `,
-          `
-            disabled:cursor-default disabled:opacity-60
-            forced-colors:disabled:text-[GrayText]
-          `,
-          intent === 'unstyled' && 'text-current',
-          intent === 'primary' && `
-            text-primary
-            hover:text-primary/80
-          `,
-          intent === 'secondary' && `
-            text-muted-fg
-            hover:text-fg
-          `,
-        ]),
       )}
-    >
-      {values => (
-        <>{typeof props.children === 'function' ? props.children(values) : props.children}</>
-      )}
-    </LinkPrimitive>
+      {...props}
+    />
   )
 }
-
-export type { LinkProps }
-export { Link }

@@ -1,12 +1,12 @@
-import type { NextRequest } from 'next/server'
-import type { ConfigType, GeneralConfigType, RateLimitInfo } from './types'
-import { NextResponse } from 'next/server'
 import {
   setDraft6Headers,
   setDraft7Headers,
   setRetryAfterHeader,
 } from './headers'
 import { DbStore } from './store'
+import type { ConfigType, GeneralConfigType, RateLimitInfo } from './types'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
 const RATE_LIMIT_WINDOW_MS = 60_000 // 60 seconds
 const RATE_LIMIT_LIMIT = 5 // Limit each IP to 5 requests per 60 seconds (1 req/s average)

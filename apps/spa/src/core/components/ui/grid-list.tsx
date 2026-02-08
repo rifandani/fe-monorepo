@@ -1,103 +1,124 @@
-'use client'
-
-import type React from 'react'
-import type { GridListItemProps, GridListProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { Checkbox } from './checkbox'
+import { cx } from '@/core/utils/primitive'
+import type { GridListItemProps, GridListProps, TextProps } from 'react-aria-components'
 import {
   Button,
   composeRenderProps,
+  GridListHeader as GridListHeaderPrimitive,
   GridListItem as GridListItemPrimitive,
   GridList as GridListPrimitive,
+  GridListSection as GridListSectionPrimitive,
+  Text,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
-import { Checkbox } from '@/core/components/ui/checkbox'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-function GridList<T extends object>({ children, className, ...props }: GridListProps<T>) {
+function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
   return (
     <GridListPrimitive
-      className={composeTailwindRenderProps(
+      data-slot="grid-list"
+      className={cx(
+        'relative flex flex-col gap-y-1 *:drop-target:border *:drop-target:border-accent has-data-[slot=grid-list-section]:gap-y-6 sm:text-sm/6',
         className,
-        'relative max-h-96 scroll-py-1 overflow-y-auto overscroll-contain rounded-lg border *:data-drop-target:border *:data-drop-target:border-accent',
       )}
       {...props}
-    >
-      {children}
-    </GridListPrimitive>
+    />
   )
 }
 
-const itemStyles = tv({
-  base: `
-    group relative -mb-px flex cursor-default gap-3 border-y px-3 py-2 text-fg
-    outline-hidden -outline-offset-2 transition select-none
-    [--selected-item-hovered:--color-muted]/70
-    [--selected-item:var(--color-muted)]/80
-    first:rounded-t-md first:border-t-0
-    last:mb-0 last:rounded-b-md last:border-b-0
-    sm:text-sm
-  `,
-  variants: {
-    isHovered: { true: 'bg-subtle' },
-    isSelected: {
-      true: `
-        z-20 border-border/50 bg-(--selected-item)
-        hover:bg-(--selected-item-hovered)
-      `,
-    },
-    isFocused: {
-      true: 'outline-hidden',
-    },
-    isFocusVisible: {
-      true: `
-        bg-(--selected-item) ring-1 ring-ring outline-hidden
-        hover:bg-(--selected-item-hovered)
-        selected:bg-(--selected-item)
-      `,
-    },
-    isDisabled: {
-      true: `
-        text-muted-fg/70
-        forced-colors:text-[GrayText]
-      `,
-    },
-  },
-})
+function GridListSection<T extends object>({
+  className,
+  ...props
+}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) {
+  return (
+    <GridListSectionPrimitive
+      data-slot="grid-list-section"
+      className={twMerge('space-y-1', className)}
+      {...props}
+    />
+  )
+}
+
+function GridListHeader({
+  className,
+  ...props
+}: React.ComponentProps<typeof GridListHeaderPrimitive>) {
+  return (
+    <GridListHeaderPrimitive
+      data-slot="grid-list-header"
+      className={twMerge('mb-2 font-semibold text-sm/6', className)}
+      {...props}
+    />
+  )
+}
 
 function GridListItem({ className, children, ...props }: GridListItemProps) {
-  const textValue = props.textValue || (typeof children === 'string' ? children : undefined)
+  const textValue = typeof children === 'string' ? children : undefined
   return (
     <GridListItemPrimitive
       textValue={textValue}
       {...props}
-      className={composeRenderProps(className, (className, renderProps) =>
-        itemStyles({ ...renderProps, className }))}
+      className={composeRenderProps(
+        className,
+        (className, { isHovered, isFocusVisible, isSelected, isDisabled }) =>
+          twMerge(
+            '[--grid-list-item-bg-active:var(--color-primary-subtle)] [--grid-list-item-text-active:var(--color-primary-subtle-fg)]',
+            'group inset-ring inset-ring-border rounded-lg px-3 py-2.5',
+            'relative min-w-0 outline-hidden [--me-icon:--spacing(2)]',
+            'flex min-w-0 cursor-default items-center gap-2 sm:gap-2.5',
+            'dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-(--grid-list-item-text-active)',
+            '**:data-[slot=icon]:size-5 **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-muted-fg sm:**:data-[slot=icon]:size-4',
+            (isSelected || isHovered || isFocusVisible)
+            && 'inset-ring-ring/70 bg-(--grid-list-item-bg-active) text-(--grid-list-item-text-active) **:[.text-muted-fg]:text-(--grid-list-item-text-active)/60',
+            isDisabled && 'bg-muted opacity-50',
+            'href' in props && 'cursor-pointer',
+            className,
+          ),
+      )}
     >
       {values => (
         <>
           {values.allowsDragging && (
-            <Button
-              slot="drag"
-              className={`
-                cursor-grab
-                data-dragging:cursor-grabbing
-                *:data-[slot=icon]:text-muted-fg
-              `}
-            >
-              <Icon icon="lucide:menu" />
+            <Button slot="drag">
+              <svg
+                data-slot="drag-icon"
+                className="size-5 text-muted-fg sm:size-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M11 5.5C11 6.32843 10.3284 7 9.5 7C8.67157 7 8 6.32843 8 5.5C8 4.67157 8.67157 4 9.5 4C10.3284 4 11 4.67157 11 5.5Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M16 5.5C16 6.32843 15.3284 7 14.5 7C13.6716 7 13 6.32843 13 5.5C13 4.67157 13.6716 4 14.5 4C15.3284 4 16 4.67157 16 5.5Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M11 18.5C11 19.3284 10.3284 20 9.5 20C8.67157 20 8 19.3284 8 18.5C8 17.6716 8.67157 17 9.5 17C10.3284 17 11 17.6716 11 18.5Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M16 18.5C16 19.3284 15.3284 20 14.5 20C13.6716 20 13 19.3284 13 18.5C13 17.6716 13.6716 17 14.5 17C15.3284 17 16 17.6716 16 18.5Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M11 12C11 12.8284 10.3284 13.5 9.5 13.5C8.67157 13.5 8 12.8284 8 12C8 11.1716 8.67157 10.5 9.5 10.5C10.3284 10.5 11 11.1716 11 12Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M16 12C16 12.8284 15.3284 13.5 14.5 13.5C13.6716 13.5 13 12.8284 13 12C13 11.1716 13.6716 10.5 14.5 10.5C15.3284 10.5 16 11.1716 16 12Z"
+                  fill="currentColor"
+                />
+              </svg>
             </Button>
           )}
 
-          <span
-            aria-hidden
-            className={`
-              absolute inset-y-0 left-0 hidden h-full w-0.5 bg-primary
-              group-selected:block
-            `}
-          />
           {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
-            <Checkbox className="-mr-2" slot="selection" />
+            <Checkbox
+              className="[--indicator-mt:0] *:gap-x-0 sm:[--indicator-mt:0]"
+              slot="selection"
+            />
           )}
           {typeof children === 'function' ? children(values) : children}
         </>
@@ -106,12 +127,52 @@ function GridListItem({ className, children, ...props }: GridListItemProps) {
   )
 }
 
-function GridEmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
+function GridListEmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
   return <div ref={ref} className={twMerge('p-6', className)} {...props} />
 }
 
-GridList.Item = GridListItem
-GridList.EmptyState = GridEmptyState
+function GridListSpacer({ className, ref, ...props }: React.ComponentProps<'div'>) {
+  return <div ref={ref} aria-hidden className={twMerge('-ms-4 flex-1', className)} {...props} />
+}
+
+function GridListStart({ className, ref, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      ref={ref}
+      className={twMerge('relative flex items-center gap-x-2.5 sm:gap-x-3', className)}
+      {...props}
+    />
+  )
+}
+
+interface GridListTextProps extends TextProps {
+  ref?: React.Ref<HTMLDivElement>
+}
+
+function GridListLabel({ className, ref, ...props }: GridListTextProps) {
+  return <Text ref={ref} className={twMerge('font-medium', className)} {...props} />
+}
+
+function GridListDescription({ className, ref, ...props }: GridListTextProps) {
+  return (
+    <Text
+      slot="description"
+      ref={ref}
+      className={twMerge('font-normal text-muted-fg text-sm', className)}
+      {...props}
+    />
+  )
+}
 
 export type { GridListItemProps, GridListProps }
-export { GridList }
+export {
+  GridList,
+  GridListDescription,
+  GridListEmptyState,
+  GridListHeader,
+  GridListItem,
+  GridListLabel,
+  GridListSection,
+  GridListSpacer,
+  GridListStart,
+}

@@ -1,8 +1,8 @@
+/** @type {import('expo/metro-config')} */
+const { getDefaultConfig } = require('expo/metro-config')
 // Learn more https://docs.expo.dev/guides/monorepos
 // Learn more https://docs.expo.io/guides/customizing-metro
 const path = require('node:path')
-/** @type {import('expo/metro-config')} */
-const { getDefaultConfig } = require('expo/metro-config')
 
 const config = getDefaultConfig(__dirname)
 const projectRoot = __dirname

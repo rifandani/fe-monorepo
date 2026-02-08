@@ -1,10 +1,10 @@
+import { LoginForm } from '@/auth/components/login-form'
+import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { Link } from 'expo-router'
-import React from 'react'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller'
 import { H3, Paragraph, YStack } from 'tamagui'
-import { LoginForm } from '@/auth/components/login-form'
-import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 
 export const ErrorBoundary = BaseErrorBoundary
 

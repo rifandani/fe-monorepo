@@ -1,40 +1,69 @@
 'use client'
 
-import type { DateDuration } from '@internationalized/date'
-import type { DatePickerProps as DatePickerPrimitiveProps, DateValue, PopoverProps, ValidationResult } from 'react-aria-components'
-import type { FieldProps } from '@/core/components/ui/field'
-import { Icon } from '@iconify/react'
-import { useMediaQuery } from '@workspace/core/hooks/use-media-query'
-import {
-  DatePicker as DatePickerPrimitive,
-
-} from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
-import { Button } from '@/core/components/ui/button'
-import { Calendar } from '@/core/components/ui/calendar'
+import { Calendar } from './calendar'
+import { ModalContent } from './modal'
+import { PopoverContent } from './popover'
+import { RangeCalendar } from './range-calendar'
 import { DateInput } from '@/core/components/ui/date-field'
-import { Description, FieldError, FieldGroup, Label } from '@/core/components/ui/field'
-import { Modal } from '@/core/components/ui/modal'
-import { PopoverContent } from '@/core/components/ui/popover'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
-import { RangeCalendar } from '@/core/components/ui/range-calendar'
+import { fieldStyles } from '@/core/components/ui/field'
+import { InputGroup } from '@/core/components/ui/input'
+import { useIsMobile } from '@/core/hooks/use-mobile'
+import { cx } from '@/core/utils/primitive'
+import { CalendarDaysIcon } from '@heroicons/react/24/outline'
+import type { DateDuration } from '@internationalized/date'
+import type {
+  DatePickerProps as DatePickerPrimitiveProps,
+  DateValue,
+  GroupProps,
+  PopoverProps,
+} from 'react-aria-components'
+import { Button, DatePicker as DatePickerPrimitive } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 
-interface DatePickerOverlayProps extends Omit<PopoverProps, 'children'> {
+export interface DatePickerProps<T extends DateValue> extends DatePickerPrimitiveProps<T> {
+  popover?: Omit<PopoverProps, 'children'>
+}
+
+export function DatePicker<T extends DateValue>({
+  className,
+  children,
+  popover,
+  ...props
+}: DatePickerProps<T>) {
+  return (
+    <DatePickerPrimitive
+      data-slot="control"
+      className={cx(fieldStyles({ className: 'group' }), className)}
+      {...props}
+    >
+      {values => (
+        <>
+          {typeof children === 'function' ? children(values) : children}
+          <DatePickerOverlay {...popover} />
+        </>
+      )}
+    </DatePickerPrimitive>
+  )
+}
+
+export interface DatePickerOverlayProps extends Omit<PopoverProps, 'children'> {
   range?: boolean
   visibleDuration?: DateDuration
   pageBehavior?: 'visible' | 'single'
 }
 
-function DatePickerOverlay({
+export function DatePickerOverlay({
   visibleDuration = { months: 1 },
   pageBehavior = 'visible',
+  placement = 'bottom',
   range,
   ...props
 }: DatePickerOverlayProps) {
-  const isMobile = useMediaQuery('(max-width: 767px)')
+  const isMobile = useIsMobile()
+
   return isMobile
     ? (
-        <Modal.Content aria-label="Date picker" closeButton={false}>
+        <ModalContent aria-label="Date picker" closeButton={false}>
           <div className="flex justify-center p-6">
             {range
               ? (
@@ -44,16 +73,14 @@ function DatePickerOverlay({
                   <Calendar />
                 )}
           </div>
-        </Modal.Content>
+        </ModalContent>
       )
     : (
         <PopoverContent
-          showArrow={false}
+          placement={placement}
+          arrow={false}
           className={twJoin(
-            `
-              flex max-w-none min-w-auto snap-x justify-center p-4
-              sm:min-w-[16.5rem] sm:p-2 sm:pt-3
-            `,
+            'flex min-w-auto max-w-none snap-x justify-center p-4 sm:min-w-[16.5rem] sm:p-2 sm:pt-3',
             visibleDuration?.months === 1 ? 'sm:max-w-2xs' : 'sm:max-w-none',
           )}
           {...props}
@@ -69,63 +96,21 @@ function DatePickerOverlay({
       )
 }
 
-function DatePickerIcon() {
+export function DatePickerTrigger({ className, ...props }: GroupProps) {
   return (
-    <Button
-      size="sq-sm"
-      intent="plain"
-      className={`
-        mr-1 h-7 w-8 rounded outline-hidden outline-offset-0
-        hover:bg-transparent
-        focus-visible:text-fg focus-visible:ring-0
-        **:data-[slot=icon]:text-muted-fg
-        group-open:*:data-[slot=icon]:text-fg
-        pressed:bg-transparent
-      `}
-    >
-      <Icon
-        icon="lucide:calendar-days"
-        aria-hidden
-        className={`
-          ml-2
-          group-open:text-fg
-        `}
-      />
-    </Button>
+    <InputGroup className={cx('*:data-[slot=control]:w-full', className)} {...props}>
+      <DateInput />
+      <Button
+        data-slot="date-picker-trigger"
+        className={twJoin(
+          'touch-target grid place-content-center outline-hidden',
+          'pressed:text-fg text-muted-fg hover:text-fg focus-visible:text-fg',
+          'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
+          '*:size-5 sm:*:size-4',
+        )}
+      >
+        <CalendarDaysIcon />
+      </Button>
+    </InputGroup>
   )
 }
-
-interface DatePickerProps<T extends DateValue>
-  extends DatePickerPrimitiveProps<T>,
-  Pick<DatePickerOverlayProps, 'placement'>,
-  Omit<FieldProps, 'placeholder'> {}
-
-function DatePicker<T extends DateValue>({
-  label,
-  className,
-  description,
-  errorMessage,
-  placement,
-  ...props
-}: DatePickerProps<T>) {
-  return (
-    <DatePickerPrimitive
-      {...props}
-      className={composeTailwindRenderProps(
-        className,
-        'group flex flex-col gap-y-1 *:data-[slot=label]:font-medium',
-      )}
-    >
-      {label && <Label>{label}</Label>}
-      <FieldGroup className="min-w-40">
-        <DateInput className="w-full" />
-        <DatePickerIcon />
-      </FieldGroup>
-      {description && <Description>{description}</Description>}
-      <FieldError>{errorMessage}</FieldError>
-      <DatePickerOverlay placement={placement} />
-    </DatePickerPrimitive>
-  )
-}
-export type { DatePickerProps, DateValue, ValidationResult }
-export { DatePicker, DatePickerIcon, DatePickerOverlay }

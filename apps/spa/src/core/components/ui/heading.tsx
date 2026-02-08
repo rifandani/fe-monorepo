@@ -1,7 +1,11 @@
 import { twMerge } from 'tailwind-merge'
 
-interface HeadingProps extends React.ComponentProps<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'> {
-  level?: 1 | 2 | 3 | 4 | 5 | 6
+type HeadingType = { level?: 1 | 2 | 3 | 4 } & React.ComponentPropsWithoutRef<
+  'h1' | 'h2' | 'h3' | 'h4'
+>
+
+interface HeadingProps extends HeadingType {
+  className?: string | undefined
 }
 
 function Heading({ className, level = 1, ...props }: HeadingProps) {
@@ -9,20 +13,11 @@ function Heading({ className, level = 1, ...props }: HeadingProps) {
   return (
     <Element
       className={twMerge(
-        'font-sans text-fg',
-        level === 1 && `
-          text-xl font-semibold
-          sm:text-2xl
-        `,
-        level === 2 && `
-          text-lg font-semibold
-          sm:text-xl
-        `,
-        level === 3 && `
-          text-base font-semibold
-          sm:text-lg
-        `,
-        level === 4 && 'text-base font-semibold',
+        'font-sans font-semibold text-fg tracking-tight',
+        level === 1 && 'text-xl/8 sm:text-2xl/8',
+        level === 2 && 'text-lg/6 sm:text-xl/8',
+        level === 3 && 'text-base/6 sm:text-lg/6',
+        level === 4 && 'text-base/6',
         className,
       )}
       {...props}

@@ -1,5 +1,5 @@
-import type { NextOptionsConfig } from 'next/dist/experimental/testmode/playwright/next-options'
 import { devices } from '@playwright/test'
+import type { NextOptionsConfig } from 'next/dist/experimental/testmode/playwright/next-options'
 import { defineConfig } from 'next/experimental/testmode/playwright.js'
 
 // make sure to sync this with `e2e/_base.ts`

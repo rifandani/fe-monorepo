@@ -1,12 +1,12 @@
 'use client'
 
+import { loginAction } from '@/auth/actions/auth'
+import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { authSignInEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { useTranslations } from 'next-intl'
 import { Controller } from 'react-hook-form'
-import { loginAction } from '@/auth/actions/auth'
-import { Button, Form, Note, TextField } from '@/core/components/ui'
 
 export function LoginForm() {
   const t = useTranslations()
@@ -15,7 +15,7 @@ export function LoginForm() {
   })
 
   return (
-    <Form
+    <form
       className={`
         flex flex-col pt-3
         md:pt-8
@@ -30,20 +30,20 @@ export function LoginForm() {
           fieldState: { error, invalid },
         }) => (
           <TextField
-            type="text"
-            className="group/email pt-4"
-            label={t('email')}
-            placeholder={t('emailPlaceholder')}
-            // Let React Hook Form handle validation instead of the browser.
+            className="group/username pt-4"
+            // let RHF handle validation instead of the browser.
             validationBehavior="aria"
-            isPending={action.isPending}
-            isInvalid={invalid}
-            name={name}
+            isRequired
             value={value}
             onChange={onChange}
             onBlur={onBlur}
-            errorMessage={error?.message}
-          />
+            isInvalid={invalid}
+            isDisabled={action.isPending}
+          >
+            <Label htmlFor={name}>{t('email')}</Label>
+            <Input id={name} aria-label={t('email')} placeholder={t('emailPlaceholder')} type="email" />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
         )}
       />
 
@@ -55,21 +55,21 @@ export function LoginForm() {
           fieldState: { error, invalid },
         }) => (
           <TextField
-            type="password"
             className="group/password pt-4"
-            label={t('password')}
-            placeholder={t('passwordPlaceholder')}
             // Let React Hook Form handle validation instead of the browser.
             validationBehavior="aria"
-            isRevealable
-            isPending={action.isPending}
-            isInvalid={invalid}
-            name={name}
+            type="password"
+            isRequired
             value={value}
             onChange={onChange}
             onBlur={onBlur}
-            errorMessage={error?.message}
-          />
+            isInvalid={invalid}
+            isDisabled={action.isPending}
+          >
+            <Label htmlFor={name}>{t('password')}</Label>
+            <Input id={name} aria-label={t('password')} placeholder={t('passwordPlaceholder')} type="password" />
+            <FieldError>{error?.message}</FieldError>
+          </TextField>
         )}
       />
 
@@ -84,6 +84,6 @@ export function LoginForm() {
       >
         {action.isPending ? t('loginLoading') : t('login')}
       </Button>
-    </Form>
+    </form>
   )
 }

@@ -1,5 +1,5 @@
-import type { NextRequest } from 'next/server'
 import { createMiddleware, defaults } from '@nosecone/next'
+import type { NextRequest } from 'next/server'
 
 // const noseconeOptionsWithToolbar: NoseconeOptions = withVercelToolbar({
 //   ...defaults,

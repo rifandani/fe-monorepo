@@ -1,9 +1,9 @@
 'use client'
 
+import { getQueryClient } from '@/core/providers/query/client'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
-import React from 'react'
-import { getQueryClient } from '@/core/providers/query/client'
+import * as React from 'react'
 
 export function Devtools() {
   const queryClient = getQueryClient()

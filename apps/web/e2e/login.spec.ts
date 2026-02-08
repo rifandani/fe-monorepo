@@ -1,6 +1,6 @@
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { expect, test } from './_base'
 import { validUser } from './_helper'
+import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 
 const invalidEmail = 'va'
 const invalidPassword = 'vaand'

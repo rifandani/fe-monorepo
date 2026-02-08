@@ -1,11 +1,11 @@
 'use client'
 
+import { TRACER_GLOBAL_ERROR, TRACER_GLOBAL_ERROR_ON_ERROR } from '@/core/constants/global'
+import { recordException } from '@/core/utils/telemetry'
 import { trace } from '@opentelemetry/api'
 import { logger } from '@workspace/core/utils/logger'
 import NextError from 'next/error'
 import { useEffect } from 'react'
-import { TRACER_GLOBAL_ERROR, TRACER_GLOBAL_ERROR_ON_ERROR } from '@/core/constants/global'
-import { recordException } from '@/core/utils/telemetry'
 
 const tracer = trace.getTracer(TRACER_GLOBAL_ERROR)
 

@@ -1,7 +1,7 @@
 'use client'
 
-import type { PropsWithChildren } from 'react'
 import { useRouter } from 'next/navigation'
+import type { PropsWithChildren } from 'react'
 import { I18nProvider, RouterProvider } from 'react-aria-components'
 
 // Configure the type of the `routerOptions` prop on all React Aria components.

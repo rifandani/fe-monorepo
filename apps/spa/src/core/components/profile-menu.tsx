@@ -1,9 +1,9 @@
-import { Icon } from '@iconify/react'
-import { useNavigate } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
-import { Menu } from '@/core/components/ui/menu'
+import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui/menu'
 import { useTranslation } from '@/core/providers/i18n/context'
+import { Icon } from '@iconify/react'
+import { useNavigate } from '@tanstack/react-router'
 
 export function ProfileMenu() {
   const { t } = useTranslation()
@@ -12,11 +12,11 @@ export function ProfileMenu() {
 
   return (
     <Menu>
-      <Menu.Trigger>
+      <MenuTrigger>
         <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? '??'} />
-      </Menu.Trigger>
+      </MenuTrigger>
 
-      <Menu.Content
+      <MenuContent
         onAction={(key) => {
           const currentKey = key as 'profile' | 'settings' | 'logout'
 
@@ -28,28 +28,28 @@ export function ProfileMenu() {
           }
         }}
       >
-        <Menu.Section>
-          <Menu.Header separator>{t('account')}</Menu.Header>
+        <MenuSection>
+          <MenuHeader separator>{t('account')}</MenuHeader>
 
-          <Menu.Item id="profile" className="gap-x-2">
+          <MenuItem id="profile" className="gap-x-2">
             <Icon icon="lucide:user" />
             <span>{t('profile')}</span>
-          </Menu.Item>
-          <Menu.Item id="settings" className="gap-x-2">
+          </MenuItem>
+          <MenuItem id="settings" className="gap-x-2">
             <Icon icon="lucide:settings" />
             <span>{t('settings')}</span>
-          </Menu.Item>
-        </Menu.Section>
+          </MenuItem>
+        </MenuSection>
 
-        <Menu.Separator />
+        <MenuSeparator />
 
-        <Menu.Section>
-          <Menu.Item id="logout" className="gap-x-2">
+        <MenuSection>
+          <MenuItem id="logout" className="gap-x-2">
             <Icon icon="lucide:log-out" />
             <p>{t('logout')}</p>
-          </Menu.Item>
-        </Menu.Section>
-      </Menu.Content>
+          </MenuItem>
+        </MenuSection>
+      </MenuContent>
     </Menu>
   )
 }

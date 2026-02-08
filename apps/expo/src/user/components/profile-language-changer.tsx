@@ -1,10 +1,11 @@
+import { BaseSheet } from '@/core/components/sheet/base-sheet'
 import type { BaseSheetState } from '@/core/components/sheet/types'
+import { ProfileListItem } from '@/user/components/profile-list-item'
 import Feather from '@expo/vector-icons/Feather'
-import React, { useState } from 'react'
+import * as React from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ListItem, Separator, YGroup } from 'tamagui'
-import { BaseSheet } from '@/core/components/sheet/base-sheet'
-import { ProfileListItem } from '@/user/components/profile-list-item'
 
 export function ProfileLanguageChanger() {
   const { t, i18n } = useTranslation()

@@ -1,5 +1,5 @@
-import type { TOptions } from 'i18next'
 import type en from './locales/en.json'
+import type { TOptions } from 'i18next'
 import i18n from 'i18next'
 
 /**

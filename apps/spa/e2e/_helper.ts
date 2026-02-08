@@ -1,6 +1,6 @@
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
 import type { UserStoreState } from '@/auth/hooks/use-auth-user-store'
 import { faker } from '@faker-js/faker'
+import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
 
 export function seedUser(): AuthLoginResponseSchema {
   return {

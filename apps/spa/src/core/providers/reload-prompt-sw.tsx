@@ -1,7 +1,7 @@
+import { useTranslation } from '@/core/providers/i18n/context'
 import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 import { useRegisterSW } from 'virtual:pwa-register/react'
-import { useTranslation } from '@/core/providers/i18n/context'
 
 /**
  * This function will register a periodic sync check every hour, you can modify the interval as needed.

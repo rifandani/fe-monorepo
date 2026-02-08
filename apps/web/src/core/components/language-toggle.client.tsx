@@ -1,14 +1,14 @@
 'use client'
 
-import type { Selection } from 'react-stately'
+import { setUserLocaleAction } from '@/core/actions/i18n'
+import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import type { I18NLocale } from '@/core/constants/i18n'
 import { Icon } from '@iconify/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import React from 'react'
+import * as React from 'react'
+import type { Selection } from 'react-stately'
 import { toast } from 'sonner'
-import { setUserLocaleAction } from '@/core/actions/i18n'
-import { Button, Menu } from '@/core/components/ui'
 
 export function LanguageToggle() {
   const locale = useLocale()
@@ -24,7 +24,7 @@ export function LanguageToggle() {
         />
       </Button>
 
-      <Menu.Content
+      <MenuContent
         selectionMode="single"
         selectedKeys={new Set([locale])}
         onSelectionChange={async (_selection) => {
@@ -39,13 +39,13 @@ export function LanguageToggle() {
           }
         }}
       >
-        <Menu.Section>
-          <Menu.Header separator>{t('language')}</Menu.Header>
+        <MenuSection>
+          <MenuHeader separator>{t('language')}</MenuHeader>
 
-          <Menu.Item id="en" isDisabled={isPending}>English</Menu.Item>
-          <Menu.Item id="id" isDisabled={isPending}>Indonesia</Menu.Item>
-        </Menu.Section>
-      </Menu.Content>
+          <MenuItem id="en" isDisabled={isPending}>English</MenuItem>
+          <MenuItem id="id" isDisabled={isPending}>Indonesia</MenuItem>
+        </MenuSection>
+      </MenuContent>
     </Menu>
   )
 }

@@ -1,8 +1,8 @@
+import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
+import { useTranslation } from '@/core/providers/i18n/context'
+import { Icon } from '@iconify/react'
 import type { LocaleDictLanguage } from '@workspace/core/libs/i18n/init'
 import type { Selection } from 'react-stately'
-import { Icon } from '@iconify/react'
-import { Button, Menu } from '@/core/components/ui'
-import { useTranslation } from '@/core/providers/i18n/context'
 
 export function LanguageToggle() {
   const { t, setLocale, locale } = useTranslation()
@@ -16,7 +16,7 @@ export function LanguageToggle() {
         />
       </Button>
 
-      <Menu.Content
+      <MenuContent
         selectionMode="single"
         selectedKeys={new Set([locale])}
         onSelectionChange={(_selection) => {
@@ -26,13 +26,13 @@ export function LanguageToggle() {
           setLocale(selection.currentKey)
         }}
       >
-        <Menu.Section>
-          <Menu.Header separator>{t('language')}</Menu.Header>
+        <MenuSection>
+          <MenuHeader separator>{t('language')}</MenuHeader>
 
-          <Menu.Item id="en-us">English</Menu.Item>
-          <Menu.Item id="id-id">Indonesia</Menu.Item>
-        </Menu.Section>
-      </Menu.Content>
+          <MenuItem id="en-us">English</MenuItem>
+          <MenuItem id="id-id">Indonesia</MenuItem>
+        </MenuSection>
+      </MenuContent>
     </Menu>
   )
 }

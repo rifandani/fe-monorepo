@@ -1,9 +1,9 @@
-import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
+import { flagsmithClientProvider } from './client'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { OpenFeature, OpenFeatureProvider, ProviderEvents } from '@openfeature/react-sdk'
 import { logger } from '@workspace/core/utils/logger'
+import type { ComponentPropsWithoutRef, PropsWithChildren } from 'react'
 import { useEffect } from 'react'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
-import { flagsmithClientProvider } from './client'
 
 // Instantiate and set our provider (be sure this only happens once)!
 // Note: there's no need to await its initialization, the React SDK handles re-rendering and suspense for you!

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { validUser } from './_helper'
 import { expect } from '@playwright/test'
 import { test as base } from 'next/experimental/testmode/playwright.js'
-import { validUser } from './_helper'
 
 interface NetworkError {
   url: string

@@ -1,6 +1,6 @@
+import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { H6, YStack } from 'tamagui'
-import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
 
 export const ErrorBoundary = BaseErrorBoundary
 

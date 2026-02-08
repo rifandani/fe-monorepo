@@ -1,8 +1,8 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import type { HeaderButtonProps } from '@/core/types/navigation'
 import Feather from '@expo/vector-icons/Feather'
 import { isFunction } from 'radashi'
-import React from 'react'
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import * as React from 'react'
 import { Button, Sheet } from 'tamagui'
 
 interface State { open: boolean, position: number }

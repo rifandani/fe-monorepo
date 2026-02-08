@@ -1,76 +1,48 @@
-'use client'
-
+import { cx } from '@/core/utils/primitive'
 import type { ColorSwatchPickerItemProps, ColorSwatchPickerProps } from 'react-aria-components'
 import {
-  ColorSwatchPickerItem as ColorSwatchPickerItemPrimitive,
-  ColorSwatchPicker as ColorSwatchPickerPrimitive,
+  ColorSwatchPicker as PrimitiveColorSwatchPicker,
+  ColorSwatchPickerItem as PrimitiveColorSwatchPickerItem,
 } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
-import { ColorSwatch } from '@/core/components/ui/color-swatch'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
 
-function ColorSwatchPicker({
-  children,
-  className,
-  layout = 'grid',
-  ...props
-}: ColorSwatchPickerProps) {
-  return (
-    <ColorSwatchPickerPrimitive
-      layout={layout}
-      className={composeTailwindRenderProps(className, 'flex gap-1')}
-      {...props}
-    >
-      {children}
-    </ColorSwatchPickerPrimitive>
-  )
+export function ColorSwatchPicker({ className, ...props }: ColorSwatchPickerProps) {
+  return <PrimitiveColorSwatchPicker className={cx('flex flex-wrap gap-2', className)} {...props} />
 }
 
-function ColorSwatchPickerItem({ className, children, ...props }: ColorSwatchPickerItemProps) {
+export function ColorSwatchPickerItem({
+  children,
+  className,
+  ...props
+}: ColorSwatchPickerItemProps) {
   return (
-    <ColorSwatchPickerItemPrimitive
-      className={composeTailwindRenderProps(
+    <PrimitiveColorSwatchPickerItem
+      style={({ defaultStyle }) => ({
+        ...defaultStyle,
+        '--tw-ring-color': props.color
+          ? `color-mix(in oklab, ${props.color} 40%, transparent)`
+          : '',
+      })}
+      className={cx(
+        'relative rounded-lg outline-hidden *:rounded-[calc(var(--radius-lg)-1px)]',
+        'selected:ring-3 selected:ring-ring/20 selected:*:inset-ring-current/40',
+        'focus-visible:opacity-80 focus-visible:ring-ring/20 focus-visible:*:inset-ring-current/40',
+        'hover:opacity-90',
+        'disabled:opacity-50',
         className,
-        'relative overflow-hidden rounded-sm outline-hidden disabled:opacity-50',
       )}
       {...props}
     >
       {values => (
         <>
-          {!children
-            ? (
-                <>
-                  <ColorSwatch
-                    className={twMerge(
-                      (values.isSelected || values.isFocused || values.isPressed) && `
-                        inset-ring-fg/30
-                      `,
-                      values.isDisabled && 'opacity-50',
-                    )}
-                  />
-                  {(values.isSelected || values.isFocused || values.isPressed) && (
-                    <span
-                      aria-hidden
-                      className={`
-                        absolute right-1 bottom-1 size-1 rounded-full bg-fg
-                      `}
-                    />
-                  )}
-                </>
-              )
-            : typeof children === 'function'
-              ? (
-                  children(values)
-                )
-              : (
-                  children
-                )}
+          {values.isSelected && (
+            <span
+              className="pointer-events-none absolute bottom-1.5 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-current/50"
+              aria-hidden
+            />
+          )}
+          {typeof children === 'function' ? children(values) : children}
         </>
       )}
-    </ColorSwatchPickerItemPrimitive>
+    </PrimitiveColorSwatchPickerItem>
   )
 }
-
-ColorSwatchPicker.Item = ColorSwatchPickerItem
-
-export { ColorSwatchPicker }

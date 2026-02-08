@@ -41,11 +41,11 @@ import { useCallback, useRef, useState } from 'react'
 export function useDynamicList<T>(initialList: T[] = []) {
   const counterRef = useRef(-1)
 
-  const keyList = useRef<number[]>([])
+  const keyListRef = useRef<number[]>([])
 
   const setKey = useCallback((index: number) => {
     counterRef.current += 1
-    keyList.current.splice(index, 0, counterRef.current)
+    keyListRef.current.splice(index, 0, counterRef.current)
   }, [])
 
   // Current list
@@ -54,7 +54,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
     // to avoid fragile behavior during state initialization
     initialList.forEach(() => {
       counterRef.current += 1
-      keyList.current.push(counterRef.current)
+      keyListRef.current.push(counterRef.current)
     })
     return initialList
   })
@@ -62,7 +62,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
   // Reset list current data
   const resetList = useCallback(
     (newList: T[]) => {
-      keyList.current = []
+      keyListRef.current = []
       setList(() => {
         newList.forEach((_, index) => {
           setKey(index)
@@ -87,11 +87,11 @@ export function useDynamicList<T>(initialList: T[] = []) {
   )
 
   // Get the uuid of specific item
-  const getKey = useCallback((index: number) => keyList.current[index], [])
+  const getKey = useCallback((index: number) => keyListRef.current[index], [])
 
   // Retrieve index from uuid
   const getIndex = useCallback(
-    (key: number) => keyList.current.findIndex(ele => ele === key),
+    (key: number) => keyListRef.current.findIndex(ele => ele === key),
     [],
   )
 
@@ -126,7 +126,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
       temp.splice(index, 1)
 
       // remove keys if necessary
-      keyList.current.splice(index, 1)
+      keyListRef.current.splice(index, 1)
       return temp
     })
   }, [])
@@ -142,11 +142,11 @@ export function useDynamicList<T>(initialList: T[] = []) {
       temp.splice(newIndex, 0, newList[oldIndex] as T)
 
       // move keys if necessary
-      const keyTemp = keyList.current.filter(
+      const keyTemp = keyListRef.current.filter(
         (_, index: number) => index !== oldIndex,
       )
-      keyTemp.splice(newIndex, 0, keyList.current[oldIndex] as number)
-      keyList.current = keyTemp
+      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number)
+      keyListRef.current = keyTemp
 
       return temp
     })
@@ -166,7 +166,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
   // Remove the last item from the list
   const pop = useCallback(() => {
     // remove keys if necessary
-    keyList.current = keyList.current.slice(0, keyList.current.length - 1)
+    keyListRef.current = keyListRef.current.slice(0, keyListRef.current.length - 1)
     setList(l => l.slice(0, l.length - 1))
   }, [])
 
@@ -184,7 +184,7 @@ export function useDynamicList<T>(initialList: T[] = []) {
   // Remove the first item from the list
   const shift = useCallback(() => {
     // remove keys if necessary
-    keyList.current = keyList.current.slice(1, keyList.current.length)
+    keyListRef.current = keyListRef.current.slice(1, keyListRef.current.length)
     setList(l => l.slice(1, l.length))
   }, [])
 

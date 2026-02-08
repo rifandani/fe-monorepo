@@ -1,10 +1,10 @@
 'use client'
 
+import { ENV } from '@/core/constants/env'
+import { http } from '@/core/services/http'
 import { logger } from '@workspace/core/utils/logger'
 import { createAuthClient } from 'better-auth/react'
 import { toast } from 'sonner'
-import { ENV } from '@/core/constants/env'
-import { http } from '@/core/services/http'
 
 export const authClient = createAuthClient({
   baseURL: ENV.NEXT_PUBLIC_API_BASE_URL,
