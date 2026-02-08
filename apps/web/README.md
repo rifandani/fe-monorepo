@@ -7,7 +7,6 @@
 - [ ] install orpc (no agent skills yet)
 - [ ] consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 - [ ] instrumentation using vercel otel
-- [ ] use tanstack devtools
 - [ ] drizzle beta
 
 ## 📦 Prerequisite
