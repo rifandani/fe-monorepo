@@ -10,7 +10,6 @@
 - [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo
 - [ ] we might want to add lint and test in pre-commit hook for AI agents feedback loop
 - [ ] remove feature flag (flagsmith) related things, but before that fork this repo and create another repo so that we can still have example repo for feature flag
-- [ ] better auth agent skills
 - [ ] playwright creating & verifying E2E test
 
 ## 📦 Prerequisite
