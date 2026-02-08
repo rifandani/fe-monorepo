@@ -1,12 +1,3 @@
-import type {
-  ListBoxProps,
-  PopoverProps,
-  SelectProps as SelectPrimitiveProps,
-} from 'react-aria-components'
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { Button, ListBox, Select as SelectPrimitive, SelectValue } from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
 import {
   DropdownDescription,
   DropdownItem,
@@ -16,6 +7,15 @@ import {
 } from './dropdown'
 import { fieldStyles } from './field'
 import { PopoverContent } from './popover'
+import { cx } from '@/core/utils/primitive'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import type {
+  ListBoxProps,
+  PopoverProps,
+  SelectProps as SelectPrimitiveProps,
+} from 'react-aria-components'
+import { Button, ListBox, Select as SelectPrimitive, SelectValue } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 
 interface SelectProps<T extends object, M extends 'single' | 'multiple' = 'single'>
   extends SelectPrimitiveProps<T, M> {

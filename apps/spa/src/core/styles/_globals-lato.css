@@ -48,8 +48,8 @@
     'Lato', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"',
     'monospace';
 
-  --font-sans--font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  --font-mono--font-feature-settings: "ss02", "zero";
+  --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  --font-mono--font-feature-settings: 'ss02', 'zero';
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -192,7 +192,7 @@
   --secondary: oklch(0.244 0.006 286.033);
   --secondary-fg: oklch(0.985 0 0);
 
-  --overlay: oklch(0.210 0.006 285.885);
+  --overlay: oklch(0.21 0.006 285.885);
   --overlay-fg: oklch(0.985 0 0);
 
   --accent: oklch(0.274 0.006 286.033);
@@ -222,11 +222,11 @@
   --danger-subtle: oklch(0.637 0.237 25.331 / 0.1);
   --danger-subtle-fg: oklch(0.704 0.191 22.216);
 
-  --border: oklch(0.270 0.013 285.805);
-  --input: oklch(0.320 0.013 285.805);
+  --border: oklch(0.27 0.013 285.805);
+  --input: oklch(0.32 0.013 285.805);
   --ring: oklch(0.546 0.245 262.881);
 
-  --navbar: oklch(0.190 0.006 285.885);
+  --navbar: oklch(0.19 0.006 285.885);
   --navbar-fg: oklch(0.985 0 0);
 
   --sidebar: oklch(0.21 0.006 285.885);
@@ -248,7 +248,7 @@
 @utility touch-target {
   position: relative;
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     top: 50%;
@@ -304,4 +304,51 @@
 .react-aria-DropIndicator[data-drop-target] {
   outline: 1px solid var(--primary);
   transform: translateZ(0);
+}
+
+/* Recharts overrides (avoid Tailwind arbitrary variants with attr quotes in Next 16 + Tailwind v4) */
+[data-chart] .recharts-cartesian-axis-tick text {
+  fill: var(--muted-fg);
+}
+[data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
+  stroke: var(--border);
+}
+@supports (color: color-mix(in lab, red, red)) {
+  [data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
+    stroke: color-mix(in oklab, var(--border) 80%, transparent);
+  }
+}
+[data-chart] .recharts-curve.recharts-tooltip-cursor,
+[data-chart] .recharts-rectangle.recharts-tooltip-cursor {
+  stroke: var(--border);
+}
+[data-chart] .recharts-layer {
+  outline: none;
+}
+[data-chart] .recharts-polar-grid [stroke='#ccc'] {
+  stroke: var(--border);
+}
+[data-chart] .recharts-radial-bar-background-sector {
+  fill: var(--muted);
+}
+[data-chart] .recharts-reference-line [stroke='#ccc'] {
+  stroke: var(--border);
+}
+[data-chart] .recharts-sector[stroke='#fff'] {
+  stroke: transparent;
+}
+[data-chart] .recharts-sector {
+  outline: none;
+}
+[data-chart] .recharts-surface {
+  outline: none;
+}
+[data-chart] .recharts-dot[fill='#fff'] {
+  fill: var(--line-color, var(--border));
+}
+[data-chart] .recharts-active-dot > .recharts-dot {
+  stroke: color-mix(in oklab, var(--fg) 10%, transparent);
+}
+[data-chart] .recharts-surface g:focus {
+  outline: none;
 }

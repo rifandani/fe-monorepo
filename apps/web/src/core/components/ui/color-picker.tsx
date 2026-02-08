@@ -1,15 +1,15 @@
 'use client'
-import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
+import { Button } from './button'
+import { fieldStyles } from './field'
 import { EyeDropperIcon } from '@heroicons/react/24/solid'
 import { use } from 'react'
+import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
 import {
   ColorPicker as ColorPickerPrimitive,
   ColorPickerStateContext,
 } from 'react-aria-components'
 import { parseColor } from 'react-stately'
 import { twMerge } from 'tailwind-merge'
-import { Button } from './button'
-import { fieldStyles } from './field'
 
 interface ColorPickerProps extends ColorPickerPrimitiveProps {
   className?: string

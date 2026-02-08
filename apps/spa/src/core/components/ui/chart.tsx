@@ -1,5 +1,9 @@
+import { useIsMobile } from '@/core/hooks/use-mobile'
+import { cx } from '@/core/utils/primitive'
 import type { ReactElement } from 'react'
+import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
 import type { ToggleButtonGroupProps } from 'react-aria-components'
+import { ToggleButton, ToggleButtonGroup } from 'react-aria-components'
 import type {
   CartesianGridProps as CartesianGridPrimitiveProps,
   CartesianGridProps,
@@ -8,15 +12,6 @@ import type {
   XAxisProps as XAxisPropsPrimitive,
   YAxisProps as YAxisPrimitiveProps,
 } from 'recharts'
-import type { ContentType as LegendContentType } from 'recharts/types/component/DefaultLegendContent'
-import type {
-  NameType,
-  Props as TooltipContentProps,
-  ValueType,
-} from 'recharts/types/component/DefaultTooltipContent'
-import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
-import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
-import { ToggleButton, ToggleButtonGroup } from 'react-aria-components'
 import {
   CartesianGrid as CartesianGridPrimitive,
   Legend as LegendPrimitive,
@@ -25,9 +20,14 @@ import {
   XAxis as XAxisPrimitive,
   YAxis as YAxisPrimitive,
 } from 'recharts'
+import type { ContentType as LegendContentType } from 'recharts/types/component/DefaultLegendContent'
+import type {
+  NameType,
+  Props as TooltipContentProps,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent'
+import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { useIsMobile } from '@/core/hooks/use-mobile'
-import { cx } from '@/core/utils/primitive'
 
 // #region Chart Types
 type ChartType = 'default' | 'stacked' | 'percent'
@@ -216,12 +216,11 @@ function Chart({
         ref={ref}
         className={twMerge(
           'z-20 flex w-full justify-center text-xs',
-          '[&_.recharts-cartesian-axis-tick_text]:fill-muted-fg [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden',
-          '[&_.recharts-dot[fill=\'#fff\']]:fill-(--line-color)',
-          '[&_.recharts-active-dot>.recharts-dot]:stroke-fg/10',
-
-          '[&_.recharts-surface_g]:focus:outline-hidden',
-
+          // replaced by custom tailwindcss classes in globals.css
+          // '[&_.recharts-cartesian-axis-tick_text]:fill-muted-fg [&_.recharts-cartesian-grid_line[stroke=\'#ccc\']]:stroke-border/80 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-layer]:outline-hidden [&_.recharts-polar-grid_[stroke=\'#ccc\']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke=\'#ccc\']]:stroke-border [&_.recharts-sector[stroke=\'#fff\']]:stroke-transparent [&_.recharts-sector]:outline-hidden [&_.recharts-surface]:outline-hidden',
+          // '[&_.recharts-dot[fill=\'#fff\']]:fill-(--line-color)',
+          // '[&_.recharts-active-dot>.recharts-dot]:stroke-fg/10',
+          // '[&_.recharts-surface_g]:focus:outline-hidden',
           className,
         )}
         {...props}

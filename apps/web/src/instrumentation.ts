@@ -1,7 +1,7 @@
-import type { Instrumentation } from 'next'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME } from '@/core/constants/global'
 import { Logger } from '@/core/utils/logger'
+import type { Instrumentation } from 'next'
 
 /**
  * Instrumentation is the process of using code to integrate monitoring and logging tools into your application.

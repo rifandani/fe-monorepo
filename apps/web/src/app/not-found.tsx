@@ -1,7 +1,7 @@
-import { getTranslations } from 'next-intl/server'
-import { cookies } from 'next/headers'
 import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
 import { Link } from '@/core/components/ui'
+import { getTranslations } from 'next-intl/server'
+import { cookies } from 'next/headers'
 
 export default async function NotFound() {
   const t = await getTranslations()

@@ -1,18 +1,17 @@
 'use client'
 
+import { Separator } from './separator'
+import type { ToggleProps } from './toggle'
+import { Toggle } from './toggle'
+import { cx } from '@/core/utils/primitive'
+import { createContext, use } from 'react'
 import type {
   GroupProps,
   SeparatorProps,
   ToolbarProps as ToolbarPrimitiveProps,
 } from 'react-aria-components'
-
-import type { ToggleProps } from './toggle'
-import { createContext, use } from 'react'
 import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
-import { Separator } from './separator'
-import { Toggle } from './toggle'
 
 const ToolbarContext = createContext<ToolbarProps>({
   orientation: 'horizontal',

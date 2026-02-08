@@ -1,9 +1,6 @@
 'use client'
 
-import type { ComponentProps } from 'react'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
-import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import {
 
   Chart,
@@ -12,6 +9,9 @@ import {
   DEFAULT_COLORS,
   getColorValue,
 } from './chart'
+import type { ComponentProps } from 'react'
+import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 
 function sumNumericArray(arr: number[]): number {
   return arr.reduce((sum, num) => sum + num, 0)

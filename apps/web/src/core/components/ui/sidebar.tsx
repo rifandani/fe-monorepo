@@ -1,5 +1,13 @@
 'use client'
 
+import { Button } from './button'
+import { Link } from './link'
+import { Tooltip, TooltipContent } from './tooltip'
+import { SheetContent } from '@/core/components/ui/sheet'
+import { useIsMobile } from '@/core/hooks/use-mobile'
+import { cx } from '@/core/utils/primitive'
+import { ChevronDownIcon } from '@heroicons/react/24/solid'
+import { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   ButtonProps,
   DisclosureGroupProps,
@@ -9,8 +17,6 @@ import type {
   LinkRenderProps,
   SeparatorProps as SidebarSeparatorProps,
 } from 'react-aria-components'
-import { ChevronDownIcon } from '@heroicons/react/24/solid'
-import { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   composeRenderProps,
   Disclosure,
@@ -23,12 +29,6 @@ import {
   Button as Trigger,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { SheetContent } from '@/core/components/ui/sheet'
-import { useIsMobile } from '@/core/hooks/use-mobile'
-import { cx } from '@/core/utils/primitive'
-import { Button } from './button'
-import { Link } from './link'
-import { Tooltip, TooltipContent } from './tooltip'
 
 const SIDEBAR_WIDTH = '17rem'
 const SIDEBAR_WIDTH_DOCK = '3.25rem'

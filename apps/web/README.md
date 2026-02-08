@@ -186,7 +186,7 @@ A file that matches the [Sitemaps XML format](https://www.sitemaps.org/protocol.
 
 ### Structured Data (Rich Results)
 
-Structured data is a standardized format for providing information about a page and classifying the page content. Adding structured data can enable search results that are more engaging to users and might encourage them to interact more with our website, which are called ___rich results___. Structured data uses [schema.org](https://schema.org/) vocabulary with many different encodings, including RDFa, Microdata and [JSON-LD (JavaScript Object Notation for Linked Data)](https://json-ld.org/) format.
+Structured data is a standardized format for providing information about a page and classifying the page content. Adding structured data can enable search results that are more engaging to users and might encourage them to interact more with our website, which are called rich results. Structured data uses [schema.org](https://schema.org/) vocabulary with many different encodings, including RDFa, Microdata and [JSON-LD (JavaScript Object Notation for Linked Data)](https://json-ld.org/) format.
 
 To add structured data to a page, we can use the `JsonLd` component from `src/core/utils/seo.tsx` for each page. Make sure to adjust minimum the `title` and `description` to match the page content every time we add a new page.
 

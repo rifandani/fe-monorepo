@@ -1,10 +1,10 @@
 'use client'
 
+import { Label } from './field'
+import { cx } from '@/core/utils/primitive'
 import type { SwitchProps } from 'react-aria-components'
 import { Switch as SwitchPrimitive } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
-import { Label } from './field'
 
 export function Switch({ children, className, ...props }: SwitchProps) {
   return (

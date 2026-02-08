@@ -1,8 +1,8 @@
 'use client'
+import { Link } from './link'
+import { cx } from '@/core/utils/primitive'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
-import { cx } from '@/core/utils/primitive'
-import { Link } from './link'
 
 export function Text({ className, ...props }: React.ComponentPropsWithoutRef<'p'>) {
   return (

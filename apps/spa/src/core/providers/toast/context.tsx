@@ -1,7 +1,7 @@
-import type { Toaster } from 'sonner'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { useResetState } from '@workspace/core/hooks/use-reset-state'
-import React from 'react'
+import * as React from 'react'
+import type { Toaster } from 'sonner'
 import { twJoin } from 'tailwind-merge'
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>

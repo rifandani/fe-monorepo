@@ -33,13 +33,12 @@ export function useMemoizedFn<T extends noop>(fn: T) {
   // https://github.com/alibaba/hooks/issues/728
   fnRef.current = useMemo(() => fn, [fn])
 
-  const memoizedFn = useRef<PickFunction<T>>(null)
-  if (!memoizedFn.current) {
-    // eslint-disable-next-line react-hooks/unsupported-syntax
-    memoizedFn.current = function (this, ...args) {
+  const memoizedFnRef = useRef<PickFunction<T>>(null)
+  if (!memoizedFnRef.current) {
+    memoizedFnRef.current = function (this, ...args) {
       return fnRef.current.apply(this, args)
     }
   }
 
-  return memoizedFn.current as T
+  return memoizedFnRef.current as T
 }

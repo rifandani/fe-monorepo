@@ -1,5 +1,5 @@
-import type { ComponentPropsWithoutRef } from 'react'
 import Feather from '@expo/vector-icons/Feather'
+import type { ComponentPropsWithoutRef } from 'react'
 import { ListItem } from 'tamagui'
 
 export function ProfileListItem(props: ComponentPropsWithoutRef<typeof ListItem>) {

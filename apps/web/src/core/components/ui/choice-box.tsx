@@ -1,13 +1,13 @@
 'use client'
 
-import type { GridListItemProps, GridListProps, TextProps } from 'react-aria-components'
-import type { VariantProps } from 'tailwind-variants'
+import { Checkbox } from './checkbox'
+import { cx } from '@/core/utils/primitive'
 import { createContext, use } from 'react'
+import type { GridListItemProps, GridListProps, TextProps } from 'react-aria-components'
 import { composeRenderProps, GridList, GridListItem, Text } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+import type { VariantProps } from 'tailwind-variants'
 import { tv } from 'tailwind-variants'
-import { cx } from '@/core/utils/primitive'
-import { Checkbox } from './checkbox'
 
 const choiceBoxStyles = tv({
   base: 'grid [--gutter:--spacing(4)]',

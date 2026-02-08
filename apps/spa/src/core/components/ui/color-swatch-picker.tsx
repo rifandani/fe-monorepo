@@ -1,9 +1,9 @@
+import { cx } from '@/core/utils/primitive'
 import type { ColorSwatchPickerItemProps, ColorSwatchPickerProps } from 'react-aria-components'
 import {
   ColorSwatchPicker as PrimitiveColorSwatchPicker,
   ColorSwatchPickerItem as PrimitiveColorSwatchPickerItem,
 } from 'react-aria-components'
-import { cx } from '@/core/utils/primitive'
 
 export function ColorSwatchPicker({ className, ...props }: ColorSwatchPickerProps) {
   return <PrimitiveColorSwatchPicker className={cx('flex flex-wrap gap-2', className)} {...props} />

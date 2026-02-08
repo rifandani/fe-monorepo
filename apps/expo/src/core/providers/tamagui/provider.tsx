@@ -1,12 +1,12 @@
+import config from '../../../../tamagui.config'
+import { useAppStore } from '@/core/hooks/use-app-store'
 import type { Theme } from '@react-navigation/native'
-import type { TamaguiProviderProps } from 'tamagui'
 import { ThemeProvider } from '@react-navigation/native'
 import { StatusBar } from 'expo-status-bar'
 import { useMemo } from 'react'
 import { Platform, useColorScheme } from 'react-native'
+import type { TamaguiProviderProps } from 'tamagui'
 import { TamaguiProvider, useTheme } from 'tamagui'
-import { useAppStore } from '@/core/hooks/use-app-store'
-import config from '../../../../tamagui.config'
 
 function NavigationThemeProvider({ children }: { children: React.ReactNode }) {
   const tamaguiTheme = useTheme()

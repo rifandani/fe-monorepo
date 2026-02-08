@@ -1,13 +1,13 @@
 'use client'
 
+import { fieldStyles } from '@/core/components/ui/field'
+import { cx } from '@/core/utils/primitive'
 import type { ColorSliderProps, SliderOutputProps, SliderTrackProps } from 'react-aria-components'
 import {
   ColorSlider as PrimitiveColorSlider,
   SliderOutput,
   SliderTrack,
 } from 'react-aria-components'
-import { fieldStyles } from '@/core/components/ui/field'
-import { cx } from '@/core/utils/primitive'
 
 export function ColorSlider({ className, ...props }: ColorSliderProps) {
   return (

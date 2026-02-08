@@ -1,9 +1,9 @@
 'use client'
 
+import { cx } from '@/core/utils/primitive'
 import type { TextAreaProps } from 'react-aria-components'
 import { TextArea } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
 
 export function Textarea({ className, ...props }: TextAreaProps) {
   return (

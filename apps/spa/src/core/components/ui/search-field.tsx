@@ -1,10 +1,10 @@
-import type { InputProps, SearchFieldProps } from 'react-aria-components'
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
-import { twJoin } from 'tailwind-merge'
+import { Input, InputGroup } from './input'
 import { fieldStyles } from '@/core/components/ui/field'
 import { cx } from '@/core/utils/primitive'
-import { Input, InputGroup } from './input'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
+import type { InputProps, SearchFieldProps } from 'react-aria-components'
+import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 
 export function SearchField({ className, ...props }: SearchFieldProps) {
   return (

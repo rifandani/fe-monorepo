@@ -1,8 +1,8 @@
-import type { LocaleDictLanguage } from '@workspace/core/libs/i18n/init'
-import type { Selection } from 'react-stately'
-import { Icon } from '@iconify/react'
 import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import { useTranslation } from '@/core/providers/i18n/context'
+import { Icon } from '@iconify/react'
+import type { LocaleDictLanguage } from '@workspace/core/libs/i18n/init'
+import type { Selection } from 'react-stately'
 
 export function LanguageToggle() {
   const { t, setLocale, locale } = useTranslation()

@@ -1,10 +1,10 @@
+import { queryClient } from '@/core/providers/query/client'
+import { router } from '@/core/providers/router/client'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { FormDevtoolsPanel } from '@tanstack/react-form-devtools'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import React from 'react'
-import { queryClient } from '@/core/providers/query/client'
-import { router } from '@/core/providers/router/client'
+import * as React from 'react'
 
 export function Devtools() {
   return (

@@ -1,9 +1,9 @@
-import { Icon } from '@iconify/react'
-import { useNavigate } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
 import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui/menu'
 import { useTranslation } from '@/core/providers/i18n/context'
+import { Icon } from '@iconify/react'
+import { useNavigate } from '@tanstack/react-router'
 
 export function ProfileMenu() {
   const { t } = useTranslation()

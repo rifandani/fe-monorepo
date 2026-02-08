@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker'
 import type { AuthSessionSchema, AuthUserSchema } from '@workspace/core/apis/better-auth'
 import type { FetchHandlerResult } from 'next/experimental/testmode/playwright.js'
-import { faker } from '@faker-js/faker'
 
 export type FetchHandler = (
   request: Request,

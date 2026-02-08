@@ -1,7 +1,7 @@
-import type { EvaluationDetails, FlagValue, Hook, HookContext, HookHints } from '@openfeature/react-sdk'
-import { FlagsmithClientProvider } from '@openfeature/flagsmith-client-provider'
-import { logger } from '@workspace/core/utils/logger'
 import { ENV } from '@/core/constants/env'
+import { FlagsmithClientProvider } from '@openfeature/flagsmith-client-provider'
+import type { EvaluationDetails, FlagValue, Hook, HookContext, HookHints } from '@openfeature/react-sdk'
+import { logger } from '@workspace/core/utils/logger'
 
 // const flagConfig = {
 //   'new-message': {

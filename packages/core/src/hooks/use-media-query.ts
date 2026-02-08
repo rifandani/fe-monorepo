@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 /**
  * Easily retrieve media dimensions with this Hook React which also works onResize.

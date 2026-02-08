@@ -1,7 +1,7 @@
+import { ColorThumb } from './color-thumb'
+import { cx } from '@/core/utils/primitive'
 import type { ColorAreaProps } from 'react-aria-components'
 import { ColorArea as ColorAreaPrimitive } from 'react-aria-components'
-import { cx } from '@/core/utils/primitive'
-import { ColorThumb } from './color-thumb'
 
 export function ColorArea({ className, ...props }: ColorAreaProps) {
   return (

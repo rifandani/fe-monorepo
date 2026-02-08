@@ -1,12 +1,12 @@
 'use client'
 
+import { loginAction } from '@/auth/actions/auth'
+import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { authSignInEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { useTranslations } from 'next-intl'
 import { Controller } from 'react-hook-form'
-import { loginAction } from '@/auth/actions/auth'
-import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 
 export function LoginForm() {
   const t = useTranslations()
@@ -27,7 +27,7 @@ export function LoginForm() {
         name="email"
         render={({
           field: { name, value, onChange, onBlur },
-          fieldState: { error, invalid, },
+          fieldState: { error, invalid },
         }) => (
           <TextField
             className="group/username pt-4"

@@ -1,4 +1,3 @@
-import type { z } from 'zod'
 import {
   bigint,
   boolean,
@@ -9,6 +8,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core'
 import { createSelectSchema } from 'drizzle-zod'
+import type { z } from 'zod'
 
 // #region COMMON
 const timestamps = {

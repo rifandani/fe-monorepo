@@ -1,6 +1,3 @@
-import { useStringFlagValue } from '@openfeature/react-sdk'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { toast } from 'sonner'
 import { validateAuthUser } from '@/auth/utils/storage'
 import { LanguageToggle } from '@/core/components/language-toggle'
 import { ProfileMenu } from '@/core/components/profile-menu'
@@ -8,6 +5,9 @@ import { ThemeToggle } from '@/core/components/theme-toggle'
 import { useSeo } from '@/core/hooks/use-seo'
 import { useTranslation } from '@/core/providers/i18n/context'
 import { reportWebVitals } from '@/core/utils/web-vitals'
+import { useStringFlagValue } from '@openfeature/react-sdk'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ location }) => {

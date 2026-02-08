@@ -1,10 +1,15 @@
+import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
+import { PopoverContent } from './popover'
+import { fieldStyles } from '@/core/components/ui/field'
+import { Input } from '@/core/components/ui/input'
+import { cx } from '@/core/utils/primitive'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import type {
   ComboBoxProps as ComboboxPrimitiveProps,
   InputProps,
   ListBoxProps,
   PopoverProps,
 } from 'react-aria-components'
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import {
   Button,
   ComboBoxContext,
@@ -12,11 +17,6 @@ import {
   ListBox,
   useSlottedContext,
 } from 'react-aria-components'
-import { fieldStyles } from '@/core/components/ui/field'
-import { Input } from '@/core/components/ui/input'
-import { cx } from '@/core/utils/primitive'
-import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
-import { PopoverContent } from './popover'
 
 interface ComboBoxProps<T extends object> extends Omit<ComboboxPrimitiveProps<T>, 'children'> {
   children: React.ReactNode

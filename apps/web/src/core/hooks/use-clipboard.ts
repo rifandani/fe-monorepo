@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react'
 
 export function useClipboard() {
   const [copied, setCopied] = useState(false)
@@ -8,11 +8,14 @@ export function useClipboard() {
     try {
       await navigator.clipboard.writeText(value)
       setCopied(true)
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+      if (timeoutRef.current)
+        window.clearTimeout(timeoutRef.current)
       timeoutRef.current = window.setTimeout(() => setCopied(false), 2000)
       return true
-    } catch {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+    }
+    catch {
+      if (timeoutRef.current)
+        window.clearTimeout(timeoutRef.current)
       timeoutRef.current = null
       setCopied(false)
       return false
@@ -21,7 +24,8 @@ export function useClipboard() {
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+      if (timeoutRef.current)
+        window.clearTimeout(timeoutRef.current)
     }
   }, [])
 

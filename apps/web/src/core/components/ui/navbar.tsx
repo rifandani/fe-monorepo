@@ -1,17 +1,17 @@
 'use client'
 
-import type { LinkProps } from 'react-aria-components'
 import type { ButtonProps } from './button'
-import { Bars2Icon } from '@heroicons/react/20/solid'
-import { LayoutGroup, motion } from 'motion/react'
-import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
-import { Link } from 'react-aria-components'
-import { twJoin, twMerge } from 'tailwind-merge'
-import { useIsMobile } from '@/core/hooks/use-mobile'
-import { cx } from '@/core/utils/primitive'
 import { Button } from './button'
 import { Separator } from './separator'
 import { Sheet, SheetBody, SheetContent } from './sheet'
+import { useIsMobile } from '@/core/hooks/use-mobile'
+import { cx } from '@/core/utils/primitive'
+import { Bars2Icon } from '@heroicons/react/20/solid'
+import { LayoutGroup, motion } from 'motion/react'
+import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
+import type { LinkProps } from 'react-aria-components'
+import { Link } from 'react-aria-components'
+import { twJoin, twMerge } from 'tailwind-merge'
 
 interface NavbarContextProps {
   open: boolean

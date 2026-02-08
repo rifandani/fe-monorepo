@@ -1,9 +1,5 @@
 'use client'
-import type { ComponentProps } from 'react'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
-import { Fragment, useId, useMemo } from 'react'
-import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
 import {
 
   CartesianGrid,
@@ -19,6 +15,10 @@ import {
   XAxis,
   YAxis,
 } from './chart'
+import type { ComponentProps } from 'react'
+import { Fragment, useId, useMemo } from 'react'
+import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 
 const slugRegExp = /[^a-z0-9]/gi
 

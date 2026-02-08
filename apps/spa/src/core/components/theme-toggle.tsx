@@ -1,11 +1,11 @@
 'use client'
 
-import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
-import type { Selection } from 'react-stately'
-import { Icon } from '@iconify/react'
-import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import { useTranslation } from '@/core/providers/i18n/context'
+import { Icon } from '@iconify/react'
+import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
+import { useColorMode } from '@workspace/core/hooks/use-color-mode'
+import type { Selection } from 'react-stately'
 
 export function ThemeToggle() {
   const { t } = useTranslation()

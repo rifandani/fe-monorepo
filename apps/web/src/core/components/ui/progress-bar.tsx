@@ -1,10 +1,10 @@
 'use client'
 
-import type { ProgressBarProps, ProgressBarRenderProps } from 'react-aria-components'
+import { cx } from '@/core/utils/primitive'
 import { createContext, use } from 'react'
+import type { ProgressBarProps, ProgressBarRenderProps } from 'react-aria-components'
 import { ProgressBar as ProgressBarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
 
 const ProgressBarContext = createContext<ProgressBarRenderProps | null>(null)
 

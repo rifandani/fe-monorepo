@@ -1,12 +1,12 @@
 'use client'
 
+import { registerAction } from '@/auth/actions/auth'
+import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { useTranslations } from 'next-intl'
 import { Controller } from 'react-hook-form'
-import { registerAction } from '@/auth/actions/auth'
-import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 
 export function RegisterForm() {
   const t = useTranslations()

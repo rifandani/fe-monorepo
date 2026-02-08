@@ -1,7 +1,7 @@
 'use client'
 
-import type { PropsWithChildren } from 'react'
 import { useRouter } from 'next/navigation'
+import type { PropsWithChildren } from 'react'
 import { I18nProvider, RouterProvider } from 'react-aria-components'
 
 // Configure the type of the `routerOptions` prop on all React Aria components.
@@ -16,7 +16,7 @@ export function AppAriaProvider({ locale, children}: PropsWithChildren<{ locale:
 
   return (
     <I18nProvider locale={locale}>
-      <RouterProvider navigate={router.push}>
+      <RouterProvider navigate={(path, routerOptions) => router.push(path as __next_route_internal_types__.RouteImpl<string>, routerOptions)}>
         {children}
       </RouterProvider>
     </I18nProvider>

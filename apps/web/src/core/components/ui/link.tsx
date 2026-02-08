@@ -1,8 +1,8 @@
 'use client'
 
+import { cx } from '@/core/utils/primitive'
 import type { LinkProps as LinkPrimitiveProps } from 'react-aria-components'
 import { Link as LinkPrimitive } from 'react-aria-components'
-import { cx } from '@/core/utils/primitive'
 
 export interface LinkProps extends LinkPrimitiveProps {
   ref?: React.RefObject<HTMLAnchorElement>

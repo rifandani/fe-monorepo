@@ -1,4 +1,6 @@
 import 'server-only'
+
+import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 import type { AnyValue, AnyValueMap, Logger as ApiLogsLogger } from '@opentelemetry/api-logs'
 import { SeverityNumber } from '@opentelemetry/api-logs'
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http'
@@ -12,7 +14,6 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions'
-import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 
 const COLOR = {
   RED: '\x1B[31m',

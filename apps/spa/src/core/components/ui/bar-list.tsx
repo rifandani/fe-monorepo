@@ -1,9 +1,9 @@
 'use client'
 
+import { Link } from './link'
 import { useMemo } from 'react'
 import { Button } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { Link } from './link'
 
 type Bar<T> = T & {
   key?: string

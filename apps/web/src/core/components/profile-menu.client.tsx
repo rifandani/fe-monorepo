@@ -1,12 +1,12 @@
 'use client'
 
+import { logoutAction } from '@/auth/actions/auth'
+import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui'
+import { Avatar } from '@/core/components/ui/avatar'
 import { Icon } from '@iconify/react'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import React from 'react'
-import { logoutAction } from '@/auth/actions/auth'
-import { Avatar } from '@/core/components/ui/avatar'
-import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui'
+import * as React from 'react'
 
 export function ProfileMenu({ username }: { username: string }) {
   const t = useTranslations()
@@ -18,7 +18,7 @@ export function ProfileMenu({ username }: { username: string }) {
         <Avatar initials={username.slice(0, 2).toUpperCase()} />
       </MenuTrigger>
 
-        <MenuContent
+      <MenuContent
         onAction={async (key) => {
           const currentKey = key as 'profile' | 'settings' | 'logout'
 

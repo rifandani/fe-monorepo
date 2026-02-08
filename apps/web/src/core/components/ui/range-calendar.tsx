@@ -1,6 +1,7 @@
 'use client'
-import type { DateValue, RangeCalendarProps } from 'react-aria-components'
+import { CalendarGridHeader, CalendarHeader } from './calendar'
 import { getLocalTimeZone, today } from '@internationalized/date'
+import type { DateValue, RangeCalendarProps } from 'react-aria-components'
 import {
   CalendarCell,
   CalendarGrid,
@@ -8,7 +9,6 @@ import {
   RangeCalendar as RangeCalendarPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { CalendarGridHeader, CalendarHeader } from './calendar'
 
 export function RangeCalendar<T extends DateValue>({
   className,

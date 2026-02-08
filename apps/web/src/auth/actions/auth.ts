@@ -1,15 +1,15 @@
 'use server'
 
+import { auth } from '@/auth/utils/auth'
 import type { ActionResult } from '@/core/utils/action'
+import { actionClient } from '@/core/utils/action'
+import { serverErrorMapper } from '@/core/utils/error'
+import { recordSpan } from '@/core/utils/telemetry'
 import { metrics, trace } from '@opentelemetry/api'
 import { authSignInEmailRequestSchema, authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { tryit } from 'radashi'
-import { auth } from '@/auth/utils/auth'
-import { actionClient } from '@/core/utils/action'
-import { serverErrorMapper } from '@/core/utils/error'
-import { recordSpan } from '@/core/utils/telemetry'
 
 const meter = metrics.getMeter('auth.action')
 

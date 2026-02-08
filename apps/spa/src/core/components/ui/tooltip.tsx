@@ -1,5 +1,4 @@
 import type { TooltipProps as TooltipPrimitiveProps } from 'react-aria-components'
-import type { VariantProps } from 'tailwind-variants'
 import {
   Button,
   composeRenderProps,
@@ -8,6 +7,7 @@ import {
   TooltipTrigger as TooltipTriggerPrimitive,
 } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
+import type { VariantProps } from 'tailwind-variants'
 import { tv } from 'tailwind-variants'
 
 const tooltipStyles = tv({

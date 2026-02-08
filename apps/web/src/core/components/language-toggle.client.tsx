@@ -1,14 +1,14 @@
 'use client'
 
-import type { Selection } from 'react-stately'
+import { setUserLocaleAction } from '@/core/actions/i18n'
+import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import type { I18NLocale } from '@/core/constants/i18n'
 import { Icon } from '@iconify/react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
-import React from 'react'
+import * as React from 'react'
+import type { Selection } from 'react-stately'
 import { toast } from 'sonner'
-import { setUserLocaleAction } from '@/core/actions/i18n'
-import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 
 export function LanguageToggle() {
   const locale = useLocale()

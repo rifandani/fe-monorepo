@@ -1,3 +1,6 @@
+import { useAuthLogin } from '@/auth/hooks/use-auth-login'
+import { BaseButton } from '@/core/components/button/base-button'
+import { useAppStore } from '@/core/hooks/use-app-store'
 import Feather from '@expo/vector-icons/Feather'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
@@ -5,9 +8,6 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Checkbox, Form, Input, Label, Paragraph, Spinner, XStack } from 'tamagui'
-import { useAuthLogin } from '@/auth/hooks/use-auth-login'
-import { BaseButton } from '@/core/components/button/base-button'
-import { useAppStore } from '@/core/hooks/use-app-store'
 
 function RememberMeCheckbox() {
   const { t } = useTranslation()

@@ -1,4 +1,8 @@
 import '@/core/styles/globals.css'
+
+import { auth } from '@/auth/utils/auth'
+import { AppProviders } from '@/core/providers/providers.client'
+import { createMetadata } from '@/core/utils/seo'
 import type { Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
@@ -7,9 +11,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { headers } from 'next/headers'
 import { connection } from 'next/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { auth } from '@/auth/utils/auth'
-import { AppProviders } from '@/core/providers/providers.client'
-import { createMetadata } from '@/core/utils/seo'
 
 const fontSans = Geist({
   subsets: ['latin'],

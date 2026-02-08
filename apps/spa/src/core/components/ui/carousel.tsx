@@ -1,11 +1,11 @@
-import type { UseEmblaCarouselType } from 'embla-carousel-react'
 import type { ButtonProps } from './button'
+import { Button } from './button'
+import { cx } from '@/core/utils/primitive'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import type { UseEmblaCarouselType } from 'embla-carousel-react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
-import { Button } from './button'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>

@@ -1,8 +1,8 @@
 'use client'
 
+import { ToastContext, useCreateToastContext } from './context.client'
 import type { PropsWithChildren } from 'react'
 import { Toaster } from 'sonner'
-import { ToastContext, useCreateToastContext } from './context.client'
 
 export function AppToastProvider({ children }: PropsWithChildren) {
   const value = useCreateToastContext()

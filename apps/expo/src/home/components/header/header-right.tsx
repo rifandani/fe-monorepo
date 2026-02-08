@@ -1,12 +1,12 @@
+import { BaseButton } from '@/core/components/button/base-button'
+import { BaseSheet } from '@/core/components/sheet/base-sheet'
 import type { BaseSheetState } from '@/core/components/sheet/types'
+import { useAppStore } from '@/core/hooks/use-app-store'
 import type { HeaderButtonProps } from '@/core/types/navigation'
 import Feather from '@expo/vector-icons/Feather'
 import { useRouter } from 'expo-router'
-import React from 'react'
+import * as React from 'react'
 import { ListItem, Separator, YGroup } from 'tamagui'
-import { BaseButton } from '@/core/components/button/base-button'
-import { BaseSheet } from '@/core/components/sheet/base-sheet'
-import { useAppStore } from '@/core/hooks/use-app-store'
 
 export function HeaderRight(_: HeaderButtonProps) {
   const router = useRouter()

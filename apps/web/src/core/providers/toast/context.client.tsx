@@ -1,10 +1,10 @@
 'use client'
 
-import type { Toaster } from 'sonner'
 import { useResetState } from '@workspace/core/hooks/use-reset-state'
 import { useTheme } from 'next-themes'
-import React from 'react'
-import { twJoin } from 'tailwind-merge';
+import * as React from 'react'
+import type { Toaster } from 'sonner'
+import { twJoin } from 'tailwind-merge'
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>
 type ToasterProps = React.ComponentPropsWithoutRef<typeof Toaster>

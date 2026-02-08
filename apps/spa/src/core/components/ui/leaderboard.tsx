@@ -1,7 +1,7 @@
+import { cx } from '@/core/utils/primitive'
 import type { LabelProps, ProgressBarProps } from 'react-aria-components'
 import { Label, ProgressBar } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
 
 export function Leaderboard({ className, ...props }: React.ComponentProps<'div'>) {
   return (

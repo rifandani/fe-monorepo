@@ -1,6 +1,6 @@
+import { SERVICE_NAME } from '@/core/constants/global'
 import type { Attributes, Span, SpanContext, Tracer } from '@opentelemetry/api'
 import { context, SpanStatusCode, trace } from '@opentelemetry/api'
-import { SERVICE_NAME } from '@/core/constants/global'
 
 const noopSpanContext: SpanContext = {
   traceId: '',

@@ -1,10 +1,10 @@
-import type { TabPanelProps, TabsProps } from 'react-aria-components'
-import type { TabListProps } from '@/core/components/ui/tabs'
-import { TabsContext, useSlottedContext } from 'react-aria-components'
 import { Button } from '@/core/components/ui/button'
+import type { TabListProps } from '@/core/components/ui/tabs'
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@/core/components/ui/tabs'
 import { useClipboard } from '@/core/hooks/use-clipboard'
 import { cx } from '@/core/utils/primitive'
+import type { TabPanelProps, TabsProps } from 'react-aria-components'
+import { TabsContext, useSlottedContext } from 'react-aria-components'
 
 export function Snippet({ className, ...props }: TabsProps) {
   return (
