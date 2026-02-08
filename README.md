@@ -5,7 +5,6 @@
 ## 🎯 Todo
 
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767)
-- [ ] fix `eslint-plugin-better-tailwindcss` is not working since we use `linker = "isolated"` in `bunfig.toml`
 - [ ] consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
 - [ ] consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
 - [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo

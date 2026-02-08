@@ -1,45 +1,9 @@
 import antfu from '@antfu/eslint-config'
 import nextPlugin from '@next/eslint-plugin-next'
 import pluginRouter from '@tanstack/eslint-plugin-router'
-// import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
 import depend from 'eslint-plugin-depend'
 import expoPlugin from 'eslint-plugin-expo'
 import globals from 'globals'
-
-/**
- * FIXME: Can't resolve 'tailwindcss/package.json'
- */
-// function getBetterTailwindConfig(appName) {
-//   return {
-//     name: `better-tailwindcss:${appName}`,
-//     files: [`apps/${appName}/**/*.{jsx,tsx}`],
-//     languageOptions: {
-//       parserOptions: {
-//         ecmaFeatures: {
-//           jsx: true,
-//         },
-//       },
-//     },
-//     plugins: {
-//       'better-tailwindcss': eslintPluginBetterTailwindcss,
-//     },
-//     rules: {
-//       // enable all recommended rules to report a warning
-//       ...eslintPluginBetterTailwindcss.configs['recommended-warn'].rules,
-//       // enable all recommended rules to report an error
-//       ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
-
-//       // or configure rules individually
-//       'better-tailwindcss/no-unregistered-classes': ['warn'],
-//     },
-//     // it already handle the default callees (clsx, ctl, cva, cx, cn, twMerge, twJoin)
-//     settings: {
-//       'better-tailwindcss': {
-//         entryPoint: `./apps/${appName}/src/core/styles/globals.css`,
-//       },
-//     },
-//   }
-// }
 
 export default antfu(
   {
@@ -128,10 +92,7 @@ export default antfu(
       '**/tailwind.config.js',
       '**/routeTree.gen.ts',
       '**/*.queries.ts',
-      // '**/*.md',
-      // '**/*.json',
       '.vscode/**',
-      '.github/chatmodes/**',
       '.github/**',
       '.cursor/commands/**',
       '.agents/skills/**',
@@ -146,8 +107,6 @@ export default antfu(
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...depend.configs['flat/recommended'],
   },
-  // getBetterTailwindConfig('web'),
-  // getBetterTailwindConfig('spa'),
   {
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...nextPlugin.configs.recommended,

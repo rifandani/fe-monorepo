@@ -19,7 +19,15 @@ export function Entry() {
             <AppI18nProvider>
               <AppToastProvider>
                 <FlagsProvider>
-                  <Suspense name={TRACER_REACT_ENTRY} fallback={<Loader className="size-4.5" variant="spin" />}>
+                  <Suspense
+                    name={TRACER_REACT_ENTRY}
+                    fallback={(
+                      <Loader
+                        className="size-4.5"
+                        variant="spin"
+                      />
+                    )}
+                  >
                     {/* Router entry point */}
                     <AppRouterProvider />
 

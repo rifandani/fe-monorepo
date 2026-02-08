@@ -41,7 +41,6 @@
     "@tanstack/eslint-plugin-router": "1.155.0",
     "@workspace/typescript-config": "workspace:*",
     "eslint": "9.39.2",
-    "eslint-plugin-better-tailwindcss": "4.1.1",
     "eslint-plugin-depend": "1.4.0",
     "eslint-plugin-expo": "1.0.0",
     "eslint-plugin-format": "1.4.0",
