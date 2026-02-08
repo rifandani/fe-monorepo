@@ -105,7 +105,6 @@ export default antfu(
       }],
     },
 
-    // `.eslintignore` is no longer supported in Flat config, use `ignores` instead
     ignores: [
       '**/fixtures',
       '**/node_modules/**',
@@ -127,6 +126,7 @@ export default antfu(
       '.vscode/**',
       '.github/chatmodes/**',
       '.cursor/commands/**',
+      '.agents/skills/**',
       '.husky/**',
       'babel.config.js',
       'commitlint.config.js',

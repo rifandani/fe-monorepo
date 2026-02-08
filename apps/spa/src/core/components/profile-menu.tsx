@@ -13,7 +13,7 @@ export function ProfileMenu() {
   return (
     <Menu>
       <Menu.Trigger>
-        <Avatar initials={user?.username.slice(0, 2).toUpperCase()} />
+        <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? '??'} />
       </Menu.Trigger>
 
       <Menu.Content
