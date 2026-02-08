@@ -1,12 +1,8 @@
-'use client'
-
 import type { ComponentProps } from 'react'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import type { CurveType } from 'recharts/types/shape/Curve'
 import type { BaseChartProps } from './chart'
-import { Fragment, useId } from 'react'
+import { Fragment, useId, useMemo } from 'react'
 import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
-import { twMerge } from 'tailwind-merge'
 import {
 
   CartesianGrid,
@@ -23,12 +19,40 @@ import {
   YAxis,
 } from './chart'
 
-interface AreaChartProps<TValue extends ValueType, TName extends NameType>
+const slugRegExp = /[^a-z0-9]/gi
+
+const fillNone = <stop stopColor="currentColor" stopOpacity={0} />
+
+const fillGradientEnd = <stop offset="95%" stopColor="currentColor" stopOpacity={0} />
+
+function getFillContent({
+  fillType,
+  stopOpacity,
+}: {
+  fillType: AreaChartProps<any, any>['fillType']
+  stopOpacity: number
+}): React.ReactNode {
+  switch (fillType) {
+    case 'none':
+      return fillNone
+    case 'gradient':
+      return (
+        <>
+          <stop offset="5%" stopColor="currentColor" stopOpacity={stopOpacity} />
+          {fillGradientEnd}
+        </>
+      )
+    default:
+      return <stop stopColor="currentColor" stopOpacity={stopOpacity} />
+  }
+}
+
+export interface AreaChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {
   chartProps?: Omit<ComponentProps<typeof AreaChartPrimitive>, 'data' | 'stackOffset'>
+  areaProps?: Partial<ComponentProps<typeof Area>>
   connectNulls?: boolean
   fillType?: 'gradient' | 'solid' | 'none'
-  lineType?: CurveType
 }
 
 export function AreaChart<TValue extends ValueType, TName extends NameType>({
@@ -37,11 +61,12 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
   colors = DEFAULT_COLORS,
   connectNulls = false,
   type = 'default',
-  className,
 
   fillType = 'gradient',
   config,
   children,
+
+  areaProps,
 
   // Components
   tooltip = true,
@@ -66,48 +91,21 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
   yAxisProps,
 
   hideGridLines = false,
-  lineType = 'linear',
   chartProps,
   ...props
 }: AreaChartProps<TValue, TName>) {
-  const categoryColors = constructCategoryColors(Object.keys(config), colors)
+  const configKeys = useMemo(() => Object.keys(config), [config])
+  const categoryColors = useMemo(
+    () => constructCategoryColors(configKeys, colors),
+    [configKeys, colors],
+  )
   const stacked = type === 'stacked' || type === 'percent'
   const areaId = useId()
 
-  const getFillContent = ({
-    fillType,
-    activeLegend,
-    category,
-  }: {
-    fillType: AreaChartProps<TValue, TName>['fillType']
-    activeLegend: string | null
-    category: string
-  }) => {
-    const stopOpacity = activeLegend && activeLegend !== category ? 0.1 : 0.5
-
-    switch (fillType) {
-      case 'none':
-        return <stop stopColor="currentColor" stopOpacity={0} />
-      case 'gradient':
-        return (
-          <>
-            <stop offset="5%" stopColor="currentColor" stopOpacity={stopOpacity} />
-            <stop offset="95%" stopColor="currentColor" stopOpacity={0} />
-          </>
-        )
-      default:
-        return <stop stopColor="currentColor" stopOpacity={stopOpacity} />
-    }
-  }
+  const configEntries = useMemo(() => Object.entries(config), [config])
 
   return (
-    <Chart
-      className={twMerge('w-full', className)}
-      config={config}
-      data={data}
-      dataKey={dataKey}
-      {...props}
-    >
+    <Chart config={config} data={data} dataKey={dataKey} {...props}>
       {({ onLegendSelect, selectedLegend }) => (
         <AreaChartPrimitive
           onClick={() => {
@@ -148,58 +146,64 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === 'boolean' ? <ChartTooltipContent accessibilityLayer /> : tooltip
+                typeof tooltip === 'boolean'
+                  ? (
+                      <ChartTooltipContent
+                        {...{
+                          hideIndicator: tooltipProps?.hideIndicator,
+                          hideLabel: tooltipProps?.hideLabel,
+                          cursor: tooltipProps?.cursor,
+                          indicator: tooltipProps?.indicator,
+                          labelSeparator: tooltipProps?.labelSeparator,
+                          formatter: tooltipProps?.formatter,
+                          labelFormatter: tooltipProps?.labelFormatter,
+                        }}
+                        accessibilityLayer
+                      />
+                    )
+                  : (
+                      tooltip
+                    )
               }
               {...tooltipProps}
             />
           )}
 
-          {Object.entries(config).map(([category, values]) => {
-            const categoryId = `${areaId}-${category.replace(/[^a-z0-9]/gi, '')}`
+          {!children
+            ? configEntries.map(([category, values]) => {
+                const categoryId = `${areaId}-${category.replace(slugRegExp, '')}`
+                const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
+                const stopOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 0.5
+                const color = getColorValue(values.color || categoryColors.get(category))
 
-            const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
-
-            return (
-              <Fragment key={categoryId}>
-                <defs>
-                  <linearGradient
-                    style={{
-                      color: getColorValue(values.color || categoryColors.get(category)),
-                    }}
-                    id={categoryId}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    {getFillContent({
-                      fillType,
-                      activeLegend: selectedLegend,
-                      category,
-                    })}
-                  </linearGradient>
-                </defs>
-                <Area
-                  dot={false}
-                  name={category}
-                  type={lineType}
-                  dataKey={category}
-                  stroke={getColorValue(values.color || categoryColors.get(category))}
-                  style={{
-                    strokeWidth: 2,
-                    strokeOpacity,
-                  }}
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  isAnimationActive={true}
-                  connectNulls={connectNulls}
-                  stackId={stacked ? 'stack' : undefined}
-                  fill={`url(#${categoryId})`}
-                />
-              </Fragment>
-            )
-          })}
-          {children}
+                return (
+                  <Fragment key={categoryId}>
+                    <defs>
+                      <linearGradient style={{ color }} id={categoryId} x1="0" y1="0" x2="0" y2="1">
+                        {getFillContent({ fillType, stopOpacity })}
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      dot={false}
+                      name={category}
+                      dataKey={category}
+                      stroke={color}
+                      style={{
+                        strokeWidth: 2,
+                        strokeOpacity,
+                      }}
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      isAnimationActive={true}
+                      connectNulls={connectNulls}
+                      stackId={stacked ? 'stack' : undefined}
+                      fill={`url(#${categoryId})`}
+                      {...areaProps}
+                    />
+                  </Fragment>
+                )
+              })
+            : children}
         </AreaChartPrimitive>
       )}
     </Chart>

@@ -1,40 +1,40 @@
 'use client'
 
-import type { GroupProps, SeparatorProps, ToolbarProps } from 'react-aria-components'
+import type {
+  GroupProps,
+  SeparatorProps,
+  ToolbarProps as ToolbarPrimitiveProps,
+} from 'react-aria-components'
 
-import type { ToggleProps } from '@/core/components/ui/toggle'
+import type { ToggleProps } from './toggle'
 import { createContext, use } from 'react'
 import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
-import { Separator } from '@/core/components/ui/separator'
-import { Toggle } from '@/core/components/ui/toggle'
+import { cx } from '@/core/utils/primitive'
+import { Separator } from './separator'
+import { Toggle } from './toggle'
 
-const ToolbarContext = createContext<{ orientation?: ToolbarProps['orientation'] }>({
+const ToolbarContext = createContext<ToolbarProps>({
   orientation: 'horizontal',
+  isCircle: false,
 })
 
-function Toolbar({ orientation = 'horizontal', className, ...props }: ToolbarProps) {
+interface ToolbarProps extends ToolbarPrimitiveProps {
+  isCircle?: boolean
+}
+
+function Toolbar({ orientation = 'horizontal', isCircle, className, ...props }: ToolbarProps) {
   return (
-    <ToolbarContext value={{ orientation }}>
+    <ToolbarContext value={{ orientation, isCircle }}>
       <ToolbarPrimitive
         orientation={orientation}
         {...props}
         className={composeRenderProps(className, (className, { orientation }) =>
           twMerge(
-            `
-              group flex flex-row gap-2
-              [-ms-overflow-style:none]
-              [scrollbar-width:none]
-              [&::-webkit-scrollbar]:hidden
-            `,
+            'group inset-ring inset-ring-border inline-flex flex-row gap-1.5 bg-overlay p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            isCircle ? 'rounded-full' : 'rounded-lg',
             orientation === 'horizontal'
-              ? `
-                flex-row items-center
-                [-ms-overflow-style:none]
-                [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden
-              `
+              ? 'flex-row items-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
               : 'flex-col items-start',
             className,
           ))}
@@ -43,16 +43,16 @@ function Toolbar({ orientation = 'horizontal', className, ...props }: ToolbarPro
   )
 }
 
-const ToolbarGroupContext = createContext<{ isDisabled?: boolean }>({})
+const ToolbarGroupContext = createContext<{ isDisabled?: boolean, isCircle?: boolean }>({})
 
-type ToolbarGroupProps = GroupProps
+interface ToolbarGroupProps extends GroupProps {}
 function ToolbarGroup({ isDisabled, className, ...props }: ToolbarGroupProps) {
   return (
     <ToolbarGroupContext value={{ isDisabled }}>
       <Group
-        className={composeTailwindRenderProps(
+        className={cx(
+          'flex gap-1.5 group-orientation-vertical:flex-col group-orientation-vertical:items-start group-orientation-horizontal:items-center',
           className,
-          'flex gap-2 group-orientation-vertical:flex-col group-orientation-vertical:items-start group-orientation-horizontal:items-center',
         )}
         {...props}
       >
@@ -62,39 +62,51 @@ function ToolbarGroup({ isDisabled, className, ...props }: ToolbarGroupProps) {
   )
 }
 
-type ToggleItemProps = ToggleProps
+interface ToggleItemProps extends ToggleProps {}
+
 function ToolbarItem({
   isDisabled,
+  isCircle,
   size = 'sm',
   intent = 'outline',
   ref,
+  className,
   ...props
 }: ToggleItemProps) {
   const context = use(ToolbarGroupContext)
+  const { isCircle: contextCircle } = use(ToolbarContext)
   const effectiveIsDisabled = isDisabled || context.isDisabled
-
+  const effectiveIsCircle = isCircle || contextCircle
   return (
-    <Toggle intent={intent} size={size} ref={ref} isDisabled={effectiveIsDisabled} {...props} />
+    <Toggle
+      intent={intent}
+      size={size}
+      ref={ref}
+      data-slot="toolbar-item"
+      className={cx(
+        effectiveIsCircle ? 'rounded-full' : 'rounded-[calc(var(--radius-lg)-1px)]',
+        className,
+      )}
+      isDisabled={effectiveIsDisabled}
+      {...props}
+    />
   )
 }
 type ToolbarSeparatorProps = SeparatorProps
 function ToolbarSeparator({ className, ...props }: ToolbarSeparatorProps) {
   const { orientation } = use(ToolbarContext)
-  const effectiveOrientation = orientation === 'vertical' ? 'horizontal' : 'vertical'
+  const reverseOrientation = orientation === 'vertical' ? 'horizontal' : 'vertical'
   return (
     <Separator
-      orientation={effectiveOrientation}
-      className={twMerge(effectiveOrientation === 'vertical'
-        ? 'mx-1.5'
-        : `my-1.5 w-8`, className)}
+      orientation={reverseOrientation}
+      className={twMerge(
+        reverseOrientation === 'vertical' ? 'mx-0.5 h-6' : 'my-0.5 w-8',
+        className,
+      )}
       {...props}
     />
   )
 }
 
-Toolbar.Group = ToolbarGroup
-Toolbar.Separator = ToolbarSeparator
-Toolbar.Item = ToolbarItem
-
 export type { ToggleItemProps, ToolbarGroupProps, ToolbarProps, ToolbarSeparatorProps }
-export { Toolbar }
+export { Toolbar, ToolbarGroup, ToolbarItem, ToolbarSeparator }

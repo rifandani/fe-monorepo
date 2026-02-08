@@ -1,16 +1,11 @@
 'use client'
-
-import { composeRenderProps, Text, ToggleButton } from 'react-aria-components'
+import { composeRenderProps, ToggleButton } from 'react-aria-components'
 import { tv } from 'tailwind-variants'
-
 import { buttonStyles } from '@/core/components/ui/button'
+import { Text } from '@/core/components/ui/text'
 
 const showMoreStyles = tv({
-  base: `
-    text-sm leading-6
-    before:border-border
-    after:border-border
-  `,
+  base: 'text-sm leading-6 before:border-border after:border-border',
   variants: {
     orientation: {
       vertical: 'mx-1 h-auto self-stretch',
@@ -21,20 +16,12 @@ const showMoreStyles = tv({
     {
       orientation: 'vertical',
       className:
-        `
-          mx-2 flex flex-col items-center
-          before:mb-2 before:flex-1 before:border-l
-          after:mt-2 after:flex-1 after:border-r
-        `,
+        'mx-2 flex flex-col items-center before:mb-2 before:flex-1 before:border-l after:mt-2 after:flex-1 after:border-r',
     },
     {
       orientation: 'horizontal',
       className:
-        `
-          my-2 flex items-center self-stretch
-          before:mr-2 before:flex-1 before:border-t
-          after:ml-2 after:flex-1 after:border-t
-        `,
+        'my-2 flex items-center self-stretch before:me-2 before:flex-1 before:border-t after:ms-2 after:flex-1 after:border-t',
     },
   ],
   defaultVariants: {
@@ -42,7 +29,7 @@ const showMoreStyles = tv({
   },
 })
 
-interface ShowMoreProps extends React.ComponentProps<typeof ToggleButton> {
+interface ShowMoreProps extends Omit<React.ComponentProps<typeof ToggleButton>, 'className'> {
   className?: string
   orientation?: 'horizontal' | 'vertical'
   as?: 'text' | 'button'
@@ -51,7 +38,6 @@ interface ShowMoreProps extends React.ComponentProps<typeof ToggleButton> {
 
 function ShowMore({
   as = 'button',
-  children,
   orientation = 'horizontal',
   className,
   ...props
@@ -64,11 +50,11 @@ function ShowMore({
               {...props}
               className={buttonStyles({ isCircle: true, intent: 'outline', size: 'sm' })}
             >
-              {composeRenderProps(children, children => children)}
+              {composeRenderProps(props.children, children => children)}
             </ToggleButton>
           )
         : (
-            <Text slot="description">{props.text}</Text>
+            <Text>{props.text}</Text>
           )}
     </div>
   )

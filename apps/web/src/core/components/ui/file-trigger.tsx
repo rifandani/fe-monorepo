@@ -2,22 +2,25 @@
 
 import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
-import type { buttonStyles } from '@/core/components/ui/button'
-import { Icon } from '@iconify/react'
+import type { buttonStyles } from './button'
+import { CameraIcon, FolderIcon, PaperClipIcon } from '@heroicons/react/24/outline'
 import {
   FileTrigger as FileTriggerPrimitive,
 
 } from 'react-aria-components'
-import { Button } from '@/core/components/ui/button'
-import { Loader } from '@/core/components/ui/loader'
+import { Button } from './button'
+import { Loader } from './loader'
 
-interface FileTriggerProps extends FileTriggerPrimitiveProps, VariantProps<typeof buttonStyles> {
+export interface FileTriggerProps
+  extends FileTriggerPrimitiveProps,
+  VariantProps<typeof buttonStyles> {
   isDisabled?: boolean
+  isPending?: boolean
   ref?: React.RefObject<HTMLInputElement>
   className?: string
 }
 
-function FileTrigger({
+export function FileTrigger({
   intent = 'outline',
   size = 'md',
   isCircle = false,
@@ -38,14 +41,14 @@ function FileTrigger({
           ? (
               props.defaultCamera
                 ? (
-                    <Icon icon="lucide:camera" />
+                    <CameraIcon />
                   )
                 : props.acceptDirectory
                   ? (
-                      <Icon icon="lucide:folder" />
+                      <FolderIcon />
                     )
                   : (
-                      <Icon icon="lucide:paperclip" />
+                      <PaperClipIcon />
                     )
             )
           : (
@@ -69,6 +72,3 @@ function FileTrigger({
     </FileTriggerPrimitive>
   )
 }
-
-export type { FileTriggerProps }
-export { FileTrigger }

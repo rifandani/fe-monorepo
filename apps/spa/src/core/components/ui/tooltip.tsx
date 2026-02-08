@@ -1,5 +1,3 @@
-'use client'
-
 import type { TooltipProps as TooltipPrimitiveProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
 import {
@@ -9,59 +7,33 @@ import {
   Tooltip as TooltipPrimitive,
   TooltipTrigger as TooltipTriggerPrimitive,
 } from 'react-aria-components'
+import { twJoin } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 
 const tooltipStyles = tv({
   base: [
-    `
-      group rounded-lg border px-2.5 py-1.5 text-sm/6 will-change-transform
-      dark:shadow-none
-      *:[strong]:font-medium
-    `,
+    'group max-w-sm origin-(--trigger-anchor-point) rounded-lg border border-(--tooltip-border) px-2.5 py-1.5 text-sm/6 will-change-transform [--tooltip-border:var(--color-muted-fg)]/30 dark:shadow-none *:[strong]:font-medium',
   ],
   variants: {
-    intent: {
-      default:
-        `
-          bg-overlay text-overlay-fg
-          *:data-[slot=overlay-arrow]:fill-overlay
-          *:data-[slot=overlay-arrow]:stroke-border
-        `,
-      inverse:
-        `
-          border-transparent bg-fg text-bg
-          *:data-[slot=overlay-arrow]:fill-fg
-          *:data-[slot=overlay-arrow]:stroke-transparent
-          dark:*:data-[slot=overlay-arrow]:fill-white
-          dark:[&_.text-muted-fg]:text-fg/70
-          [&_.text-muted-fg]:text-bg/70
-        `,
+    inverse: {
+      true: ['border-transparent bg-fg text-bg', '**:[.text-muted-fg]:text-bg/60'],
+      false: 'bg-overlay text-overlay-fg',
     },
     isEntering: {
       true: [
-        'animate-in fade-in',
-        `
-          placement-left:slide-in-from-right-1
-          placement-right:slide-in-from-left-1
-          placement-top:slide-in-from-bottom-1
-          placement-bottom:slide-in-from-top-1
-        `,
+        'fade-in animate-in',
+        'placement-left:slide-in-from-right-1 placement-right:slide-in-from-left-1 placement-top:slide-in-from-bottom-1 placement-bottom:slide-in-from-top-1',
       ],
     },
     isExiting: {
       true: [
-        'animate-in direction-reverse fade-in',
-        `
-          placement-left:slide-out-to-right-1
-          placement-right:slide-out-to-left-1
-          placement-top:slide-out-to-bottom-1
-          placement-bottom:slide-out-to-top-1
-        `,
+        'fade-in direction-reverse animate-in',
+        'placement-left:slide-out-to-right-1 placement-right:slide-out-to-left-1 placement-top:slide-out-to-bottom-1 placement-bottom:slide-out-to-top-1',
       ],
     },
   },
   defaultVariants: {
-    intent: 'default',
+    inverse: false,
   },
 })
 
@@ -71,14 +43,14 @@ const Tooltip = (props: TooltipProps) => <TooltipTriggerPrimitive {...props} />
 interface TooltipContentProps
   extends Omit<TooltipPrimitiveProps, 'children'>,
   VariantProps<typeof tooltipStyles> {
-  showArrow?: boolean
-  children: React.ReactNode
+  arrow?: boolean
+  children?: React.ReactNode
 }
 
 function TooltipContent({
   offset = 10,
-  showArrow = true,
-  intent = 'default',
+  arrow = true,
+  inverse,
   children,
   ...props
 }: TooltipContentProps) {
@@ -89,23 +61,21 @@ function TooltipContent({
       className={composeRenderProps(props.className, (className, renderProps) =>
         tooltipStyles({
           ...renderProps,
-          intent,
+          inverse,
           className,
         }))}
     >
-      {showArrow && (
-        <OverlayArrow>
+      {arrow && (
+        <OverlayArrow className="group">
           <svg
-            data-slot="overlay-arrow"
             width={12}
             height={12}
             viewBox="0 0 12 12"
-            className={`
-              group-placement-left:-rotate-90
-              group-placement-right:rotate-90
-              group-placement-bottom:rotate-180
-              forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]
-            `}
+            // inverse
+            className={twJoin(
+              'block group-placement-bottom:rotate-180 group-placement-left:-rotate-90 group-placement-right:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]',
+              inverse ? 'fill-fg stroke-transparent' : 'fill-overlay stroke-(--tooltip-border)',
+            )}
           >
             <path d="M0 0 L6 6 L12 0" />
           </svg>
@@ -116,8 +86,7 @@ function TooltipContent({
   )
 }
 
-Tooltip.Trigger = Button
-Tooltip.Content = TooltipContent
+const TooltipTrigger = Button
 
 export type { TooltipContentProps, TooltipProps }
-export { Tooltip }
+export { Tooltip, TooltipContent, TooltipTrigger }

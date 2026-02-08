@@ -12,10 +12,13 @@
   },
   "aliases": {
     "components": "@/core/components",
-    "lib": "@/core/lib",
+    "lib": "@/core/utils",
     "hooks": "@/core/hooks",
     "utils": "@/core/utils",
     "ui": "@/core/components/ui"
   },
-  "iconLibrary": "@heroicons/react"
+  "iconLibrary": "@heroicons/react",
+  "registries": {
+    "@intentui": "https://intentui.com/r/{name}"
+  }
 }

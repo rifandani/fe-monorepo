@@ -1,13 +1,11 @@
 'use client'
-
 import type { DialogProps, DialogTriggerProps, ModalOverlayProps } from 'react-aria-components'
 import {
-  composeRenderProps,
   DialogTrigger as DialogTriggerPrimitive,
   ModalOverlay,
   Modal as ModalPrimitive,
 } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
 import {
   Dialog,
   DialogBody,
@@ -18,13 +16,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/core/components/ui/dialog'
+} from './dialog'
 
 function Modal(props: DialogTriggerProps) {
   return <DialogTriggerPrimitive {...props} />
 }
 
 const sizes = {
+  '2xs': 'sm:max-w-2xs',
   'xs': 'sm:max-w-xs',
   'sm': 'sm:max-w-sm',
   'md': 'sm:max-w-md',
@@ -34,88 +33,58 @@ const sizes = {
   '3xl': 'sm:max-w-3xl',
   '4xl': 'sm:max-w-4xl',
   '5xl': 'sm:max-w-5xl',
+  'fullscreen': '',
 }
 
 interface ModalContentProps
-  extends Omit<ModalOverlayProps, 'className' | 'children'>,
+  extends Omit<ModalOverlayProps, 'children'>,
   Pick<DialogProps, 'aria-label' | 'aria-labelledby' | 'role' | 'children'> {
   size?: keyof typeof sizes
   closeButton?: boolean
-  isBlurred?: boolean
-  className?: ModalOverlayProps['className']
-  overlay?: Omit<ModalOverlayProps, 'children'>
+  overlay?: Pick<ModalOverlayProps, 'className'>
 }
 
 function ModalContent({
   className,
   isDismissable: isDismissableInternal,
-  isBlurred = false,
   children,
   overlay,
-  size = 'lg',
+  size = 'md',
   role = 'dialog',
   closeButton = true,
   ...props
 }: ModalContentProps) {
   const isDismissable = isDismissableInternal ?? role !== 'alertdialog'
-
   return (
     <ModalOverlay
+      data-slot="modal-overlay"
       isDismissable={isDismissable}
-      className={composeRenderProps(overlay?.className, (className, { isEntering, isExiting }) =>
-        twMerge([
-          'fixed top-0 left-0 isolate z-50 h-(--visual-viewport-height) w-full',
-          `
-            flex items-end justify-end bg-fg/15 text-center
-            sm:block
-            dark:bg-bg/40
-          `,
-          `
-            [--visual-viewport-vertical-padding:16px]
-            sm:[--visual-viewport-vertical-padding:32px]
-          `,
-          isBlurred
-          && `
-            bg-bg bg-clip-padding
-            supports-backdrop-filter:bg-bg/15
-            supports-backdrop-filter:backdrop-blur
-            dark:supports-backdrop-filter:bg-bg/40
-          `,
-          isEntering && 'animate-in duration-200 ease-out fade-in',
-          isExiting && 'animate-out ease-in fade-out',
-          className,
-        ]))}
+      className={cx(
+        'fixed start-0 top-0 z-50 h-(--visual-viewport-height,100vh) w-screen',
+        'bg-bg/15 backdrop-blur-[1px] motion-reduce:backdrop-blur-none',
+        'grid grid-rows-[1fr_auto] justify-items-center sm:grid-rows-[1fr_auto_3fr]',
+        'entering:fade-in entering:animate-in entering:duration-300 entering:ease-out',
+        'exiting:fade-out exiting:animate-out exiting:ease-in',
+        size === 'fullscreen' ? 'md:p-3' : 'md:p-4',
+        overlay?.className,
+      )}
       {...props}
     >
       <ModalPrimitive
-        className={composeRenderProps(className, (className, { isEntering, isExiting }) =>
-          twMerge([
-            `
-              max-h-full w-full rounded-t-2xl bg-overlay text-left align-middle
-              text-overlay-fg shadow-lg ring-1 ring-fg/5
-            `,
-            `
-              overflow-hidden
-              sm:rounded-2xl
-              dark:ring-border
-            `,
-            `
-              sm:fixed sm:top-1/2 sm:left-[50vw] sm:-translate-x-1/2
-              sm:-translate-y-1/2
-            `,
-            isEntering
-            && `
-              animate-in duration-200 ease-out fade-in slide-in-from-bottom
-              sm:slide-in-from-bottom-0 sm:zoom-in-95
-            `,
-            isExiting
-            && `
-              animate-out duration-150 ease-in slide-out-to-bottom
-              sm:slide-out-to-bottom-0 sm:zoom-out-95
-            `,
-            sizes[size],
-            className,
-          ]))}
+        data-slot="modal-content"
+        className={cx(
+          'row-start-2 w-full text-start align-middle',
+          '[--visual-viewport-vertical-padding:16px]',
+          size === 'fullscreen'
+            ? '**:data-[slot=dialog-body]:min-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding)-var(--dialog-header-height)-var(--dialog-footer-height))] sm:[--visual-viewport-vertical-padding:16px]'
+            : 'sm:[--visual-viewport-vertical-padding:32px]',
+          'relative overflow-hidden bg-overlay text-overlay-fg',
+          'inset-shadow-xs rounded-t-2xl ring ring-muted-fg/25 drop-shadow-xl sm:rounded-2xl dark:ring-border',
+          sizes[size],
+          'entering:slide-in-from-bottom sm:entering:zoom-in-95 sm:entering:slide-in-from-bottom-0 entering:animate-in entering:duration-300 entering:ease-out',
+          'exiting:slide-out-to-bottom sm:exiting:zoom-out-95 sm:exiting:slide-out-to-bottom-0 exiting:animate-out exiting:ease-in',
+          className,
+        )}
       >
         <Dialog role={role}>
           {values => (
@@ -138,13 +107,14 @@ const ModalFooter = DialogFooter
 const ModalBody = DialogBody
 const ModalClose = DialogClose
 
-Modal.Trigger = ModalTrigger
-Modal.Header = ModalHeader
-Modal.Title = ModalTitle
-Modal.Description = ModalDescription
-Modal.Footer = ModalFooter
-Modal.Body = ModalBody
-Modal.Close = ModalClose
-Modal.Content = ModalContent
-
-export { Modal }
+export {
+  Modal,
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+}

@@ -1,63 +1,30 @@
-'use client'
-
-import type React from 'react'
 import type {
   ComboBoxProps as ComboboxPrimitiveProps,
   InputProps,
   ListBoxProps,
   PopoverProps,
 } from 'react-aria-components'
-import type { FieldProps } from '@/core/components/ui/field'
-import { Icon } from '@iconify/react'
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import {
+  Button,
   ComboBoxContext,
   ComboBox as ComboboxPrimitive,
   ListBox,
   useSlottedContext,
 } from 'react-aria-components'
-import { Button } from '@/core/components/ui/button'
-import {
-  DropdownDescription,
-  DropdownItem,
-  DropdownLabel,
-  DropdownSection,
-} from '@/core/components/ui/dropdown'
-import {
-  Description,
-  FieldError,
-  FieldGroup,
+import { fieldStyles } from '@/core/components/ui/field'
+import { Input } from '@/core/components/ui/input'
+import { cx } from '@/core/utils/primitive'
+import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
+import { PopoverContent } from './popover'
 
-  Input,
-  Label,
-} from '@/core/components/ui/field'
-import { PopoverContent } from '@/core/components/ui/popover'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
-
-interface ComboBoxProps<T extends object>
-  extends Omit<ComboboxPrimitiveProps<T>, 'children'>,
-  FieldProps {
+interface ComboBoxProps<T extends object> extends Omit<ComboboxPrimitiveProps<T>, 'children'> {
   children: React.ReactNode
 }
 
-function ComboBox<T extends object>({
-  label,
-  description,
-  errorMessage,
-  children,
-  className,
-  ...props
-}: ComboBoxProps<T>) {
+function ComboBox<T extends object>({ className, ...props }: ComboBoxProps<T>) {
   return (
-    <ComboboxPrimitive
-      data-slot="combo-box"
-      {...props}
-      className={composeTailwindRenderProps(className, 'group flex w-full flex-col gap-y-1')}
-    >
-      {label && <Label>{label}</Label>}
-      {children}
-      {description && <Description>{description}</Description>}
-      <FieldError>{errorMessage}</FieldError>
-    </ComboboxPrimitive>
+    <ComboboxPrimitive data-slot="control" className={cx(fieldStyles(), className)} {...props} />
   )
 }
 
@@ -67,7 +34,7 @@ interface ComboBoxListProps<T extends object>
   popover?: Omit<PopoverProps, 'children'>
 }
 
-function ComboBoxList<T extends object>({
+function ComboBoxContent<T extends object>({
   children,
   items,
   className,
@@ -76,18 +43,19 @@ function ComboBoxList<T extends object>({
 }: ComboBoxListProps<T>) {
   return (
     <PopoverContent
-      className={composeTailwindRenderProps(
-        popover?.className,
+      placement={popover?.placement ?? 'bottom'}
+      className={cx(
         'min-w-(--trigger-width) scroll-py-1 overflow-y-auto overscroll-contain',
+        popover?.className,
       )}
       {...popover}
     >
       <ListBox
         layout="stack"
         orientation="vertical"
-        className={composeTailwindRenderProps(
+        className={cx(
+          'grid max-h-96 w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
           className,
-          'grid max-h-96 w-full grid-cols-[auto_1fr] flex-col gap-y-1 p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
         )}
         items={items}
         {...props}
@@ -101,48 +69,32 @@ function ComboBoxList<T extends object>({
 function ComboBoxInput(props: InputProps) {
   const context = useSlottedContext(ComboBoxContext)!
   return (
-    <FieldGroup>
+    <span
+      data-slot="control"
+      className="relative isolate block has-[[data-slot=icon]:last-child]:[&_input]:pe-10"
+    >
       <Input {...props} placeholder={props?.placeholder} />
-      <Button
-        size="sq-xs"
-        intent="plain"
-        className={`
-          rounded outline-offset-0
-          hover:bg-transparent
-          active:bg-transparent
-          **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:hover:text-fg
-          **:data-[slot=icon]:pressed:text-fg
-          forced-colors:group-disabled:border-[GrayText]
-          forced-colors:group-disabled:text-[GrayText]
-          pressed:bg-transparent
-        `}
-      >
+      <Button className="absolute end-0 top-0 grid h-full w-11 cursor-default place-content-center sm:w-9">
         {!context?.inputValue && (
-          <Icon
-            icon="lucide:chevron-down"
-            data-slot="chevron"
-            className={`
-              size-4 shrink-0 text-muted-fg
-              group-open:text-fg
-            `}
-          />
+          <ChevronUpDownIcon data-slot="chevron" className="-me-1 size-5 text-muted-fg sm:size-4" />
         )}
       </Button>
-    </FieldGroup>
+    </span>
   )
 }
 
 const ComboBoxSection = DropdownSection
-const ComboBoxOption = DropdownItem
+const ComboBoxItem = DropdownItem
 const ComboBoxLabel = DropdownLabel
 const ComboBoxDescription = DropdownDescription
 
-ComboBox.Input = ComboBoxInput
-ComboBox.List = ComboBoxList
-ComboBox.Option = ComboBoxOption
-ComboBox.Label = ComboBoxLabel
-ComboBox.Description = ComboBoxDescription
-ComboBox.Section = ComboBoxSection
-
 export type { ComboBoxListProps, ComboBoxProps }
-export { ComboBox }
+export {
+  ComboBox,
+  ComboBoxContent,
+  ComboBoxDescription,
+  ComboBoxInput,
+  ComboBoxItem,
+  ComboBoxLabel,
+  ComboBoxSection,
+}

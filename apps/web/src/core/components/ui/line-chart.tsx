@@ -1,11 +1,9 @@
 'use client'
-
-import type { ComponentProps } from 'react'
 import type { LineProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
+import { useMemo } from 'react'
 import { Line, LineChart as LineChartPrimitive } from 'recharts'
-import { twMerge } from 'tailwind-merge'
 import {
 
   CartesianGrid,
@@ -22,11 +20,11 @@ import {
   YAxis,
 } from './chart'
 
-interface LineChartProps<TValue extends ValueType, TName extends NameType>
+export interface LineChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {
   connectNulls?: boolean
   lineProps?: LineProps
-  chartProps?: Omit<ComponentProps<typeof LineChartPrimitive>, 'data' | 'stackOffset'>
+  chartProps?: Omit<React.ComponentProps<typeof LineChartPrimitive>, 'data' | 'stackOffset'>
 }
 
 export function LineChart<TValue extends ValueType, TName extends NameType>({
@@ -35,7 +33,6 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
   colors = DEFAULT_COLORS,
   connectNulls = false,
   type = 'default',
-  className,
   config,
   children,
 
@@ -64,16 +61,16 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
   lineProps,
   ...props
 }: LineChartProps<TValue, TName>) {
-  const categoryColors = constructCategoryColors(Object.keys(config), colors)
+  const configKeys = useMemo(() => Object.keys(config), [config])
+  const categoryColors = useMemo(
+    () => constructCategoryColors(configKeys, colors),
+    [configKeys, colors],
+  )
+
+  const configEntries = useMemo(() => Object.entries(config), [config])
 
   return (
-    <Chart
-      className={twMerge('h-80 w-full', className)}
-      config={config}
-      data={data}
-      dataKey={dataKey}
-      {...props}
-    >
+    <Chart config={config} data={data} dataKey={dataKey} {...props}>
       {({ onLegendSelect, selectedLegend }) => (
         <LineChartPrimitive
           onClick={() => {
@@ -89,17 +86,15 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
           stackOffset={type === 'percent' ? 'expand' : undefined}
           {...chartProps}
         >
-          {!hideGridLines && <CartesianGrid strokeDasharray="3 3" />}
+          {!hideGridLines && <CartesianGrid strokeDasharray="4 4" />}
           <XAxis
             hide={hideXAxis}
-            className="**:[text]:fill-muted-fg"
             displayEdgeLabelsOnly={displayEdgeLabelsOnly}
             intervalType={intervalType}
             {...xAxisProps}
           />
           <YAxis
             hide={hideYAxis}
-            className="**:[text]:fill-muted-fg"
             tickFormatter={type === 'percent' ? valueToPercent : valueFormatter}
             {...yAxisProps}
           />
@@ -120,29 +115,34 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
             />
           )}
 
-          {Object.entries(config).map(([category, values]) => {
-            const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
+          {!children
+            ? configEntries.map(([category, values]) => {
+                const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
+                const color = getColorValue(values.color || categoryColors.get(category))
 
-            return (
-              <Line
-                key={category}
-                dot={false}
-                name={category}
-                type="linear"
-                dataKey={category}
-                stroke={getColorValue(values.color || categoryColors.get(category))}
-                style={{
-                  strokeOpacity,
-                  strokeWidth: 2,
-                }}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                connectNulls={connectNulls}
-                {...lineProps}
-              />
-            )
-          })}
-          {children}
+                return (
+                  <Line
+                    key={category}
+                    dot={false}
+                    name={category}
+                    type="linear"
+                    dataKey={category}
+                    stroke={color}
+                    style={
+                      {
+                        strokeOpacity,
+                        'strokeWidth': 2,
+                        '--line-color': color,
+                      } as React.CSSProperties
+                    }
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    connectNulls={connectNulls}
+                    {...lineProps}
+                  />
+                )
+              })
+            : children}
         </LineChartPrimitive>
       )}
     </Chart>

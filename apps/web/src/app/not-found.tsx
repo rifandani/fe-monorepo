@@ -27,7 +27,6 @@ export default async function NotFound() {
         `}
         >
           <Link
-            intent="primary"
             href={session ? '/' : '/login'}
             className="flex items-center"
           >

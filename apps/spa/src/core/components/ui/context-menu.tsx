@@ -1,9 +1,17 @@
-'use client'
-
-import type { MenuContentProps } from '@/core/components/ui/menu'
+import type { MenuContentProps } from './menu'
 import { createContext, use, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { Menu } from '@/core/components/ui/menu'
+import {
+  MenuContent,
+
+  MenuDescription,
+  MenuHeader,
+  MenuItem,
+  MenuLabel,
+  MenuSection,
+  MenuSeparator,
+  MenuShortcut,
+} from './menu'
 
 interface ContextMenuTriggerContextType {
   buttonRef: React.RefObject<HTMLButtonElement | null>
@@ -60,11 +68,7 @@ function ContextMenuTrigger({ className, ...props }: ContextMenuTriggerProps) {
   return (
     <button
       className={twMerge(
-        `
-          cursor-default
-          focus:outline-hidden
-          disabled:opacity-60 disabled:forced-colors:disabled:text-[GrayText]
-        `,
+        'cursor-default focus:outline-hidden disabled:opacity-60 disabled:forced-colors:disabled:text-[GrayText]',
         className,
       )}
       ref={buttonRef}
@@ -77,14 +81,14 @@ function ContextMenuTrigger({ className, ...props }: ContextMenuTriggerProps) {
 
 type ContextMenuContentProps<T> = Omit<
   MenuContentProps<T>,
-  'showArrow' | 'isOpen' | 'onOpenChange' | 'triggerRef' | 'placement' | 'shouldFlip'
+  'arrow' | 'isOpen' | 'onOpenChange' | 'triggerRef' | 'placement' | 'shouldFlip'
 >
 
 function ContextMenuContent<T extends object>(props: ContextMenuContentProps<T>) {
   const { contextMenuOffset, setContextMenuOffset, buttonRef } = useContextMenuTrigger()
   return contextMenuOffset
     ? (
-        <Menu.Content
+        <MenuContent
           popover={{
             isOpen: !!contextMenuOffset,
             shouldFlip: false,
@@ -101,23 +105,24 @@ function ContextMenuContent<T extends object>(props: ContextMenuContentProps<T>)
     : null
 }
 
-const ContextMenuItem = Menu.Item
-const ContextMenuSeparator = Menu.Separator
-const ContextMenuDescription = Menu.Description
-const ContextMenuSection = Menu.Section
-const ContextMenuHeader = Menu.Header
-const ContextMenuKeyboard = Menu.Keyboard
-const ContextMenuLabel = Menu.Label
-
-ContextMenu.Trigger = ContextMenuTrigger
-ContextMenu.Content = ContextMenuContent
-ContextMenu.Item = ContextMenuItem
-ContextMenu.Label = ContextMenuLabel
-ContextMenu.Separator = ContextMenuSeparator
-ContextMenu.Description = ContextMenuDescription
-ContextMenu.Section = ContextMenuSection
-ContextMenu.Header = ContextMenuHeader
-ContextMenu.Keyboard = ContextMenuKeyboard
+const ContextMenuItem = MenuItem
+const ContextMenuSeparator = MenuSeparator
+const ContextMenuDescription = MenuDescription
+const ContextMenuSection = MenuSection
+const ContextMenuHeader = MenuHeader
+const ContextMenuShortcut = MenuShortcut
+const ContextMenuLabel = MenuLabel
 
 export type { ContextMenuProps }
-export { ContextMenu }
+export {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuDescription,
+  ContextMenuHeader,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSection,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+}

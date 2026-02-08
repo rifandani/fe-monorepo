@@ -118,7 +118,6 @@ function NotFoundRoute() {
         `}
         >
           <Link
-            intent="primary"
             href={userStore.user ? '/' : '/login'}
             className="flex items-center"
           >

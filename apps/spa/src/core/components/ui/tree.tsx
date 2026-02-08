@@ -1,127 +1,123 @@
 'use client'
 
-import type { TreeItemProps, TreeProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import type {
+  TreeItemContentProps,
+  TreeItemContentRenderProps,
+  TreeItemProps,
+  TreeProps,
+} from 'react-aria-components'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   Button,
-  composeRenderProps,
-  TreeItemContent as TreeContentPrimitive,
+  TreeItemContent,
   TreeItem as TreeItemPrimitive,
   Tree as TreePrimitive,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
-import { Checkbox } from '@/core/components/ui/checkbox'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
+import { cx } from '@/core/utils/primitive'
+import { Checkbox } from './checkbox'
 
 function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
   return (
     <TreePrimitive
-      className={composeTailwindRenderProps(
-        className,
+      className={cx(
         twJoin(
-          `
-            flex max-h-96 min-w-72 cursor-default flex-col overflow-auto
-            rounded-lg border py-2 outline-hidden forced-color-adjust-none
-            [scrollbar-width:thin]
-            sm:text-sm
-            [&::-webkit-scrollbar]:size-0.5
-          `,
-          `
-            focus-visible:outline-2 focus-visible:outline-offset-[-1px]
-            focus-visible:outline-ring/70
-          `,
+          'flex cursor-default flex-col gap-y-2 overflow-auto outline-hidden forced-color-adjust-none',
+          '[--tree-active-bg:var(--color-primary-subtle)] [--tree-active-fg:var(--color-primary-subtle-fg)]',
         ),
+        className,
       )}
       {...props}
     />
   )
 }
 
-const treeItemStyles = tv({
-  base: [
-    `
-      p-[0.286rem_0.286rem_0.286rem_0.571rem]
-      pl-[calc((var(--tree-item-level)-1)*20px+0.571rem+var(--padding))]
-      outline-hidden
-      [--padding:20px]
-      [&_[data-expanded]_[slot=chevron]_[data-slot=icon]]:rotate-90
-    `,
-    `
-      [&_[slot=chevron]]:outline-hidden
-      [&_[slot=chevron]_[data-slot=icon]]:text-muted-fg
-    `,
-    'data-has-child-rows:[--padding:0px]',
-  ],
-  variants: {
-    isExpanded: {
-      true: `
-        [&_[slot=chevron]_[data-slot=icon]]:rotate-90
-        [&_[slot=chevron]_[data-slot=icon]]:text-fg
-        [&_[slot=chevron]_[data-slot=icon]]:transition
-        [&_[slot=chevron]_[data-slot=icon]]:duration-200
-      `,
-    },
-    isFocusVisible: {
-      true: `
-        focus:outline-hidden
-        focus-visible:ring-1 focus-visible:ring-primary
-        [&_[slot=chevron]_[data-slot=icon]]:text-fg
-      `,
-    },
-    isDisabled: {
-      true: `
-        opacity-50
-        forced-colors:text-[GrayText]
-      `,
-    },
-  },
-})
-
 function TreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
   return (
     <TreeItemPrimitive
-      className={composeRenderProps(className, (className, renderProps) =>
-        treeItemStyles({
-          ...renderProps,
-          className,
-        }))}
+      className={cx(
+        [
+          'shrink-0 rounded-lg px-2 py-1.5 pe-2',
+          'group/tree-item relative flex select-none rounded-lg focus:outline-hidden',
+          'focus:bg-(--tree-active-bg) focus:text-(--tree-active-fg) focus:**:[.text-muted-fg]:text-(--tree-active-fg)',
+          '**:data-[slot=avatar]:*:size-6 **:data-[slot=avatar]:size-6 sm:**:data-[slot=avatar]:*:size-5 sm:**:data-[slot=avatar]:size-5',
+          '**:data-[slot=icon]:me-1 **:data-[slot=icon]:size-5 **:data-[slot=icon]:shrink-0 sm:**:data-[slot=icon]:size-4',
+          'disabled:opacity-50 forced-colors:[',
+          'href' in props ? 'cursor-pointer' : 'cursor-default',
+        ],
+        className,
+      )}
       {...props}
-    >
-      {props.children}
-    </TreeItemPrimitive>
+    />
   )
 }
 
-interface TreeContentProps extends React.ComponentProps<typeof TreeContentPrimitive> {
+interface TreeContentProps extends TreeItemContentProps {
   className?: string
 }
 
-function TreeContent({ className, ...props }: TreeContentProps) {
+function TreeContent({ className, children, ...props }: TreeContentProps) {
   return (
-    <TreeContentPrimitive {...props}>
-      <div className={twMerge('flex items-center', className)}>
-        {props.children as React.ReactNode}
-      </div>
-    </TreeContentPrimitive>
+    <TreeItemContent {...props}>
+      {values => (
+        <div
+          className={twMerge(
+            'relative flex w-full min-w-0 items-center gap-x-1 truncate text-sm/6',
+            className,
+          )}
+        >
+          {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
+            <Checkbox className="[--indicator-mt:0] sm:[--indicator-mt:0]" slot="selection" />
+          )}
+          <div
+            className={twJoin(
+              'relative w-[calc(calc(var(--tree-item-level)-1)*calc(var(--spacing)*5))] shrink-0',
+              'before:absolute before:inset-0 before:-ms-1 before:bg-[repeating-linear-gradient(to_right,transparent_0,transparent_calc(var(--tree-item-level)-1px),var(--border)_calc(var(--tree-item-level)-1px),var(--border)_calc(var(--tree-item-level)))]',
+            )}
+          />
+          {values.hasChildItems
+            ? (
+                <TreeIndicator
+                  values={{
+                    isDisabled: values.isDisabled,
+                    isExpanded: values.isExpanded,
+                  }}
+                />
+              )
+            : (
+                <span aria-hidden className="block w-5 shrink-0" />
+              )}
+          {typeof children === 'function' ? children(values) : children}
+        </div>
+      )}
+    </TreeItemContent>
   )
 }
 
-function TreeIndicator() {
+function TreeIndicator({
+  values,
+}: {
+  values: Pick<TreeItemContentRenderProps, 'isDisabled' | 'isExpanded'>
+}) {
   return (
-    <Button className="relative shrink-0" slot="chevron">
-      <Icon icon="lucide:chevron-right" className="size-5" />
+    <Button
+      slot="chevron"
+      isDisabled={values.isDisabled}
+      className={twJoin(
+        'shrink-0 content-center text-muted-fg hover:text-fg',
+        values.isExpanded && 'text-fg',
+      )}
+    >
+      <ChevronRightIcon
+        data-slot="chevron"
+        className={twJoin(
+          'size-4 transition-transform duration-200 ease-in-out sm:size-5',
+          values.isExpanded && 'rotate-90',
+        )}
+      />
     </Button>
   )
 }
 
-function TreeCheckbox() {
-  return <Checkbox slot="selection" />
-}
-
-function TreeLabel(props: React.ComponentProps<'span'>) {
-  return <span {...props} />
-}
-
 export type { TreeItemProps, TreeProps }
-export { Tree, TreeCheckbox, TreeContent, TreeIndicator, TreeItem, TreeLabel }
+export { Tree, TreeContent, TreeIndicator, TreeItem }

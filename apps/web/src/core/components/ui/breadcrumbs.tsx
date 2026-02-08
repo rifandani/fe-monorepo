@@ -1,11 +1,11 @@
 'use client'
 import type { BreadcrumbProps, BreadcrumbsProps, LinkProps } from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import { createContext, use } from 'react'
 import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
-import { Link } from '@/core/components/ui/link'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
+import { twJoin, twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { Link } from './link'
 
 interface BreadcrumbsContextProps { separator?: 'chevron' | 'slash' | boolean }
 const BreadcrumbsProvider = createContext<BreadcrumbsContextProps>({
@@ -18,10 +18,7 @@ function Breadcrumbs<T extends object>({
 }: BreadcrumbsProps<T> & BreadcrumbsContextProps) {
   return (
     <BreadcrumbsProvider value={{ separator: props.separator }}>
-      <BreadcrumbsPrimitive
-        {...props}
-        className={twMerge(`flex items-center gap-2`, className)}
-      />
+      <BreadcrumbsPrimitive {...props} className={twMerge('flex items-center gap-2', className)} />
     </BreadcrumbsProvider>
   )
 }
@@ -42,12 +39,21 @@ function BreadcrumbsItem({
 
   return (
     <Breadcrumb
+      className={cx('flex items-center gap-2 text-sm', className)}
+      data-slot="breadcrumb-item"
       {...props}
-      className={composeTailwindRenderProps(className, 'flex items-center gap-2 text-sm')}
     >
       {({ isCurrent }) => (
         <>
-          <Link href={href} {...props} />
+          <Link
+            className={twJoin(
+              'has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2',
+              '*:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4',
+              '*:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg',
+            )}
+            href={href}
+            {...props}
+          />
           {!isCurrent && separator !== false && <Separator separator={separatorValue} />}
         </>
       )}
@@ -62,7 +68,7 @@ function Separator({
 }) {
   return (
     <span className="*:shrink-0 *:text-muted-fg *:data-[slot=icon]:size-3.5">
-      {separator === 'chevron' && <Icon icon="lucide:chevron-right" />}
+      {separator === 'chevron' && <ChevronRightIcon />}
       {separator === 'slash' && <span className="text-muted-fg">/</span>}
     </span>
   )

@@ -1,104 +1,57 @@
 'use client'
-import type {
-  TagGroupProps as TagGroupPrimitiveProps,
-  TagListProps,
-  TagProps as TagPrimitiveProps,
-} from 'react-aria-components'
-import { Icon } from '@iconify/react'
+import type { TagGroupProps, TagListProps, TagProps } from 'react-aria-components'
+import { XCircleIcon } from '@heroicons/react/16/solid'
 import {
   Button,
-  composeRenderProps,
-  TagGroup as TagGroupPrimitive,
-  TagList as TagListPrimitive,
-  Tag as TagPrimitive,
+  Tag as PrimitiveTag,
+  TagGroup as PrimitiveTagGroup,
+  TagList as PrimitiveTagList,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
-import { Description, Label } from '@/core/components/ui/field'
-import { composeTailwindRenderProps } from '@/core/components/ui/primitive'
+import { cx } from '@/core/utils/primitive'
 
-interface TagGroupProps extends TagGroupPrimitiveProps {
-  errorMessage?: string
-  label?: string
-  description?: string
-  ref?: React.RefObject<HTMLDivElement>
-}
-
-function TagGroup({ children, ref, className, ...props }: TagGroupProps) {
+export function TagGroup({ className, ...props }: TagGroupProps) {
   return (
-    <TagGroupPrimitive
-      ref={ref}
-      className={twMerge('flex flex-col flex-wrap', className)}
+    <PrimitiveTagGroup
+      data-slot="control"
+      className={twMerge('flex flex-col gap-y-1 *:data-[slot=label]:font-medium', className)}
       {...props}
-    >
-      {props.label && <Label className="mb-1">{props.label}</Label>}
-      {children}
-      {props.description && <Description>{props.description}</Description>}
-    </TagGroupPrimitive>
-  )
-}
-
-function TagList<T extends object>({ className, ...props }: TagListProps<T>) {
-  return (
-    <TagListPrimitive
-      {...props}
-      className={composeTailwindRenderProps(className, 'flex flex-wrap gap-1')}
     />
   )
 }
 
-interface TagProps extends TagPrimitiveProps {}
+export function TagList<T extends object>({ className, ...props }: TagListProps<T>) {
+  return <PrimitiveTagList className={cx('flex flex-wrap gap-1', className)} {...props} />
+}
 
-function Tag({ className, children, ...props }: TagProps) {
+export function Tag({ children, className, ...props }: TagProps) {
   const textValue = typeof children === 'string' ? children : undefined
+
   return (
-    <TagPrimitive
+    <PrimitiveTag
       textValue={textValue}
-      {...props}
-      className={composeRenderProps(
+      className={cx(
+        'inset-ring inset-ring-input outline-hidden dark:bg-input/30',
+        'inline-flex items-center gap-x-1.5 py-0.5 font-medium text-xs/5 forced-colors:outline',
+        '*:data-[slot=icon]:size-3 *:data-[slot=icon]:shrink-0',
+        'cursor-default rounded-full px-2',
+        'selected:inset-ring-ring/70 selected:bg-primary-subtle selected:text-primary-subtle-fg',
+        'disabled:opacity-50 disabled:forced-colors:text-[GrayText]',
+        props.href && 'cursor-pointer hover:inset-ring-muted-fg',
         className,
-        (className, { isFocusVisible, isSelected, isDisabled, allowsRemoving }) =>
-          twMerge(
-            `
-              inline-flex cursor-default items-center gap-x-1.5 rounded-full
-              px-2 py-0.5 text-sm/5 font-medium inset-ring inset-ring-border
-              outline-hidden
-              sm:text-xs/5
-              forced-colors:outline
-            `,
-            isSelected
-            && `
-              bg-primary text-primary-fg inset-ring-primary
-              focus-visible:bg-primary/90
-            `,
-            isFocusVisible && `
-              bg-secondary text-secondary-fg inset-ring inset-ring-current/10
-            `,
-            isDisabled && 'opacity-50',
-            allowsRemoving && 'pr-2',
-            className,
-          ),
       )}
+      {...props}
     >
       {({ allowsRemoving }) => (
         <>
           {children}
           {allowsRemoving && (
-            <Button
-              slot="remove"
-              className={`
-                -mx-0.5 grid size-3.5 shrink-0 place-content-center rounded-full
-                text-muted-fg outline-hidden
-                hover:text-fg
-              `}
-            >
-              <Icon icon="lucide:x" data-slot="close" className="size-3" />
+            <Button slot="remove" className="">
+              <XCircleIcon className="-me-1 size-4" />
             </Button>
           )}
         </>
       )}
-    </TagPrimitive>
+    </PrimitiveTag>
   )
 }
-
-export type { TagGroupProps, TagListProps, TagProps }
-export { Tag, TagGroup, TagList }

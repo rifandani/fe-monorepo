@@ -1,103 +1,69 @@
-'use client'
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/24/solid'
+import { twJoin, twMerge } from 'tailwind-merge'
 
-import { Icon } from '@iconify/react'
-import { twMerge } from 'tailwind-merge'
-import { match } from 'ts-pattern'
-
-interface NoteProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
+export interface NoteProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
   intent?: 'default' | 'info' | 'warning' | 'danger' | 'success'
   indicator?: boolean
 }
 
-function Note({ indicator = true, intent = 'default', className, ...props }: NoteProps) {
+export function Note({ indicator = true, intent = 'default', className, ...props }: NoteProps) {
+  const iconMap: Record<string, React.ElementType | null> = {
+    info: InformationCircleIcon,
+    warning: ExclamationCircleIcon,
+    danger: ExclamationCircleIcon,
+    success: CheckCircleIcon,
+    default: null,
+  }
+
+  const IconComponent = iconMap[intent] || null
+
   return (
     <div
+      data-slot="note"
       className={twMerge([
-        `
-          grid w-full grid-cols-[1fr_auto] gap-3 overflow-hidden rounded-lg p-4
-          inset-ring-1 inset-ring-current/10
-          sm:text-sm/6
-        `,
-        `
-          [&_a]:underline
-          hover:[&_a]:underline
-          **:[strong]:font-semibold
-        `,
-        intent === 'default'
-        && `
-          border-border bg-secondary/20 text-secondary-fg
-          **:data-[slot=icon]:text-secondary-fg
-          dark:**:data-[slot=icon]:text-secondary-fg
-          dark:[&_a]:text-secondary-fg
-          [&_a]:text-secondary-fg
-        `,
+        'grid w-full grid-cols-[auto_1fr] overflow-hidden rounded-lg border border-current/15 p-4 text-base/6 backdrop-blur-2xl sm:text-sm/6',
+        '*:[a]:hover:underline **:[strong]:font-medium',
+        intent === 'default' && 'bg-muted/50 text-secondary-fg',
         intent === 'info'
-        && `
-          bg-sky-500/5 text-sky-700
-          group-hover:bg-sky-500/25
-          dark:bg-sky-500/10 dark:text-sky-300 dark:group-hover:bg-sky-500/20
-        `,
+        && 'bg-info-subtle text-info-subtle-fg **:[.text-muted-fg]:text-info-subtle-fg/70',
         intent === 'warning'
-        && `
-          bg-amber-400/20 text-amber-700
-          group-hover:bg-amber-400/30
-          dark:bg-amber-400/10 dark:text-amber-400
-          dark:group-hover:bg-amber-400/15
-        `,
+        && 'bg-warning-subtle text-warning-subtle-fg **:[.text-muted-fg]:text-warning-subtle-fg/80',
         intent === 'danger'
-        && `
-          bg-red-500/15 text-red-700
-          group-hover:bg-red-500/25
-          dark:bg-red-500/10 dark:text-red-400 dark:group-hover:bg-red-500/20
-        `,
+        && 'bg-danger-subtle text-danger-subtle-fg **:[.text-muted-fg]:text-danger-subtle-fg/80',
         intent === 'success'
-        && `
-          border-success/20 bg-success/10 leading-4 text-emerald-800
-          **:data-[slot=icon]:text-success
-          dark:bg-success/10 dark:text-emerald-200
-          dark:**:data-[slot=icon]:text-emerald-400 dark:[&_a]:text-emerald-50
-          [&_a]:text-emerald-600
-        `,
+        && 'bg-success-subtle text-success-subtle-fg **:[.text-muted-fg]:text-success-subtle-fg/80',
+        className,
       ])}
       {...props}
     >
-      {indicator && match(intent)
-        .with('info', () => (
-          <Icon
-            icon="mdi:alert-circle-outline"
-            className="col-start-1 size-5 shrink-0"
-          />
-        ))
-        .with('warning', () => (
-          <Icon
-            icon="mdi:alert-outline"
-            className="col-start-1 size-5 shrink-0"
-          />
-        ))
-        .with('danger', () => (
-          <Icon
-            icon="mdi:alert-outline"
-            className="col-start-1 size-5 shrink-0"
-          />
-        ))
-        .with('success', () => (
-          <Icon
-            icon="mdi:check-circle-outline"
-            className="col-start-1 size-5 shrink-0"
-          />
-        ))
-        .otherwise(() => null)}
-      <div className={`
-        text-base/6 text-pretty
-        group-has-data-[slot=icon]:col-start-2
-        sm:text-sm/6
-      `}
-      >
-        {props.children}
-      </div>
+      {IconComponent && indicator && (
+        <div
+          className={twJoin(
+            'me-3 grid size-8 place-content-center rounded-full border-2',
+            intent === 'warning' && 'border-warning-subtle-fg/40',
+            intent === 'success' && 'border-success-subtle-fg/40',
+            intent === 'danger' && 'border-danger-subtle-fg/40',
+            intent === 'info' && 'border-info-subtle-fg/40',
+          )}
+        >
+          <div
+            className={twJoin(
+              'grid size-6 place-content-center rounded-full border-2',
+              intent === 'warning' && 'border-warning-subtle-fg/85',
+              intent === 'success' && 'border-success-subtle-fg/85',
+              intent === 'danger' && 'border-danger-subtle-fg/85',
+              intent === 'info' && 'border-info-subtle-fg/85',
+            )}
+          >
+            <IconComponent className="size-5 shrink-0" />
+          </div>
+        </div>
+      )}
+      <div className="text-pretty group-has-data-[slot=icon]:col-start-2">{props.children}</div>
     </div>
   )
 }
-
-export type { NoteProps }
-export { Note }
