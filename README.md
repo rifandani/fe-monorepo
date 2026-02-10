@@ -5,17 +5,10 @@
 ## 🎯 Todo
 
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767)
-- [ ] consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs.
-- [ ] consider using Bun `catalog` to manage monorepo dependencies (waiting for bun updates, to support updating catalog when running `bun update --latest`)
-- [ ] create [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo
-- [ ] we might want to add lint and test in pre-commit hook for AI agents feedback loop
+- [ ] consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs
+- [ ] always update [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo. Consider it as living document
 - [ ] remove feature flag (flagsmith) related things, but before that fork this repo and create another repo so that we can still have example repo for feature flag
 - [ ] playwright creating & verifying E2E test
-
-## 📦 Prerequisite
-
-- Node >=24.12.0
-- Bun >=1.3.8
 
 ## 🛠️ Upgrading Dependencies
 

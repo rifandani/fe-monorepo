@@ -6,7 +6,7 @@
   "description": "React.js, Next.js, and Expo Monorepo Template",
   "author": "Tri Rizeki Rifandani",
   "engines": {
-    "node": ">=24"
+    "node": ">=24.12.0"
   },
   "scripts": {
     "prepare": "husky",
@@ -19,6 +19,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspector": "eslint --inspect-config",
+    "typecheck": "run-p web:typecheck spa:typecheck expo:typecheck",
     "lint-typecheck": "run-p lint web:typecheck spa:typecheck expo:typecheck",
     "spa": "bun --elide-lines=0 --filter @workspace/spa",
     "web": "bun --elide-lines=0 --filter @workspace/web",
