@@ -258,7 +258,7 @@ TDD cycle:
 
 **your human partner's question:** "Do we need to be using a mock here?"
 
-**Consider:** Integration tests with real components often simpler than complex mocks
+**Consider:** Prefer an **e2e test with Playwright** for user flows. It runs the real app in a browser and avoids most mocks. Use the playwright-cli skill to explore and generate test code; see TDD skill "E2E with Playwright – Best Practices". Integration tests with real components are also an option when e2e is not the right scope.
 
 ## TDD Prevents These Anti-Patterns
 
@@ -279,7 +279,7 @@ TDD cycle:
 | Mock without understanding | Understand dependencies first, mock minimally |
 | Incomplete mocks | Mirror real API completely |
 | Tests as afterthought | TDD - tests first |
-| Over-complex mocks | Consider integration tests |
+| Over-complex mocks | Prefer e2e with Playwright or integration tests |
 
 ## Red Flags
 
@@ -296,4 +296,4 @@ TDD cycle:
 
 If TDD reveals you're testing mock behavior, you've gone wrong.
 
-Fix: Test real behavior or question why you're mocking at all.
+Fix: Test real behavior or question why you're mocking at all. For user-facing flows, **e2e tests with Playwright** reduce the need for mocks and verify real behavior in a browser.

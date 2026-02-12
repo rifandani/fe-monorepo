@@ -28,6 +28,13 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 Thinking "skip TDD just this once"? Stop. That's rationalization.
 
+## Prefer E2E with Playwright
+
+- **Unit tests:** Pure logic, utilities, isolated behavior (no UI).
+- **E2E tests:** Flows a user can do (login, submit form, navigate). Use Playwright.
+
+To explore and generate e2e tests, use the **playwright-cli** skill: open the app, take snapshots, perform actions—CLI output gives you Playwright code to paste into test files.
+
 ## The Iron Law
 
 ```
@@ -72,6 +79,27 @@ digraph tdd_cycle {
 
 Write one minimal test showing what should happen.
 
+**E2E (Playwright) – preferred for user flows:**
+
+<Good>
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('login shows dashboard', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
+  await page.getByRole('textbox', { name: 'Password' }).fill('password123');
+  await page.getByRole('button', { name: 'Sign In' }).click();
+
+  await expect(page).toHaveURL(/.*dashboard/);
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+});
+```
+One flow, semantic locators, clear assertions, tests in real browsers.
+</Good>
+
+**Unit – for pure logic:**
+
 <Good>
 ```typescript
 test('retries failed operations 3 times', async () => {
@@ -109,13 +137,18 @@ Vague name, tests mock not code
 - One behavior
 - Clear name
 - Real code (no mocks unless unavoidable)
+- **E2E:** Use semantic locators (`getByRole`, `getByLabel`); avoid fragile CSS. Add assertions playwright-cli generates actions, not expectations.
 
 ### Verify RED - Watch It Fail
 
 **MANDATORY. Never skip.**
 
 ```bash
-npm test path/to/test.test.ts
+# Unit (from app or monorepo root)
+bun test path/to/test.test.ts
+
+# E2E (from app, e.g. apps/web or apps/spa)
+bun run test path/to/e2e.spec.ts
 ```
 
 Confirm:
@@ -170,7 +203,8 @@ Don't add features, refactor other code, or "improve" beyond the test.
 **MANDATORY.**
 
 ```bash
-npm test path/to/test.test.ts
+bun test path/to/test.test.ts
+# or for e2e: bun run test path/to/e2e.spec.ts
 ```
 
 Confirm:
@@ -287,9 +321,35 @@ Tests-first force edge case discovery before implementing. Tests-after verify yo
 
 **All of these mean: Delete code. Start over with TDD.**
 
-## Example: Bug Fix
+## Example: Bug Fix (E2E)
 
-**Bug:** Empty email accepted
+**Bug:** Empty email accepted on login form
+
+**RED**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('shows error when email is empty', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('textbox', { name: 'Email' }).fill('');
+  await page.getByRole('button', { name: 'Sign In' }).click();
+
+  await expect(page.getByText('Email required')).toBeVisible();
+  await expect(page).toHaveURL(/\/login$/);
+});
+```
+
+**Verify RED** – run `bun run test`; test fails (no validation yet).
+
+**GREEN** – add validation in form handler so error is shown and submit is blocked.
+
+**Verify GREEN** – test passes.
+
+**REFACTOR** – extract validation for multiple fields if needed.
+
+## Example: Bug Fix (Unit)
+
+**Bug:** Empty email accepted (API/utility)
 
 **RED**
 ```typescript
@@ -299,42 +359,20 @@ test('rejects empty email', async () => {
 });
 ```
 
-**Verify RED**
-```bash
-$ npm test
-FAIL: expected 'Email required', got undefined
-```
-
-**GREEN**
-```typescript
-function submitForm(data: FormData) {
-  if (!data.email?.trim()) {
-    return { error: 'Email required' };
-  }
-  // ...
-}
-```
-
-**Verify GREEN**
-```bash
-$ npm test
-PASS
-```
-
-**REFACTOR**
-Extract validation for multiple fields if needed.
+**Verify RED** → **GREEN** (add `if (!data.email?.trim()) return { error: 'Email required' };`) → **REFACTOR**.
 
 ## Verification Checklist
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
+- [ ] Every new function/flow has a test (e2e for user flows, unit for pure logic)
 - [ ] Watched each test fail before implementing
 - [ ] Each test failed for expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
-- [ ] All tests pass
+- [ ] All tests pass (including `bun run test` for e2e in the app)
 - [ ] Output pristine (no errors, warnings)
 - [ ] Tests use real code (mocks only if unavoidable)
+- [ ] E2E: semantic locators and explicit assertions
 - [ ] Edge cases and errors covered
 
 Can't check all boxes? You skipped TDD. Start over.
@@ -354,12 +392,24 @@ Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix 
 
 Never fix bugs without a test.
 
+## E2E with Playwright – Best Practices
+
+(From playwright-cli skill and `references/test-generation.md`.)
+
+1. **Semantic locators** – Prefer `getByRole('button', { name: 'Submit' })`, `getByLabel`, `getByText` over CSS like `locator('#submit-btn')`.
+2. **Explore then record** – Use `playwright-cli open <url>`, `playwright-cli snapshot`, then perform actions; paste generated code into spec files.
+3. **Add assertions** – Generated code is actions only. Always add `expect(...)` for visible text, URL, or state.
+4. **Auth/setup** – Use storage state (e.g. `state-save` / `state-load` in playwright-cli) or `project` setup in `playwright.config` to reuse login; avoid logging in in every test.
+5. **Mock sparingly** – Prefer real backend in e2e when feasible; use `page.route()` only when necessary (flaky APIs, payments). See playwright-cli `references/request-mocking.md`.
+
 ## Testing Anti-Patterns
 
 When adding mocks or test utilities, read @testing-anti-patterns.md to avoid common pitfalls:
 - Testing mock behavior instead of real behavior
 - Adding test-only methods to production classes
 - Mocking without understanding dependencies
+
+When considering heavy mocks for UI flows, prefer an e2e test with Playwright instead.
 
 ## Final Rule
 
