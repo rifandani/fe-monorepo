@@ -72,3 +72,55 @@ Everytime there is a change in the local env variables, you need to also push th
 ### @workspace/typescript-config
 
 [See here](./packages/typescript-config/README.md)
+
+## 📚 References
+
+### Feature Flag
+
+We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
+
+Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` (for `apps/spa`) or `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` (for `apps/web`) in `.env.dev` and `.env.prod`.
+
+> We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
+
+### Accessibility
+
+- [Learn Accessibility](https://web.dev/learn/accessibility/welcome)
+- [WCAG 2.2](https://www.w3.org/TR/WCAG22)
+
+### Observability
+
+- [`grafana/otel-lgtm` docker](https://github.dev/grafana/docker-otel-lgtm/)
+- [Grafana Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/)
+- [Grafana Tempo](https://grafana.com/docs/grafana/latest/datasources/tempo/)
+- [Grafana Loki](https://grafana.com/docs/grafana/latest/datasources/loki/)
+- [Grafana Pyroscope](https://grafana.com/docs/grafana/latest/datasources/pyroscope/)
+
+To check the traces and metrics in the local Grafana dashboard, run the `grafana/otel-lgtm` container. This will spin up a OpenTelemetry backend including Prometheus (metrics database), Tempo (traces database), Loki (logs database), and Pyroscope (profiling database). Login to dashboard at `http://localhost:3111` with credentials:
+
+- Username: `admin`
+- Password: `admin`
+
+### Performance
+
+- [Capo.js](https://rviscomi.github.io/capo.js/) enhancing the performance of HTML `<head>` by reordering it.
+- [Unlighthouse](https://unlighthouse.dev/) measuring the performance of all pages.
+- [Web.dev Performance](https://web.dev/learn/performance/welcome)
+- [Web Vitals](https://web.dev/explore/learn-core-web-vitals)
+
+### PWA
+
+- [Learn PWA](https://web.dev/learn/pwa/welcome)
+- [PWA Checklist](https://web.dev/articles/pwa-checklist)
+- [What PWA Can Do Today](https://whatpwacando.today/)
+
+### Security
+
+- [web.dev](https://web.dev/learn/privacy/welcome)
+
+### SEO
+
+- [Zhead](https://zhead.dev/) is a `<head>` database. Discover new tags to use to improve your SEO, accessibility and performance.
+- [Opengraph Image Playground](https://og-playground.vercel.app/).
+- [JSON-LD Playground](https://json-ld.org/playground/).
+- [Rich Results Test](https://search.google.com/test/rich-results) for Google or [schema.org Validator](https://validator.schema.org/) for general structured data validation.

@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import { simpleSitemapAndIndex } from 'sitemap'
 
 const OUTPUT_PATH = './public/sitemap.xml'
+// TODO: change this to the production domain when we know it
 const DOMAIN = process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3001'
 
 console.log('🚀 Generating sitemap...')
@@ -12,8 +13,8 @@ simpleSitemapAndIndex({
   hostname: DOMAIN,
   destinationDir: './public',
   sourceData: [
-    { url: '/', lastmod: new Date('2025-05-29').toISOString() },
-    { url: '/login', lastmod: new Date('2025-05-30').toISOString() },
+    { url: '/', lastmod: new Date().toISOString() },
+    { url: '/login', lastmod: new Date().toISOString() },
   ],
 }).then(() => {
   console.log(`✅ Sitemap generated successfully at: ${OUTPUT_PATH}`)

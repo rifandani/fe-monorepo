@@ -20,12 +20,12 @@
     "ky": "1.14.3",
     "radashi": "12.7.1",
     "react": ">=19.0.0",
-    "type-fest": "5.4.3",
+    "type-fest": "5.4.4",
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@types/node": "25.2.2",
-    "@types/react": "19.2.13",
+    "@types/node": "25.2.3",
+    "@types/react": "19.2.14",
     "@workspace/typescript-config": "workspace:*",
     "typescript": "5.9.3"
   }
