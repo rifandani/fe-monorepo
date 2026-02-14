@@ -4,11 +4,9 @@
 
 ## 🎯 Todo
 
+- [ ] always update [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767)
-- [ ] consider moving `ui` into `@workspace/ui`. This requires the UI to be bundled with tailwindcss, so we need to have 2 versions, one for SPA and one for nextjs
-- [ ] always update [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo. Consider it as living document
 - [ ] remove feature flag (flagsmith) related things, but before that fork this repo and create another repo so that we can still have example repo for feature flag
-- [ ] playwright creating & verifying E2E test
 
 ## 🛠️ Upgrading Dependencies
 

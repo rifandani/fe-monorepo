@@ -19,8 +19,8 @@
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
 - [ ] [Expo Launch](https://expo.dev/blog/introducing-expo-launch) (check on the config from the examples app, it should have the correct config to be able to deploy app just by github url)
 - [ ] Otel for observability (embrace sdk)
-- [ ] Feature flags
 - [ ] Expo v54
+- [ ] AGENTS.md
 
 ## 📦 Prerequisite
 
