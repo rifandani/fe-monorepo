@@ -15,7 +15,7 @@
     "test": "dotenvx run --env-file=.env.dev -- playwright test",
     "test:ui": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test --ui --headed",
     "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only --shard=$SHARD_INDEX/$SHARD_TOTAL",
-    "meta": "bunx check-site-meta 3001 -p 3051",
+    "check-site-meta": "bunx check-site-meta 3001 -p 3051",
     "dev": "cp .env.dev .env.local && vite dev",
     "dev:prod": "cp .env.prod .env.local && vite dev --mode production",
     "build": "cp .env.dev .env.local && vite build --mode development",

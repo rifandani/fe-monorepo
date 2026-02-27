@@ -11,7 +11,7 @@ declare module 'react-aria-components' {
   }
 }
 
-export function AppAriaProvider({ locale, children}: PropsWithChildren<{ locale: string }>) {
+export function AppAriaProvider({ locale, children }: PropsWithChildren<{ locale: string }>) {
   const router = useRouter()
 
   return (

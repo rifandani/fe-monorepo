@@ -11,6 +11,10 @@
 - [ ] consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 - [ ] drizzle beta
 
+## Testing
+
+**CI limitation**: We can’t run E2E in CI yet because auth must be mocked on the server (RSC/server actions), and `next.onFetch` (Next experimental test mode) only intercepts external `fetch`, not relative URLs handled by Next route handlers. So tests run locally with a local DB.
+
 ## Auth
 
 When adding/removing/changing auth schema:
