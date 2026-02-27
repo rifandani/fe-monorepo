@@ -17,8 +17,8 @@ jobs:
     name: Lint monorepos
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: QuiiBz/sherif@v1.6.1
+      - uses: actions/checkout@v6.0.2
+      - uses: QuiiBz/sherif@v1.10.0
         # with:
         # args: '--ignore-rule root-package-manager-field'
 
@@ -26,12 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v2.0.2
-        with:
-          bun-version: latest
+        uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -53,12 +51,10 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'e2e skip') && !contains(github.event.head_commit.message, 'skip e2e')"
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v2.0.2
-        with:
-          bun-version: latest
+        uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -76,7 +72,7 @@ jobs:
           SHARD_TOTAL: ${{ matrix.shardTotal }}
 
       - name: Save playwright report as artifact
-        uses: actions/upload-artifact@v4.6.1
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: spa-playwright-report-${{ matrix.shardIndex }}
@@ -98,12 +94,10 @@ jobs:
   #   if: "!contains(github.event.head_commit.message, 'e2e skip') && !contains(github.event.head_commit.message, 'skip e2e')"
   #   steps:
   #     - name: Checkout branch
-  #       uses: actions/checkout@v4.2.2
+  #       uses: actions/checkout@v6.0.2
 
   #     - name: Install bun
-  #       uses: oven-sh/setup-bun@v2.0.2
-  #       with:
-  #         bun-version: latest
+  #       uses: oven-sh/setup-bun@v2
 
   #     - name: Install deps and disallow changes to lockfile
   #       run: bun ci
@@ -121,7 +115,7 @@ jobs:
   #         SHARD_TOTAL: ${{ matrix.shardTotal }}
 
   #     - name: Save playwright report as artifact
-  #       uses: actions/upload-artifact@v4.6.1
+  #       uses: actions/upload-artifact@v7
   #       if: always()
   #       with:
   #         name: web-playwright-report-${{ matrix.shardIndex }}
@@ -133,10 +127,10 @@ jobs:
     environment: dev
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v2.0.2
+        uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -152,10 +146,10 @@ jobs:
     environment: dev
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.2
 
       - name: Install bun
-        uses: oven-sh/setup-bun@v2.0.2
+        uses: oven-sh/setup-bun@v2
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
