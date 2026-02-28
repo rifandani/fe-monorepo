@@ -98,7 +98,6 @@ export default antfu(
       '.agents/skills/**',
       '.husky/**',
       'babel.config.js',
-      'commitlint.config.js',
     ],
   },
   // From the second arguments they are ESLint Flat Configs. You can have multiple configs
