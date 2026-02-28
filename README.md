@@ -6,7 +6,6 @@
 
 - [ ] always update [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767), after we use oxlint, add cursor hooks `afterFileEdit` to do lint fix
-- [ ] remove feature flag (flagsmith) related things, but before that fork this repo and create another repo so that we can still have example repo for feature flag
 
 ## 🛠️ Upgrading Dependencies
 
@@ -72,14 +71,6 @@ Source of truth is local env files. When changing them, update deployment/CI pro
 [See here](./packages/typescript-config/README.md)
 
 ## 📚 References
-
-### Feature Flag
-
-We are using [OpenFeature](https://openfeature.dev/) to manage feature flags and [Flagsmith](https://flagsmith.com/) as the provider. Flagsmith can be self-hosted.
-
-Navigate to [Flagsmith UI](http://localhost:8000/), login using your account. Create a project. Get "SDK Key" from the "development" and "production" environments. Paste it in `VITE_FLAGSMITH_ENVIRONMENT_ID` (for `apps/spa`) or `NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID` (for `apps/web`) in `.env.dev` and `.env.prod`.
-
-> We don't execute feature flag in server, we only execute it in the browser, that's why we use the client SDK.
 
 ### Accessibility
 

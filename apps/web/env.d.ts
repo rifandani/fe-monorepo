@@ -26,7 +26,5 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_APP_TITLE: string
     readonly NEXT_PUBLIC_APP_URL: string
     readonly NEXT_PUBLIC_API_BASE_URL: string
-    readonly NEXT_PUBLIC_FLAGSMITH_ENVIRONMENT_ID: string
-    readonly NEXT_PUBLIC_FLAGSMITH_API_URL: string
   }
 }

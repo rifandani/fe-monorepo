@@ -8,8 +8,6 @@ export const ENV = createEnv({
     VITE_APP_TITLE: z.string().min(1),
     VITE_APP_URL: z.url(),
     VITE_API_BASE_URL: z.url(),
-    VITE_FLAGSMITH_ENVIRONMENT_ID: z.string().min(1),
-    VITE_FLAGSMITH_API_URL: z.url(),
     VITE_OTEL_EXPORTER_OTLP_ENDPOINT: z.url(),
     VITE_OTEL_LOG_LEVEL: z.enum(['ALL', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'VERBOSE', 'NONE']),
   },

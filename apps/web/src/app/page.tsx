@@ -2,7 +2,6 @@ import { auth } from '@/auth/utils/auth'
 import { LanguageToggle } from '@/core/components/language-toggle.client'
 import { ProfileMenu } from '@/core/components/profile-menu.client'
 import { ThemeToggle } from '@/core/components/theme-toggle.client'
-import { WelcomeMessage } from '@/core/components/welcome-message.client'
 import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
 import { getTranslations } from 'next-intl/server'
 import { headers } from 'next/headers'
@@ -51,7 +50,6 @@ export default async function HomePage() {
       >
         {t('welcome')}
       </h2>
-      <WelcomeMessage />
 
       <div className="flex items-center gap-x-2">
         <ThemeToggle />

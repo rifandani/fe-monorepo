@@ -5,7 +5,6 @@ import { ThemeToggle } from '@/core/components/theme-toggle'
 import { useSeo } from '@/core/hooks/use-seo'
 import { useTranslation } from '@/core/providers/i18n/context'
 import { reportWebVitals } from '@/core/utils/web-vitals'
-import { useStringFlagValue } from '@openfeature/react-sdk'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
@@ -59,7 +58,6 @@ function HomeRoute() {
       >
         {t('welcome')}
       </h2>
-      <WelcomeMessage />
 
       <div className="flex items-center gap-x-2">
         <ThemeToggle />
@@ -68,11 +66,4 @@ function HomeRoute() {
       </div>
     </div>
   )
-}
-
-function WelcomeMessage() {
-  // it takes time to load the flag first, then it resolves to the correct value
-  const home_welcome_message = useStringFlagValue('home_welcome_message', '')
-
-  return <p className="font-mono text-sm">{home_welcome_message}</p>
 }

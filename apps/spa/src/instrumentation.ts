@@ -82,7 +82,6 @@ registerInstrumentations({
     new FetchInstrumentation({
       ignoreUrls: [
         /api\.iconify\.design/,
-        new RegExp(ENV.VITE_FLAGSMITH_API_URL),
       ],
     }),
   ],
