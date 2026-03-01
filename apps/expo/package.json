@@ -51,7 +51,7 @@
     "@expo-google-fonts/space-grotesk": "0.3.0",
     "@expo/vector-icons": "14.1.0",
     "@hookform/resolvers": "5.2.2",
-    "@react-navigation/native": "7.1.14",
+    "@react-navigation/native": "7.1.31",
     "@t3-oss/env-core": "0.13.10",
     "@tamagui/animations-moti": "1.126.16",
     "@tamagui/babel-plugin": "1.126.16",
