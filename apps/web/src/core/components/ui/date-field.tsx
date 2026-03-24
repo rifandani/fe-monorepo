@@ -1,6 +1,4 @@
 'use client'
-import { fieldStyles } from './field'
-import { cx } from '@/core/utils/primitive'
 import type { DateFieldProps, DateInputProps, DateValue } from 'react-aria-components'
 import {
   DateField as DateFieldPrimitive,
@@ -8,6 +6,8 @@ import {
   DateSegment,
 } from 'react-aria-components'
 import { twJoin } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { fieldStyles } from './field'
 
 export function DateField<T extends DateValue>({ className, ...props }: DateFieldProps<T>) {
   return (

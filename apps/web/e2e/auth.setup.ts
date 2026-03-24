@@ -1,13 +1,17 @@
 import { expect, test } from './_base'
 import { validUser } from './_helper'
 
+const emailRegex = /email/i
+const passwordRegex = /password/i
+const loginRegex = /login|masuk/i
+
 test('auth setup', async ({ page }) => {
   // when we're not authenticated, the app redirects to the login page
   await page.goto('/login')
 
-  const emailInput = page.getByRole('textbox', { name: /email/i })
-  const passwordInput = page.getByRole('textbox', { name: /password/i })
-  const submitBtn = page.getByRole('button', { name: /login|masuk/i })
+  const emailInput = page.getByRole('textbox', { name: emailRegex })
+  const passwordInput = page.getByRole('textbox', { name: passwordRegex })
+  const submitBtn = page.getByRole('button', { name: loginRegex })
 
   await emailInput.fill(validUser.email)
   await passwordInput.fill(validUser.password)

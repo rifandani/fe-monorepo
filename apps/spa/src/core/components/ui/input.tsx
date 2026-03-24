@@ -1,4 +1,3 @@
-import { cx } from '@/core/utils/primitive'
 import type { GroupProps, InputProps as PrimitiveInputProps } from 'react-aria-components'
 import {
   Group,
@@ -6,6 +5,7 @@ import {
   Input as InputPrimitive,
 
 } from 'react-aria-components'
+import { cx } from '@/core/utils/primitive'
 
 interface InputProps extends PrimitiveInputProps {
   ref?: React.RefObject<HTMLInputElement>

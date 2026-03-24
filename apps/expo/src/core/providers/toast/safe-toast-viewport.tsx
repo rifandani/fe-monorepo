@@ -1,5 +1,5 @@
-import { ToastViewport } from '@tamagui/toast'
 import type { ComponentPropsWithoutRef } from 'react'
+import { ToastViewport } from '@tamagui/toast'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Props = ComponentPropsWithoutRef<typeof ToastViewport>

@@ -1,9 +1,5 @@
-import { useIsMobile } from '@/core/hooks/use-mobile'
-import { cx } from '@/core/utils/primitive'
 import type { ReactElement } from 'react'
-import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
 import type { ToggleButtonGroupProps } from 'react-aria-components'
-import { ToggleButton, ToggleButtonGroup } from 'react-aria-components'
 import type {
   CartesianGridProps as CartesianGridPrimitiveProps,
   CartesianGridProps,
@@ -12,6 +8,15 @@ import type {
   XAxisProps as XAxisPropsPrimitive,
   YAxisProps as YAxisPrimitiveProps,
 } from 'recharts'
+import type { ContentType as LegendContentType } from 'recharts/types/component/DefaultLegendContent'
+import type {
+  NameType,
+  Props as TooltipContentProps,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent'
+import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
+import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
+import { ToggleButton, ToggleButtonGroup } from 'react-aria-components'
 import {
   CartesianGrid as CartesianGridPrimitive,
   Legend as LegendPrimitive,
@@ -20,14 +25,9 @@ import {
   XAxis as XAxisPrimitive,
   YAxis as YAxisPrimitive,
 } from 'recharts'
-import type { ContentType as LegendContentType } from 'recharts/types/component/DefaultLegendContent'
-import type {
-  NameType,
-  Props as TooltipContentProps,
-  ValueType,
-} from 'recharts/types/component/DefaultTooltipContent'
-import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
 import { twJoin, twMerge } from 'tailwind-merge'
+import { useIsMobile } from '@/core/hooks/use-mobile'
+import { cx } from '@/core/utils/primitive'
 
 // #region Chart Types
 type ChartType = 'default' | 'stacked' | 'percent'
@@ -166,6 +166,8 @@ interface BaseChartProps<TValue extends ValueType, TName extends NameType>
   hideYAxis?: boolean
 }
 
+const chartIdRegex = /:/g
+
 function Chart({
   id,
   className,
@@ -186,7 +188,7 @@ function Chart({
   }) {
   const isMobile = useIsMobile()
   const uniqueId = useId()
-  const chartId = useMemo(() => `chart-${id || uniqueId.replace(/:/g, '')}`, [id, uniqueId])
+  const chartId = useMemo(() => `chart-${id || uniqueId.replace(chartIdRegex, '')}`, [id, uniqueId])
 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null)
 
@@ -194,7 +196,6 @@ function Chart({
     setSelectedLegend(legendItem)
   }, [])
 
-  const _data = data ?? []
   const _dataKey = dataKey ?? 'value'
 
   const value = useMemo(
@@ -202,11 +203,11 @@ function Chart({
       config,
       selectedLegend,
       onLegendSelect,
-      data: _data,
+      data: data ?? [],
       dataKey: _dataKey,
       layout,
     }),
-    [config, selectedLegend, onLegendSelect, _data, _dataKey, layout],
+    [config, selectedLegend, onLegendSelect, data, _dataKey, layout],
   )
 
   return (
@@ -314,7 +315,7 @@ function XAxis({
 
   const ticks
     = displayEdgeLabelsOnly && data?.length && dataKey
-      ? [data[0]?.[dataKey], data[data.length - 1]?.[dataKey]]
+      ? [data[0]?.[dataKey], data.at(-1)?.[dataKey]]
       : undefined
 
   const tick = layout === 'horizontal' ? tickHorizontal : undefined

@@ -1,10 +1,5 @@
 'use client'
 
-import { Checkbox } from './checkbox'
-import { Text } from '@/core/components/ui/text'
-import { cx } from '@/core/utils/primitive'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { createContext, use } from 'react'
 import type {
   CellProps,
   ColumnProps,
@@ -14,6 +9,8 @@ import type {
   TableBodyProps,
   TableProps as TablePrimitiveProps,
 } from 'react-aria-components'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { createContext, use } from 'react'
 import {
   Button,
   Cell,
@@ -29,6 +26,9 @@ import {
   useTableOptions,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
+import { Text } from '@/core/components/ui/text'
+import { cx } from '@/core/utils/primitive'
+import { Checkbox } from './checkbox'
 
 interface TableProps extends Omit<TablePrimitiveProps, 'className'> {
   allowResize?: boolean

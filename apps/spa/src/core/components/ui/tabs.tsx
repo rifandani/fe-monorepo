@@ -1,7 +1,5 @@
 'use client'
 
-import { cx } from '@/core/utils/primitive'
-import { createContext, use } from 'react'
 import type {
   TabListProps as TabListPrimitiveProps,
   TabPanelProps as TabPanelPrimitiveProps,
@@ -9,6 +7,7 @@ import type {
   TabProps as TabPrimitiveProps,
   TabsProps as TabsPrimitiveProps,
 } from 'react-aria-components'
+import { createContext, use } from 'react'
 import {
   composeRenderProps,
   TabPanels as PrimitiveTabPanels,
@@ -21,6 +20,7 @@ import {
   useSlottedContext,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
 
 interface TabsProps extends TabsPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>

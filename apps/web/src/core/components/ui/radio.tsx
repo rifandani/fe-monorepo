@@ -1,6 +1,4 @@
 'use client'
-import { Label } from './field'
-import { cx } from '@/core/utils/primitive'
 import type { RadioGroupProps, RadioProps } from 'react-aria-components'
 import {
   composeRenderProps,
@@ -8,6 +6,8 @@ import {
   Radio as RadioPrimitive,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { Label } from './field'
 
 export function RadioGroup({ className, ...props }: RadioGroupProps) {
   return (

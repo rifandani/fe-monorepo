@@ -1,4 +1,6 @@
 import type { MenuContentProps } from './menu'
+import { createContext, use, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 import {
   MenuContent,
 
@@ -10,8 +12,6 @@ import {
   MenuSeparator,
   MenuShortcut,
 } from './menu'
-import { createContext, use, useRef, useState } from 'react'
-import { twMerge } from 'tailwind-merge'
 
 interface ContextMenuTriggerContextType {
   buttonRef: React.RefObject<HTMLButtonElement | null>

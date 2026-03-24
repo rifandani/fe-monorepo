@@ -1,4 +1,3 @@
-import { Devtools } from '@/core/providers/devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import type { NavigateOptions, RegisteredRouter, ToPathOption } from '@tanstack/react-router'
 import {
@@ -7,6 +6,7 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { RouterProvider as RACRouterProvider } from 'react-aria-components'
+import { Devtools } from '@/core/providers/devtools'
 
 declare module 'react-aria-components' {
   interface RouterConfig {

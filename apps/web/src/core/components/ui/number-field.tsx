@@ -1,11 +1,11 @@
 'use client'
 
-import { fieldStyles } from './field'
+import type { ButtonProps, InputProps, NumberFieldProps } from 'react-aria-components'
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { Button, NumberField as NumberFieldPrimitive } from 'react-aria-components'
 import { Input, InputGroup } from '@/core/components/ui/input'
 import { cx } from '@/core/utils/primitive'
-import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
-import type { ButtonProps, InputProps, NumberFieldProps } from 'react-aria-components'
-import { Button, NumberField as NumberFieldPrimitive } from 'react-aria-components'
+import { fieldStyles } from './field'
 
 function NumberField({ className, ...props }: NumberFieldProps) {
   return (

@@ -1,5 +1,5 @@
-import '@/core/styles/globals.css'
-import './instrumentation'
+import { trace } from '@opentelemetry/api'
+import { createRoot } from 'react-dom/client'
 
 import {
   TRACER_REACT_ENTRY,
@@ -9,8 +9,8 @@ import {
 } from '@/core/constants/global'
 import { Entry } from '@/core/entry'
 import { recordException } from '@/core/utils/telemetry'
-import { trace } from '@opentelemetry/api'
-import { createRoot } from 'react-dom/client'
+import '@/core/styles/globals.css'
+import './instrumentation'
 
 const tracer = trace.getTracer(TRACER_REACT_ENTRY)
 const root = document.getElementById('root')

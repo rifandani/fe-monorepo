@@ -1,3 +1,6 @@
+import type { DialogProps, ModalOverlayProps } from 'react-aria-components'
+import { DialogTrigger as DialogTriggerPrimitive, Modal, ModalOverlay } from 'react-aria-components'
+import { cx } from '@/core/utils/primitive'
 import {
   Dialog,
   DialogBody,
@@ -9,9 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './dialog'
-import { cx } from '@/core/utils/primitive'
-import type { DialogProps, ModalOverlayProps } from 'react-aria-components'
-import { DialogTrigger as DialogTriggerPrimitive, Modal, ModalOverlay } from 'react-aria-components'
 
 const Sheet = DialogTriggerPrimitive
 

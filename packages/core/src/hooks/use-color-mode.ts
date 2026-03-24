@@ -69,6 +69,7 @@ export interface UseColorModeOptions<T extends string = BasicColorMode> {
  * Media query for detecting system dark mode preference
  */
 const COLOR_SCHEME_QUERY = '(prefers-color-scheme: dark)'
+const splitRegex = /\s/g
 
 /**
  * Reactive color mode with auto data persistence.
@@ -163,9 +164,9 @@ export function useColorMode<T extends string = BasicColorMode>(
       }
 
       if (_attribute === 'class') {
-        const current = _mode.split(/\s/g)
+        const current = _mode.split(splitRegex)
         const truthyModes = Object.values(modes)
-          .flatMap(i => (i || '').split(/\s/g))
+          .flatMap(i => (i || '').split(splitRegex))
           .filter(Boolean)
 
         for (const v of truthyModes) {

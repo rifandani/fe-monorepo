@@ -1,11 +1,10 @@
-import { cx } from '@/core/utils/primitive'
-import { use } from 'react'
 import type {
   ButtonProps,
   DisclosureGroupProps,
   DisclosurePanelProps,
   DisclosureProps,
 } from 'react-aria-components'
+import { use } from 'react'
 import {
   Button,
   composeRenderProps,
@@ -16,6 +15,7 @@ import {
   DisclosurePanel as PrimitiveDisclosurePanel,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
 
 export function DisclosureGroup({ className, ...props }: DisclosureGroupProps) {
   return (

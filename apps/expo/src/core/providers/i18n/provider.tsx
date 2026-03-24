@@ -1,9 +1,9 @@
-import { fallbackLocale, initI18n, pickSupportedLocale } from '@/core/providers/i18n/client'
-import { useLocales } from 'expo-localization'
 import type { PropsWithChildren } from 'react'
+import { useLocales } from 'expo-localization'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AppState } from 'react-native'
+import { fallbackLocale, initI18n, pickSupportedLocale } from '@/core/providers/i18n/client'
 
 function AppStateLanguageListener({ children }: PropsWithChildren) {
   const locale = useLocale()
@@ -15,7 +15,7 @@ function AppStateLanguageListener({ children }: PropsWithChildren) {
 
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       // App has come to the foreground and locale is supported
-      if (appStateRef.current.match(/inactive|background/) && nextAppState === 'active' && locale) {
+      if (['inactive', 'background'].includes(appStateRef.current) && nextAppState === 'active' && locale) {
         i18n.changeLanguage(locale?.languageCode ?? fallbackLocale)
       }
 

@@ -1,7 +1,7 @@
+import type { SetStateAction } from 'react'
 import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
 import { useUpdate } from '@workspace/core/hooks/use-update'
 import { isFunction } from 'radashi'
-import type { SetStateAction } from 'react'
 import { useMemo, useRef } from 'react'
 
 interface Options<T> {
@@ -63,16 +63,13 @@ export function useControllableValue<T = any>(
   } = options
 
   const value = props[valuePropName] as T
-  const isControlled = Object.prototype.hasOwnProperty.call(
-    props,
-    valuePropName,
-  )
+  const isControlled = Object.hasOwn(props, valuePropName)
 
   const initialValue = useMemo(() => {
     if (isControlled)
       return value
 
-    if (Object.prototype.hasOwnProperty.call(props, defaultValuePropName))
+    if (Object.hasOwn(props, defaultValuePropName))
       return props[defaultValuePropName]
 
     return defaultValue

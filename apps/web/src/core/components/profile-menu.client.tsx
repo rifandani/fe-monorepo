@@ -1,12 +1,12 @@
 'use client'
 
-import { logoutAction } from '@/auth/actions/auth'
-import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui'
-import { Avatar } from '@/core/components/ui/avatar'
 import { Icon } from '@iconify/react'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import * as React from 'react'
+import { logoutAction } from '@/auth/actions/auth'
+import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui'
+import { Avatar } from '@/core/components/ui/avatar'
 
 export function ProfileMenu({ username }: { username: string }) {
   const t = useTranslations()

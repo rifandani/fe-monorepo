@@ -96,6 +96,8 @@ type PathsWithNoParams = {
   [K in DotPathsFor]: keyof Params<K> extends never ? K : never
 }[DotPathsFor]
 
+const replaceKeyRegex = /-?[^-]+$/
+
 export function initI18n({
   locale,
   fallbackLocale,
@@ -142,7 +144,7 @@ function getOrderedLocaleAndParentLocales(locale: string) {
   let parentLocale = locale
   while (parentLocale !== '') {
     locales.push(parentLocale)
-    parentLocale = parentLocale.replace(/-?[^-]+$/, '')
+    parentLocale = parentLocale.replace(replaceKeyRegex, '')
   }
   return locales
 }

@@ -1,5 +1,3 @@
-import { Checkbox } from './checkbox'
-import { cx } from '@/core/utils/primitive'
 import type { GridListItemProps, GridListProps, TextProps } from 'react-aria-components'
 import {
   Button,
@@ -11,6 +9,8 @@ import {
   Text,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { Checkbox } from './checkbox'
 
 function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
   return (

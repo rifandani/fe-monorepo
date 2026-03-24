@@ -1,14 +1,12 @@
 'use client'
 
-import { Checkbox } from './checkbox'
-import { cx } from '@/core/utils/primitive'
-import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import type {
   TreeItemContentProps,
   TreeItemContentRenderProps,
   TreeItemProps,
   TreeProps,
 } from 'react-aria-components'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   Button,
   TreeItemContent,
@@ -16,6 +14,8 @@ import {
   Tree as TreePrimitive,
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { Checkbox } from './checkbox'
 
 function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
   return (

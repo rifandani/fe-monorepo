@@ -1,15 +1,15 @@
 'use client'
 
-import type { buttonStyles } from './button'
-import { Button } from './button'
-import { Loader } from './loader'
-import { CameraIcon, FolderIcon, PaperClipIcon } from '@heroicons/react/24/outline'
 import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components'
+import type { VariantProps } from 'tailwind-variants'
+import type { buttonStyles } from './button'
+import { CameraIcon, FolderIcon, PaperClipIcon } from '@heroicons/react/24/outline'
 import {
   FileTrigger as FileTriggerPrimitive,
 
 } from 'react-aria-components'
-import type { VariantProps } from 'tailwind-variants'
+import { Button } from './button'
+import { Loader } from './loader'
 
 export interface FileTriggerProps
   extends FileTriggerPrimitiveProps,

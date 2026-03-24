@@ -1,5 +1,9 @@
 'use client'
+import type { LineProps } from 'recharts'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
+import { useMemo } from 'react'
+import { Line, LineChart as LineChartPrimitive } from 'recharts'
 import {
 
   CartesianGrid,
@@ -15,10 +19,6 @@ import {
   XAxis,
   YAxis,
 } from './chart'
-import { useMemo } from 'react'
-import type { LineProps } from 'recharts'
-import { Line, LineChart as LineChartPrimitive } from 'recharts'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 
 export interface LineChartProps<TValue extends ValueType, TName extends NameType>
   extends BaseChartProps<TValue, TName> {

@@ -1,12 +1,5 @@
 'use client'
 
-import { DropdownKeyboard } from './dropdown'
-import { Loader } from './loader'
-import type { MenuSectionProps } from './menu'
-import { MenuDescription, MenuItem, MenuLabel, MenuSeparator } from './menu'
-import { cx } from '@/core/utils/primitive'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { createContext, use, useEffect } from 'react'
 import type {
   AutocompleteProps,
   CollectionRenderer,
@@ -15,6 +8,9 @@ import type {
   ModalOverlayProps,
   SearchFieldProps,
 } from 'react-aria-components'
+import type { MenuSectionProps } from './menu'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { createContext, use, useEffect } from 'react'
 import {
   Autocomplete,
   Button,
@@ -34,6 +30,10 @@ import {
   useFilter,
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { DropdownKeyboard } from './dropdown'
+import { Loader } from './loader'
+import { MenuDescription, MenuItem, MenuLabel, MenuSeparator } from './menu'
 
 interface CommandMenuProviderProps {
   isPending?: boolean

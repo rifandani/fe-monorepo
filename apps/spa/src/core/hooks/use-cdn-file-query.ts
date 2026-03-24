@@ -1,15 +1,15 @@
 import type { UndefinedInitialDataOptions } from '@tanstack/react-query'
+import type { CdnValidKeys, GetCdnFileSuccessSchema } from '@workspace/core/apis/cdn'
+import type { HTTPError } from 'ky'
+import type { Except } from 'type-fest'
 import {
   skipToken,
   useQuery,
 } from '@tanstack/react-query'
-import type { CdnValidKeys, GetCdnFileSuccessSchema } from '@workspace/core/apis/cdn'
 import {
   cdnKeys,
   cdnRepositories,
 } from '@workspace/core/apis/cdn'
-import type { HTTPError } from 'ky'
-import type { Except } from 'type-fest'
 
 interface Opt {
   key: CdnValidKeys

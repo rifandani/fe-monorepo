@@ -25,6 +25,11 @@ export function clamp({
   return Math.min(Math.max(value, min), max)
 }
 
+const indonesianPhoneNumberFormatRegex = /(\d{3})(\d+)/
+const indonesianPhoneNumberFormatRegex2 = /(\d{3})(\d{4})/
+const indonesianPhoneNumberFormatRegex3 = /(\d{4})(\d{4})/
+const indonesianPhoneNumberFormatRegex4 = /(\d{4})(\d{5,})/
+
 /**
  * Format phone number based on mockup, currently only covered minimum 11 characters and max 15 characters include +62
  * e.g +62-812-7363-6365
@@ -42,17 +47,21 @@ export function indonesianPhoneNumberFormat(phoneNumber: string) {
   let regexp: RegExp
 
   if (uniqNumber.length <= 6)
-    regexp = /(\d{3})(\d+)/
+    regexp = indonesianPhoneNumberFormatRegex
   else if (uniqNumber.length === 7)
-    regexp = /(\d{3})(\d{4})/
+    regexp = indonesianPhoneNumberFormatRegex2
   else if (uniqNumber.length === 8)
-    regexp = /(\d{4})(\d{4})/
-  else regexp = /(\d{4})(\d{5,})/
+    regexp = indonesianPhoneNumberFormatRegex3
+  else regexp = indonesianPhoneNumberFormatRegex4
 
   const matches = uniqNumber.replace(regexp, '$1-$2')
 
   return [code, ndc, matches].join('-')
 }
+
+const replaceCamelCaseRegex = /\.?([A-Z]+)/g
+const replaceCamelCaseRegex2 = /^_/
+const replaceCamelCaseRegex3 = /(_\w)|(-\w)/g
 
 /**
  * convert deep nested object keys to camelCase.
@@ -70,8 +79,8 @@ export function toCamelCase<T>(object: unknown): T {
       transformedObject = {}
       for (const key of Object.keys(object)) {
         if ((object as Record<string, unknown>)[key] !== undefined) {
-          const firstUnderscore = key.replace(/^_/, '')
-          const newKey = firstUnderscore.replace(/(_\w)|(-\w)/g, k =>
+          const firstUnderscore = key.replace(replaceCamelCaseRegex2, '')
+          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, k =>
             (k[1] as string).toUpperCase())
           transformedObject[newKey] = toCamelCase(
             (object as Record<string, unknown>)[key],
@@ -101,10 +110,10 @@ export function toSnakeCase<T>(object: unknown): T {
         if ((object as Record<string, unknown>)[key] !== undefined) {
           const newKey = key
             .replace(
-              /\.?([A-Z]+)/g,
+              replaceCamelCaseRegex,
               (_, y) => `_${y ? (y as string).toLowerCase() : ''}`,
             )
-            .replace(/^_/, '')
+            .replace(replaceCamelCaseRegex2, '')
           transformedObject[newKey] = toSnakeCase(
             (object as Record<string, unknown>)[key],
           )
@@ -115,15 +124,22 @@ export function toSnakeCase<T>(object: unknown): T {
   return transformedObject as T
 }
 
+const removeLeadingZerosRegex = /^0+[1-9]+/
+const removeLeadingZeroRegex = /^(0)/
+const removeLeadingZeros2Regex = /^0{2,}/
+
 /**
  * Remove leading zero
  */
 export function removeLeadingZeros(value: string) {
-  if (/^0+[1-9]+/.test(value))
-    return value.replace(/^(0)/, '')
+  if (removeLeadingZerosRegex.test(value))
+    return value.replace(removeLeadingZeroRegex, '')
 
-  return value.replace(/^0{2,}/, '0')
+  return value.replace(removeLeadingZeros2Regex, '0')
 }
+
+const removeLeadingWhitespaceRegex = /^\s*$/
+const removeLeadingWhitespace2Regex = /^\s*/
 
 /**
  * Remove leading whitespaces
@@ -131,8 +147,8 @@ export function removeLeadingZeros(value: string) {
 export function removeLeadingWhitespace(value?: string) {
   if (!value)
     return ''
-  if (/^\s*$/.test(value))
-    return value.replace(/^\s*/, '')
+  if (removeLeadingWhitespaceRegex.test(value))
+    return value.replace(removeLeadingWhitespace2Regex, '')
 
   return value
 }
@@ -211,7 +227,7 @@ export function objectToFormData<T extends UnknownRecord>(
       }
       else if (typeof _obj === 'object' && _obj) {
         for (const key in _obj) {
-          if (Object.prototype.hasOwnProperty.call(_obj, key)) {
+          if (Object.hasOwn(_obj, key)) {
             if (_rootName === '') {
               // @ts-expect-error i'm not typescript wizard
               appendFormData(_obj[key], key)
@@ -305,7 +321,7 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
       }
       else if (typeof _obj === 'object' && _obj) {
         for (const key in _obj) {
-          if (Object.prototype.hasOwnProperty.call(_obj, key)) {
+          if (Object.hasOwn(_obj, key)) {
             if (_rootName === '') {
               // @ts-expect-error i'm not typescript wizard
               appendFormData(_obj[key], key)

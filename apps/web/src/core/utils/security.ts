@@ -8,6 +8,14 @@
  * Customize each function based on your needs.
  */
 
+const botPatterns = [
+  /bot/i,
+  /crawl/i,
+  /slurp/i,
+  /spider/i,
+  /mediapartners/i,
+]
+const reg = /[&<>"'/`]/g
 /**
  * Detects if a request might be coming from a bot.
  *
@@ -18,13 +26,6 @@
  * @returns true if a bot is suspected, false otherwise.
  */
 export function isBot(userAgent: string): boolean {
-  const botPatterns = [
-    /bot/i,
-    /crawl/i,
-    /slurp/i,
-    /spider/i,
-    /mediapartners/i,
-  ]
   return botPatterns.some(pattern => pattern.test(userAgent))
 }
 
@@ -57,6 +58,5 @@ export function sanitizeInput(input: string): string {
     '/': '&#x2F;',
     '`': '&#x60;',
   }
-  const reg = /[&<>"'/`]/g
   return input.replace(reg, match => map[match] as string)
 }

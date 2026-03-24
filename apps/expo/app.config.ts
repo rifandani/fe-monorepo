@@ -1,5 +1,5 @@
-import { version } from './package.json'
 import type { ConfigContext, ExpoConfig } from 'expo/config'
+import { version } from './package.json'
 
 /**
  * create a new project in EAS, and copy the project ID, slug, and expo account username, and paste here

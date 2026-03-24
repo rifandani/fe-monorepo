@@ -1,11 +1,11 @@
 'use client'
 
+import type { Key, Selection, TextFieldProps } from 'react-aria-components'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 import { FieldError } from '@/core/components/ui/field'
 import { Tag, TagGroup, TagList } from '@/core/components/ui/tag-group'
 import { TextField } from '@/core/components/ui/text-field'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Key, Selection, TextFieldProps } from 'react-aria-components'
-import { twMerge } from 'tailwind-merge'
 
 interface TagInputProps
   extends Pick<
@@ -24,11 +24,15 @@ interface TagInputProps
   name?: string
 }
 
+const splitPatternRegex = /[,;]/
+const whitespaceRegex = /\s{2,}/g
+const tabRegex = /[\t\r\n]|\\t|\\r|\\n/g
+
 export function TagField({
   value,
   onChange,
   defaultValue = [],
-  splitPattern = /[,;]/,
+  splitPattern = splitPatternRegex,
   className,
   inputValue: controlledInput,
   onInputValueChange,
@@ -89,8 +93,8 @@ export function TagField({
     inputValue.split(splitPattern).forEach((raw) => {
       const formatted = raw
         .trim()
-        .replace(/\s{2,}/g, ' ')
-        .replace(/[\t\r\n]|\\t|\\r|\\n/g, '')
+        .replace(whitespaceRegex, ' ')
+        .replace(tabRegex, '')
       if (formatted === '')
         return
       const exists = Array.from(next).some(

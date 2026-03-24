@@ -1,13 +1,12 @@
 'use client'
 
-import { Keyboard } from './keyboard'
-import { CheckIcon } from '@heroicons/react/16/solid'
 import type {
   ListBoxItemProps,
   ListBoxSectionProps,
   SeparatorProps,
   TextProps,
 } from 'react-aria-components'
+import { CheckIcon } from '@heroicons/react/16/solid'
 import {
   Collection,
   composeRenderProps,
@@ -19,6 +18,7 @@ import {
 } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
+import { Keyboard } from './keyboard'
 
 const dropdownSectionStyles = tv({
   slots: {

@@ -6,6 +6,8 @@ export const ipAddressHeaders = {
   forwarded: 'forwarded',
 } as const
 
+const forwardedRegex = /for=([^;,\s]+)/
+
 /**
  * Get the client IP address from the request headers.
  *
@@ -43,7 +45,7 @@ export function getClientIpAddress(headers: Headers): string | null {
   // 5. Forwarded (RFC 7239 standard)
   const forwarded = headers.get(ipAddressHeaders.forwarded)
   if (forwarded) {
-    const match = forwarded.match(/for=([^;,\s]+)/)
+    const match = forwarded.match(forwardedRegex)
     if (match?.[1]) {
       return match[1]
     }

@@ -17,10 +17,10 @@ function setRafTimeout(callback: () => void, delay = 0): Handle {
     id: 0,
   }
 
-  const startTime = new Date().getTime()
+  const startTime = Date.now()
 
   const loop = () => {
-    const current = new Date().getTime()
+    const current = Date.now()
     if (current - startTime >= delay)
       callback()
     else handle.id = requestAnimationFrame(loop)

@@ -12,15 +12,15 @@ function setRafInterval(callback: () => void, delay = 0) {
       id: setInterval(callback, delay),
     }
   }
-  let start = new Date().getTime()
+  let start = Date.now()
   const handle: Handle = {
     id: 0,
   }
   const loop = () => {
-    const current = new Date().getTime()
+    const current = Date.now()
     if (current - start >= delay) {
       callback()
-      start = new Date().getTime()
+      start = Date.now()
     }
     handle.id = requestAnimationFrame(loop)
   }

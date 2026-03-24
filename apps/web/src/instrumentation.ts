@@ -1,7 +1,14 @@
+import type { Instrumentation } from 'next'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME } from '@/core/constants/global'
 import { Logger } from '@/core/utils/logger'
-import type { Instrumentation } from 'next'
+
+const openApiRegex = /^\/openapi(?:\/.*)?$/
+const nextStaticRegex = /^\/_next\/static\/.*/
+const nextSourceMapRegex = /^\/__nextjs_source-map\//
+const nextStackFramesRegex = /^\/__nextjs_original-stack-frames\//
+const wellKnownRegex = /^\/\.well-known\/.*/
+const imageRegex = /\.(?:png|jpg|jpeg|gif|svg|ico|webp)$/i
 
 /**
  * Instrumentation is the process of using code to integrate monitoring and logging tools into your application.
@@ -49,13 +56,6 @@ export async function register() {
         // new FsInstrumentation(), too verbose
         new HttpInstrumentation({
           ignoreIncomingRequestHook: (request) => {
-            const openApiRegex = /^\/openapi(?:\/.*)?$/
-            const nextStaticRegex = /^\/_next\/static\/.*/
-            const nextSourceMapRegex = /^\/__nextjs_source-map\//
-            const nextStackFramesRegex = /^\/__nextjs_original-stack-frames\//
-            const wellKnownRegex = /^\/\.well-known\/.*/
-            const imageRegex = /\.(?:png|jpg|jpeg|gif|svg|ico|webp)$/i
-
             return (
               request.url === '/manifest.webmanifest'
               || openApiRegex.test(request.url ?? '')

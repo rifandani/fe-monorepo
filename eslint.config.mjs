@@ -50,11 +50,11 @@ export default antfu(
     rules: {
       'node/prefer-global/process': 'off',
       'react-refresh/only-export-components': 'off',
-      'perfectionist/sort-imports': ['error', {
-        groups: [
-          'side-effect',
-        ],
-      }],
+      // 'perfectionist/sort-imports': ['error', {
+      //   groups: [
+      //     'side-effect',
+      //   ],
+      // }],
       // 'perfectionist/sort-imports': ['error', {
       //   // partitionByNewLine: true,
       //   groups: [

@@ -1,3 +1,5 @@
+import { metrics } from '@opentelemetry/api'
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
 import {
   METRICS_METER_WEB_VITALS,
   METRICS_METER_WEB_VITALS_CLS,
@@ -6,8 +8,6 @@ import {
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
 } from '@/core/constants/global'
-import { metrics } from '@opentelemetry/api'
-import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
 
 const meter = metrics.getMeter(METRICS_METER_WEB_VITALS)
 

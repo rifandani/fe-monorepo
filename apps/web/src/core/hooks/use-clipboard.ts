@@ -10,7 +10,7 @@ export function useClipboard() {
       setCopied(true)
       if (timeoutRef.current)
         window.clearTimeout(timeoutRef.current)
-      timeoutRef.current = window.setTimeout(() => setCopied(false), 2000)
+      timeoutRef.current = window.setTimeout(setCopied, 2000, false)
       return true
     }
     catch {
