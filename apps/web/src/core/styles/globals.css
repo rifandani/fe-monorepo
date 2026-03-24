@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "tailwindcss-react-aria-components";
@@ -274,11 +276,11 @@
 [data-chart] .recharts-cartesian-axis-tick text {
   fill: var(--muted-fg);
 }
-[data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
+[data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
   stroke: var(--border);
 }
 @supports (color: color-mix(in lab, red, red)) {
-  [data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
+  [data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
     stroke: color-mix(in oklab, var(--border) 80%, transparent);
   }
 }
@@ -289,16 +291,16 @@
 [data-chart] .recharts-layer {
   outline: none;
 }
-[data-chart] .recharts-polar-grid [stroke='#ccc'] {
+[data-chart] .recharts-polar-grid [stroke="#ccc"] {
   stroke: var(--border);
 }
 [data-chart] .recharts-radial-bar-background-sector {
   fill: var(--muted);
 }
-[data-chart] .recharts-reference-line [stroke='#ccc'] {
+[data-chart] .recharts-reference-line [stroke="#ccc"] {
   stroke: var(--border);
 }
-[data-chart] .recharts-sector[stroke='#fff'] {
+[data-chart] .recharts-sector[stroke="#fff"] {
   stroke: transparent;
 }
 [data-chart] .recharts-sector {
@@ -307,7 +309,7 @@
 [data-chart] .recharts-surface {
   outline: none;
 }
-[data-chart] .recharts-dot[fill='#fff'] {
+[data-chart] .recharts-dot[fill="#fff"] {
   fill: var(--line-color, var(--border));
 }
 [data-chart] .recharts-active-dot > .recharts-dot {

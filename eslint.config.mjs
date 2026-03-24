@@ -98,6 +98,7 @@ export default antfu(
       '.agents/skills/**',
       '.husky/**',
       'babel.config.js',
+      // disable the "#ccc" errors
       '**/globals.css',
     ],
   },

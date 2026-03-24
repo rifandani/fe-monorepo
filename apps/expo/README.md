@@ -11,6 +11,7 @@
 
 ## 🎯 Todo
 
+- [ ] consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
 - [ ] Use our own i18n library from `@workspace/core` instead of `i18next`
 - [ ] Use `expo-secure-store` to store sensitive data in android keystore or ios keychain instead of encrypted `mmkv`
 - [ ] Use [Rozenite](https://www.rozenite.dev/) devtools for debugging
@@ -18,9 +19,9 @@
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
 - [ ] [Expo Launch](https://expo.dev/blog/introducing-expo-launch) (check on the config from the examples app, it should have the correct config to be able to deploy app just by github url)
-- [ ] Otel for observability (embrace sdk)
-- [ ] Expo v54
+- [ ] Expo v55
 - [ ] AGENTS.md
+- [ ] Otel for observability (embrace sdk)
 
 ## 📦 Prerequisite
 
