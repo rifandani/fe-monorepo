@@ -17,20 +17,25 @@ function registerPeriodicSync(period: number, swUrl: string, r: ServiceWorkerReg
     if ('onLine' in navigator && !navigator.onLine)
       return
 
-    // eslint-disable-next-line no-console
-    console.log('🔵 Checking for SW updates...')
-    const resp = await fetch(swUrl, {
-      cache: 'no-store',
-      headers: {
-        'cache': 'no-store',
-        'cache-control': 'no-cache',
-      },
-    })
-
-    if (resp?.status === 200) {
+    try {
       // eslint-disable-next-line no-console
-      console.log('🔵 Updating SW...')
-      await r.update()
+      console.log('🔵 Checking for SW updates...')
+      const resp = await fetch(swUrl, {
+        cache: 'no-store',
+        headers: {
+          'cache': 'no-store',
+          'cache-control': 'no-cache',
+        },
+      })
+
+      if (resp?.status === 200) {
+        // eslint-disable-next-line no-console
+        console.log('🔵 Updating SW...')
+        await r.update()
+      }
+    }
+    catch (err) {
+      console.warn('SW update check failed:', err)
     }
   }, period)
 }

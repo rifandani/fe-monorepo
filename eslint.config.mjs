@@ -98,6 +98,7 @@ export default antfu(
       '.agents/skills/**',
       '.husky/**',
       'babel.config.js',
+      '**/globals.css',
     ],
   },
   // From the second arguments they are ESLint Flat Configs. You can have multiple configs

@@ -19,12 +19,12 @@ test.describe('unauthorized', () => {
   test.use({ storageState: { cookies: [], origins: [] } })
 
   test('should redirect back to /login', async ({ page }) => {
-    const usernameInput = page.getByRole('textbox', { name: /username/i })
+    const emailInput = page.getByRole('textbox', { name: /email/i })
     const passwordInput = page.getByRole('textbox', { name: /password/i })
     const submitBtn = page.getByRole('button', { name: /login|masuk/i })
 
     await page.waitForURL(/\/login/)
-    await expect(usernameInput).toBeVisible()
+    await expect(emailInput).toBeVisible()
     await expect(passwordInput).toBeVisible()
     await expect(submitBtn).toBeVisible()
   })

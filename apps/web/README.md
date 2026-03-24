@@ -7,8 +7,8 @@
 
 ## 🎯 Todo
 
-- [ ] install orpc (no agent skills yet)
 - [ ] consider using `@tanstack/react-form` instead of `react-hook-form` (`next-safe-action` still does not support `@tanstack/react-form`)
+- [ ] consider removing extra dependencies, like `next-safe-action`
 - [ ] drizzle beta
 - [ ] database seeding script with `drizzle-seed`
 
