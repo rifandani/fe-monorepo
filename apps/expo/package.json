@@ -54,7 +54,7 @@
     "@react-navigation/native": "7.1.14",
     "@t3-oss/env-core": "0.13.10",
     "@tamagui/animations-moti": "1.126.16",
-    "@tamagui/babel-plugin": "1.126.16",
+    "@tamagui/babel-plugin": "1.144.4",
     "@tamagui/config": "1.126.16",
     "@tamagui/theme-builder": "1.126.16",
     "@tamagui/toast": "1.126.16",
