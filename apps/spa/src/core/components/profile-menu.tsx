@@ -31,7 +31,7 @@ export function ProfileMenu() {
         <MenuSection>
           <MenuHeader separator>{t('account')}</MenuHeader>
 
-          <MenuItem id="profile" className="gap-x-2">
+          <MenuItem id="profile" className="mt-1 gap-x-2">
             <UserIcon className="size-6" />
             <span>{t('profile')}</span>
           </MenuItem>

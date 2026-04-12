@@ -1,3 +1,5 @@
+'use client'
+
 import type { FieldErrorProps, LabelProps, TextProps } from 'react-aria-components'
 import {
   FieldError as FieldErrorPrimitive,
@@ -28,7 +30,6 @@ export const fieldStyles = tv({
   base: [
     'w-full',
     '[&>[data-slot=control]+[data-slot=control]]:mt-2',
-    '[&>[data-slot=label]+[data-slot=control]]:mt-2',
     '[&>[data-slot=label]+[data-slot=control]]:mt-2',
     '[&>[data-slot=label]+[slot=\'description\']]:mt-1',
     '[&>[slot=description]+[data-slot=control]]:mt-2',

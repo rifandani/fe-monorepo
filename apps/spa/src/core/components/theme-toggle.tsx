@@ -1,5 +1,3 @@
-'use client'
-
 import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
 import type { Selection } from 'react-stately'
 import { ComputerDesktopIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
@@ -30,7 +28,7 @@ export function ThemeToggle() {
         <MenuSection>
           <MenuHeader separator>{t('theme')}</MenuHeader>
 
-          <MenuItem id="auto">{t('system')}</MenuItem>
+          <MenuItem id="auto" className="mt-1">{t('system')}</MenuItem>
           <MenuItem id="light">{t('light')}</MenuItem>
           <MenuItem id="dark">{t('dark')}</MenuItem>
         </MenuSection>

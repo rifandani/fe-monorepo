@@ -15,7 +15,7 @@
 - Remember to always use EXACT version for each dependency
 - Run `bun bump:deps` to check for outdated dependencies, then run `bun install` to install it
 - To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
-- To upgrade IntentUI components (last updated at ["March 9" release](https://intentui.com/docs/prologue/release-notes)), run interactively `bunx shadcn@latest add @intentui/all -o` (copy changes in toast props into `providers/toast/context.tsx` and remove generated `toast.tsx` file) (use `react-stately` instead of `@react-stately/color`) (use `react-aria` instead of `@react-aria/i18n`) (change `@/hooks/use-mobile` into `@/core/hooks/use-mobile`, `@/hooks/use-clipboard` into `@/core/hooks/use-clipboard`)
+- To upgrade IntentUI components (last updated at ["March 25" release](https://intentui.com/docs/prologue/release-notes)), run interactively `bunx shadcn@latest add @intentui/all -o` (copy changes in toast props into `providers/toast/context.tsx` and remove generated `toast.tsx` file) (use `react-stately` instead of `@react-stately/color`) (use `react-aria` instead of `@react-aria/i18n`) (change `@/hooks/use-mobile` into `@/core/hooks/use-mobile`, `@/hooks/use-clipboard` into `@/core/hooks/use-clipboard`)
 - If there's MINOR upgrade in `playwright`, run `bun web test:install` to install new version of chromium
 - Run `bun web test`, `bun spa test`, and `bun expo test:dev` to run E2E tests (run the dev server / emulator first)
 - Run `bun web build`, `bun spa build`, and `bun expo build:android:dev:local` to build with development env

@@ -25,7 +25,7 @@ export function LanguageToggle() {
         <MenuSection>
           <MenuHeader separator>{t('language')}</MenuHeader>
 
-          <MenuItem id="en-us">English</MenuItem>
+          <MenuItem id="en-us" className="mt-1">English</MenuItem>
           <MenuItem id="id-id">Indonesia</MenuItem>
         </MenuSection>
       </MenuContent>
