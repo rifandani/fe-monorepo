@@ -1,3 +1,5 @@
+'use client'
+
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { twMerge } from 'tailwind-merge'
 import { fieldStyles } from '@/core/components/ui/field'

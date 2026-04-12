@@ -1,3 +1,5 @@
+'use client'
+
 import { twMerge } from 'tailwind-merge'
 
 export interface SkeletonProps extends React.ComponentProps<'div'> {

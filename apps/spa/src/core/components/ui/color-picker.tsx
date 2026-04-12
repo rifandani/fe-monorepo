@@ -1,3 +1,5 @@
+'use client'
+
 import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components'
 import { EyeDropperIcon } from '@heroicons/react/24/solid'
 import { use } from 'react'

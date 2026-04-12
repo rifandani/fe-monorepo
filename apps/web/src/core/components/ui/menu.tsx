@@ -1,3 +1,5 @@
+'use client'
+
 import type {
   ButtonProps,
   MenuItemProps as MenuItemPrimitiveProps,

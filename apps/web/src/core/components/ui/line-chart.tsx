@@ -1,3 +1,5 @@
+'use client'
+
 import type { LineProps } from 'recharts'
 import type { BaseChartProps } from './chart'
 import { useMemo } from 'react'

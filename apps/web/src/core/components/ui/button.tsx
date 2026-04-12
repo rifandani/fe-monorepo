@@ -1,3 +1,5 @@
+'use client'
+
 import type { ButtonProps as ButtonPrimitiveProps } from 'react-aria-components'
 import type { VariantProps } from 'tailwind-variants'
 import {

@@ -1,3 +1,5 @@
+'use client'
+
 import type { ComponentProps } from 'react'
 import type { BaseChartProps } from './chart'
 import { Fragment, useId, useMemo } from 'react'

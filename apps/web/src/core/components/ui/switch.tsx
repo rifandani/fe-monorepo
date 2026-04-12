@@ -1,3 +1,5 @@
+'use client'
+
 import type { SwitchProps } from 'react-aria-components'
 import { Switch as SwitchPrimitive } from 'react-aria-components'
 import { twJoin, twMerge } from 'tailwind-merge'

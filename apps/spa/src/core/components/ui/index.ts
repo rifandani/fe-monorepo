@@ -1,3 +1,5 @@
+'use client'
+
 export * from './avatar'
 export * from './badge'
 export * from './breadcrumbs'

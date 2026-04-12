@@ -1,3 +1,5 @@
+'use client'
+
 import type { DateFieldProps, DateInputProps, DateValue } from 'react-aria-components'
 
 import {
