@@ -1,3 +1,5 @@
+'use client'
+
 import type { RadioGroupProps, RadioProps } from 'react-aria-components'
 import {
   composeRenderProps,
@@ -65,5 +67,5 @@ export function Radio({ className, children, ...props }: RadioProps) {
 }
 
 export function RadioLabel(props: React.ComponentProps<typeof Label>) {
-  return <Label elementType="span" {...props} />
+  return <Label elementType="span" data-slot="control-label" {...props} />
 }

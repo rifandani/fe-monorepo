@@ -1,3 +1,5 @@
+'use client'
+
 import type { TabPanelProps, TabsProps } from 'react-aria-components'
 import type { TabListProps } from '@/core/components/ui/tabs'
 import { TabsContext, useSlottedContext } from 'react-aria-components'

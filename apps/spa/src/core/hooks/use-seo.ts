@@ -9,7 +9,7 @@ type UseSeoMetaParams = Parameters<typeof useSeoMeta>[0]
 const appName = SERVICE_NAME
 const appDescription = 'Bulletproof React.js 19 Template'
 const appBaseUrl = ENV.VITE_APP_URL
-const appOgImage = '/og.png'
+const appOgImage = '/og.png' // TODO: change to the actual prod og image (e.g. https://example.com/og.png)
 const appPublisher = 'Rizeki Rifandani'
 const ldParams = {
   author: {
@@ -44,9 +44,11 @@ export function useSeo(params: UseSeoMetaParams = { title: 'Layout' }) {
     ogDescription: description,
     ogUrl: appBaseUrl,
     ogImage: params?.ogImage ?? appOgImage,
+    ogImageHeight: 441,
+    ogImageWidth: 843,
     twitterTitle: title,
     twitterDescription: description,
-    twitterSite: appBaseUrl,
+    twitterSite: `@${appBaseUrl}`,
     twitterImage: params?.ogImage ?? appOgImage,
   }
 

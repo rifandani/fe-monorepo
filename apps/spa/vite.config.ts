@@ -1,10 +1,12 @@
 import type { PluginOption } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
+import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import { devtools } from '@tanstack/devtools-vite'
+import { devtools as tanstackDevtools } from '@tanstack/devtools-vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import react from '@vitejs/plugin-react'
+import { Unhead } from '@unhead/react/vite'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -18,14 +20,18 @@ export default defineConfig({
   },
   server: {
     port: 3001,
+    forwardConsole: true,
+  },
+  devtools: {
+    enabled: true,
   },
   plugins: [
-    devtools(),
+    tanstackDevtools(),
     tailwindcss(),
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    react(),
+    Unhead(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     tanstackRouter(),
     visualizer({

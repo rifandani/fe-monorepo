@@ -3,7 +3,7 @@
   "display": "spa in node for vite & playwright",
   "compilerOptions": {
     "composite": true,
-    "module": "ESNext",
+    "module": "esnext",
     "moduleResolution": "bundler",
     "types": [
       "node"

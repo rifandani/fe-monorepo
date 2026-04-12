@@ -12,9 +12,8 @@ export function useMount(fn: () => void) {
     return
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // eslint-disable-next-line react/rules-of-hooks
   useEffect(() => {
     fn()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

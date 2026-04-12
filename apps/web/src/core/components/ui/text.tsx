@@ -1,4 +1,3 @@
-'use client'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { cx } from '@/core/utils/primitive'

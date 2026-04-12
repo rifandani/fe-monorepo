@@ -62,7 +62,6 @@ export function useRafTimeout(fn: () => void, delay: number | undefined) {
       if (timerRef.current)
         clearRafTimeout(timerRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay])
 
   const clear = useCallback(() => {

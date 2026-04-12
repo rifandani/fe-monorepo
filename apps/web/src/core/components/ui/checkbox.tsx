@@ -1,4 +1,3 @@
-'use client'
 import type { CheckboxGroupProps, CheckboxProps } from 'react-aria-components'
 import { CheckIcon, MinusIcon } from '@heroicons/react/20/solid'
 import {
@@ -90,5 +89,5 @@ export function Checkbox({ className, children, ...props }: CheckboxProps) {
 }
 
 export function CheckboxLabel(props: React.ComponentProps<typeof Label>) {
-  return <Label elementType="span" {...props} />
+  return <Label elementType="span" className="control-label" {...props} />
 }

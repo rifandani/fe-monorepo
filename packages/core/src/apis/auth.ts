@@ -48,7 +48,7 @@ export function authRepositories(http: InstanceType<typeof Http>) {
           json,
           hooks: {
             afterResponse: [
-              async (request, _options, response) => {
+              async ({ request, response }) => {
                 if (response.status === 200) {
                   const data = (await response.json()) as AuthLoginResponseSchema
 

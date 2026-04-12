@@ -1,5 +1,3 @@
-'use client'
-
 import type { CalendarDate } from '@internationalized/date'
 import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'

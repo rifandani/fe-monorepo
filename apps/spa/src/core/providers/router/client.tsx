@@ -1,5 +1,4 @@
 import type { ErrorComponentProps } from '@tanstack/react-router'
-import { Icon } from '@iconify/react'
 import { trace } from '@opentelemetry/api'
 import { createRouter } from '@tanstack/react-router'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
@@ -52,8 +51,8 @@ export const router = createRouter({
 function PendingRoute() {
   return (
     <div className="flex items-center justify-center">
-      <Icon
-        icon="svg-spinners:3-dots-fade"
+      <use
+        href="#svg-spinners--3-dots-fade"
         height="5em"
         className="text-primary"
       />

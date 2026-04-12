@@ -1,3 +1,5 @@
+'use client'
+
 import type { MenuContentProps } from './menu'
 import { createContext, use, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'

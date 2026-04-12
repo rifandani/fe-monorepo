@@ -2,7 +2,7 @@
 
 import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
 import type { Selection } from 'react-stately'
-import { Icon } from '@iconify/react'
+import { ComputerDesktopIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useColorMode } from '@workspace/core/hooks/use-color-mode'
 import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import { useTranslation } from '@/core/providers/i18n/context'
@@ -14,16 +14,7 @@ export function ThemeToggle() {
   return (
     <Menu>
       <Button intent="outline">
-        <Icon
-          icon={
-            theme === 'auto'
-              ? 'lucide:computer'
-              : theme === 'light'
-                ? 'lucide:sun'
-                : 'lucide:moon'
-          }
-          className="size-6"
-        />
+        {theme === 'auto' ? <ComputerDesktopIcon className="size-6" /> : theme === 'light' ? <SunIcon className="size-6" /> : <MoonIcon className="size-6" />}
       </Button>
 
       <MenuContent

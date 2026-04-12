@@ -1,4 +1,3 @@
-'use client'
 import type { MeterProps as PrimitiveMeterProps, MeterRenderProps as PrimitiveMeterRenderProps } from 'react-aria-components'
 import { createContext, use } from 'react'
 import {

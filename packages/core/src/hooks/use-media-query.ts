@@ -18,11 +18,9 @@ export function useMediaQuery(query: string): boolean {
     return false
   }, [])
 
-  // eslint-disable-next-line react/prefer-use-state-lazy-initialization
   const [matches, setMatches] = React.useState<boolean>(getMatches(query))
 
   const handleChange = React.useCallback(() => {
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
     setMatches(getMatches(query))
   }, [query, getMatches])
 

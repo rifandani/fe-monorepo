@@ -1,5 +1,4 @@
 import type { LineProps } from 'recharts'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
 import { useMemo } from 'react'
 import { Line, LineChart as LineChartPrimitive } from 'recharts'
@@ -19,14 +18,13 @@ import {
   YAxis,
 } from './chart'
 
-export interface LineChartProps<TValue extends ValueType, TName extends NameType>
-  extends BaseChartProps<TValue, TName> {
+export interface LineChartProps extends BaseChartProps {
   connectNulls?: boolean
   lineProps?: LineProps
   chartProps?: Omit<React.ComponentProps<typeof LineChartPrimitive>, 'data' | 'stackOffset'>
 }
 
-export function LineChart<TValue extends ValueType, TName extends NameType>({
+export function LineChart({
   data = [],
   dataKey,
   colors = DEFAULT_COLORS,
@@ -59,14 +57,17 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
   chartProps,
   lineProps,
   ...props
-}: LineChartProps<TValue, TName>) {
+}: LineChartProps) {
   const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
     [configKeys, colors],
   )
 
-  const configEntries = useMemo(() => Object.entries(config), [config])
+  const configEntries = useMemo(
+    () => configKeys.map(category => [category, config[category]] as const),
+    [config, configKeys],
+  )
 
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
@@ -117,7 +118,7 @@ export function LineChart<TValue extends ValueType, TName extends NameType>({
           {!children
             ? configEntries.map(([category, values]) => {
                 const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
-                const color = getColorValue(values.color || categoryColors.get(category))
+                const color = getColorValue(values?.color || categoryColors.get(category))
 
                 return (
                   <Line

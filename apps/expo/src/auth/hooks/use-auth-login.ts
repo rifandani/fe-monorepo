@@ -11,6 +11,9 @@ import {
   useMutationState,
 } from '@tanstack/react-query'
 import { authKeys, authRepositories } from '@workspace/core/apis/auth'
+import {
+  errorResponseSchema,
+} from '@workspace/core/apis/core'
 import { HTTPError } from 'ky'
 import { http } from '@/core/services/http'
 
@@ -35,11 +38,11 @@ export function useAuthLogin(
   return useMutation<Success, Error, Exclude<Params, undefined>>({
     mutationKey: authKeys.login(params),
     mutationFn: json => authRepositories(http).login({ json }),
-    onError: async (error, variables, onMutateResult, context) => {
+    onError: (error, variables, onMutateResult, context) => {
       let message = error.message
       if (error instanceof HTTPError) {
-        const json = (await error.response.json())
-        message = json.message
+        const parsed = errorResponseSchema.safeParse(error.data)
+        message = parsed.success ? parsed.data.message : error.message
       }
 
       toast.show(message, {

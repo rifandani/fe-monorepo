@@ -61,7 +61,6 @@ function CheckForUpdatesListItem() {
         preset: 'error',
       } as ToastCustomData,
     }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []))
 
   useFocusEffect(useCallback(() => {
@@ -72,7 +71,6 @@ function CheckForUpdatesListItem() {
         } as ToastCustomData,
       }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUpdatePending]))
 
   if (!isUpdateAvailable)

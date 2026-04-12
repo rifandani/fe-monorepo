@@ -136,7 +136,6 @@ export function useColorMode<T extends string = BasicColorMode>(
    */
   const state = useMemo(
     () => (store[0] === 'auto' ? system : store[0]) as 'light' | 'dark' | T,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [store[0], system],
   )
 
@@ -199,7 +198,6 @@ export function useColorMode<T extends string = BasicColorMode>(
     else {
       updateHTMLAttrs(selector, attribute, modes[state])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attribute, modes, options.onChanged, selector, state])
 
   return store

@@ -1,5 +1,4 @@
 import type { ComponentProps } from 'react'
-import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { BaseChartProps } from './chart'
 import { Fragment, useId, useMemo } from 'react'
 import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
@@ -29,7 +28,7 @@ function getFillContent({
   fillType,
   stopOpacity,
 }: {
-  fillType: AreaChartProps<any, any>['fillType']
+  fillType: AreaChartProps['fillType']
   stopOpacity: number
 }): React.ReactNode {
   switch (fillType) {
@@ -47,15 +46,14 @@ function getFillContent({
   }
 }
 
-export interface AreaChartProps<TValue extends ValueType, TName extends NameType>
-  extends BaseChartProps<TValue, TName> {
+export interface AreaChartProps extends BaseChartProps {
   chartProps?: Omit<ComponentProps<typeof AreaChartPrimitive>, 'data' | 'stackOffset'>
   areaProps?: Partial<ComponentProps<typeof Area>>
   connectNulls?: boolean
   fillType?: 'gradient' | 'solid' | 'none'
 }
 
-export function AreaChart<TValue extends ValueType, TName extends NameType>({
+export function AreaChart({
   data = [],
   dataKey,
   colors = DEFAULT_COLORS,
@@ -93,7 +91,7 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
   hideGridLines = false,
   chartProps,
   ...props
-}: AreaChartProps<TValue, TName>) {
+}: AreaChartProps) {
   const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
@@ -102,7 +100,10 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
   const stacked = type === 'stacked' || type === 'percent'
   const areaId = useId()
 
-  const configEntries = useMemo(() => Object.entries(config), [config])
+  const configEntries = useMemo(
+    () => configKeys.map(category => [category, config[category]] as const),
+    [config, configKeys],
+  )
 
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
@@ -174,7 +175,7 @@ export function AreaChart<TValue extends ValueType, TName extends NameType>({
                 const categoryId = `${areaId}-${category.replace(slugRegExp, '')}`
                 const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
                 const stopOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 0.5
-                const color = getColorValue(values.color || categoryColors.get(category))
+                const color = getColorValue(values?.color || categoryColors.get(category))
 
                 return (
                   <Fragment key={categoryId}>

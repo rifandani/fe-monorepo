@@ -30,7 +30,6 @@ export function useTimeout(fn: () => void, delay?: number) {
       if (timerRef.current)
         clearTimeout(timerRef.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay])
 
   return clear

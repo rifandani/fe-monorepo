@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/rules-of-hooks */
 import { test as base, expect } from '@playwright/test'
 
 const username = 'emilys'

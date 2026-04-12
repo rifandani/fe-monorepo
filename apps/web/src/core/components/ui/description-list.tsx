@@ -1,4 +1,3 @@
-'use client'
 import { twMerge } from 'tailwind-merge'
 
 function DescriptionList({ className, ref, ...props }: React.ComponentProps<'dl'>) {

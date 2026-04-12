@@ -1,3 +1,5 @@
+'use client'
+
 import type { DateDuration } from '@internationalized/date'
 import type { DateRangePickerProps as DateRangePickerPrimitiveProps, DateValue, PopoverProps } from 'react-aria-components'
 import { CalendarDateRangeIcon } from '@heroicons/react/24/outline'

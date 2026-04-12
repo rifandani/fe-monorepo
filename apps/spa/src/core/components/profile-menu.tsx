@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import { ArrowRightStartOnRectangleIcon, Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from '@tanstack/react-router'
 import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
 import { Avatar } from '@/core/components/ui/avatar'
@@ -32,11 +32,11 @@ export function ProfileMenu() {
           <MenuHeader separator>{t('account')}</MenuHeader>
 
           <MenuItem id="profile" className="gap-x-2">
-            <Icon icon="lucide:user" />
+            <UserIcon className="size-6" />
             <span>{t('profile')}</span>
           </MenuItem>
           <MenuItem id="settings" className="gap-x-2">
-            <Icon icon="lucide:settings" />
+            <Cog6ToothIcon className="size-6" />
             <span>{t('settings')}</span>
           </MenuItem>
         </MenuSection>
@@ -45,7 +45,7 @@ export function ProfileMenu() {
 
         <MenuSection>
           <MenuItem id="logout" className="gap-x-2">
-            <Icon icon="lucide:log-out" />
+            <ArrowRightStartOnRectangleIcon className="size-6" />
             <p>{t('logout')}</p>
           </MenuItem>
         </MenuSection>

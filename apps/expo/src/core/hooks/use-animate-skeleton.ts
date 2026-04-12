@@ -26,7 +26,6 @@ export function useSkeletonAnimation({
 
   useEffect(() => {
     shared.value = withRepeat(withTiming(1, { duration: speed }), Infinity, true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return animatedStyle

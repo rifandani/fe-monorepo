@@ -24,6 +24,7 @@ export function createUseStorageState(getStorage: () => Storage | undefined) {
    * @param options Configuration options for storage behavior
    * @returns [storedValue, setValue] tuple for reading/writing storage
    */
+  // eslint-disable-next-line react/component-hook-factories
   function useStorageState<T>(key: string, options: Options<T> = {}) {
     let storage: Storage | undefined
     const {
@@ -86,7 +87,6 @@ export function createUseStorageState(getStorage: () => Storage | undefined) {
 
     // Update state when key changes
     useUpdateEffect(() => {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setState(getStoredValue())
     }, [key])
 

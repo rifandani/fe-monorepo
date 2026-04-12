@@ -1,5 +1,3 @@
-'use client'
-
 import type { ButtonProps } from '@/core/components/ui/button'
 import type { LinkProps } from '@/core/components/ui/link'
 import { twMerge } from 'tailwind-merge'

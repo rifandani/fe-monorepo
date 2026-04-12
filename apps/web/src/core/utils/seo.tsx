@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import type { Thing } from 'schema-dts'
+import type { Graph, Thing, WebPage, WebSite } from 'schema-dts'
 import { assign, uid } from 'radashi'
 import { ENV } from '@/core/constants/env'
 
@@ -67,13 +67,18 @@ export function createMetadata({
       type: 'website',
       siteName: applicationName,
       locale: 'en_US',
-      images: [ogImage],
+      images: [{
+        url: ogImage,
+        width: 843,
+        height: 441,
+        alt: parsedTitle,
+      }],
       countryName: 'Indonesia',
       url: appUrl,
     },
     twitter: {
       card: 'summary_large_image',
-      site: appUrl,
+      site: `@${appUrl}`,
       siteId: twitterHandle, // should be the id for the app itself
       creator: publisher,
       creatorId: twitterHandle,
@@ -110,15 +115,15 @@ export function createWebSite(props: {
   url: string
   title?: string
   description?: string
-}): Thing {
-  const defaultWebPage: Thing = {
+}): WebSite {
+  const defaultWebSite: WebSite = {
     '@type': 'WebSite',
     '@id': `${props.url}#${uid(16)}`,
     'name': '@workspace/web',
     'inLanguage': ['en-US', 'id-ID'],
   }
 
-  return assign(defaultWebPage, props)
+  return assign(defaultWebSite, props)
 }
 
 /**
@@ -128,8 +133,8 @@ export function createWebPage(props: {
   url: string
   title?: string
   description?: string
-}): Thing {
-  const defaultWebPage: Thing = {
+}): WebPage {
+  const defaultWebPage: WebPage = {
     '@type': 'WebPage',
     '@id': `${props.url}#${uid(16)}`,
     'name': '@workspace/web',
@@ -153,18 +158,19 @@ export function createWebPage(props: {
  * ]} />
  */
 export function JsonLd({ graphs }: {
-  graphs: Thing[]
+  graphs: readonly Thing[]
 }) {
+  const payload: Graph = {
+    '@context': 'https://schema.org',
+    '@graph': graphs,
+  }
   return (
     <script
       data-testid="schema-org-graph"
       type="application/ld+json"
       // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@graph': graphs,
-        }),
+        __html: JSON.stringify(payload),
       }}
     />
   )

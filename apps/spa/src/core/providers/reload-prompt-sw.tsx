@@ -96,7 +96,6 @@ export function ReloadPromptSw() {
         }),
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offlineReady, needRefresh])
 
   return (

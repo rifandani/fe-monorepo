@@ -1,4 +1,3 @@
-'use client'
 import { twMerge } from 'tailwind-merge'
 
 function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

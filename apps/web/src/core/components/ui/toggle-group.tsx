@@ -1,4 +1,3 @@
-'use client'
 import type { ToggleButtonGroupProps, ToggleButtonProps } from 'react-aria-components'
 import { createContext, use } from 'react'
 import {

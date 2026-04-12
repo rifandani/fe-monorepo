@@ -48,7 +48,6 @@ export function useGetUser(
         preset: 'error',
       } as ToastCustomData,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.error])
 
   return query

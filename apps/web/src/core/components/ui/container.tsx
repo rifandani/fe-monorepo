@@ -1,4 +1,3 @@
-'use client'
 import { twMerge } from 'tailwind-merge'
 
 export interface ContainerProps extends React.ComponentProps<'div'> {

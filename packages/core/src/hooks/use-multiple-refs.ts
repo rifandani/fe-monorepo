@@ -48,7 +48,7 @@ export function useMultipleRefs<T>(initialValue: T) {
     next() {
       return {
         done: false,
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+        // eslint-disable-next-line react/rules-of-hooks
         value: useRef(initialValue),
       }
     },

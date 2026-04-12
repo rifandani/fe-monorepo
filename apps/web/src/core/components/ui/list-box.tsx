@@ -1,5 +1,3 @@
-'use client'
-
 import type { ListBoxItemProps, ListBoxProps, ListBoxSectionProps } from 'react-aria-components'
 import type { DropdownSectionProps } from './dropdown'
 import { CheckIcon } from '@heroicons/react/20/solid'

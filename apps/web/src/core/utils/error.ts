@@ -3,6 +3,9 @@ import type { Span } from '@opentelemetry/api'
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { ActionResult } from '@/core/utils/action'
 import { SpanStatusCode } from '@opentelemetry/api'
+import {
+  errorResponseSchema,
+} from '@workspace/core/apis/core'
 import { HTTPError, TimeoutError } from 'ky'
 import { match, P } from 'ts-pattern'
 import { z } from 'zod'
@@ -35,11 +38,14 @@ export function simplifyErrorObject(error: Error) {
  * }
  * ```
  */
-export async function serverErrorMapper(error: Error, span?: Span): Promise<ActionResult<null>> {
-  return await match(error)
-    .with(P.instanceOf(HTTPError), async (err) => {
+export function serverErrorMapper(error: Error, span?: Span): ActionResult<null> {
+  return match(error)
+    .with(P.instanceOf(HTTPError), (err) => {
       const errorObject = simplifyErrorObject(err)
-      const json = await err.response.json<ErrorResponseSchema>()
+      const parsed = errorResponseSchema.safeParse(err.data)
+      const json: ErrorResponseSchema = parsed.success
+        ? parsed.data
+        : { message: err.message }
 
       logger.error('[login]: Error http login', {
         ...errorObject,

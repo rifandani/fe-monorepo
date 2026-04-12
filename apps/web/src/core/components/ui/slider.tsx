@@ -1,4 +1,3 @@
-'use client'
 import { use } from 'react'
 import {
   Slider as PrimitiveSlider,

@@ -73,7 +73,6 @@ export function useControllableValue<T = any>(
       return props[defaultValuePropName]
 
     return defaultValue
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const stateRef = useRef(initialValue)

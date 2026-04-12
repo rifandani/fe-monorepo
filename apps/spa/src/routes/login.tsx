@@ -1,5 +1,4 @@
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
-import { Icon } from '@iconify/react'
 import { useForm } from '@tanstack/react-form'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { authLoginRequestSchema } from '@workspace/core/apis/auth'
@@ -87,8 +86,8 @@ function LoginRoute() {
           md:flex md:items-center md:justify-center
         `}
         >
-          <Icon
-            icon="logos:react"
+          <use
+            href="#icon-reactjs"
             className="size-60 object-cover"
             aria-label="cool react logo"
           />

@@ -1,3 +1,5 @@
+'use client'
+
 import type { SelectProps } from 'react-aria-components'
 import { Children, isValidElement, useMemo, useRef } from 'react'
 import {
@@ -74,7 +76,7 @@ function MultipleSelect<T extends OptionBase>({
           <div
             data-slot="control"
             ref={triggerRef}
-            className="flex w-full items-center gap-2 rounded-lg border p-1"
+            className="flex w-full items-center gap-2 rounded-lg border bg-(--control-bg,transparent) p-1"
           >
             <SelectValue<T> className="flex-1">
               {({ selectedItems, state }) => (

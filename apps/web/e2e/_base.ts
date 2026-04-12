@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/rules-of-hooks */
 import { expect } from '@playwright/test'
 import { test as base } from 'next/experimental/testmode/playwright.js'
 import { validUser } from './_helper'

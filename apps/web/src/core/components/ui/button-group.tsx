@@ -1,4 +1,3 @@
-'use client'
 import type { VariantProps } from 'tailwind-variants'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'

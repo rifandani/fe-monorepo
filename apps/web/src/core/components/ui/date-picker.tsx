@@ -1,5 +1,3 @@
-'use client'
-
 import type { DateDuration } from '@internationalized/date'
 import type {
   DatePickerProps as DatePickerPrimitiveProps,
