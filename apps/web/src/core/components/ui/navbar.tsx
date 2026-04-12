@@ -1,3 +1,5 @@
+'use client'
+
 import type { LinkProps } from 'react-aria-components'
 import type { ButtonProps } from './button'
 import { Bars2Icon } from '@heroicons/react/20/solid'

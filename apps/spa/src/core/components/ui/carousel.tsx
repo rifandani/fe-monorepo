@@ -1,3 +1,5 @@
+'use client'
+
 import type { UseEmblaCarouselType } from 'embla-carousel-react'
 import type { ButtonProps } from './button'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
