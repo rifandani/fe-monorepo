@@ -24,9 +24,9 @@
     "spa": "bun --elide-lines=0 --filter @workspace/spa",
     "web": "bun --elide-lines=0 --filter @workspace/web",
     "expo": "bun --elide-lines=0 --filter @workspace/expo",
-    "spa:ci": "bun --filter @workspace/spa",
-    "web:ci": "bun --filter @workspace/web",
-    "expo:ci": "bun --filter @workspace/expo",
+    "spa:ci": "bun --elide-lines=0 --filter @workspace/spa",
+    "web:ci": "bun --elide-lines=0 --filter @workspace/web",
+    "expo:ci": "bun --elide-lines=0 --filter @workspace/expo",
     "spa:typecheck": "bun spa:ci typecheck",
     "web:typecheck": "bun web:ci typecheck",
     "expo:typecheck": "bun expo:ci typecheck"

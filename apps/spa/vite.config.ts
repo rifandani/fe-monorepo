@@ -22,9 +22,6 @@ export default defineConfig({
     port: 3001,
     forwardConsole: true,
   },
-  devtools: {
-    enabled: true,
-  },
   plugins: [
     tanstackDevtools(),
     tailwindcss(),
