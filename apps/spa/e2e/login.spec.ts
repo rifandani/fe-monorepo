@@ -32,7 +32,7 @@ test.describe('unauthorized', () => {
   }) => {
     const title = page.getByRole('heading', { level: 1 })
     const link = page.getByRole('link', { name: /register|daftar/i })
-    const logo = page.getByLabel('cool react logo').locator('path')
+    const logo = page.getByLabel('cool react logo')
 
     await expect(title).toBeVisible()
     await expect(link).toBeVisible()
