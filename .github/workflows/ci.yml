@@ -17,8 +17,8 @@ jobs:
     name: Lint monorepos
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
-      - uses: QuiiBz/sherif@v1.10.0
+      - uses: actions/checkout@v6
+      - uses: QuiiBz/sherif@v1.10.1
         # with:
         # args: '--ignore-rule root-package-manager-field'
 
@@ -26,7 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6
+
+      # ESLint runs via `node` (see node_modules/eslint/bin/eslint.js); default GHA Node is too old for Object.groupBy (ES2024).
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
@@ -51,7 +57,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'e2e skip') && !contains(github.event.head_commit.message, 'skip e2e')"
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
@@ -94,7 +105,7 @@ jobs:
   #   if: "!contains(github.event.head_commit.message, 'e2e skip') && !contains(github.event.head_commit.message, 'skip e2e')"
   #   steps:
   #     - name: Checkout branch
-  #       uses: actions/checkout@v6.0.2
+  #       uses: actions/checkout@v6
 
   #     - name: Install bun
   #       uses: oven-sh/setup-bun@v2
@@ -127,7 +138,12 @@ jobs:
     environment: dev
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
@@ -146,7 +162,12 @@ jobs:
     environment: dev
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
