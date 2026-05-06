@@ -1,4 +1,3 @@
-import { metrics } from '@opentelemetry/api'
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
 import {
   METRICS_METER_WEB_VITALS,
@@ -8,8 +7,9 @@ import {
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
 } from '@/core/constants/global'
+import { meterProvider } from '@/instrumentation'
 
-const meter = metrics.getMeter(METRICS_METER_WEB_VITALS)
+const meter = meterProvider.getMeter(METRICS_METER_WEB_VITALS)
 
 const lcpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_LCP, {
   description: 'Largest Contentful Paint',

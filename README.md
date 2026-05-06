@@ -51,27 +51,14 @@ Source of truth is local env files. When changing them, update deployment/CI pro
 
 ## 📱 Apps
 
-### @workspace/spa
-
-[See here](./apps/spa/README.md)
-
-### @workspace/web
-
-[See here](./apps/web/README.md)
-
-### @workspace/expo
-
-[See here](./apps/expo/README.md)
+- [@workspace/spa](./apps/spa/README.md)
+- [@workspace/web](./apps/web/README.md)
+- [@workspace/expo](./apps/expo/README.md)
 
 ## 📦 Packages
 
-### @workspace/core
-
-[See here](./packages/core/README.md)
-
-### @workspace/typescript-config
-
-[See here](./packages/typescript-config/README.md)
+- [@workspace/core](./packages/core/README.md)
+- [@workspace/typescript-config](./packages/typescript-config/README.md)
 
 ## 📚 References
 
@@ -83,12 +70,12 @@ Source of truth is local env files. When changing them, update deployment/CI pro
 ### Observability
 
 - [`grafana/otel-lgtm` docker](https://github.dev/grafana/docker-otel-lgtm/)
-- [Grafana Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/)
-- [Grafana Tempo](https://grafana.com/docs/grafana/latest/datasources/tempo/)
-- [Grafana Loki](https://grafana.com/docs/grafana/latest/datasources/loki/)
-- [Grafana Pyroscope](https://grafana.com/docs/grafana/latest/datasources/pyroscope/)
+- [Grafana Prometheus](https://grafana.com/docs/grafana/latest/datasources/prometheus/) for metrics
+- [Grafana Tempo](https://grafana.com/docs/grafana/latest/datasources/tempo/) for traces
+- [Grafana Loki](https://grafana.com/docs/grafana/latest/datasources/loki/) for logs
+- [Grafana Pyroscope](https://grafana.com/docs/grafana/latest/datasources/pyroscope/) for profiling
 
-To check the traces and metrics in the local Grafana dashboard, run the `grafana/otel-lgtm` container. This will spin up a OpenTelemetry backend including Prometheus (metrics database), Tempo (traces database), Loki (logs database), and Pyroscope (profiling database). Login to dashboard at `http://localhost:3111` with credentials:
+Login to dashboard at `http://localhost:3111` with credentials:
 
 - Username: `admin`
 - Password: `admin`

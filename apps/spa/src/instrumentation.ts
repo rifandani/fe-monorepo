@@ -59,7 +59,7 @@ const tracerProvider = new WebTracerProvider({
   ],
 })
 
-const meterProvider = new MeterProvider({
+export const meterProvider = new MeterProvider({
   resource,
   readers: [
     new PeriodicExportingMetricReader({
