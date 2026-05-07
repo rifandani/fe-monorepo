@@ -13,6 +13,7 @@ out
 stats.html
 .react-router
 .tanstack
+.evlog
 
 # misc
 .DS_Store

@@ -26,5 +26,13 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_APP_TITLE: string
     readonly NEXT_PUBLIC_APP_URL: string
     readonly NEXT_PUBLIC_API_BASE_URL: string
+    readonly NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT: string
+    readonly NEXT_PUBLIC_OTEL_LOG_LEVEL: string
+
+    /**
+     * Server environment variables
+     */
+    readonly DATABASE_URL: string
+    readonly BETTER_AUTH_SECRET: string
   }
 }

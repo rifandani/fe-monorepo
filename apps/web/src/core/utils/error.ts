@@ -1,5 +1,4 @@
 import type { Span } from '@opentelemetry/api'
-
 import type { ErrorResponseSchema } from '@workspace/core/apis/core'
 import type { ActionResult } from '@/core/utils/action'
 import { SpanStatusCode } from '@opentelemetry/api'
@@ -9,21 +8,9 @@ import {
 import { HTTPError, TimeoutError } from 'ky'
 import { match, P } from 'ts-pattern'
 import { z } from 'zod'
-import { Logger } from '@/core/utils/logger'
+import { simplifyErrorObject } from '@/core/utils/error-helper'
+import { log } from '@/core/utils/evlog'
 import 'server-only'
-
-const logger = new Logger('action.error')
-
-/**
- * Simplify error object to a more readable format
- */
-export function simplifyErrorObject(error: Error) {
-  return {
-    name: error.name,
-    message: error.message,
-    stack: error.stack,
-  }
-}
 
 /**
  * Map thrown server error to action result
@@ -47,7 +34,9 @@ export function serverErrorMapper(error: Error, span?: Span): ActionResult<null>
         ? parsed.data
         : { message: err.message }
 
-      logger.error('[login]: Error http login', {
+      log.error({
+        area: 'serverErrorMapper',
+        kind: 'HTTPError',
         ...errorObject,
         response: json,
       })
@@ -61,7 +50,11 @@ export function serverErrorMapper(error: Error, span?: Span): ActionResult<null>
     })
     .with(P.instanceOf(TimeoutError), (err) => {
       const errorObject = simplifyErrorObject(err)
-      logger.error('[login]: Error timeout login', errorObject)
+      log.error({
+        area: 'serverErrorMapper',
+        kind: 'TimeoutError',
+        ...errorObject,
+      })
       span?.recordException(errorObject)
       span?.setStatus({
         code: SpanStatusCode.ERROR,
@@ -72,7 +65,9 @@ export function serverErrorMapper(error: Error, span?: Span): ActionResult<null>
     })
     .with(P.instanceOf(z.ZodError), (err) => {
       const errorObject = simplifyErrorObject(err)
-      logger.error('[login]: Error zod login', {
+      log.error({
+        area: 'serverErrorMapper',
+        kind: 'ZodError',
         ...errorObject,
         response: z.prettifyError(err),
       })
@@ -86,7 +81,11 @@ export function serverErrorMapper(error: Error, span?: Span): ActionResult<null>
     })
     .otherwise((err) => {
       const errorObject = simplifyErrorObject(err)
-      logger.error('[login]: Error login', errorObject)
+      log.error({
+        area: 'serverErrorMapper',
+        kind: 'UnknownError',
+        ...errorObject,
+      })
       span?.recordException(errorObject)
       span?.setStatus({
         code: SpanStatusCode.ERROR,

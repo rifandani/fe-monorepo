@@ -3,10 +3,12 @@ import type {
   ConfigType,
   Store,
 } from './types'
-import { logger } from '@workspace/core/utils/logger'
 import { eq, sql } from 'drizzle-orm'
+import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
+import { log } from '@/core/utils/evlog'
 import { db } from '@/db/index'
 import { rateLimitTable } from '@/db/schema'
+import 'server-only'
 
 /**
  * A `Store` that stores the hit count for each client in a PostgreSQL database.
@@ -71,7 +73,13 @@ export class DbStore<P extends string = string> implements Store<P> {
       }
     }
     catch (error) {
-      logger.error('Error getting rate limit record:', error)
+      log.error({
+        area: 'rateLimit.dbStore',
+        operation: 'get',
+        summary: 'Error getting rate limit record',
+        ...errorAttributesFromUnknown(error),
+        failOpen: true,
+      })
     }
   }
 
@@ -134,7 +142,13 @@ export class DbStore<P extends string = string> implements Store<P> {
       }
     }
     catch (error) {
-      logger.error('Error incrementing rate limit:', error)
+      log.error({
+        area: 'rateLimit.dbStore',
+        operation: 'increment',
+        summary: 'Error incrementing rate limit',
+        ...errorAttributesFromUnknown(error),
+        failOpen: true,
+      })
       // Fallback: return a conservative estimate
       return {
         totalHits: 1,
@@ -162,7 +176,12 @@ export class DbStore<P extends string = string> implements Store<P> {
         .where(eq(rateLimitTable.key, key))
     }
     catch (error) {
-      logger.error('Error decrementing rate limit:', error)
+      log.error({
+        area: 'rateLimit.dbStore',
+        operation: 'decrement',
+        summary: 'Error decrementing rate limit',
+        ...errorAttributesFromUnknown(error),
+      })
     }
   }
 
@@ -178,7 +197,12 @@ export class DbStore<P extends string = string> implements Store<P> {
       await db.delete(rateLimitTable).where(eq(rateLimitTable.key, key))
     }
     catch (error) {
-      logger.error('Error resetting rate limit key:', error)
+      log.error({
+        area: 'rateLimit.dbStore',
+        operation: 'resetKey',
+        summary: 'Error resetting rate limit key',
+        ...errorAttributesFromUnknown(error),
+      })
     }
   }
 
@@ -192,7 +216,12 @@ export class DbStore<P extends string = string> implements Store<P> {
       await db.delete(rateLimitTable)
     }
     catch (error) {
-      logger.error('Error resetting all rate limits:', error)
+      log.error({
+        area: 'rateLimit.dbStore',
+        operation: 'resetAll',
+        summary: 'Error resetting all rate limits',
+        ...errorAttributesFromUnknown(error),
+      })
     }
   }
 

@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { rateLimit } from '@/core/middlewares/rate-limit/rate-limit'
 
+// example of a route that uses the rate limit middleware
 export async function GET(req: NextRequest): Promise<Response> {
   await rateLimit(req)
 

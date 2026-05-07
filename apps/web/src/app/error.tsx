@@ -1,10 +1,11 @@
 'use client' // Error boundaries must be Client Components
 
 import { trace } from '@opentelemetry/api'
-import { logger } from '@workspace/core/utils/logger'
+import { log } from 'evlog/next/client'
 import { useEffect } from 'react'
 import { Button } from '@/core/components/ui'
 import { TRACER_ROOT_ROUTE, TRACER_ROOT_ROUTE_ON_ERROR } from '@/core/constants/global'
+import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
 import { recordException } from '@/core/utils/telemetry'
 
 const tracer = trace.getTracer(TRACER_ROOT_ROUTE)
@@ -29,7 +30,12 @@ export default function Error({
         digest: error.digest,
       },
     })
-    logger.error('[Error]: Error', { error })
+    log.error({
+      area: 'app.error',
+      phase: 'render',
+      summary: 'Error on error page',
+      ...errorAttributesFromUnknown(error),
+    })
   }, [error])
 
   return (

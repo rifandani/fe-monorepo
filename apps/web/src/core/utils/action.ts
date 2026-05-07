@@ -4,8 +4,8 @@ import { headers } from 'next/headers'
 import { tryit } from 'radashi'
 import { z } from 'zod'
 import { auth } from '@/auth/utils/auth'
-import { simplifyErrorObject } from '@/core/utils/error'
-import { Logger } from '@/core/utils/logger'
+import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
+import { log } from '@/core/utils/evlog'
 import 'server-only'
 
 export interface ActionResult<T> {
@@ -13,14 +13,22 @@ export interface ActionResult<T> {
   error: string | null
 }
 
-const logger = new Logger('action.client')
+export const actionResultSchema = z.object({
+  data: z.any().nullable(),
+  error: z.string().nullable(),
+})
 
 /**
  * Default action client with logging middleware
  */
 export const actionClient = createSafeActionClient({
   handleServerError: (error) => {
-    logger.error('[actionClient]: Error default server error handler', simplifyErrorObject(error))
+    log.error({
+      area: 'action.client',
+      phase: 'handleServerError',
+      summary: 'Error default server error handler',
+      caught: errorAttributesFromUnknown(error),
+    })
 
     if (error instanceof Error) {
       return error.message
@@ -41,8 +49,7 @@ export const actionClient = createSafeActionClient({
     const result = await next()
     const endTime = performance.now()
 
-    // Log the action execution time
-    logger.log(`[actionClient]: ${metadata.actionName} action took ${endTime - startTime}ms`)
+    log.info('action.client', `${metadata.actionName} action took ${endTime - startTime}ms`)
 
     // Return the result of the awaited action.
     return result
@@ -65,16 +72,25 @@ export const authActionClient = actionClient
     })
 
     if (error) {
-      logger.error('[authActionClient]: Unauthorized: Error getting session', simplifyErrorObject(error))
+      log.error({
+        area: 'authActionClient',
+        phase: 'getSession',
+        summary: 'Unauthorized: Error getting session',
+        caught: errorAttributesFromUnknown(error),
+      })
       throw new Error('[authActionClient]: Unauthorized: Error getting session')
     }
 
     if (!session) {
-      logger.error('[authActionClient]: Unauthorized: No session found')
+      log.error({
+        area: 'authActionClient',
+        phase: 'getSession',
+        message: 'Unauthorized: No session found',
+      })
       throw new Error('[authActionClient]: Unauthorized: No session found')
     }
 
-    logger.log('[authActionClient]: Authorized: Session is valid')
+    log.info('authActionClient', 'Authorized: Session is valid')
     // Return the next middleware with `userId` value in the context
     return next({ ctx: session })
   })

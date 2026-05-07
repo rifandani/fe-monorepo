@@ -20,7 +20,7 @@ export const authUserSchema = z.object({
   name: z.string(),
   email: z.email(),
   emailVerified: z.boolean(),
-  image: z.string().nullable(),
+  image: z.string().nullable().optional(),
   createdAt: z.iso.date(),
   updatedAt: z.iso.date(),
 })
@@ -50,6 +50,7 @@ export type AuthSignUpEmailRequestSchema = z.infer<
 
 export const authSignUpEmailResponseSchema = z.object({
   token: z.string().nullable(),
+  user: authUserSchema,
 })
 export type AuthSignUpEmailResponseSchema = z.infer<
   typeof authSignUpEmailResponseSchema
@@ -70,6 +71,7 @@ export const authSignInEmailResponseSchema = z.object({
   redirect: z.boolean(),
   token: z.string(),
   url: z.string().nullable(),
+  user: authUserSchema,
 })
 export type AuthSignInEmailResponseSchema = z.infer<
   typeof authSignInEmailResponseSchema

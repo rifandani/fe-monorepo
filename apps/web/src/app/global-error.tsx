@@ -1,10 +1,11 @@
 'use client'
 
 import { trace } from '@opentelemetry/api'
-import { logger } from '@workspace/core/utils/logger'
+import { log } from 'evlog/next/client'
 import NextError from 'next/error'
 import { useEffect } from 'react'
 import { TRACER_GLOBAL_ERROR, TRACER_GLOBAL_ERROR_ON_ERROR } from '@/core/constants/global'
+import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
 import { recordException } from '@/core/utils/telemetry'
 
 const tracer = trace.getTracer(TRACER_GLOBAL_ERROR)
@@ -20,7 +21,12 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
         digest: error.digest,
       },
     })
-    logger.error('[GlobalError]: Error', { error })
+    log.error({
+      area: 'app.globalError',
+      phase: 'render',
+      summary: 'Error on global error page',
+      ...errorAttributesFromUnknown(error),
+    })
   }, [error])
 
   return (

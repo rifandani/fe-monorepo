@@ -1,5 +1,5 @@
 # Observability
 
 Otel in web browser does not support logs.
-Instrument in server ONLY by using `@/core/utils/logger`.
-Console log using logger from `packages/core`.
+Server modules: use `evlog` from `@/core/utils/evlog`.
+Browser modules: use `log` from `evlog/next/client`.

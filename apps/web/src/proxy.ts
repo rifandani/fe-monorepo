@@ -33,7 +33,25 @@ const securityMiddleware = createMiddleware({
  * - Complex business logic
  * - Third-party integrations
  */
-export default async function proxy(_: NextRequest) {
+export default async function proxy(request: NextRequest) {
+  // Generate or reuse request ID
+  const existingId = request.headers.get('x-request-id')
+  const requestId = existingId || crypto.randomUUID()
+
+  // Forward modified headers to the route handler
+  const requestHeaders = new Headers(request.headers as HeadersInit)
+
+  requestHeaders.set('x-request-id', requestId)
+  requestHeaders.set('x-evlog-start', String(Date.now()))
+
+  const { NextResponse: nextResponse } = await import('next/server')
+  const response = nextResponse.next({
+    request: { headers: requestHeaders },
+  })
+
+  // Also set on response for downstream consumers
+  response.headers.set('x-request-id', requestId)
+
   return securityMiddleware()
 }
 

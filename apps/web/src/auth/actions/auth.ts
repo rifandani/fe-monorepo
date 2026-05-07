@@ -1,6 +1,5 @@
 'use server'
 
-import type { ActionResult } from '@/core/utils/action'
 import { metrics, trace } from '@opentelemetry/api'
 import { authSignInEmailRequestSchema, authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
 import { headers } from 'next/headers'
@@ -38,7 +37,7 @@ const registerCounter = meter.createCounter('register', {
 export const loginAction = actionClient
   .metadata({ actionName: 'login' })
   .inputSchema(authSignInEmailRequestSchema)
-  .action<ActionResult<null>>(async ({ parsedInput }) => {
+  .action(async ({ parsedInput }) => {
     const result = await recordSpan({
       name: 'loginAction',
       tracer: trace.getTracer('auth.action'),
@@ -82,13 +81,11 @@ export const loginAction = actionClient
  * 1. Save session to database
  * 2. Set an HTTP-only auth cookie
  * 3. Redirect user to home page
- *
- * @returns {Promise<LoginActionResult | void>} Returns error object if login fails (zod error or server error), void if successful (redirects)
  */
 export const registerAction = actionClient
   .metadata({ actionName: 'register' })
   .inputSchema(authSignUpEmailRequestSchema)
-  .action<ActionResult<null>>(async ({ parsedInput }) => {
+  .action(async ({ parsedInput }) => {
     const result = await recordSpan({
       name: 'registerAction',
       tracer: trace.getTracer('auth.action'),
@@ -127,13 +124,9 @@ export const registerAction = actionClient
 
 /**
  * Server action to handle user logout.
- *
- * @description
  * 1. Remove session from database
  * 2. Remove authentication cookie
  * 3. Redirect user to the login page
- *
- * @returns {Promise<void>} Redirects to login page
  */
 export const logoutAction = actionClient
   .metadata({ actionName: 'logoutAction' })

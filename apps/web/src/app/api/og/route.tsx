@@ -1,16 +1,15 @@
 import type { NextRequest } from 'next/server'
 import type { ReactElement } from 'react'
 import { ImageResponse } from 'next/og'
-import { simplifyErrorObject } from '@/core/utils/error'
-import { Logger } from '@/core/utils/logger'
-
-const logger = new Logger('api.og')
+import { createError, useLogger, withEvlog } from '@/core/utils/evlog'
 
 // const interSemiBold = fetch(
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
 
-export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
+export const GET = withEvlog(async (req: NextRequest): Promise<Response | ImageResponse> => {
+  const log = useLogger()
+
   try {
     const { searchParams } = new URL(req.url)
     const isLight = req.headers.get('Sec-CH-Prefers-Color-Scheme') === 'light'
@@ -21,6 +20,8 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
     const logo = searchParams.has('logo')
       ? searchParams.get('logo')
       : 'next'
+
+    log.set({ og: { title, logo, isLight } })
 
     return new ImageResponse(
       (
@@ -74,12 +75,14 @@ export async function GET(req: NextRequest): Promise<Response | ImageResponse> {
     if (!(err instanceof Error))
       throw err
 
-    logger.error('Failed to generate the image', simplifyErrorObject(err))
-    return new Response(`Failed to generate the image`, {
+    throw createError({
       status: 500,
+      message: 'Failed to generate the image',
+      why: 'Failed to generate the image',
+      fix: 'Please try again later',
     })
   }
-}
+})
 
 function LightNextSvg(): ReactElement {
   return (
