@@ -9,6 +9,7 @@
   "scripts": {
     "pwa-assets:gen": "pwa-assets-generator",
     "typecheck": "next typegen && tsc --noEmit",
+    "bump:nextjs": "bunx @next/codemod@canary upgrade latest",
     "auth:gen": "dotenvx run --env-file=.env.dev -- bunx @better-auth/cli@latest generate --config ./src/auth/utils/auth.ts --output ./src/db/auth-schema.ts --yes",
     "db:pull": "dotenvx run --env-file=.env.dev -- drizzle-kit pull",
     "db:push": "dotenvx run --env-file=.env.dev -- drizzle-kit push --verbose --strict",
