@@ -6,9 +6,8 @@
 
 ## 🎯 Todo
 
-- [ ] always update [`AGENTS.md`](https://agents.md/) file in root dir and subpackage inside monorepo and consider it as a living document
+- [ ] always update `CLAUDE.md` file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] lookout for [oxlint in @antfu/eslint-config](https://github.com/antfu/eslint-config/issues/767), after we use oxlint, add cursor hooks `afterFileEdit` to do lint fix
-- [ ] tanstack intent
 
 ## 🛠️ Upgrading Dependencies
 
