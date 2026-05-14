@@ -168,7 +168,6 @@ export function JsonLd({ graphs }: {
     <script
       data-testid="schema-org-graph"
       type="application/ld+json"
-      // eslint-disable-next-line react-dom/no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(payload),
       }}

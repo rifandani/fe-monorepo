@@ -24,7 +24,6 @@ export function createUseStorageState(getStorage: () => Storage | undefined) {
    * @param options Configuration options for storage behavior
    * @returns [storedValue, setValue] tuple for reading/writing storage
    */
-  // eslint-disable-next-line react/component-hook-factories
   function useStorageState<T>(key: string, options: Options<T> = {}) {
     let storage: Storage | undefined
     const {
