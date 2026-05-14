@@ -1,6 +1,4 @@
-import type { NextOptionsConfig } from 'next/dist/experimental/testmode/playwright/next-options'
-import { devices } from '@playwright/test'
-import { defineConfig } from 'next/experimental/testmode/playwright.js'
+import { defineConfig, devices } from '@playwright/test'
 
 // make sure to sync this with `e2e/_base.ts`
 interface TestOptions {
@@ -17,7 +15,7 @@ const baseURL = `http://localhost:${port}`
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig<NextOptionsConfig, TestOptions>({
+export default defineConfig<TestOptions>({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,

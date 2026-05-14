@@ -1,12 +1,13 @@
 import { getTranslations } from 'next-intl/server'
-import { cookies } from 'next/headers'
-import { AUTH_COOKIE_NAME } from '@/auth/constants/auth'
+import { headers } from 'next/headers'
+import { auth } from '@/auth/utils/auth'
 import { Link } from '@/core/components/ui'
 
 export default async function NotFound() {
   const t = await getTranslations()
-  const cookie = await cookies()
-  const session = cookie.get(AUTH_COOKIE_NAME)?.value
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -27,11 +28,11 @@ export default async function NotFound() {
         `}
         >
           <Link
-            href={session ? '/' : '/login'}
+            href={session != null ? '/' : '/login'}
             className="flex items-center"
           >
             {t('backTo', {
-              target: session ? t('title') : 'Login',
+              target: session != null ? t('title') : 'Login',
             })}
           </Link>
         </div>

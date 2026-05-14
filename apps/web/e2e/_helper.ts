@@ -8,7 +8,7 @@ export type FetchHandler = (
 
 export const validUser = {
   username: 'vaandani',
-  email: 'vaandani@gmail.com',
+  email: 'vaandani@email.com',
   password: 'vaandani',
 }
 

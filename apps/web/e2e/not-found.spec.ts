@@ -1,5 +1,8 @@
 import { expect, test } from './_base'
 
+// Intentional unknown route returns 404 on the document request; do not fail teardown on that.
+test.use({ allowExpected404: true })
+
 test.beforeEach(async ({ page }) => {
   // not exists route
   await page.goto('/hahahahaha')

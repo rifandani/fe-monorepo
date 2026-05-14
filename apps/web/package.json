@@ -19,7 +19,7 @@
     "test:install": "playwright install --with-deps chromium",
     "test:report": "dotenvx run --env-file=.env.dev -- playwright show-report",
     "test": "dotenvx run --env-file=.env.dev -- playwright test",
-    "test:ui": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test --ui --headed",
+    "test:ui": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test --ui",
     "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only --shard=$SHARD_INDEX/$SHARD_TOTAL",
     "check-site-meta": "bunx check-site-meta 3002 -p 3052",
     "analyze-bundle-size": "cp .env.prod .env.local && next experimental-analyze",

@@ -11,10 +11,13 @@ interface NetworkError {
 
 export interface TestOptions {
   user: { username: string, email: string, password: string }
+  /** When true, GET document responses with 404 are not treated as network failures (e.g. not-found page tests). */
+  allowExpected404: boolean
 }
 
 export const test = base.extend<TestOptions>({
-  page: async ({ page }, use, testInfo) => {
+  allowExpected404: [false, { option: true }],
+  page: async ({ page, allowExpected404 }, use, testInfo) => {
     /**
      * setup
      */
@@ -26,13 +29,24 @@ export const test = base.extend<TestOptions>({
       errors.push(error)
     })
     page.on('response', (response) => {
-      if (response.status() >= 400) {
-        networkErrors.push({
-          url: response.url(),
-          method: response.request().method(),
-          status: response.status(),
-        })
+      if (response.status() < 400)
+        return
+
+      const request = response.request()
+      if (
+        allowExpected404
+        && response.status() === 404
+        && request.method() === 'GET'
+        && request.resourceType() === 'document'
+      ) {
+        return
       }
+
+      networkErrors.push({
+        url: response.url(),
+        method: request.method(),
+        status: response.status(),
+      })
     })
 
     /**
