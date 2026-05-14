@@ -4,7 +4,6 @@ import type { ComponentProps } from 'react'
 import type { BaseChartProps } from './chart'
 import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import {
-
   Chart,
   ChartTooltip,
   ChartTooltipContent,

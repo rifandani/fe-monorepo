@@ -1,12 +1,11 @@
 'use client'
 
-import type { GroupProps, InputProps as PrimitiveInputProps } from 'react-aria-components'
+import type { GroupProps } from 'react-aria-components/Group'
+import type { InputProps as PrimitiveInputProps } from 'react-aria-components/Input'
+import { Group } from 'react-aria-components/Group'
 import {
-  Group,
-
   Input as InputPrimitive,
-
-} from 'react-aria-components'
+} from 'react-aria-components/Input'
 import { cx } from '@/core/utils/primitive'
 
 interface InputProps extends PrimitiveInputProps {

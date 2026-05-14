@@ -1,21 +1,22 @@
 'use client'
 
 import type { DateDuration } from '@internationalized/date'
-import type {
-  DatePickerProps as DatePickerPrimitiveProps,
-  DateValue,
-  GroupProps,
-  PopoverProps,
-} from 'react-aria-components'
+import type { DateValue } from 'react-aria-components/DateField'
+import type { DatePickerProps as DatePickerPrimitiveProps } from 'react-aria-components/DatePicker'
+import type { GroupProps } from 'react-aria-components/Group'
+import type { PopoverProps } from 'react-aria-components/Popover'
 import { CalendarDaysIcon } from '@heroicons/react/24/outline'
-import { Button, DatePicker as DatePickerPrimitive } from 'react-aria-components'
+import { Button } from 'react-aria-components/Button'
+import {
+  DatePicker as DatePickerPrimitive,
+} from 'react-aria-components/DatePicker'
 import { twJoin } from 'tailwind-merge'
-import { DateInput } from '@/core/components/ui/date-field'
-import { fieldStyles } from '@/core/components/ui/field'
-import { InputGroup } from '@/core/components/ui/input'
 import { useIsMobile } from '@/core/hooks/use-mobile'
 import { cx } from '@/core/utils/primitive'
 import { Calendar } from './calendar'
+import { DateInput } from './date-field'
+import { fieldStyles } from './field'
+import { InputGroup } from './input'
 import { ModalContent } from './modal'
 import { PopoverContent } from './popover'
 import { RangeCalendar } from './range-calendar'
@@ -63,7 +64,7 @@ export function DatePickerOverlay({
 
   return isMobile
     ? (
-        <ModalContent aria-label="Date picker" closeButton={false}>
+        <ModalContent closeButton={false}>
           <div className="flex justify-center p-6">
             {range
               ? (

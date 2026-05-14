@@ -1,29 +1,28 @@
 'use client'
 
-import type {
-  ButtonProps,
-  DisclosureGroupProps,
-  DisclosurePanelProps,
-  DisclosureProps,
-  LinkProps,
-  LinkRenderProps,
-  SeparatorProps as SidebarSeparatorProps,
-} from 'react-aria-components'
-import { ChevronDownIcon } from '@heroicons/react/24/solid'
+import type { ButtonProps } from 'react-aria-components/Button'
+import type { DisclosurePanelProps, DisclosureProps } from 'react-aria-components/Disclosure'
+import type { DisclosureGroupProps } from 'react-aria-components/DisclosureGroup'
+import type { LinkProps, LinkRenderProps } from 'react-aria-components/Link'
+import type { SeparatorProps as SidebarSeparatorProps } from 'react-aria-components/Separator'
+import type { TreeItemContentProps, TreeItemProps, TreeProps } from 'react-aria-components/Tree'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Button as Trigger } from 'react-aria-components/Button'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import { Disclosure, DisclosurePanel } from 'react-aria-components/Disclosure'
+import { DisclosureGroup } from 'react-aria-components/DisclosureGroup'
+import { Header } from 'react-aria-components/Header'
+import { Heading } from 'react-aria-components/Heading'
 import {
-  composeRenderProps,
-  Disclosure,
-  DisclosureGroup,
-  DisclosurePanel,
-  Header,
-  Heading,
   Separator,
-  Text,
-  Button as Trigger,
-} from 'react-aria-components'
+
+} from 'react-aria-components/Separator'
+import { Text } from 'react-aria-components/Text'
+import { Tree, TreeItem, TreeItemContent } from 'react-aria-components/Tree'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { SheetContent } from '@/core/components/ui/sheet'
+import { TreeIndicator } from '@/core/components/ui/tree'
 import { useIsMobile } from '@/core/hooks/use-mobile'
 import { cx } from '@/core/utils/primitive'
 import { Button } from './button'
@@ -159,7 +158,7 @@ function SidebarProvider({
           } as React.CSSProperties
         }
         className={twMerge(
-          '@container **:data-[slot=icon]:shrink-0',
+          '@container **:[svg]:shrink-0',
           'flex w-full text-sidebar-fg',
           'group/sidebar-root peer/sidebar-root has-data-[intent=inset]:bg-sidebar dark:has-data-[intent=inset]:bg-bg',
           className,
@@ -220,6 +219,7 @@ function Sidebar({
           data-intent="default"
           className="w-(--sidebar-width) entering:blur-in exiting:blur-out [--sidebar-width:18rem] has-data-[slot=calendar]:[--sidebar-width:23rem]"
           side={side}
+          dir={side === 'right' ? 'rtl' : 'ltr'}
         >
           {children}
         </SheetContent>
@@ -242,7 +242,7 @@ function Sidebar({
         aria-hidden="true"
         className={twMerge([
           'w-(--sidebar-width) group-data-[collapsible=hidden]:w-0',
-          'group-data-[side=right]:rotate-180',
+          'group-data-[side=right]:-rotate-180',
           'relative h-svh bg-transparent transition-[width] duration-200 ease-linear',
           intent === 'default' && 'group-data-[collapsible=dock]:w-(--sidebar-width-dock)',
           intent === 'float'
@@ -320,12 +320,38 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
 
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   const { state } = useSidebar()
+  const [isAtBottom, setIsAtBottom] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el)
+      return
+
+    const check = () => {
+      const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 1
+      setIsAtBottom(atBottom)
+    }
+
+    check()
+    el.addEventListener('scroll', check, { passive: true })
+
+    const observer = new ResizeObserver(check)
+    observer.observe(el)
+
+    return () => {
+      el.removeEventListener('scroll', check)
+      observer.disconnect()
+    }
+  }, [])
+
   return (
     <div
+      ref={ref}
       data-slot="sidebar-content"
       className={twMerge(
         'flex min-h-0 flex-1 scroll-mb-96 flex-col overflow-auto *:data-[slot=sidebar-section]:border-l-0',
-        state === 'collapsed' ? 'items-center' : 'mask-b-from-95%',
+        state === 'collapsed' ? 'items-center' : !isAtBottom && 'mask-b-from-95%',
         className,
       )}
       {...props}
@@ -368,7 +394,7 @@ function SidebarSection({ className, ...props }: SidebarSectionProps) {
       {...props}
     >
       {state !== 'collapsed' && 'label' in props && (
-        <Header className="mb-1 flex shrink-0 items-center rounded-md px-2 text-sidebar-fg/70 text-xs/6 outline-none ring-sidebar-ring transition-[margin,opa] duration-200 ease-linear *:data-[slot=icon]:size-4 *:data-[slot=icon]:shrink-0 group-data-[collapsible=dock]:-mt-8 group-data-[collapsible=dock]:opacity-0">
+        <Header className="mb-1 flex shrink-0 items-center rounded-md px-2 text-sidebar-fg/70 text-xs/6 outline-none ring-sidebar-ring transition-[margin,opa] duration-200 ease-linear group-data-[collapsible=dock]:-mt-8 group-data-[collapsible=dock]:opacity-0 *:[svg]:size-4 *:[svg]:shrink-0">
           {props.label}
         </Header>
       )}
@@ -411,30 +437,30 @@ function SidebarItem({
       aria-current={isCurrent ? 'page' : undefined}
       className={composeRenderProps(
         className,
-        (className, { isPressed, isFocusVisible, isHovered, isDisabled }) =>
-          twMerge([
-            'href' in props ? 'cursor-pointer' : 'cursor-default',
-            'w-full min-w-0 items-center rounded-lg text-start font-medium text-base/6 text-sidebar-fg',
+        (className, { isFocusVisible, isPressed, isHovered, isDisabled }) =>
+          twMerge(
+            'w-full min-w-0 items-center rounded-lg p-2 text-start font-medium text-base/6 text-sidebar-fg has-[a]:p-0',
             'group/sidebar-item relative col-span-full overflow-hidden focus-visible:outline-hidden',
-            'grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] **:last:data-[slot=icon]:ms-auto supports-[grid-template-columns:subgrid]:grid-cols-subgrid sm:text-sm/5',
-            'p-2 has-[a]:p-0',
+            'grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] supports-[grid-template-columns:subgrid]:grid-cols-subgrid sm:text-sm/5 **:last:[svg]:ms-auto',
             // icon
-            '**:data-[slot=icon]:shrink-0 [&_[data-slot=\'icon\']:not([class*=\'size-\'])]:size-5 sm:[&_[data-slot=\'icon\']:not([class*=\'size-\'])]:size-4 [&_[data-slot=\'icon\']:not([class*=\'text-\'])]:text-muted-fg',
-            '**:last:data-[slot=icon]:size-5 sm:**:last:data-[slot=icon]:size-4',
-            '[&:has([data-slot=icon]+[data-slot=sidebar-label])_[data-slot=icon]:has(+[data-slot=sidebar-label])]:me-2',
+            '[&_svg:not([class*=\'size-\'])]:size-5 sm:[&_svg:not([class*=\'size-\'])]:size-4 [&_svg:not([class*=\'text-\'])]:text-muted-fg **:[svg]:shrink-0',
+            '**:last:[svg]:size-5 sm:**:last:[svg]:size-4',
+            '[&:has(svg+[data-slot=sidebar-label])_svg:has(+[data-slot=sidebar-label])]:me-2',
 
             // avatar
             '**:data-[slot=avatar]:[--avatar-size:--spacing(5)]',
             '[&:has([data-slot=avatar]+[data-slot=sidebar-label])_[data-slot=avatar]:has(+[data-slot=sidebar-label])]:me-2',
             '[--sidebar-current-bg:var(--color-sidebar-primary)] [--sidebar-current-fg:var(--color-sidebar-primary-fg)]',
             isCurrent
-            && 'font-medium text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_[data-slot=\'icon\']:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_[data-slot=\'icon\']:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
+            && 'font-medium text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
             isFocusVisible && 'inset-ring inset-ring-sidebar-ring outline-hidden',
-            (isPressed || isHovered)
-            && 'bg-sidebar-accent text-sidebar-accent-fg [&_[data-slot=\'icon\']:not([class*=\'text-\'])]:text-sidebar-accent-fg',
+            isPressed
+            && 'bg-sidebar-accent text-sidebar-accent-fg [&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
+            isHovered
+            && 'bg-sidebar-accent text-sidebar-accent-fg [&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
             isDisabled && 'opacity-50',
             className,
-          ]),
+          ),
       )}
       {...props}
     >
@@ -469,7 +495,7 @@ function SidebarItem({
     <Tooltip delay={0}>
       {link}
       <TooltipContent
-        className="**:data-[slot=icon]:hidden **:data-[slot=sidebar-label-mask]:hidden"
+        className="**:data-[slot=sidebar-label-mask]:hidden **:[svg]:hidden"
         inverse
         placement="right"
         arrow
@@ -505,7 +531,7 @@ function SidebarInset({ className, ref, ...props }: React.ComponentProps<'main'>
       ref={ref}
       className={twMerge(
         'relative flex w-full flex-1 flex-col bg-bg lg:min-w-0',
-        'group-has-data-[intent=inset]/sidebar-root:border group-has-data-[intent=inset]/sidebar-root:border-sidebar-border group-has-data-[intent=inset]/sidebar-root:bg-overlay',
+        'group-has-data-[intent=inset]/sidebar-root:border group-has-data-[intent=inset]/sidebar-root:border-sidebar-border group-has-data-[intent=inset]/sidebar-root:bg-muted',
         'md:group-has-data-[intent=inset]/sidebar-root:m-2',
         'md:group-has-data-[side=left]:group-has-data-[intent=inset]/sidebar-root:ms-0',
         'md:group-has-data-[side=right]:group-has-data-[intent=inset]/sidebar-root:me-0',
@@ -570,14 +596,14 @@ function SidebarDisclosureTrigger({ className, ref, ...props }: SidebarDisclosur
             twMerge(
               'flex w-full min-w-0 items-center rounded-lg text-start font-medium text-base/6 text-sidebar-fg',
               'group/sidebar-disclosure-trigger relative col-span-full overflow-hidden focus-visible:outline-hidden',
-              '**:data-[slot=icon]:size-5 **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-muted-fg sm:**:data-[slot=icon]:size-4',
-              '**:last:data-[slot=icon]:size-5 sm:**:last:data-[slot=icon]:size-4',
+              '**:[svg]:size-5 **:[svg]:shrink-0 **:[svg]:text-muted-fg sm:**:[svg]:size-4',
+              '**:last:[svg]:size-5 sm:**:last:[svg]:size-4',
               '**:data-[slot=avatar]:size-6 sm:**:data-[slot=avatar]:size-5',
-              'col-span-full gap-3 p-2 **:data-[slot=chevron]:text-muted-fg **:last:data-[slot=icon]:ms-auto sm:gap-2 sm:text-sm/5',
+              'col-span-full gap-3 p-2 **:data-[slot=chevron]:text-muted-fg sm:gap-2 sm:text-sm/5 **:last:[svg]:ms-auto',
 
               isFocusVisible && 'inset-ring inset-ring-ring/70',
               (isPressed || isHovered)
-              && 'bg-sidebar-accent text-sidebar-accent-fg **:data-[slot=chevron]:text-sidebar-accent-fg **:data-[slot=icon]:text-sidebar-accent-fg **:last:data-[slot=icon]:text-sidebar-accent-fg',
+              && 'bg-sidebar-accent text-sidebar-accent-fg **:data-[slot=chevron]:text-sidebar-accent-fg **:[svg]:text-sidebar-accent-fg **:last:[svg]:text-sidebar-accent-fg',
               isDisabled && 'opacity-50',
               className,
             ),
@@ -657,7 +683,6 @@ function SidebarTrigger({
       {children || (
         <>
           <svg
-            data-slot="icon"
             className="size-4"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -752,14 +777,99 @@ function SidebarMenuTrigger({
     <Trigger
       className={cx(
         !alwaysVisible
-        && 'opacity-0 pressed:opacity-100 group-hover/sidebar-item:opacity-100 group-focus-visible/sidebar-item:opacity-100 group/sidebar-item:pressed:opacity-100',
+        && 'pressed:text-fg text-muted-fg opacity-0 pressed:opacity-100 hover:text-fg',
         'absolute end-0 flex h-full w-[calc(var(--sidebar-width)-90%)] items-center justify-end pe-2.5 outline-hidden',
-        '**:data-[slot=icon]:shrink-0 [&_[data-slot=\'icon\']:not([class*=\'size-\'])]:size-5 sm:[&_[data-slot=\'icon\']:not([class*=\'size-\'])]:size-4 pressed:[&_[data-slot=\'icon\']:not([class*=\'text-\'])]:text-fg',
-        'pressed:text-fg text-muted-fg hover:text-fg',
+        '[&_svg:not([class*=\'size-\'])]:size-5 sm:[&_svg:not([class*=\'size-\'])]:size-4 pressed:[&_svg:not([class*=\'text-\'])]:text-fg **:[svg]:shrink-0',
+        'group-hover/sidebar-item:opacity-100 group-focus-visible/sidebar-item:opacity-100 group/sidebar-item:pressed:opacity-100',
+        'group-hover/tree-item:opacity-100 group-focus-visible/tree-item:opacity-100 group/tree-item:pressed:opacity-100',
         className,
       )}
       {...props}
     />
+  )
+}
+
+interface SidebarTreeProps<T extends object> extends TreeProps<T> {}
+function SidebarTree<T extends object>({
+  className,
+  selectionMode = 'none',
+  ...props
+}: SidebarTreeProps<T>) {
+  return (
+    <Tree
+      selectionMode={selectionMode}
+      className={cx(
+        'col-span-full flex w-full min-w-0 cursor-default flex-col gap-y-0.5 in-data-[state=collapsed]:p-2 p-4 outline-hidden forced-color-adjust-none',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+function SidebarTreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
+  return (
+    <TreeItem
+      className={cx(
+        'min-w-0 shrink-0 cursor-default select-none outline-hidden',
+        'href' in props && 'cursor-pointer',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+interface SidebarTreeContentProps extends TreeItemContentProps {
+  className?: string
+  isCurrent?: boolean
+}
+
+function SidebarTreeContent({
+  className,
+  isCurrent,
+  children,
+  ...props
+}: SidebarTreeContentProps) {
+  return (
+    <TreeItemContent data-slot="sidebar-item-content" {...props}>
+      {values => (
+        <div className="relative flex w-full min-w-0 items-center">
+          <div
+            aria-hidden
+            className="shrink-0"
+            style={{
+              width: `calc((var(--tree-item-level) - 1) * 1.25rem)`,
+            }}
+          />
+          <div
+            className={twMerge(
+              'group/tree-item flex min-w-0 flex-1 items-center gap-x-2 rounded-lg p-2 font-medium text-base/6 text-sidebar-fg sm:text-sm/5',
+              '[&_svg:not([class*=\'size-\'])]:size-5 sm:[&_svg:not([class*=\'size-\'])]:size-4 [&_svg:not([class*=\'text-\'])]:text-muted-fg **:[svg]:-mx-0.5 **:[svg]:shrink-0',
+              'hover:bg-sidebar-accent hover:text-sidebar-accent-fg hover:[&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
+              '[--sidebar-current-bg:var(--color-sidebar-primary)] [--sidebar-current-fg:var(--color-sidebar-primary-fg)]',
+              values.isFocusVisible && 'inset-ring inset-ring-sidebar-ring',
+              values.isPressed
+              && 'bg-sidebar-accent text-sidebar-accent-fg [&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
+              isCurrent
+              && 'font-medium text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
+              values.isDisabled && 'opacity-50',
+              className,
+            )}
+          >
+            {values.hasChildItems && (
+              <TreeIndicator
+                values={{
+                  isDisabled: values.isDisabled,
+                  isExpanded: values.isExpanded,
+                }}
+              />
+            )}
+            {typeof children === 'function' ? children(values) : children}
+          </div>
+        </div>
+      )}
+    </TreeItemContent>
   )
 }
 
@@ -796,6 +906,9 @@ export {
   SidebarSection,
   SidebarSectionGroup,
   SidebarSeparator,
+  SidebarTree,
+  SidebarTreeContent,
+  SidebarTreeItem,
   SidebarTrigger,
   useSidebar,
 }

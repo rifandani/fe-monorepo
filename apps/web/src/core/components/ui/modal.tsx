@@ -1,11 +1,14 @@
 'use client'
 
-import type { DialogProps, DialogTriggerProps, ModalOverlayProps } from 'react-aria-components'
+import type { DialogProps, DialogTriggerProps } from 'react-aria-components/Dialog'
+import type { ModalOverlayProps } from 'react-aria-components/Modal'
 import {
   DialogTrigger as DialogTriggerPrimitive,
+} from 'react-aria-components/Dialog'
+import {
   ModalOverlay,
   Modal as ModalPrimitive,
-} from 'react-aria-components'
+} from 'react-aria-components/Modal'
 import { cx } from '@/core/utils/primitive'
 import {
   Dialog,

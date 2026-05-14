@@ -1,13 +1,12 @@
 'use client'
 
-import type { HeadingProps, TextProps } from 'react-aria-components'
+import type { HeadingProps } from 'react-aria-components/Heading'
+import type { TextProps } from 'react-aria-components/Text'
 import type { ButtonProps } from './button'
 import { XMarkIcon } from '@heroicons/react/24/solid'
-import {
-  Heading,
-  Button as PrimitiveButton,
-  Dialog as PrimitiveDialog,
-} from 'react-aria-components'
+import { Button as PrimitiveButton } from 'react-aria-components/Button'
+import { Dialog as PrimitiveDialog } from 'react-aria-components/Dialog'
+import { Heading } from 'react-aria-components/Heading'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Button } from './button'
@@ -134,7 +133,6 @@ function DialogCloseIcon({ className, ...props }: CloseButtonIndicatorProps) {
   return props.isDismissable
     ? (
         <PrimitiveButton
-          aria-label="Close"
           slot="close"
           className={cx(
             'close absolute end-1 top-1 z-50 grid size-8 place-content-center rounded-xl hover:bg-secondary focus:bg-secondary focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary sm:end-2 sm:top-2 sm:size-7 sm:rounded-md',

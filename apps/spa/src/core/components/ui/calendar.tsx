@@ -1,7 +1,8 @@
 'use client'
 
 import type { CalendarDate } from '@internationalized/date'
-import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components'
+import type { CalendarProps as CalendarPrimitiveProps } from 'react-aria-components/Calendar'
+import type { DateValue } from 'react-aria-components/DateField'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { getLocalTimeZone, today } from '@internationalized/date'
 import { use } from 'react'
@@ -13,14 +14,12 @@ import {
   CalendarGridHeader as CalendarGridHeaderPrimitive,
   CalendarHeaderCell,
   Calendar as CalendarPrimitive,
-
   CalendarStateContext,
-  composeRenderProps,
-
-  Heading,
-  RangeCalendarStateContext,
-  useLocale,
-} from 'react-aria-components'
+} from 'react-aria-components/Calendar'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import { Heading } from 'react-aria-components/Heading'
+import { useLocale } from 'react-aria-components/I18nProvider'
+import { RangeCalendarStateContext } from 'react-aria-components/RangeCalendar'
 import { twMerge } from 'tailwind-merge'
 import { Button } from './button'
 import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger } from './select'
@@ -60,11 +59,7 @@ function Calendar<T extends DateValue>({ className, ...props }: CalendarProps<T>
   )
 }
 
-function CalendarHeader({
-  isRange,
-  className,
-  ...props
-}: React.ComponentProps<'header'> & { isRange?: boolean }) {
+function CalendarHeader({ className, ...props }: React.ComponentProps<'header'>) {
   const { direction } = useLocale()
   return (
     <header
@@ -145,7 +140,7 @@ function SelectMonth() {
       <SelectTrigger className="w-22 text-sm/5 **:data-[slot=select-value]:inline-block **:data-[slot=select-value]:truncate sm:px-2.5 sm:py-1.5 sm:*:text-sm/5" />
       <SelectContent className="min-w-0" items={months}>
         {item => (
-          <SelectItem>
+          <SelectItem textValue={item.formatted}>
             <SelectLabel>{item.formatted}</SelectLabel>
           </SelectItem>
         )}
@@ -185,7 +180,7 @@ function SelectYear() {
       <SelectTrigger className="text-sm/5 sm:px-2.5 sm:py-1.5 sm:*:text-sm/5" />
       <SelectContent items={years}>
         {item => (
-          <SelectItem>
+          <SelectItem textValue={item.formatted}>
             <SelectLabel>{item.formatted}</SelectLabel>
           </SelectItem>
         )}

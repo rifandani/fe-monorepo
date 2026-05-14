@@ -1,14 +1,15 @@
 'use client'
 
-import type {
-  GroupProps,
-  SeparatorProps,
-  ToolbarProps as ToolbarPrimitiveProps,
-} from 'react-aria-components'
-
+import type { GroupProps } from 'react-aria-components/Group'
+import type { SeparatorProps } from 'react-aria-components/Separator'
+import type { ToolbarProps as ToolbarPrimitiveProps } from 'react-aria-components/Toolbar'
 import type { ToggleProps } from './toggle'
 import { createContext, use } from 'react'
-import { composeRenderProps, Group, Toolbar as ToolbarPrimitive } from 'react-aria-components'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import { Group } from 'react-aria-components/Group'
+import {
+  Toolbar as ToolbarPrimitive,
+} from 'react-aria-components/Toolbar'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Separator } from './separator'
@@ -31,10 +32,10 @@ function Toolbar({ orientation = 'horizontal', isCircle, className, ...props }: 
         {...props}
         className={composeRenderProps(className, (className, { orientation }) =>
           twMerge(
-            'group inset-ring inset-ring-border inline-flex flex-row gap-1.5 bg-overlay p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            'group scrollbar-none inset-ring inset-ring-border inline-flex flex-row gap-1.5 bg-overlay p-1.5 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
             isCircle ? 'rounded-full' : 'rounded-lg',
             orientation === 'horizontal'
-              ? 'flex-row items-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+              ? 'scrollbar-none flex-row items-center [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
               : 'flex-col items-start',
             className,
           ))}

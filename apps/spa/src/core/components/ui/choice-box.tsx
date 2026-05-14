@@ -86,13 +86,13 @@ function ChoiceBox<T extends object>({
 
 const choiceBoxItemStyles = tv({
   base: [
-    'group bg-(--control-bg,transparent) outline-hidden',
+    'group outline-hidden',
     '[--choice-box-fg:var(--color-primary-subtle-fg)] [--choice-box:var(--color-primary-subtle)]',
     '[--choice-box-selected-hovered:var(--color-primary-subtle)]/90',
     'inset-ring inset-ring-border rounded-lg p-(--gutter) **:data-[slot=label]:font-medium',
     '**:data-[slot=avatar]:row-span-2 **:data-[slot=avatar]:mt-0.5 **:data-[slot=avatar]:shrink-0',
-    '**:data-[slot=icon]:row-span-2 **:data-[slot=icon]:h-[1.1lh] **:data-[slot=icon]:w-5 **:data-[slot=icon]:shrink-0',
-    'has-data-[slot=avatar]:grid-cols-[auto_1fr_auto] has-data-[slot=icon]:grid-cols-[auto_1fr_auto]',
+    '**:[svg]:row-span-2 **:[svg]:h-[1.1lh] **:[svg]:w-5 **:[svg]:shrink-0',
+    'has-[svg:not([data-slot=check-indicator])]:grid-cols-[auto_1fr_auto] has-data-[slot=avatar]:grid-cols-[auto_1fr_auto]',
     'grid grid-cols-[1fr_auto] content-start items-start gap-x-[calc(var(--gutter)-(--spacing(1)))] gap-y-1',
     '[--choice-box-active-ring:var(--color-ring)]/70 [--choice-box-ring:var(--color-ring)]/20',
     'has-[[slot=description]]:**:data-[slot=label]:font-medium',
@@ -184,7 +184,7 @@ function ChoiceBoxItem({
             {content}
             {selectionMode === 'multiple' && (
               <Checkbox
-                className="col-start-2 self-start group-has-data-[slot=avatar]:col-start-3 group-has-data-[slot=icon]:col-start-3"
+                className="col-start-2 self-start group-has-[svg:not([data-slot=check-indicator])]:col-start-3 group-has-data-[slot=avatar]:col-start-3"
                 slot="selection"
               />
             )}
@@ -207,7 +207,7 @@ function ChoiceBoxLabel({ className, ref, ...props }: ChoiceBoxLabelProps) {
       className={twMerge(
         'select-none text-base/6 text-fg group-disabled:opacity-50 sm:text-sm/6',
         'col-start-1 row-start-1',
-        'group-has-data-[slot=icon]:col-start-2',
+        'group-has-[svg:not([data-slot=check-indicator])]:col-start-2',
         'group-has-data-[slot=avatar]:col-start-2',
         className,
       )}
@@ -225,7 +225,7 @@ function ChoiceBoxDescription({ className, ref, ...props }: ChoiceBoxDescription
       ref={ref}
       className={twMerge(
         'col-start-1 row-start-2',
-        'group-has-data-[slot=icon]:col-start-2',
+        'group-has-[svg:not([data-slot=check-indicator])]:col-start-2',
         'group-has-data-[slot=avatar]:col-start-2',
         'text-base/6 text-muted-fg sm:text-sm/6',
         'group-disabled:opacity-50',

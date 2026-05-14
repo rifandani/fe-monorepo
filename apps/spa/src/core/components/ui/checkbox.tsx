@@ -1,12 +1,13 @@
 'use client'
 
-import type { CheckboxGroupProps, CheckboxProps } from 'react-aria-components'
+import type { CheckboxProps } from 'react-aria-components/Checkbox'
+import type { CheckboxGroupProps } from 'react-aria-components/CheckboxGroup'
 import { CheckIcon, MinusIcon } from '@heroicons/react/20/solid'
+import { Checkbox as CheckboxPrimitive } from 'react-aria-components/Checkbox'
 import {
   CheckboxGroup as CheckboxGroupPrimitive,
-  Checkbox as CheckboxPrimitive,
-  composeRenderProps,
-} from 'react-aria-components'
+} from 'react-aria-components/CheckboxGroup'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Label } from './field'
@@ -63,7 +64,7 @@ export function Checkbox({ className, children, ...props }: CheckboxProps) {
               <span
                 data-slot="indicator"
                 className={twMerge([
-                  'relative inset-ring inset-ring-input isolate flex shrink-0 items-center justify-center rounded text-bg transition group-hover:inset-ring-muted-fg/30',
+                  'relative inset-ring inset-ring-input isolate flex shrink-0 items-center justify-center rounded bg-(--control-bg,transparent) text-bg transition group-hover:inset-ring-muted-fg/30',
                   'sm:size-4 sm:*:data-[slot=check-indicator]:size-3.5',
                   'size-4.5 *:data-[slot=check-indicator]:size-4',
                   'in-disabled:bg-muted',

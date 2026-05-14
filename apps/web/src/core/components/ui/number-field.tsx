@@ -1,8 +1,13 @@
 'use client'
 
-import type { ButtonProps, NumberFieldProps, InputProps as PrimitiveInputProps } from 'react-aria-components'
+import type { ButtonProps } from 'react-aria-components/Button'
+import type { InputProps as PrimitiveInputProps } from 'react-aria-components/Input'
+import type { NumberFieldProps } from 'react-aria-components/NumberField'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { Button, NumberField as NumberFieldPrimitive } from 'react-aria-components'
+import { Button } from 'react-aria-components/Button'
+import {
+  NumberField as NumberFieldPrimitive,
+} from 'react-aria-components/NumberField'
 import { Input, InputGroup } from '@/core/components/ui/input'
 import { cx } from '@/core/utils/primitive'
 import { fieldStyles } from './field'
@@ -36,17 +41,10 @@ function NumberInput({ className, ...props }: InputProps) {
 
 interface StepperButtonProps extends ButtonProps {
   slot: 'increment' | 'decrement'
-  emblemType?: 'chevron' | 'default'
   className?: string
 }
 
-function StepperButton({
-  slot,
-  className,
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  emblemType = 'default',
-  ...props
-}: StepperButtonProps) {
+function StepperButton({ slot, className, ...props }: StepperButtonProps) {
   return (
     <Button
       className={cx(

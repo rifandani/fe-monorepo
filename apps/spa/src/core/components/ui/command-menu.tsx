@@ -1,34 +1,27 @@
 'use client'
 
-import type {
-  AutocompleteProps,
-  CollectionRenderer,
-  MenuProps,
-  MenuTriggerProps,
-  ModalOverlayProps,
-  SearchFieldProps,
-} from 'react-aria-components'
+import type { AutocompleteProps } from 'react-aria-components/Autocomplete'
+import type { CollectionRenderer } from 'react-aria-components/CollectionBuilder'
+import type { MenuProps, MenuTriggerProps } from 'react-aria-components/Menu'
+import type { ModalOverlayProps } from 'react-aria-components/Modal'
+import type { SearchFieldProps } from 'react-aria-components/SearchField'
 import type { MenuSectionProps } from './menu'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { createContext, use, useEffect } from 'react'
+import { Autocomplete, useFilter } from 'react-aria-components/Autocomplete'
+import { Button } from 'react-aria-components/Button'
+import { Collection } from 'react-aria-components/Collection'
 import {
-  Autocomplete,
-  Button,
-  Collection,
+
   CollectionRendererContext,
   DefaultCollectionRenderer,
-  Dialog,
-  Header,
-  Input,
-  Menu as MenuPrimitive,
-  MenuSection,
-  Modal,
-  ModalContext,
-  ModalOverlay,
-  OverlayTriggerStateContext,
-  SearchField,
-  useFilter,
-} from 'react-aria-components'
+} from 'react-aria-components/CollectionBuilder'
+import { Dialog, OverlayTriggerStateContext } from 'react-aria-components/Dialog'
+import { Header } from 'react-aria-components/Header'
+import { Input } from 'react-aria-components/Input'
+import { Menu as MenuPrimitive, MenuSection } from 'react-aria-components/Menu'
+import { Modal, ModalContext, ModalOverlay } from 'react-aria-components/Modal'
+import { SearchField } from 'react-aria-components/SearchField'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { DropdownKeyboard } from './dropdown'

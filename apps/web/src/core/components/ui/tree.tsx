@@ -5,14 +5,14 @@ import type {
   TreeItemContentRenderProps,
   TreeItemProps,
   TreeProps,
-} from 'react-aria-components'
+} from 'react-aria-components/Tree'
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import { Button } from 'react-aria-components/Button'
 import {
-  Button,
   TreeItemContent,
   TreeItem as TreeItemPrimitive,
   Tree as TreePrimitive,
-} from 'react-aria-components'
+} from 'react-aria-components/Tree'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Checkbox } from './checkbox'

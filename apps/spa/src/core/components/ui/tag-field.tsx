@@ -1,6 +1,7 @@
 'use client'
 
-import type { Key, Selection, TextFieldProps } from 'react-aria-components'
+import type { Key, Selection } from 'react-aria-components/TagGroup'
+import type { TextFieldProps } from 'react-aria-components/TextField'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { FieldError } from '@/core/components/ui/field'

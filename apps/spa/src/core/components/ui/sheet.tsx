@@ -1,7 +1,11 @@
 'use client'
 
-import type { DialogProps, ModalOverlayProps } from 'react-aria-components'
-import { DialogTrigger as DialogTriggerPrimitive, Modal, ModalOverlay } from 'react-aria-components'
+import type { DialogProps } from 'react-aria-components/Dialog'
+import type { ModalOverlayProps } from 'react-aria-components/Modal'
+import {
+  DialogTrigger as DialogTriggerPrimitive,
+} from 'react-aria-components/Dialog'
+import { Modal, ModalOverlay } from 'react-aria-components/Modal'
 import { cx } from '@/core/utils/primitive'
 import {
   Dialog,
@@ -50,7 +54,10 @@ function SheetContent({
   return (
     <ModalOverlay
       isDismissable={isDismissable}
-      className="entering:fade-in exiting:fade-out fixed start-0 top-0 z-50 size-full entering:animate-in exiting:animate-out overflow-hidden bg-black/15 entering:duration-500 exiting:duration-300"
+      className={cx(
+        'entering:fade-in exiting:fade-out fixed start-0 top-0 z-50 size-full entering:animate-in exiting:animate-out overflow-hidden bg-black/15 entering:duration-500 exiting:duration-300',
+        overlay?.className,
+      )}
       {...props}
     >
       <Modal

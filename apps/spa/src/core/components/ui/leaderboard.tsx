@@ -1,7 +1,9 @@
 'use client'
 
-import type { LabelProps, ProgressBarProps } from 'react-aria-components'
-import { Label, ProgressBar } from 'react-aria-components'
+import type { LabelProps } from 'react-aria-components/Label'
+import type { ProgressBarProps } from 'react-aria-components/ProgressBar'
+import { Label } from 'react-aria-components/Label'
+import { ProgressBar } from 'react-aria-components/ProgressBar'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 

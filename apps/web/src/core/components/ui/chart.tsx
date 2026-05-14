@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactElement } from 'react'
-import type { ToggleButtonGroupProps } from 'react-aria-components'
+import type { ToggleButtonGroupProps } from 'react-aria-components/ToggleButtonGroup'
 import type {
   CartesianGridProps as CartesianGridPrimitiveProps,
   CartesianGridProps,
@@ -19,7 +19,8 @@ import type {
 } from 'recharts/types/component/DefaultTooltipContent'
 import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
 import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
-import { ToggleButton, ToggleButtonGroup } from 'react-aria-components'
+import { ToggleButton } from 'react-aria-components/ToggleButton'
+import { ToggleButtonGroup } from 'react-aria-components/ToggleButtonGroup'
 import {
   CartesianGrid as CartesianGridPrimitive,
   Legend as LegendPrimitive,
@@ -142,8 +143,8 @@ interface BaseChartProps extends React.HTMLAttributes<HTMLDivElement> {
   layout?: ChartLayout
   valueFormatter?: (value: number) => string
 
-  tooltip?: TooltipContentType | boolean
-  tooltipProps?: Omit<ChartTooltipProps, 'content'> & {
+  tooltip?: TooltipContentType<ValueType, NameType> | boolean
+  tooltipProps?: Omit<TooltipProps, 'content'> & {
     hideLabel?: boolean
     labelSeparator?: boolean
     hideIndicator?: boolean
@@ -168,8 +169,6 @@ interface BaseChartProps extends React.HTMLAttributes<HTMLDivElement> {
   hideYAxis?: boolean
 }
 
-const chartIdRegex = /:/g
-
 function Chart({
   id,
   className,
@@ -190,7 +189,7 @@ function Chart({
   }) {
   const isMobile = useIsMobile()
   const uniqueId = useId()
-  const chartId = useMemo(() => `chart-${id || uniqueId.replace(chartIdRegex, '')}`, [id, uniqueId])
+  const chartId = useMemo(() => `chart-${id || uniqueId.replace(/:/g, '')}`, [id, uniqueId])
 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null)
 
@@ -263,10 +262,10 @@ ${colorConfig
   )
 }
 
-type ChartTooltipProps<
-  TValue extends ValueType = ValueType,
-  TName extends NameType = NameType,
-> = TooltipProps<TValue, TName>
+type ChartTooltipProps<TValue extends ValueType, TName extends NameType> = TooltipProps<
+  TValue,
+  TName
+>
 
 const tooltipWrapperStyle = { outline: 'none' } as const
 
@@ -284,7 +283,7 @@ const cursorStyleDefault = {
   fillOpacity: 0.5,
 } as const
 
-function ChartTooltip(props: ChartTooltipProps) {
+function ChartTooltip(props: TooltipProps) {
   const { layout } = useChart()
   const cursorStyle = layout === 'radial' ? cursorStyleRadial : cursorStyleDefault
 
@@ -311,15 +310,13 @@ function XAxis({
   className,
   intervalType = 'preserveStartEnd',
   minTickGap = 5,
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  domain = ['auto', 'auto'],
   ...props
 }: XAxisProps) {
   const { dataKey, data, layout } = useChart()
 
   const ticks
     = displayEdgeLabelsOnly && data?.length && dataKey
-      ? [data[0]?.[dataKey], data.at(-1)?.[dataKey]]
+      ? [data[0]?.[dataKey], data[data.length - 1]?.[dataKey]]
       : undefined
 
   const tick = layout === 'horizontal' ? tickHorizontal : undefined
@@ -470,9 +467,9 @@ function ChartTooltipContent<TValue extends ValueType, TName extends NameType>({
             <div
               key={key}
               className={twMerge(
-                'flex w-full flex-wrap items-stretch gap-2 *:data-[slot=icon]:text-muted-fg',
-                indicator === 'dot' && 'items-center *:data-[slot=icon]:size-2.5',
-                indicator === 'line' && '*:data-[slot=icon]:h-full *:data-[slot=icon]:w-2.5',
+                'flex w-full flex-wrap items-stretch gap-2 *:[svg]:text-muted-fg',
+                indicator === 'dot' && 'items-center *:[svg]:size-2.5',
+                indicator === 'line' && '*:[svg]:h-full *:[svg]:w-2.5',
               )}
             >
               {formatter && item?.value !== undefined && item.name
@@ -582,7 +579,7 @@ function ChartLegendContent({
             key={key}
             id={key}
             className={twMerge(
-              'flex items-center gap-2 rounded-sm px-2 py-1 text-muted-fg *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:size-2.5 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:text-muted-fg',
+              'flex items-center gap-2 rounded-sm px-2 py-1 text-muted-fg *:[svg]:-mx-0.5 *:[svg]:size-2.5 *:[svg]:shrink-0 *:[svg]:text-muted-fg',
               'selected:bg-secondary/70 selected:text-secondary-fg',
               'hover:bg-secondary/70 hover:text-secondary-fg',
             )}
@@ -590,12 +587,11 @@ function ChartLegendContent({
           >
             {itemConfig?.icon && !hideIcon
               ? (
-                  <itemConfig.icon data-slot="icon" />
+                  <itemConfig.icon />
                 )
               : (
                   <div
-                    data-slot="icon"
-                    className="rounded-full"
+                    className="size-2.5 rounded-full"
                     style={{
                       backgroundColor: item.color,
                     }}
@@ -621,15 +617,17 @@ export type {
   IntervalType,
   XAxisProps,
 }
-
 export {
   CartesianGrid,
   Chart,
+  CHART_COLORS,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
+  constructCategoryColors,
+  DEFAULT_COLORS,
+  getColorValue,
   XAxis,
   YAxis,
 }
-export { CHART_COLORS, constructCategoryColors, DEFAULT_COLORS, getColorValue }

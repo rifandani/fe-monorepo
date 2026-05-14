@@ -1,7 +1,7 @@
 'use client'
 
-import type { ProgressBarProps } from 'react-aria-components'
-import { ProgressBar } from 'react-aria-components'
+import type { ProgressBarProps } from 'react-aria-components/ProgressBar'
+import { ProgressBar } from 'react-aria-components/ProgressBar'
 import { twMerge } from 'tailwind-merge'
 
 interface ProgressCircleProps extends Omit<ProgressBarProps, 'className'> {

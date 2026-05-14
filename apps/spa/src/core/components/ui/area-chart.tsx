@@ -102,10 +102,7 @@ export function AreaChart({
   const stacked = type === 'stacked' || type === 'percent'
   const areaId = useId()
 
-  const configEntries = useMemo(
-    () => configKeys.map(category => [category, config[category]] as const),
-    [config, configKeys],
-  )
+  const configEntries = useMemo(() => Object.entries(config), [config])
 
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
@@ -177,7 +174,7 @@ export function AreaChart({
                 const categoryId = `${areaId}-${category.replace(slugRegExp, '')}`
                 const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
                 const stopOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 0.5
-                const color = getColorValue(values?.color || categoryColors.get(category))
+                const color = getColorValue(values.color || categoryColors.get(category))
 
                 return (
                   <Fragment key={categoryId}>

@@ -1,11 +1,10 @@
 'use client'
 
-import type { ColorWheelProps as PrimitiveColorWheelProps } from 'react-aria-components'
+import type { ColorWheelProps as PrimitiveColorWheelProps } from 'react-aria-components/ColorWheel'
 import {
   ColorWheelTrack,
   ColorWheel as PrimitiveColorWheel,
-
-} from 'react-aria-components'
+} from 'react-aria-components/ColorWheel'
 import { ColorThumb } from './color-thumb'
 
 export interface ColorWheelProps

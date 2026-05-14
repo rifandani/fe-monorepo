@@ -1,11 +1,13 @@
 'use client'
 
-import type { FieldErrorProps, LabelProps, TextProps } from 'react-aria-components'
+import type { FieldErrorProps } from 'react-aria-components/FieldError'
+import type { LabelProps } from 'react-aria-components/Label'
+import type { TextProps } from 'react-aria-components/Text'
 import {
   FieldError as FieldErrorPrimitive,
-  Label as LabelPrimitive,
-  Text,
-} from 'react-aria-components'
+} from 'react-aria-components/FieldError'
+import { Label as LabelPrimitive } from 'react-aria-components/Label'
+import { Text } from 'react-aria-components/Text'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { cx } from '@/core/utils/primitive'

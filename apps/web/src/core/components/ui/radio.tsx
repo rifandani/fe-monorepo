@@ -1,11 +1,11 @@
 'use client'
 
-import type { RadioGroupProps, RadioProps } from 'react-aria-components'
+import type { RadioGroupProps, RadioProps } from 'react-aria-components/RadioGroup'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import {
-  composeRenderProps,
   RadioGroup as RadioGroupPrimitive,
   Radio as RadioPrimitive,
-} from 'react-aria-components'
+} from 'react-aria-components/RadioGroup'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Label } from './field'
@@ -44,7 +44,7 @@ export function Radio({ className, children, ...props }: RadioProps) {
             <span
               data-slot="indicator"
               className={twMerge([
-                'relative inset-ring inset-ring-input isolate flex size-4.5 shrink-0 items-center justify-center rounded-full text-bg transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[\'\'] hover:before:bg-muted-fg/20 sm:size-4 sm:before:size-1.7',
+                'relative inset-ring inset-ring-input isolate flex size-4.5 shrink-0 items-center justify-center rounded-full bg-(--control-bg,transparent) text-bg transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[\'\'] hover:before:bg-muted-fg/20 sm:size-4 sm:before:size-1.7',
                 'in-disabled:bg-muted',
                 isSelected && [
                   'inset-ring-(--radio-ring,var(--color-ring)) bg-(--radio-bg,var(--color-primary)) text-(--radio-fg,var(--color-primary-fg)) before:bg-bg hover:before:bg-muted/90',

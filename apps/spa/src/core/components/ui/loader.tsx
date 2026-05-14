@@ -1,6 +1,6 @@
 'use client'
 
-import { ProgressBar } from 'react-aria-components'
+import { ProgressBar } from 'react-aria-components/ProgressBar'
 import { twMerge } from 'tailwind-merge'
 
 function Ring({ className, ...props }: React.SVGProps<SVGSVGElement>) {

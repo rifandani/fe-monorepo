@@ -1,11 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { createMiddleware, defaults } from '@nosecone/next'
 
-// const noseconeOptionsWithToolbar: NoseconeOptions = withVercelToolbar({
-//   ...defaults,
-//   // disabled because we depend on iconify, next-themes, etc...
-//   contentSecurityPolicy: false,
-// });
 /**
  * Remove `export const config` to ensures the headers are applied to all requests
  * NOTE: should opt-out of static generation for this to work

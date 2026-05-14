@@ -5,7 +5,6 @@ import type { BaseChartProps } from './chart'
 import { useMemo } from 'react'
 import { Line, LineChart as LineChartPrimitive } from 'recharts'
 import {
-
   CartesianGrid,
   Chart,
   ChartLegend,
@@ -66,10 +65,7 @@ export function LineChart({
     [configKeys, colors],
   )
 
-  const configEntries = useMemo(
-    () => configKeys.map(category => [category, config[category]] as const),
-    [config, configKeys],
-  )
+  const configEntries = useMemo(() => Object.entries(config), [config])
 
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
@@ -120,7 +116,7 @@ export function LineChart({
           {!children
             ? configEntries.map(([category, values]) => {
                 const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
-                const color = getColorValue(values?.color || categoryColors.get(category))
+                const color = getColorValue(values.color || categoryColors.get(category))
 
                 return (
                   <Line

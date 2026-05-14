@@ -1,5 +1,5 @@
 import type { ClassNameValue } from 'tailwind-merge'
-import { composeRenderProps } from 'react-aria-components'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import { twMerge } from 'tailwind-merge'
 
 /** @deprecated Use cx */

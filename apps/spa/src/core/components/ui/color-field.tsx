@@ -1,7 +1,9 @@
 'use client'
 
-import type { ColorFieldProps } from 'react-aria-components'
-import { ColorField as ColorFieldPrimitive } from 'react-aria-components'
+import type { ColorFieldProps } from 'react-aria-components/ColorField'
+import {
+  ColorField as ColorFieldPrimitive,
+} from 'react-aria-components/ColorField'
 import { cx } from '@/core/utils/primitive'
 import { fieldStyles } from './field'
 

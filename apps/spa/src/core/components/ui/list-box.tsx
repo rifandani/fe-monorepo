@@ -1,13 +1,17 @@
 'use client'
 
-import type { ListBoxItemProps, ListBoxProps, ListBoxSectionProps } from 'react-aria-components'
+import type {
+  ListBoxItemProps,
+  ListBoxProps,
+  ListBoxSectionProps,
+} from 'react-aria-components/ListBox'
 import type { DropdownSectionProps } from './dropdown'
 import { CheckIcon } from '@heroicons/react/20/solid'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import {
-  composeRenderProps,
   ListBoxItem as ListBoxItemPrimitive,
   ListBox as ListBoxPrimitive,
-} from 'react-aria-components'
+} from 'react-aria-components/ListBox'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import {
@@ -24,7 +28,7 @@ function ListBox<T extends object>({ className, ...props }: ListBoxProps<T>) {
       {...props}
       data-slot="list-box"
       className={cx(
-        'grid max-h-96 w-full min-w-56 scroll-py-1 grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto overscroll-contain rounded-xl border bg-bg p-1 outline-hidden [scrollbar-width:thin] has-data-[slot=drag-icon]:grid-cols-[auto_auto_1fr] [&::-webkit-scrollbar]:size-0.5 *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
+        'scrollbar-thin grid max-h-96 w-full min-w-56 scroll-py-1 grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto overscroll-contain rounded-xl border bg-bg p-1 outline-hidden has-data-[slot=drag-icon]:grid-cols-[auto_auto_1fr] *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
         className,
       )}
     />
@@ -41,9 +45,8 @@ function ListBoxItem<T extends object>({ children, className, ...props }: ListBo
           ...renderProps,
           className: twJoin(
             'group not-has-[[slot=description]]:items-start',
-            // "has-data-[slot=drag-icon]:*:data-[slot=check-icon]:absolute has-data-[slot=drag-icon]:*:data-[slot=check-icon]:right-0",
             'has-data-[slot=drag-icon]:*:[[slot=label]]:col-start-3',
-            'has-data-[slot=drag-icon]:*:data-[slot=icon]:col-start-2',
+            'has-data-[slot=drag-icon]:*:[svg]:col-start-2',
             'href' in props ? 'cursor-pointer' : 'cursor-default',
             className,
           ),
@@ -59,7 +62,7 @@ function ListBoxItem<T extends object>({ children, className, ...props }: ListBo
             {allowsDragging && (
               <svg
                 data-slot="drag-icon"
-                className="me-2 size-5 h-lh text-muted-fg sm:w-4"
+                className="me-2 mt-0.5 h-lh w-5 text-muted-fg sm:mt-1 sm:w-4"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -92,8 +95,8 @@ function ListBoxItem<T extends object>({ children, className, ...props }: ListBo
             )}
             {isSelected && (
               <CheckIcon
-                className="-mx-0.5 me-2 h-lh w-5 shrink-0 group-allows-dragging:col-start-2 sm:w-4"
-                data-slot="check-icon"
+                className="-mx-0.5 me-2 mt-0.5 h-lh w-5 shrink-0 group-allows-dragging:col-start-2 sm:mt-1 sm:w-4"
+                data-slot="check-indicator"
               />
             )}
             {typeof children === 'function'

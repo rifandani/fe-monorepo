@@ -1,19 +1,20 @@
 'use client'
 
 import type { DateDuration } from '@internationalized/date'
-import type { DateRangePickerProps as DateRangePickerPrimitiveProps, DateValue, PopoverProps } from 'react-aria-components'
+import type { DateValue } from 'react-aria-components/DateField'
+import type { DateRangePickerProps as DateRangePickerPrimitiveProps } from 'react-aria-components/DateRangePicker'
+import type { PopoverProps } from 'react-aria-components/Popover'
 import { CalendarDateRangeIcon } from '@heroicons/react/24/outline'
+import { Button } from 'react-aria-components/Button'
 import {
-  Button,
   DateRangePicker as DateRangePickerPrimitive,
-
-} from 'react-aria-components'
+} from 'react-aria-components/DateRangePicker'
 import { twJoin } from 'tailwind-merge'
-import { DateInput as PrimitiveDateInput } from '@/core/components/ui/date-field'
-import { InputGroup } from '@/core/components/ui/input'
 import { cx } from '@/core/utils/primitive'
+import { DateInput as PrimitiveDateInput } from './date-field'
 import { DatePickerOverlay } from './date-picker'
 import { fieldStyles } from './field'
+import { InputGroup } from './input'
 
 export interface DateRangePickerProps<T extends DateValue>
   extends DateRangePickerPrimitiveProps<T> {

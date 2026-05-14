@@ -3,19 +3,19 @@
 import type {
   ComboBoxProps as ComboBoxPrimitiveProps,
   ComboBoxValueProps,
-  InputProps,
-  ListBoxProps,
-  PopoverProps,
-} from 'react-aria-components'
+} from 'react-aria-components/ComboBox'
+import type { InputProps } from 'react-aria-components/Input'
+import type { ListBoxProps } from 'react-aria-components/ListBox'
+import type { PopoverProps } from 'react-aria-components/Popover'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { Button } from 'react-aria-components/Button'
 import {
-  Button,
   ComboBoxContext,
   ComboBox as ComboBoxPrimitive,
   ComboBoxValue as ComboBoxValuePrimitive,
-  ListBox,
-  useSlottedContext,
-} from 'react-aria-components'
+} from 'react-aria-components/ComboBox'
+import { ListBox } from 'react-aria-components/ListBox'
+import { useSlottedContext } from 'react-aria-components/slots'
 import { fieldStyles } from '@/core/components/ui/field'
 import { Input } from '@/core/components/ui/input'
 import { cx } from '@/core/utils/primitive'
@@ -53,7 +53,7 @@ function ComboBoxContent<T extends object>({
     <PopoverContent
       placement={popover?.placement ?? 'bottom'}
       className={cx(
-        'min-w-(--trigger-width) scroll-py-1 overflow-y-auto overscroll-contain',
+        'min-w-(--trigger-width) overflow-hidden *:data-[slot=popover-inner]:overflow-hidden',
         popover?.className,
       )}
       {...popover}
@@ -62,7 +62,7 @@ function ComboBoxContent<T extends object>({
         layout="stack"
         orientation="vertical"
         className={cx(
-          'grid max-h-96 w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
+          'grid max-h-[inherit] w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
           className,
         )}
         items={items}

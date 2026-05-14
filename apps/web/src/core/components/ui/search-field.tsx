@@ -1,8 +1,12 @@
 'use client'
 
-import type { InputProps, SearchFieldProps } from 'react-aria-components'
+import type { InputProps } from 'react-aria-components/Input'
+import type { SearchFieldProps } from 'react-aria-components/SearchField'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
-import { Button, SearchField as SearchFieldPrimitive } from 'react-aria-components'
+import { Button } from 'react-aria-components/Button'
+import {
+  SearchField as SearchFieldPrimitive,
+} from 'react-aria-components/SearchField'
 import { twJoin } from 'tailwind-merge'
 import { fieldStyles } from '@/core/components/ui/field'
 import { cx } from '@/core/utils/primitive'
