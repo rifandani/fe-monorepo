@@ -6,7 +6,7 @@ import { ENV } from '@/core/constants/env'
 const applicationName = ENV.NEXT_PUBLIC_APP_TITLE
 const author = {
   name: 'Rizeki Rifandani',
-  url: 'https://rifandani.com',
+  url: 'https://web.com',
 } satisfies Metadata['authors']
 const publisher = 'Rizeki Rifandani'
 const twitterHandle = '@tri_rizeki'
@@ -47,7 +47,7 @@ export function createMetadata({
     category: 'Personal Blog or Website',
     icons: '/favicon.ico',
     generator: 'Next.js',
-    // keywords: [publisher, 'rifandani.com'], // no longer recommended by Google
+    // keywords: [publisher, 'web.com'], // no longer recommended by Google
     robots: {
       index: true, // allow all search engines to index the site
       follow: true, // allow all search engines to follow the links on the site

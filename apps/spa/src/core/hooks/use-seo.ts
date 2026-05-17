@@ -9,7 +9,6 @@ type UseSeoMetaParams = Parameters<typeof useSeoMeta>[0]
 const appName = SERVICE_NAME
 const appDescription = 'Bulletproof React.js 19 Template'
 const appBaseUrl = ENV.VITE_APP_URL
-const appOgImage = '/og.png' // TODO: change to the actual prod og image (e.g. https://example.com/og.png)
 const appPublisher = 'Rizeki Rifandani'
 const ldParams = {
   author: {
@@ -19,6 +18,10 @@ const ldParams = {
   name: appName,
   url: appBaseUrl,
   inLanguage: ['en-US', 'id-ID'],
+}
+
+function resolveOgImage(image?: string) {
+  return new URL(image ?? '/og.png', appBaseUrl).href
 }
 
 /**
@@ -38,22 +41,29 @@ export function useSeo(params: UseSeoMetaParams = { title: 'Layout' }) {
   const defaultMetadata: typeof params = {
     title,
     description,
-    // keywords: [publisher, 'rifandani.com'], // no longer recommended by Google
+    // keywords: [publisher, 'spa.com'], // no longer recommended by Google
     appleMobileWebAppTitle: title,
     ogTitle: title,
     ogDescription: description,
     ogUrl: appBaseUrl,
-    ogImage: params?.ogImage ?? appOgImage,
+    ogImage: resolveOgImage(),
     ogImageHeight: 441,
     ogImageWidth: 843,
     twitterTitle: title,
     twitterDescription: description,
     twitterSite: `@${appBaseUrl}`,
-    twitterImage: params?.ogImage ?? appOgImage,
+    twitterImage: resolveOgImage(),
   }
 
   // Merge the default metadata with any additional properties passed in
   const metadata = assign(defaultMetadata, params)
+
+  if (typeof metadata.ogImage === 'string') {
+    metadata.ogImage = resolveOgImage(metadata.ogImage)
+  }
+  if (typeof metadata.twitterImage === 'string') {
+    metadata.twitterImage = resolveOgImage(metadata.twitterImage)
+  }
 
   // create SEO meta tags
   useSeoMeta(metadata)

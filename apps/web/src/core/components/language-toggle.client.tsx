@@ -2,7 +2,7 @@
 
 import type { Selection } from 'react-stately'
 import type { I18NLocale } from '@/core/constants/i18n'
-import { Icon } from '@iconify/react'
+import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import { useLocale, useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import * as React from 'react'
@@ -18,10 +18,8 @@ export function LanguageToggle() {
   return (
     <Menu>
       <Button intent="outline" data-slot="menu-trigger">
-        <Icon
-          icon={locale === 'en' ? 'flag:us-1x1' : 'flag:id-1x1'}
-          className="size-6"
-        />
+        <GlobeAltIcon className="size-6" />
+        {locale === 'en' ? 'English' : 'Indonesia'}
       </Button>
 
       <MenuContent

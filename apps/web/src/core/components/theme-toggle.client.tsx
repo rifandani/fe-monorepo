@@ -2,7 +2,7 @@
 
 import type { BasicColorMode } from '@workspace/core/hooks/use-color-mode'
 import type { Selection } from 'react-stately'
-import { Icon } from '@iconify/react'
+import { ComputerDesktopIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
@@ -10,25 +10,17 @@ import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/
 export function ThemeToggle() {
   const t = useTranslations()
   const { theme, setTheme } = useTheme()
+  const activeTheme = theme ?? 'system' // avoid hydration mismatch
 
   return (
     <Menu>
       <Button intent="outline" data-slot="menu-trigger">
-        <Icon
-          icon={
-            theme === 'system'
-              ? 'lucide:computer'
-              : theme === 'light'
-                ? 'lucide:sun'
-                : 'lucide:moon'
-          }
-          className="size-6"
-        />
+        {activeTheme === 'system' ? <ComputerDesktopIcon className="size-6" /> : activeTheme === 'light' ? <SunIcon className="size-6" /> : <MoonIcon className="size-6" />}
       </Button>
 
       <MenuContent
         selectionMode="single"
-        selectedKeys={new Set([theme as string])}
+        selectedKeys={new Set([activeTheme])}
         onSelectionChange={(_selection) => {
           const selection = _selection as Exclude<Selection, 'all'> & {
             currentKey: 'system' | BasicColorMode

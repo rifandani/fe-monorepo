@@ -1,6 +1,6 @@
 'use client'
 
-import { Icon } from '@iconify/react'
+import { ArrowRightStartOnRectangleIcon, Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from 'next-intl'
 import { useAction } from 'next-safe-action/hooks'
 import * as React from 'react'
@@ -15,7 +15,7 @@ export function ProfileMenu({ username }: { username: string }) {
   return (
     <Menu>
       <MenuTrigger>
-        <Avatar initials={username.slice(0, 2).toUpperCase()} />
+        <Avatar initials={username.slice(0, 2).toUpperCase() ?? '??'} />
       </MenuTrigger>
 
       <MenuContent
@@ -31,11 +31,11 @@ export function ProfileMenu({ username }: { username: string }) {
           <MenuHeader separator>{t('account')}</MenuHeader>
 
           <MenuItem id="profile" className="gap-x-2" isDisabled={isPending}>
-            <Icon icon="lucide:user" />
+            <UserIcon className="size-6" />
             <span>{t('profile')}</span>
           </MenuItem>
           <MenuItem id="settings" className="gap-x-2" isDisabled={isPending}>
-            <Icon icon="lucide:settings" />
+            <Cog6ToothIcon className="size-6" />
             <span>{t('settings')}</span>
           </MenuItem>
         </MenuSection>
@@ -44,7 +44,7 @@ export function ProfileMenu({ username }: { username: string }) {
 
         <MenuSection>
           <MenuItem id="logout" className="gap-x-2" isDisabled={isPending}>
-            <Icon icon="lucide:log-out" />
+            <ArrowRightStartOnRectangleIcon className="size-6" />
             <p>{t('logout')}</p>
           </MenuItem>
         </MenuSection>

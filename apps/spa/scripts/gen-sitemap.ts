@@ -3,7 +3,7 @@ import { simpleSitemapAndIndex } from 'sitemap'
 
 const OUTPUT_PATH = './public/sitemap.xml'
 // TODO: change this to the production domain when we know it
-const DOMAIN = process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3001'
+const DOMAIN = process.env.NODE_ENV === 'production' ? 'https://spa.com' : 'https://spa.localhost'
 
 console.log('🚀 Generating sitemap...')
 

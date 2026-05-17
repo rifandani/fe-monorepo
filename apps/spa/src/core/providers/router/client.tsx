@@ -51,11 +51,9 @@ export const router = createRouter({
 function PendingRoute() {
   return (
     <div className="flex items-center justify-center">
-      <use
-        href="#svg-spinners--3-dots-fade"
-        height="5em"
-        className="text-primary"
-      />
+      <svg viewBox="0 0 24 24" height="5em" className="text-primary">
+        <use href="#svg-spinners--3-dots-fade" />
+      </svg>
     </div>
   )
 }

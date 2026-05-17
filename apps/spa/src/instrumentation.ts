@@ -21,8 +21,13 @@ import { logger } from '@workspace/core/utils/logger'
 import { ENV } from '@/core/constants/env'
 import { SERVICE_NAME, SERVICE_VERSION } from '@/core/constants/global'
 
-const TRACE_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces`
-const METRICS_EXPORTER_URL = `${ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics`
+// Dev (incl. portless HTTPS): same-origin via Vite proxy → avoids CORS + mixed content.
+const otlpEndpoint = import.meta.env.DEV
+  ? window.location.origin
+  : ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT
+
+const TRACE_EXPORTER_URL = `${otlpEndpoint}/v1/traces`
+const METRICS_EXPORTER_URL = `${otlpEndpoint}/v1/metrics`
 
 const logLevelMap: Record<string, DiagLogLevel> = {
   ALL: DiagLogLevel.ALL,

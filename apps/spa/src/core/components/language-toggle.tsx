@@ -1,5 +1,6 @@
 import type { LocaleDictLanguage } from '@workspace/core/libs/i18n/init'
 import type { Selection } from 'react-stately'
+import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import { Button, Menu, MenuContent, MenuHeader, MenuItem, MenuSection } from '@/core/components/ui'
 import { useTranslation } from '@/core/providers/i18n/context'
 
@@ -9,6 +10,7 @@ export function LanguageToggle() {
   return (
     <Menu>
       <Button intent="plain">
+        <GlobeAltIcon className="size-6" />
         {locale === 'en-us' ? 'English' : 'Indonesia'}
       </Button>
 
@@ -25,7 +27,7 @@ export function LanguageToggle() {
         <MenuSection>
           <MenuHeader separator>{t('language')}</MenuHeader>
 
-          <MenuItem id="en-us" className="mt-1">English</MenuItem>
+          <MenuItem id="en-us">English</MenuItem>
           <MenuItem id="id-id">Indonesia</MenuItem>
         </MenuSection>
       </MenuContent>

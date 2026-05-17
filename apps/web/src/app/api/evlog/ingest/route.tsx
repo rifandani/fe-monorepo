@@ -1,22 +1,48 @@
 import type { NextRequest } from 'next/server'
 import { SERVICE_NAME } from 'src/core/constants/global'
 import { createError } from 'src/core/utils/evlog'
+import { ENV } from '@/core/constants/env'
 
 const VALID_LEVELS = ['info', 'error', 'warn', 'debug'] as const
 
+function getAllowedHosts(request: NextRequest): Set<string> {
+  const hosts = new Set<string>()
+
+  for (const header of ['host', 'x-forwarded-host'] as const) {
+    const value = request.headers.get(header)
+    if (!value)
+      continue
+    for (const part of value.split(','))
+      hosts.add(part.trim())
+  }
+
+  hosts.add(new URL(ENV.NEXT_PUBLIC_APP_URL).host)
+
+  return hosts
+}
+
+function isAllowedOrigin(request: NextRequest, origin: string): boolean {
+  const originHost = new URL(origin).host
+  if (getAllowedHosts(request).has(originHost))
+    return true
+
+  // portless (and similar proxies) serve https://<name>.localhost while Next sees localhost:<port>
+  if (process.env.NODE_ENV === 'development' && originHost.endsWith('.localhost'))
+    return true
+
+  return false
+}
+
 export async function POST(request: NextRequest) {
   const origin = request.headers.get('origin')
-  const host = request.headers.get('host')
-  if (origin) {
+  if (origin && !isAllowedOrigin(request, origin)) {
     const originHost = new URL(origin).host
-    if (originHost !== host) {
-      throw createError({
-        status: 403,
-        message: 'Invalid origin',
-        why: `Origin ${originHost} does not match host ${host}`,
-        fix: 'Please use the correct origin',
-      })
-    }
+    throw createError({
+      status: 403,
+      message: 'Invalid origin',
+      why: `Origin ${originHost} is not allowed (allowed: ${[...getAllowedHosts(request)].join(', ')})`,
+      fix: 'Set NEXT_PUBLIC_APP_URL to your dev URL (e.g. https://web.localhost with portless)',
+    })
   }
 
   const body = await request.json()

@@ -86,11 +86,13 @@ function LoginRoute() {
           md:flex md:items-center md:justify-center
         `}
         >
-          <use
-            href="#icon-reactjs"
-            className="size-60 object-cover"
+          <svg
+            viewBox="0 0 256 228"
+            className="size-60"
             aria-label="cool react logo"
-          />
+          >
+            <use href="#icon-reactjs" width="100%" height="100%" />
+          </svg>
         </span>
       </section>
     </div>
@@ -189,7 +191,8 @@ function LoginForm() {
 
       <form.Subscribe
         selector={state => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      >
+        {([canSubmit, isSubmitting]) => (
           <Button
             type="submit"
             className="mt-8"
@@ -200,7 +203,7 @@ function LoginForm() {
             (emilyspass)
           </Button>
         )}
-      />
+      </form.Subscribe>
     </form>
   )
 }

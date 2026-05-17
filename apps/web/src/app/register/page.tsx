@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { RegisterForm } from '@/auth/components/register-form.client'
@@ -49,11 +48,12 @@ export default async function RegisterPage() {
       {/* image */}
       <section className="hidden w-1/2 shadow-2xl md:block">
         <span className="relative h-screen w-full md:flex md:items-center md:justify-center">
-          <Icon
-            icon="logos:nextjs-icon"
-            className="size-60 object-cover"
-            aria-label="cool nextjs logo"
-          />
+          <svg
+            viewBox="0 0 512 512"
+            className="size-60"
+          >
+            <use href="#icon-nextjs" />
+          </svg>
         </span>
       </section>
 

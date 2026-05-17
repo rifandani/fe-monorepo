@@ -10,7 +10,7 @@ import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/uti
 const title = 'Home'
 const description = 'Welcome to our Next.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.'
 const ldParams = {
-  url: process.env.NODE_ENV === 'production' ? 'https://rifandani.com' : 'http://localhost:3002',
+  url: process.env.NODE_ENV === 'production' ? 'https://web.com' : 'https://web.localhost',
   title,
   description,
 }

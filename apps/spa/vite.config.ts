@@ -21,6 +21,17 @@ export default defineConfig({
   server: {
     port: 3001,
     forwardConsole: true,
+    // Browser OTLP must be same-origin when the app is served over HTTPS (e.g. portless).
+    proxy: {
+      '/v1/traces': {
+        target: 'http://localhost:4318',
+        changeOrigin: true,
+      },
+      '/v1/metrics': {
+        target: 'http://localhost:4318',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     tanstackDevtools(),
