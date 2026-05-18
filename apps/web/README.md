@@ -2,7 +2,7 @@
 
 ## 🔧 Fixme
 
-- [ ] sitemap still does not work when we run `bun web build`. That's why we rename it into `sitemap.txt`.
+- .
 
 ## 🎯 Todo
 
@@ -25,4 +25,4 @@ bun hono db:gen
 bun hono db:migrate
 ```
 
-OpenAPI reference: `http://localhost:3002/api/auth/reference`
+OpenAPI reference: `http://web.localhost/api/auth/reference`
