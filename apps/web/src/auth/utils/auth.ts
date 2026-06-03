@@ -41,6 +41,7 @@ export const auth = betterAuth({
     modelName: 'rate_limit', // optional, by default "rateLimit" is used
   },
   plugins: [
+    // bearer(), // enables authentication using Bearer tokens as an alternative to browser cookies
     openAPI({
       path: '/docs', // at /api/auth/docs
     }),

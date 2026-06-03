@@ -2,7 +2,7 @@
 
 ## 🔧 Fixme
 
-- .
+~
 
 ## 🎯 Todo
 
@@ -17,12 +17,23 @@
 
 ## Auth
 
-When adding/removing/changing auth schema:
+```bash
+# everytime we add/remove/change auth schema, generate the new auth schema in `./src/db/auth-schema.ts`
+bun web auth:gen
+```
+
+The generated `./src/db/auth-schema.ts` file should be used ONLY to compare with the existing schema in `./src/db/schema.ts`.
+Compare manually and copy paste the new/updated schema to `./src/db/schema.ts` and then delete the generated `./src/db/auth-schema.ts` file.
+Make sure to also update the `auth.database.schema` in `./src/auth/utils/index.ts` with the new/updated schema.
+
+After that, run:
 
 ```bash
-bun hono auth:gen
-bun hono db:gen
-bun hono db:migrate
+# generate drizzle migrations
+bun web db:gen
+
+# run drizzle migrations
+bun web db:migrate
 ```
 
 OpenAPI reference: `http://web.localhost/api/auth/reference`

@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: QuiiBz/sherif@v1.11.1
+      - uses: QuiiBz/sherif@v1
         # with:
         # args: '--ignore-rule root-package-manager-field'
 
@@ -70,8 +70,15 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
-      - name: Save github secrets as env file
-        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
+      - name: Prepare env file
+        env:
+          SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
+        run: |
+          if [ -n "$SPA_ENV_FILE" ]; then
+            echo "$SPA_ENV_FILE" > apps/spa/.env.dev
+          else
+            cp apps/spa/.env.dev.example apps/spa/.env.dev
+          fi
 
       - name: Install playwright browsers
         run: bun spa:ci test:install
@@ -151,8 +158,15 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
-      - name: Save github secrets as env file
-        run: echo "${{ secrets.SPA_ENV_FILE }}" > apps/spa/.env.dev
+      - name: Prepare env file
+        env:
+          SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
+        run: |
+          if [ -n "$SPA_ENV_FILE" ]; then
+            echo "$SPA_ENV_FILE" > apps/spa/.env.dev
+          else
+            cp apps/spa/.env.dev.example apps/spa/.env.dev
+          fi
 
       - name: Build
         run: bun spa:ci build

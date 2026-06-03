@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { SERVICE_NAME } from 'src/core/constants/global'
-import { createError } from 'src/core/utils/evlog'
 import { ENV } from '@/core/constants/env'
+import { SERVICE_NAME } from '@/core/constants/global'
+import { createError } from '@/core/utils/evlog'
 
 const VALID_LEVELS = ['info', 'error', 'warn', 'debug'] as const
 
