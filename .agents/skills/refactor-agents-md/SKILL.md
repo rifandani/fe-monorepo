@@ -1,12 +1,16 @@
 ---
-description: Use this agent when you need to refactor all AGENST.md files effectively.
+name: refactor-agents-md
+description: Refactor AGENTS.md files to follow progressive disclosure principles. Use when reorganizing agent instructions, splitting monolithic AGENTS.md files, or restructuring docs for agents.
+disable-model-invocation: true
 ---
 
-I want you to refactor all my AGENTS.md files to follow progressive disclosure principles.
+# Refactor AGENTS.md
 
-Follow these steps:
+Refactor all AGENTS.md files to follow progressive disclosure principles.
 
-1. **Find contradictions**: Identify any instructions that conflict with each other. For each contradiction, ask me which version I want to keep.
+## Steps
+
+1. **Find contradictions**: Identify any instructions that conflict with each other. For each contradiction, ask the user which version to keep.
 
 2. **Identify the essentials**: Extract only what belongs in the root AGENTS.md:
    - One-sentence project description
