@@ -9,6 +9,7 @@ import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import { Group } from 'react-aria-components/Group'
 import {
   Toolbar as ToolbarPrimitive,
+
 } from 'react-aria-components/Toolbar'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -32,7 +33,7 @@ function Toolbar({ orientation = 'horizontal', isCircle, className, ...props }: 
         {...props}
         className={composeRenderProps(className, (className, { orientation }) =>
           twMerge(
-            'group scrollbar-none inset-ring inset-ring-border inline-flex flex-row gap-1.5 bg-overlay p-1.5 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
+            'group inline-flex scrollbar-none flex-row gap-1.5 bg-overlay p-1.5 inset-ring inset-ring-border [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
             isCircle ? 'rounded-full' : 'rounded-lg',
             orientation === 'horizontal'
               ? 'scrollbar-none flex-row items-center [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'

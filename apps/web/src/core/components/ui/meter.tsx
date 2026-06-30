@@ -4,6 +4,7 @@ import type { MeterProps as PrimitiveMeterProps, MeterRenderProps as PrimitiveMe
 import { createContext, use } from 'react'
 import {
   Meter as PrimitiveMeter,
+
 } from 'react-aria-components/Meter'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -49,7 +50,7 @@ export function MeterTrack({ className, ...props }: React.ComponentProps<'div'>)
       data-slot="meter-track"
       className={twMerge(
         '[--meter-height:--spacing(1.5)]',
-        'relative h-(--meter-height) w-full overflow-hidden rounded-full bg-secondary outline outline-transparent -outline-offset-1',
+        'relative h-(--meter-height) w-full overflow-hidden rounded-full bg-secondary outline -outline-offset-1 outline-transparent',
         className,
       )}
       {...props}

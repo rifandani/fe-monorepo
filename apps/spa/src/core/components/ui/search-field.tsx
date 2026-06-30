@@ -6,6 +6,7 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { Button } from 'react-aria-components/Button'
 import {
   SearchField as SearchFieldPrimitive,
+
 } from 'react-aria-components/SearchField'
 import { twJoin } from 'tailwind-merge'
 import { fieldStyles } from '@/core/components/ui/field'
@@ -16,9 +17,9 @@ export function SearchField({ className, ...props }: SearchFieldProps) {
   return (
     <SearchFieldPrimitive
       data-slot="control"
-      {...props}
       aria-label={props['aria-label'] ?? 'Search'}
       className={cx(fieldStyles({ className: 'group/search-field' }), className)}
+      {...props}
     />
   )
 }
@@ -30,7 +31,7 @@ export function SearchInput(props: InputProps) {
       <Input {...props} />
       <Button
         className={twJoin(
-          'touch-target grid place-content-center pressed:text-fg text-muted-fg hover:text-fg group-empty/search-field:invisible',
+          'touch-target grid place-content-center text-muted-fg group-empty/search-field:invisible hover:text-fg pressed:text-fg',
           'px-3 py-2 sm:px-2.5 sm:py-1.5 sm:text-sm/5',
         )}
       >

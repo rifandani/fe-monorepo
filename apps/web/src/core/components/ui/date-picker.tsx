@@ -9,6 +9,7 @@ import { CalendarDaysIcon } from '@heroicons/react/24/outline'
 import { Button } from 'react-aria-components/Button'
 import {
   DatePicker as DatePickerPrimitive,
+
 } from 'react-aria-components/DatePicker'
 import { twJoin } from 'tailwind-merge'
 import { useIsMobile } from '@/core/hooks/use-mobile'
@@ -81,7 +82,7 @@ export function DatePickerOverlay({
           placement={placement}
           arrow={false}
           className={twJoin(
-            'flex min-w-auto max-w-none snap-x justify-center p-4 sm:min-w-[16.5rem] sm:p-2 sm:pt-3',
+            'flex max-w-none min-w-auto snap-x justify-center p-4 sm:min-w-[16.5rem] sm:p-2 sm:pt-3',
             visibleDuration?.months === 1 ? 'sm:max-w-2xs' : 'sm:max-w-none',
           )}
           {...props}
@@ -105,7 +106,7 @@ export function DatePickerTrigger({ className, ...props }: GroupProps) {
         data-slot="date-picker-trigger"
         className={twJoin(
           'touch-target grid place-content-center outline-hidden',
-          'pressed:text-fg text-muted-fg hover:text-fg focus-visible:text-fg',
+          'text-muted-fg hover:text-fg focus-visible:text-fg pressed:text-fg',
           'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
           '*:size-5 sm:*:size-4',
         )}

@@ -68,7 +68,7 @@ function DialogTitle({ className, ref, ...props }: DialogTitleProps) {
     <Heading
       slot="title"
       ref={ref}
-      className={twMerge('text-balance font-semibold text-fg text-lg/6 sm:text-base/6', className)}
+      className={twMerge('text-lg/6 font-semibold text-balance text-fg sm:text-base/6', className)}
       {...props}
     />
   )
@@ -82,7 +82,7 @@ function DialogDescription({ className, ref, ...props }: DialogDescriptionProps)
     <p
       data-slot="description"
       className={twMerge(
-        'text-pretty text-base/6 text-muted-fg group-disabled:opacity-50 sm:text-sm/6',
+        'text-base/6 text-pretty text-muted-fg group-disabled:opacity-50 sm:text-sm/6',
         className,
       )}
       ref={ref}

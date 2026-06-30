@@ -4,6 +4,7 @@ import type { ProgressBarProps, ProgressBarRenderProps } from 'react-aria-compon
 import { createContext, use } from 'react'
 import {
   ProgressBar as ProgressBarPrimitive,
+
 } from 'react-aria-components/ProgressBar'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -80,7 +81,7 @@ export function ProgressBarTrack({ className, ref, ...props }: React.ComponentPr
           data-slot="progress-container"
           className={twMerge(
             '[--progress-content-bg:var(--color-primary)]',
-            'relative h-1.5 w-full min-w-52 overflow-hidden rounded-full bg-(--progress-container-bg,var(--color-secondary)) outline-1 outline-transparent -outline-offset-1 will-change-transform',
+            'relative h-1.5 w-full min-w-52 overflow-hidden rounded-full bg-(--progress-container-bg,var(--color-secondary)) outline-1 -outline-offset-1 outline-transparent will-change-transform',
             className,
           )}
         >

@@ -2,7 +2,7 @@
 
 import type { UseEmblaCarouselType } from 'embla-carousel-react'
 import type { ButtonProps } from './button'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import useEmblaCarousel from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'

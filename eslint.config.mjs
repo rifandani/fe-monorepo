@@ -3,7 +3,26 @@ import nextPlugin from '@next/eslint-plugin-next'
 import pluginRouter from '@tanstack/eslint-plugin-router'
 import depend from 'eslint-plugin-depend'
 import expoPlugin from 'eslint-plugin-expo'
+import eslintPluginTailwindcss from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
+
+function getTailwindConfig(appName) {
+  return {
+    ...eslintPluginTailwindcss.configs.recommended,
+    name: `tailwindcss:${appName}`,
+    files: [`apps/${appName}/**/*.{jsx,tsx}`],
+    settings: {
+      tailwindcss: {
+        cssConfigPath: './src/core/styles/globals.css',
+        functions: ['classnames', 'classNames', 'clsx', 'ctl', 'cn', 'cva', 'tv', 'twMerge', 'twJoin'],
+      },
+    },
+    rules: {
+      ...eslintPluginTailwindcss.configs.recommended.rules,
+      'tailwindcss/no-custom-classname': 'off',
+    },
+  }
+}
 
 export default antfu(
   {
@@ -108,6 +127,8 @@ export default antfu(
     files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...depend.configs['flat/recommended'],
   },
+  getTailwindConfig('web'),
+  getTailwindConfig('spa'),
   {
     files: ['apps/web/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
     ...nextPlugin.configs.recommended,

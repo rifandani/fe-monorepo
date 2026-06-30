@@ -3,6 +3,7 @@
 import type { ColorThumbProps } from 'react-aria-components/ColorThumb'
 import {
   ColorThumb as ColorThumbPrimitive,
+
 } from 'react-aria-components/ColorThumb'
 import { cx } from '@/core/utils/primitive'
 

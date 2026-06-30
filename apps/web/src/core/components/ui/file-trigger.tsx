@@ -6,13 +6,13 @@ import type { buttonStyles } from './button'
 import { CameraIcon, FolderIcon, PaperClipIcon } from '@heroicons/react/24/outline'
 import {
   FileTrigger as FileTriggerPrimitive,
+
 } from 'react-aria-components/FileTrigger'
 import { Button } from './button'
 import { Loader } from './loader'
 
 export interface FileTriggerProps
-  extends FileTriggerPrimitiveProps,
-  VariantProps<typeof buttonStyles> {
+  extends FileTriggerPrimitiveProps, VariantProps<typeof buttonStyles> {
   isDisabled?: boolean
   isPending?: boolean
   ref?: React.RefObject<HTMLInputElement>

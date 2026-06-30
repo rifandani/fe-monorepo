@@ -5,6 +5,7 @@ import type { LabelProps } from 'react-aria-components/Label'
 import type { TextProps } from 'react-aria-components/Text'
 import {
   FieldError as FieldErrorPrimitive,
+
 } from 'react-aria-components/FieldError'
 import { Label as LabelPrimitive } from 'react-aria-components/Label'
 import { Text } from 'react-aria-components/Text'
@@ -14,18 +15,18 @@ import { cx } from '@/core/utils/primitive'
 
 export const labelStyles = tv({
   base: [
-    'select-none text-base/6 text-fg in-data-required:not-data-[slot=\'control-label\']:after:ml-1.5 sm:text-sm/6',
+    'text-base/6 text-fg select-none in-data-required:not-data-[slot=\'control-label\']:after:ml-1.5 sm:text-sm/6',
     'in-data-required:not-data-[slot=\'control-label\']:after:text-danger-subtle-fg in-data-required:not-data-[slot=\'control-label\']:after:content-[\'*\']',
-    'in-disabled:pointer-events-none in-disabled:opacity-50 group-disabled:opacity-50',
+    'group-disabled:opacity-50 in-disabled:pointer-events-none in-disabled:opacity-50',
   ],
 })
 
 export const descriptionStyles = tv({
-  base: 'block text-muted-fg text-sm/6 in-disabled:opacity-50 group-disabled:opacity-50',
+  base: 'block text-sm/6 text-muted-fg group-disabled:opacity-50 in-disabled:opacity-50',
 })
 
 export const fieldErrorStyles = tv({
-  base: 'block text-danger-subtle-fg text-sm/6 in-disabled:opacity-50 group-disabled:opacity-50 forced-colors:text-[Mark]',
+  base: 'block text-sm/6 text-danger-subtle-fg group-disabled:opacity-50 in-disabled:opacity-50 forced-colors:text-[Mark]',
 })
 
 export const fieldStyles = tv({
@@ -38,7 +39,7 @@ export const fieldStyles = tv({
     '[&>[data-slot=control]+[slot=description]]:mt-2',
     '[&>[data-slot=control]+[slot=errorMessage]]:mt-2',
     '*:data-[slot=label]:font-medium',
-    'in-disabled:opacity-50 disabled:opacity-50',
+    'disabled:opacity-50 in-disabled:opacity-50',
   ],
 })
 
@@ -72,7 +73,7 @@ export function Legend({ className, ...props }: React.ComponentProps<'legend'>) 
     <legend
       data-slot="legend"
       {...props}
-      className={twMerge('font-semibold text-base/6 data-disabled:opacity-50', className)}
+      className={twMerge('text-base/6 font-semibold data-disabled:opacity-50', className)}
     />
   )
 }

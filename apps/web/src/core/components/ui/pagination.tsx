@@ -43,8 +43,7 @@ function PaginationList({ className, ref, ...props }: React.ComponentProps<'ul'>
 }
 
 interface PaginationItemProps
-  extends Omit<LinkProps, 'children'>,
-  Pick<ButtonProps, 'isCircle' | 'size' | 'intent'> {
+  extends Omit<LinkProps, 'children'>, Pick<ButtonProps, 'isCircle' | 'size' | 'intent'> {
   className?: string
   isCurrent?: boolean
   children?: string | number
@@ -76,8 +75,7 @@ function PaginationItem({
 }
 
 interface PaginationAttributesProps
-  extends Omit<LinkProps, 'className'>,
-  Pick<ButtonProps, 'size' | 'isCircle' | 'intent'> {
+  extends Omit<LinkProps, 'className'>, Pick<ButtonProps, 'size' | 'isCircle' | 'intent'> {
   className?: string
 }
 
@@ -324,7 +322,7 @@ function PaginationGap({
     <li
       data-slot="pagination-gap"
       className={twMerge(
-        'w-9 select-none text-center font-semibold text-fg text-sm/6 outline-hidden',
+        'w-9 text-center text-sm/6 font-semibold text-fg outline-hidden select-none',
         className,
       )}
       {...props}
@@ -353,7 +351,7 @@ function PaginationInfo({ className, ...props }: React.ComponentProps<'p'>) {
   return (
     <p
       className={twMerge(
-        'text-muted-fg text-sm/6 *:[strong]:font-medium *:[strong]:text-fg',
+        'text-sm/6 text-muted-fg *:[strong]:font-medium *:[strong]:text-fg',
         className,
       )}
       {...props}

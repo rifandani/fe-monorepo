@@ -4,6 +4,7 @@ import type { ComponentProps } from 'react'
 import type { BaseChartProps } from './chart'
 import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import {
+
   Chart,
   ChartTooltip,
   ChartTooltipContent,
@@ -35,18 +36,17 @@ function parseLabelInput(
   return labelInput || valueFormatter(calculateDefaultLabel(data, valueKey))
 }
 
-interface PieChartProps
-  extends Omit<
-    BaseChartProps,
-    | 'hideGridLines'
-    | 'hideXAxis'
-    | 'hideYAxis'
-    | 'xAxisProps'
-    | 'yAxisProps'
-    | 'displayEdgeLabelsOnly'
-    | 'legend'
-    | 'legendProps'
-  > {
+interface PieChartProps extends Omit<
+  BaseChartProps,
+  | 'hideGridLines'
+  | 'hideXAxis'
+  | 'hideYAxis'
+  | 'xAxisProps'
+  | 'yAxisProps'
+  | 'displayEdgeLabelsOnly'
+  | 'legend'
+  | 'legendProps'
+> {
   variant?: 'pie' | 'donut'
   nameKey?: string
 

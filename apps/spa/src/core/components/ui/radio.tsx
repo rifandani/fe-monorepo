@@ -1,14 +1,18 @@
 'use client'
 
-import type { RadioGroupProps, RadioProps } from 'react-aria-components/RadioGroup'
+import type { RadioButtonProps, RadioFieldProps, RadioGroupProps } from 'react-aria-components/RadioGroup'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import {
+  RadioButton,
+
+  RadioField as RadioFieldPrimitive,
+
   RadioGroup as RadioGroupPrimitive,
-  Radio as RadioPrimitive,
+
 } from 'react-aria-components/RadioGroup'
 import { twMerge } from 'tailwind-merge'
+import { Label } from '@/core/components/ui/field'
 import { cx } from '@/core/utils/primitive'
-import { Label } from './field'
 
 export function RadioGroup({ className, ...props }: RadioGroupProps) {
   return (
@@ -16,56 +20,59 @@ export function RadioGroup({ className, ...props }: RadioGroupProps) {
       {...props}
       data-slot="control"
       className={cx(
-        'space-y-3 **:data-[slot=label]:font-normal',
-        'has-[slot=description]:space-y-6 has-[[slot=description]]:**:data-[slot=label]:font-medium',
+        'space-y-3 has-[[slot=description]]:not-has-[[slot=errorMessage]]:space-y-6 *:data-[slot=label]:font-medium',
         className,
       )}
     />
   )
 }
 
-export function Radio({ className, children, ...props }: RadioProps) {
+export function RadioField({ className, ...props }: RadioFieldProps) {
   return (
-    <RadioPrimitive {...props} className={cx('group block disabled:opacity-50', className)}>
-      {composeRenderProps(children, (children, { isSelected, isFocusVisible, isInvalid }) => {
-        const isStringChild = typeof children === 'string'
-        const content = isStringChild ? <RadioLabel>{children}</RadioLabel> : children
-
-        return (
-          <div
-            className={twMerge(
-              'grid grid-cols-[1.125rem_1fr] gap-x-3 gap-y-1 sm:grid-cols-[1rem_1fr]',
-              '*:data-[slot=indicator]:col-start-1 *:data-[slot=indicator]:row-start-1 *:data-[slot=indicator]:mt-0.75 sm:*:data-[slot=indicator]:mt-1',
-              '*:data-[slot=label]:col-start-2 *:data-[slot=label]:row-start-1',
-              '*:[[slot=description]]:col-start-2 *:[[slot=description]]:row-start-2',
-              'has-[[slot=description]]:**:data-[slot=label]:font-medium',
-            )}
-          >
-            <span
-              data-slot="indicator"
-              className={twMerge([
-                'relative inset-ring inset-ring-input isolate flex size-4.5 shrink-0 items-center justify-center rounded-full bg-(--control-bg,transparent) text-bg transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[\'\'] hover:before:bg-muted-fg/20 sm:size-4 sm:before:size-1.7',
-                'in-disabled:bg-muted',
-                isSelected && [
-                  'inset-ring-(--radio-ring,var(--color-ring)) bg-(--radio-bg,var(--color-primary)) text-(--radio-fg,var(--color-primary-fg)) before:bg-bg hover:before:bg-muted/90',
-                  'group-invalid:inset-ring-danger-subtle-fg/70 group-invalid:bg-danger group-invalid:text-danger-fg',
-                ],
-                isFocusVisible && [
-                  'inset-ring-(--radio-ring,var(--color-ring)) ring-(--radio-ring,var(--color-ring))/20 ring-3',
-                  'group-invalid:inset-ring-danger-subtle-fg/70 group-invalid:text-danger-fg group-invalid:ring-danger-subtle-fg/20',
-                ],
-                isInvalid
-                && 'inset-ring-danger-subtle-fg/70 bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20',
-              ])}
-            />
-            {content}
-          </div>
-        )
-      })}
-    </RadioPrimitive>
+    <RadioFieldPrimitive
+      {...props}
+      className={cx(
+        'grid grid-cols-[1.125rem_1fr] gap-x-3 gap-y-1 sm:grid-cols-[1rem_1fr]',
+        '*:data-[slot=control]:col-start-1 *:data-[slot=control]:row-start-1 *:data-[slot=control]:mt-0.75 sm:*:data-[slot=control]:mt-1',
+        '**:data-[slot=control-label]:col-start-2 **:data-[slot=control-label]:row-start-1',
+        '*:[[slot=description]]:col-start-2 *:[[slot=description]]:row-start-2',
+        'has-[[slot=description]]:**:data-[slot=control-label]:font-medium',
+        className,
+      )}
+      data-slot="control"
+    />
   )
 }
 
-export function RadioLabel(props: React.ComponentProps<typeof Label>) {
-  return <Label elementType="span" data-slot="control-label" {...props} />
+export function Radio({ className, children, ...props }: RadioButtonProps) {
+  return (
+    <RadioButton
+      data-slot="control"
+      className={cx('group gap-x-3 inline-flex col-span-full focus:outline-hidden ', className)}
+      {...props}
+    >
+      {composeRenderProps(children, (children, { isSelected, isInvalid }) => {
+        return (
+          <>
+            <span
+              data-slot="indicator"
+              className={twMerge([
+                'sm:before:size-1.7 relative isolate col-start-1 row-start-1 mt-0.75 flex size-4.5 shrink-0 items-center justify-center rounded-full bg-(--control-bg,transparent) text-bg inset-ring inset-ring-input transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[\'\'] hover:before:bg-muted-fg/20 sm:mt-1 sm:size-4',
+                'in-disabled:bg-muted',
+                isSelected && [
+                  'bg-(--radio-bg,var(--color-primary)) text-(--radio-fg,var(--color-primary-fg)) inset-ring-(--radio-ring,var(--color-ring)) before:bg-bg hover:before:bg-muted/90',
+                  'group-invalid:bg-danger group-invalid:text-danger-fg group-invalid:inset-ring-danger-subtle-fg/70',
+                ],
+                isInvalid
+                && 'bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20 inset-ring-danger-subtle-fg/70',
+              ])}
+            />
+            <Label data-slot="control-label" elementType="span">
+              {children}
+            </Label>
+          </>
+        )
+      })}
+    </RadioButton>
+  )
 }

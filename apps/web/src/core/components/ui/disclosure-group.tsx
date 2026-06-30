@@ -10,6 +10,7 @@ import { use } from 'react'
 import { Button } from 'react-aria-components/Button'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import {
+
   Disclosure as PrimitiveDisclosure,
 } from 'react-aria-components/Disclosure'
 import {
@@ -48,10 +49,10 @@ export function Disclosure({ className, ...props }: DisclosureProps) {
     <PrimitiveDisclosure
       className={composeRenderProps(className, (className, { isExpanded, isFocusVisibleWithin }) =>
         twMerge(
-          'group/disclosure-item inset-ring inset-ring-(--disclosure-collapsed-border,transparent) w-full rounded-(--disclosure-radius,--spacing(0)) bg-(--disclosure-collapsed-bg,transparent) duration-200',
+          'group/disclosure-item w-full rounded-(--disclosure-radius,--spacing(0)) bg-(--disclosure-collapsed-bg,transparent) inset-ring inset-ring-(--disclosure-collapsed-border,transparent) duration-200',
           (isExpanded || isFocusVisibleWithin)
-          && 'inset-ring-(--disclosure-expanded-border,transparent) bg-(--disclosure-expanded-bg)',
-          'has-data-hovered:inset-ring-(--disclosure-expanded-border,transparent) has-data-hovered:bg-(--disclosure-expanded-bg)',
+          && 'bg-(--disclosure-expanded-bg) inset-ring-(--disclosure-expanded-border,transparent)',
+          'has-data-hovered:bg-(--disclosure-expanded-bg) has-data-hovered:inset-ring-(--disclosure-expanded-border,transparent)',
           className,
         ))}
       {...props}
@@ -113,7 +114,7 @@ export function DisclosureIndicator({ className, ...props }: React.ComponentProp
       <span
         className={twJoin([
           'absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300',
-          'rotate-90 group-expanded/disclosure-item:rotate-0 group-expanded:rotate-0',
+          'rotate-90 group-expanded:rotate-0 group-expanded/disclosure-item:rotate-0',
         ])}
       />
       <span className="absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300" />
@@ -132,7 +133,7 @@ export function DisclosurePanel({ className, ...props }: DisclosurePanelProps) {
     >
       <div
         data-slot="disclosure-panel-content"
-        className="justify-start self-stretch text-pretty px-(--disclosure-gutter-x,--spacing(0)) pt-2 pb-(--disclosure-gutter-x,--spacing(0)) text-(--disclosure-collapsed-fg)"
+        className="justify-start self-stretch px-(--disclosure-gutter-x,--spacing(0)) pt-2 pb-(--disclosure-gutter-x,--spacing(0)) text-pretty text-(--disclosure-collapsed-fg)"
       >
         {props.children}
       </div>

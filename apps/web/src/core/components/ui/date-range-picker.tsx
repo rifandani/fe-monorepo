@@ -8,6 +8,7 @@ import { CalendarDateRangeIcon } from '@heroicons/react/24/outline'
 import { Button } from 'react-aria-components/Button'
 import {
   DateRangePicker as DateRangePickerPrimitive,
+
 } from 'react-aria-components/DateRangePicker'
 import { twJoin } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -16,8 +17,9 @@ import { DatePickerOverlay } from './date-picker'
 import { fieldStyles } from './field'
 import { InputGroup } from './input'
 
-export interface DateRangePickerProps<T extends DateValue>
-  extends DateRangePickerPrimitiveProps<T> {
+export interface DateRangePickerProps<
+  T extends DateValue,
+> extends DateRangePickerPrimitiveProps<T> {
   visibleDuration?: DateDuration
   pageBehavior?: 'visible' | 'single'
   popover?: Omit<PopoverProps, 'children'>
@@ -66,14 +68,14 @@ export function DateRangePickerTrigger({
       <DateInput slot="start" />
       <span
         aria-hidden="true"
-        className="pointer-events-none z-10 -mx-3 block h-0.5 w-2 shrink-0 self-center rounded-full bg-fg group-disabled/date-range-picker:text-opacity-50 sm:-mx-2 forced-colors:text-[ButtonText] forced-colors:group-disabled/date-range-picker:text-[GrayText]"
+        className="group-disabled/date-range-picker:text-opacity-50 pointer-events-none z-10 -mx-3 block h-0.5 w-2 shrink-0 self-center rounded-full bg-fg sm:-mx-2 forced-colors:text-[ButtonText] forced-colors:group-disabled/date-range-picker:text-[GrayText]"
       />
       <DateInput slot="end" />
       <Button
         data-slot="date-picker-trigger"
         className={twJoin(
           'touch-target grid place-content-center outline-hidden focus-visible:text-fg',
-          'pressed:text-fg text-muted-fg hover:text-fg focus-visible:text-fg',
+          'text-muted-fg hover:text-fg focus-visible:text-fg pressed:text-fg',
           'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
           '*:-me-px *:-mt-0.5 *:size-5 sm:*:size-4',
         )}

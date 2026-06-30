@@ -4,11 +4,14 @@ import type { ColorWheelProps as PrimitiveColorWheelProps } from 'react-aria-com
 import {
   ColorWheelTrack,
   ColorWheel as PrimitiveColorWheel,
+
 } from 'react-aria-components/ColorWheel'
 import { ColorThumb } from './color-thumb'
 
-export interface ColorWheelProps
-  extends Omit<PrimitiveColorWheelProps, 'outerRadius' | 'innerRadius'> {}
+export interface ColorWheelProps extends Omit<
+  PrimitiveColorWheelProps,
+  'outerRadius' | 'innerRadius'
+> {}
 
 export function ColorWheel(props: ColorWheelProps) {
   return (

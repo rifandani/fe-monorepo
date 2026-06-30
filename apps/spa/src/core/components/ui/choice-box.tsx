@@ -7,7 +7,7 @@ import { composeRenderProps, GridList, GridListItem, Text } from 'react-aria-com
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
 import { cx } from '@/core/utils/primitive'
-import { Checkbox } from './checkbox'
+import { Checkbox, CheckboxField } from './checkbox'
 
 const choiceBoxStyles = tv({
   base: 'grid [--gutter:--spacing(4)]',
@@ -52,8 +52,7 @@ const ChoiceBoxContext = createContext<{ columns?: number, gap?: number, isReadO
 const useChoiceBoxContext = () => use(ChoiceBoxContext)
 
 interface ChoiceBoxProps<T extends object>
-  extends GridListProps<T>,
-  VariantProps<typeof choiceBoxStyles> {
+  extends GridListProps<T>, VariantProps<typeof choiceBoxStyles> {
   isReadOnly?: boolean
 }
 
@@ -89,10 +88,10 @@ const choiceBoxItemStyles = tv({
     'group outline-hidden',
     '[--choice-box-fg:var(--color-primary-subtle-fg)] [--choice-box:var(--color-primary-subtle)]',
     '[--choice-box-selected-hovered:var(--color-primary-subtle)]/90',
-    'inset-ring inset-ring-border rounded-lg p-(--gutter) **:data-[slot=label]:font-medium',
+    'rounded-lg p-(--gutter) inset-ring inset-ring-border **:data-[slot=label]:font-medium',
     '**:data-[slot=avatar]:row-span-2 **:data-[slot=avatar]:mt-0.5 **:data-[slot=avatar]:shrink-0',
     '**:[svg]:row-span-2 **:[svg]:h-[1.1lh] **:[svg]:w-5 **:[svg]:shrink-0',
-    'has-[svg:not([data-slot=check-indicator])]:grid-cols-[auto_1fr_auto] has-data-[slot=avatar]:grid-cols-[auto_1fr_auto]',
+    'has-data-[slot=avatar]:grid-cols-[auto_1fr_auto] has-[svg:not([data-slot=check-indicator])]:grid-cols-[auto_1fr_auto]',
     'grid grid-cols-[1fr_auto] content-start items-start gap-x-[calc(var(--gutter)-(--spacing(1)))] gap-y-1',
     '[--choice-box-active-ring:var(--color-ring)]/70 [--choice-box-ring:var(--color-ring)]/20',
     'has-[[slot=description]]:**:data-[slot=label]:font-medium',
@@ -106,7 +105,7 @@ const choiceBoxItemStyles = tv({
       true: 'not-data-readonly:not-data-focus-visible:not-selected:inset-ring-muted-fg/30',
     },
     isFocused: {
-      true: 'inset-ring-(--choice-box-active-ring) ring-(--choice-box-ring) ring-3 invalid:ring-danger-subtle-fg/20',
+      true: 'ring-3 ring-(--choice-box-ring) inset-ring-(--choice-box-active-ring) invalid:ring-danger-subtle-fg/20',
     },
     isInvalid: { true: 'ring-3 ring-danger-subtle-fg/20' },
     isOneColumn: {
@@ -115,7 +114,7 @@ const choiceBoxItemStyles = tv({
     isActive: {
       true: [
         'bg-(--choice-box) text-(--choice-box-fg)',
-        'inset-ring-(--choice-box-active-ring) z-20 hover:bg-(--choice-box-selected-hovered)',
+        'z-20 inset-ring-(--choice-box-active-ring) hover:bg-(--choice-box-selected-hovered)',
         '**:data-[slot=label]:text-(--choice-box-fg)',
         '**:[[slot=description]]:text-(--choice-box-fg)',
       ],
@@ -183,10 +182,12 @@ function ChoiceBoxItem({
           <>
             {content}
             {selectionMode === 'multiple' && (
-              <Checkbox
-                className="col-start-2 self-start group-has-[svg:not([data-slot=check-indicator])]:col-start-3 group-has-data-[slot=avatar]:col-start-3"
+              <CheckboxField
                 slot="selection"
-              />
+                className="col-start-2 gap-x-0 self-start group-has-data-[slot=avatar]:col-start-3 group-has-[svg:not([data-slot=check-indicator])]:col-start-3"
+              >
+                <Checkbox className="col-span-1" />
+              </CheckboxField>
             )}
           </>
         )
@@ -205,7 +206,7 @@ function ChoiceBoxLabel({ className, ref, ...props }: ChoiceBoxLabelProps) {
       data-slot="label"
       ref={ref}
       className={twMerge(
-        'select-none text-base/6 text-fg group-disabled:opacity-50 sm:text-sm/6',
+        'text-base/6 text-fg select-none group-disabled:opacity-50 sm:text-sm/6',
         'col-start-1 row-start-1',
         'group-has-[svg:not([data-slot=check-indicator])]:col-start-2',
         'group-has-data-[slot=avatar]:col-start-2',

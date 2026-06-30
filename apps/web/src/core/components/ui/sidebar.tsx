@@ -217,7 +217,7 @@ function Sidebar({
           aria-label="Sidebar"
           data-slot="sidebar"
           data-intent="default"
-          className="w-(--sidebar-width) entering:blur-in exiting:blur-out [--sidebar-width:18rem] has-data-[slot=calendar]:[--sidebar-width:23rem]"
+          className="w-(--sidebar-width) [--sidebar-width:18rem] has-data-[slot=calendar]:[--sidebar-width:23rem] entering:blur-in exiting:blur-out"
           side={side}
           dir={side === 'right' ? 'rtl' : 'ltr'}
         >
@@ -276,7 +276,7 @@ function Sidebar({
           data-sidebar="default"
           data-slot="sidebar-inner"
           className={twJoin(
-            'flex h-full w-full flex-col text-sidebar-fg',
+            'flex size-full flex-col text-sidebar-fg',
             'group-data-[intent=float]:rounded-lg group-data-[intent=float]:border group-data-[intent=float]:border-sidebar-border group-data-[intent=float]:bg-sidebar group-data-[intent=float]:shadow-xs',
           )}
         >
@@ -388,13 +388,13 @@ function SidebarSection({ className, ...props }: SidebarSectionProps) {
       data-slot="sidebar-section"
       className={twMerge(
         'col-span-full flex min-w-0 flex-col gap-y-0.5 **:data-[slot=sidebar-section]:**:gap-y-0',
-        'in-data-[state=collapsed]:p-2 p-4',
+        'p-4 in-data-[state=collapsed]:p-2',
         className,
       )}
       {...props}
     >
       {state !== 'collapsed' && 'label' in props && (
-        <Header className="mb-1 flex shrink-0 items-center rounded-md px-2 text-sidebar-fg/70 text-xs/6 outline-none ring-sidebar-ring transition-[margin,opa] duration-200 ease-linear group-data-[collapsible=dock]:-mt-8 group-data-[collapsible=dock]:opacity-0 *:[svg]:size-4 *:[svg]:shrink-0">
+        <Header className="mb-1 flex shrink-0 items-center rounded-md px-2 text-xs/6 text-sidebar-fg/70 ring-sidebar-ring transition-[margin,opa] duration-200 ease-linear outline-none group-data-[collapsible=dock]:-mt-8 group-data-[collapsible=dock]:opacity-0 *:[svg]:size-4 *:[svg]:shrink-0">
           {props.label}
         </Header>
       )}
@@ -439,7 +439,7 @@ function SidebarItem({
         className,
         (className, { isFocusVisible, isPressed, isHovered, isDisabled }) =>
           twMerge(
-            'w-full min-w-0 items-center rounded-lg p-2 text-start font-medium text-base/6 text-sidebar-fg has-[a]:p-0',
+            'w-full min-w-0 items-center rounded-lg p-2 text-start text-base/6 font-medium text-sidebar-fg has-[a]:p-0',
             'group/sidebar-item relative col-span-full overflow-hidden focus-visible:outline-hidden',
             'grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] supports-[grid-template-columns:subgrid]:grid-cols-subgrid sm:text-sm/5 **:last:[svg]:ms-auto',
             // icon
@@ -473,7 +473,7 @@ function SidebarItem({
               ? (
                   <span
                     data-slot="sidebar-badge"
-                    className="absolute inset-ring-1 inset-ring-sidebar-border inset-y-1/2 end-1.5 h-5.5 w-auto -translate-y-1/2 rounded-full bg-fg/5 px-2 text-[10px]/5.5 group-hover/sidebar-item:inset-ring-muted-fg/30 group-current:inset-ring-transparent"
+                    className="absolute inset-y-1/2 end-1.5 h-5.5 w-auto -translate-y-1/2 rounded-full bg-fg/5 px-2 text-[10px]/5.5 inset-ring-1 inset-ring-sidebar-border group-hover/sidebar-item:inset-ring-muted-fg/30 group-current:inset-ring-transparent"
                   >
                     {badge}
                   </span>
@@ -594,7 +594,7 @@ function SidebarDisclosureTrigger({ className, ref, ...props }: SidebarDisclosur
           className,
           (className, { isPressed, isFocusVisible, isHovered, isDisabled }) =>
             twMerge(
-              'flex w-full min-w-0 items-center rounded-lg text-start font-medium text-base/6 text-sidebar-fg',
+              'flex w-full min-w-0 items-center rounded-lg text-start text-base/6 font-medium text-sidebar-fg',
               'group/sidebar-disclosure-trigger relative col-span-full overflow-hidden focus-visible:outline-hidden',
               '**:[svg]:size-5 **:[svg]:shrink-0 **:[svg]:text-muted-fg sm:**:[svg]:size-4',
               '**:last:[svg]:size-5 sm:**:last:[svg]:size-4',
@@ -712,10 +712,10 @@ function SidebarRail({ className, ref, ...props }: React.ComponentProps<'button'
           tabIndex={-1}
           onClick={toggleSidebar}
           className={twMerge(
-            'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 outline-hidden transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-transparent group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex',
+            'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 outline-hidden transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-transparent sm:flex',
             'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
             '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
-            'group-data-[collapsible=hidden]:translate-x-0 group-data-[collapsible=hidden]:hover:bg-sidebar-accent group-data-[collapsible=hidden]:after:left-full',
+            'group-data-[collapsible=hidden]:translate-x-0 group-data-[collapsible=hidden]:after:left-full group-data-[collapsible=hidden]:hover:bg-sidebar-accent',
             '[[data-side=left][data-collapsible=hidden]_&]:-right-2 [[data-side=right][data-collapsible=hidden]_&]:-left-2',
             className,
           )}
@@ -844,7 +844,7 @@ function SidebarTreeContent({
           />
           <div
             className={twMerge(
-              'group/tree-item flex min-w-0 flex-1 items-center gap-x-2 rounded-lg p-2 font-medium text-base/6 text-sidebar-fg sm:text-sm/5',
+              'group/tree-item flex min-w-0 flex-1 items-center gap-x-2 rounded-lg p-2 text-base/6 font-medium text-sidebar-fg sm:text-sm/5',
               '[&_svg:not([class*=\'size-\'])]:size-5 sm:[&_svg:not([class*=\'size-\'])]:size-4 [&_svg:not([class*=\'text-\'])]:text-muted-fg **:[svg]:-mx-0.5 **:[svg]:shrink-0',
               'hover:bg-sidebar-accent hover:text-sidebar-accent-fg hover:[&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
               '[--sidebar-current-bg:var(--color-sidebar-primary)] [--sidebar-current-fg:var(--color-sidebar-primary-fg)]',

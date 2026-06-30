@@ -7,7 +7,7 @@ export function isValidTimezoneIANAString(timeZoneString: string) {
   if (validIANATimezoneCache[timeZoneString])
     return true
   try {
-    Intl.DateTimeFormat(undefined, { timeZone: timeZoneString })
+    new Intl.DateTimeFormat(undefined, { timeZone: timeZoneString }).resolvedOptions()
     validIANATimezoneCache[timeZoneString] = true
     return true
   }
@@ -21,7 +21,7 @@ export function isValidTimezoneIANAString(timeZoneString: string) {
  * The `getLocalTimeZone` from `@internationalized/date` will throw error in Chrome 118
  */
 export function getLocalTimeZone() {
-  return Intl.DateTimeFormat('id-ID', {
+  return new Intl.DateTimeFormat('id-ID', {
     timeZone: 'GMT', // Asia/Jakarta
   }).resolvedOptions().timeZone
 }

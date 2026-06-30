@@ -5,7 +5,6 @@ import type { BaseChartProps } from './chart'
 import { Fragment, useId, useMemo } from 'react'
 import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
 import {
-
   CartesianGrid,
   Chart,
   ChartLegend,

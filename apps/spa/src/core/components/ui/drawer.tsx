@@ -12,6 +12,7 @@ import { Dialog, DialogTrigger, OverlayTriggerStateContext } from 'react-aria-co
 import { Heading } from 'react-aria-components/Heading'
 import {
   ModalOverlay,
+
   Modal as ModalPrimitive,
 } from 'react-aria-components/Modal'
 import { Text } from 'react-aria-components/Text'
@@ -25,7 +26,8 @@ const DrawerOverlay = motion.create(ModalOverlay)
 const Drawer = (props: DialogTriggerProps) => <DialogTrigger {...props} />
 
 interface DrawerContentProps
-  extends Omit<ModalOverlayProps, 'className' | 'children' | 'isDismissable'>,
+  extends
+  Omit<ModalOverlayProps, 'className' | 'children' | 'isDismissable'>,
   Pick<DialogProps, 'aria-label' | 'aria-labelledby' | 'role' | 'children' | 'className'> {
   isFloat?: boolean
   className?: string
@@ -79,20 +81,18 @@ function DrawerContent({
                 'fixed max-h-full touch-none overflow-hidden bg-bg align-middle text-fg ring ring-input will-change-transform',
                 side === 'top'
                 && (isFloat ? 'inset-x-2 top-2 rounded-lg' : 'inset-x-0 top-0 rounded-b-2xl'),
-                side === 'right'
-                && [
+                side === 'right' && [
                   'w-full max-w-xs overflow-y-auto',
                   '**:[[slot=header]]:text-start',
                   isFloat ? 'inset-y-2 right-2 rounded-lg' : 'inset-y-0 right-0 h-auto',
-                ].join(' '),
+                ],
                 side === 'bottom'
                 && (isFloat ? 'inset-x-2 bottom-2 rounded-lg' : 'inset-x-0 bottom-0 rounded-t-2xl'),
-                side === 'left'
-                && [
+                side === 'left' && [
                   'w-full max-w-xs overflow-y-auto',
                   '**:[[slot=header]]:text-start',
                   isFloat ? 'inset-y-2 left-2 rounded-lg' : 'inset-y-0 left-0 h-auto',
-                ].join(' '),
+                ],
                 className,
               )}
               animate={{ x: 0, y: 0 }}
@@ -176,11 +176,11 @@ function DrawerHeader({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 }
 
 function DrawerTitle({ className, ...props }: HeadingProps) {
-  return <Heading slot="title" className={twMerge('font-semibold text-lg/8', className)} {...props} />
+  return <Heading slot="title" className={twMerge('text-lg/8 font-semibold', className)} {...props} />
 }
 
 function DrawerDescription({ className, ...props }: TextProps) {
-  return <Text slot="description" className={twMerge('text-muted-fg text-sm', className)} {...props} />
+  return <Text slot="description" className={twMerge('text-sm text-muted-fg', className)} {...props} />
 }
 
 function DrawerBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

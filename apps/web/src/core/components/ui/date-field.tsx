@@ -1,5 +1,4 @@
 'use client'
-
 import type { DateFieldProps, DateInputProps, DateValue } from 'react-aria-components/DateField'
 import {
   DateField as DateFieldPrimitive,
@@ -42,10 +41,10 @@ export function DateInput({ className, ...props }: Omit<DateInputProps, 'childre
           <DateSegment
             segment={segment}
             className={twJoin(
-              'inline shrink-0 rounded px-1 type-literal:px-0 py-0.5 text-fg tracking-wider caret-transparent outline-0 data-placeholder:not-data-focused:text-muted-fg sm:text-sm',
+              'inline shrink-0 rounded px-1 py-0.5 tracking-wider text-fg caret-transparent outline-0 data-placeholder:not-data-focused:text-muted-fg sm:text-sm type-literal:px-0',
               'focus:bg-primary-subtle focus:text-primary-subtle-fg focus:data-invalid:bg-danger-subtle focus:data-invalid:text-danger-subtle-fg forced-colors:focus:bg-[Highlight] forced-colors:focus:text-[HighlightText]',
               'forced-color-adjust-none forced-colors:text-[ButtonText]',
-              'in-disabled:bg-muted disabled:bg-muted forced-colors:disabled:text-[GrayText]',
+              'disabled:bg-muted in-disabled:bg-muted forced-colors:disabled:text-[GrayText]',
             )}
           />
         )}

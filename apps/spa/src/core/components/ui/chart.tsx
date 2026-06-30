@@ -20,7 +20,10 @@ import type {
 import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
 import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
 import { ToggleButton } from 'react-aria-components/ToggleButton'
-import { ToggleButtonGroup } from 'react-aria-components/ToggleButtonGroup'
+import {
+  ToggleButtonGroup,
+
+} from 'react-aria-components/ToggleButtonGroup'
 import {
   CartesianGrid as CartesianGridPrimitive,
   Legend as LegendPrimitive,
@@ -322,7 +325,7 @@ function XAxis({
   const tick = layout === 'horizontal' ? tickHorizontal : undefined
   return (
     <XAxisPrimitive
-      className={twMerge('text-muted-fg text-xs **:[text]:fill-muted-fg', className)}
+      className={twMerge('text-xs text-muted-fg **:[text]:fill-muted-fg', className)}
       interval={displayEdgeLabelsOnly ? 'preserveStartEnd' : intervalType}
       tick={tick}
       ticks={ticks}
@@ -356,7 +359,7 @@ function YAxis({
 
   return (
     <YAxisPrimitive
-      className={twMerge('text-muted-fg text-xs **:[text]:fill-muted-fg', className)}
+      className={twMerge('text-xs text-muted-fg **:[text]:fill-muted-fg', className)}
       width={(width ?? layout === 'horizontal') ? 40 : 80}
       domain={domain}
       tick={tick}
@@ -374,7 +377,7 @@ function CartesianGrid({ className, ...props }: CartesianGridPrimitiveProps) {
   const { layout } = useChart()
   return (
     <CartesianGridPrimitive
-      className={twMerge('stroke-1 stroke-muted', className)}
+      className={twMerge('stroke-muted stroke-1', className)}
       horizontal={layout !== 'vertical'}
       vertical={layout === 'vertical'}
       {...props}
@@ -447,7 +450,7 @@ function ChartTooltipContent<TValue extends ValueType, TName extends NameType>({
     <div
       ref={ref}
       className={twMerge(
-        'grid min-w-48 items-start rounded-lg bg-overlay/70 p-3 py-2 text-overlay-fg text-xs ring ring-current/10 backdrop-blur-lg',
+        'grid min-w-48 items-start rounded-lg bg-overlay/70 p-3 py-2 text-xs text-overlay-fg ring ring-current/10 backdrop-blur-lg',
         className,
       )}
     >
@@ -514,7 +517,7 @@ function ChartTooltipContent<TValue extends ValueType, TName extends NameType>({
                         </div>
 
                         {item.value && (
-                          <span className="font-medium font-mono text-fg tabular-nums">
+                          <span className="font-mono font-medium text-fg tabular-nums">
                             {item.value.toString()}
                           </span>
                         )}

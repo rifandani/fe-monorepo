@@ -60,8 +60,7 @@ function Block({
 }
 
 interface TrackerProps
-  extends React.ComponentProps<'div'>,
-  Pick<TrackerBlockProps, 'disabledTooltip'> {
+  extends React.ComponentProps<'div'>, Pick<TrackerBlockProps, 'disabledTooltip'> {
   data: TrackerBlockProps[]
   defaultBackgroundColor?: string
 }

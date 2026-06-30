@@ -12,11 +12,10 @@ const splitPatternRegex = /[,;]/
 const whitespaceRegex = /\s{2,}/g
 const tabRegex = /[\t\r\n]|\\t|\\r|\\n/g
 
-interface TagInputProps
-  extends Pick<
-    TextFieldProps,
-    'isDisabled' | 'isReadOnly' | 'children' | 'aria-label' | 'aria-labelledby'
-  > {
+interface TagInputProps extends Pick<
+  TextFieldProps,
+  'isDisabled' | 'isReadOnly' | 'children' | 'aria-label' | 'aria-labelledby'
+> {
   value?: Selection
   onChange?: (next: Selection) => void
   defaultValue?: string[]
@@ -163,7 +162,7 @@ export function TagField({
         readOnly
         aria-hidden="true"
         tabIndex={-1}
-        className="sr-only absolute -z-10 h-0 w-0 opacity-0"
+        className="sr-only absolute -z-10 size-0 opacity-0"
       />
     </div>
   )

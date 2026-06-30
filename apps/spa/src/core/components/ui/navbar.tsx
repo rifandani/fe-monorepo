@@ -139,7 +139,7 @@ function Navbar({
             aria-label="Mobile Navbar"
             className="entering:blur-in exiting:blur-out [&>button]:hidden"
           >
-            <SheetBody className="p-[calc(var(--gutter)---spacing(2))] sm:p-[calc(var(--gutter)---spacing(4))]">
+            <SheetBody className="p-[calc(var(--gutter)-(--spacing(2)))] sm:p-[calc(var(--gutter)-(--spacing(4)))]">
               {children}
             </SheetBody>
           </SheetContent>
@@ -242,7 +242,7 @@ function NavbarItem({ className, isCurrent, ...props }: NavbarItemProps) {
               className={twJoin(
                 'absolute rounded-full bg-fg [--gutter:--spacing(0.5)]',
                 'inset-y-[calc(var(--navbar-gutter)---spacing(0.5))] -start-4 w-(--gutter) md:inset-y-auto md:w-auto',
-                'md:inset-x-2 md:-bottom-[calc(var(--navbar-gutter)+1px)] md:h-(--gutter)',
+                'md:inset-x-2 md:bottom-[-calc(var(--navbar-gutter)+1px)] md:h-(--gutter)',
               )}
             />
           )}

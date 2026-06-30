@@ -64,8 +64,7 @@ function MenuTrigger({ className, ref, ...props }: MenuTriggerProps) {
 }
 
 interface MenuContentProps<T>
-  extends MenuPrimitiveProps<T>,
-  Pick<PopoverContentProps, 'placement'> {
+  extends MenuPrimitiveProps<T>, Pick<PopoverContentProps, 'placement'> {
   className?: string
   popover?: Pick<
     PopoverContentProps,
@@ -79,11 +78,14 @@ interface MenuContentProps<T>
     | 'isOpen'
     | 'onOpenChange'
     | 'shouldFlip'
+    | 'isNonModal'
+    | 'trigger'
+    | 'getTargetRect'
   >
 }
 
 const menuContentStyles = tv({
-  base: 'grid max-h-[inherit] grid-cols-[auto_1fr] gap-y-1 overflow-y-auto overflow-x-hidden overscroll-contain p-1 outline-hidden [clip-path:inset(0_0_0_0_round_calc(var(--radius-xl)-(--spacing(1))))] [&>[data-slot=menu-section]+[data-slot=menu-section]:not([class*=\'mt-\']):not([class*=\'my-\'])]:mt-3',
+  base: 'grid max-h-[inherit] grid-cols-[auto_minmax(0,1fr)] gap-y-1 overflow-x-hidden overflow-y-auto overscroll-contain p-1 outline-hidden [clip-path:inset(0_0_0_0_round_calc(var(--radius-xl)-(--spacing(1))))] [&>[data-slot=menu-section]+[data-slot=menu-section]:not([class*=\'mt-\']):not([class*=\'my-\'])]:mt-3',
 })
 
 function MenuContent<T extends object>({
@@ -162,7 +164,7 @@ function MenuHeader({ className, separator = false, ...props }: MenuHeaderProps)
   return (
     <Header
       className={twMerge(
-        'col-span-full px-2.5 py-2 font-medium text-base sm:text-sm',
+        'col-span-full px-2.5 py-2 text-base font-medium sm:text-sm',
         separator && '-mx-1 border-b sm:px-3 sm:pb-2.5',
         className,
       )}

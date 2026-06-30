@@ -2,7 +2,7 @@
 
 import type { BreadcrumbProps, BreadcrumbsProps } from 'react-aria-components/Breadcrumbs'
 import type { LinkProps } from 'react-aria-components/Link'
-import { ChevronRightIcon } from '@heroicons/react/24/solid'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import { createContext, use } from 'react'
 import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components/Breadcrumbs'
 import { twJoin, twMerge } from 'tailwind-merge'
@@ -25,12 +25,9 @@ function Breadcrumbs<T extends object>({
   )
 }
 
-interface BreadcrumbsItemProps extends BreadcrumbProps, BreadcrumbsContextProps {
-  href?: string
-}
+interface BreadcrumbsItemProps extends BreadcrumbProps, BreadcrumbsContextProps {}
 
 function BreadcrumbsItem({
-  href,
   separator = true,
   className,
   ...props
@@ -53,7 +50,6 @@ function BreadcrumbsItem({
               '*:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4',
               '*:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg',
             )}
-            href={href}
             {...props}
           />
           {!isCurrent && separator !== false && <Separator separator={separatorValue} />}
@@ -75,8 +71,6 @@ function Separator({
     </span>
   )
 }
-
-Breadcrumbs.Item = BreadcrumbsItem
 
 export type { BreadcrumbsItemProps, BreadcrumbsProps }
 export { Breadcrumbs, BreadcrumbsItem }

@@ -12,7 +12,7 @@ import {
 import { Text } from 'react-aria-components/Text'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
-import { Checkbox } from './checkbox'
+import { Checkbox, CheckboxField } from './checkbox'
 
 function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
   return (
@@ -47,7 +47,7 @@ function GridListHeader({
   return (
     <GridListHeaderPrimitive
       data-slot="grid-list-header"
-      className={twMerge('px-3 py-2.5 font-semibold text-sm/6', className)}
+      className={twMerge('px-3 py-2.5 text-sm/6 font-semibold', className)}
       {...props}
     />
   )
@@ -109,10 +109,9 @@ function GridListItem({ className, children, ...props }: GridListItemProps) {
           )}
 
           {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
-            <Checkbox
-              className="[--indicator-mt:0] *:gap-x-0 sm:[--indicator-mt:0]"
-              slot="selection"
-            />
+            <CheckboxField className="gap-x-0" slot="selection">
+              <Checkbox className="col-span-1" />
+            </CheckboxField>
           )}
           {typeof children === 'function' ? children(values) : children}
         </>
@@ -152,7 +151,7 @@ function GridListDescription({ className, ref, ...props }: GridListTextProps) {
     <Text
       slot="description"
       ref={ref}
-      className={twMerge('font-normal text-muted-fg text-sm', className)}
+      className={twMerge('text-sm font-normal text-muted-fg', className)}
       {...props}
     />
   )

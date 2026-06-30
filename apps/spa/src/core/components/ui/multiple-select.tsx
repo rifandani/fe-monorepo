@@ -18,8 +18,10 @@ interface OptionBase {
   name: string
 }
 
-interface MultipleSelectProps<T extends OptionBase>
-  extends Omit<SelectProps<T, 'multiple'>, 'selectionMode' | 'children'> {
+interface MultipleSelectProps<T extends OptionBase> extends Omit<
+  SelectProps<T, 'multiple'>,
+  'selectionMode' | 'children'
+> {
   placeholder?: string
   className?: string
   children?: React.ReactNode
@@ -93,7 +95,7 @@ function MultipleSelect<T extends OptionBase>({
                   <TagList
                     items={selectedItems.filter(i => i != null)}
                     renderEmptyState={() => (
-                      <i className="ps-2 text-muted-fg text-sm">{placeholder}</i>
+                      <i className="ps-2 text-sm text-muted-fg">{placeholder}</i>
                     )}
                   >
                     {item => <Tag className="rounded-md">{item.name}</Tag>}

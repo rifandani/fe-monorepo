@@ -39,7 +39,7 @@ export function ButtonGroupText({ className, ...props }: React.ComponentProps<'d
   return (
     <div
       className={twMerge(
-        'flex items-center gap-2 rounded-md border bg-muted px-4 font-medium text-sm shadow-xs *:data-[slot=icon]:pointer-events-none [&_[data-slot=icon]:not([class*=\'size-\'])]:size-5 sm:[&_[data-slot=icon]:not([class*=\'size-\'])]:size-4',
+        'flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs *:data-[slot=icon]:pointer-events-none [&_[data-slot=icon]:not([class*=\'size-\'])]:size-5 sm:[&_[data-slot=icon]:not([class*=\'size-\'])]:size-4',
         className,
       )}
       {...props}

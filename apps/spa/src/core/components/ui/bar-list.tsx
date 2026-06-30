@@ -59,7 +59,7 @@ export function BarList<T>({
             }}
             className={twJoin(
               'group w-full rounded-sm',
-              'focus:inset-ring focus:inset-ring-ring focus:outline-hidden focus:ring-2 focus:ring-ring/20',
+              'focus:ring-2 focus:inset-ring focus:ring-ring/20 focus:inset-ring-ring focus:outline-hidden',
               onValueChange ? 'm-0! cursor-pointer hover:bg-secondary' : '',
             )}
           >
@@ -78,9 +78,9 @@ export function BarList<T>({
                       <Link
                         href={item.href}
                         className={twJoin(
-                          'truncate whitespace-nowrap rounded-sm font-normal text-base/6 text-fg sm:text-sm/6',
+                          'truncate rounded-sm text-base/6 font-normal whitespace-nowrap text-fg sm:text-sm/6',
                           'hover:underline hover:underline-offset-2',
-                          'focus:inset-ring focus:inset-ring-ring focus:outline-hidden focus:ring-2 focus:ring-ring/20',
+                          'focus:ring-2 focus:inset-ring focus:ring-ring/20 focus:inset-ring-ring focus:outline-hidden',
                         )}
                         target="_blank"
                         rel="noreferrer"
@@ -90,7 +90,7 @@ export function BarList<T>({
                       </Link>
                     )
                   : (
-                      <p className="truncate whitespace-nowrap text-base/6 text-fg sm:text-sm/6">
+                      <p className="truncate text-base/6 whitespace-nowrap text-fg sm:text-sm/6">
                         {item.name}
                       </p>
                     )}
@@ -109,7 +109,7 @@ export function BarList<T>({
               index === sortedData.length - 1 ? 'mb-0' : 'mb-1.5',
             )}
           >
-            <p className="truncate whitespace-nowrap text-fg text-sm leading-none">
+            <p className="truncate text-sm leading-none whitespace-nowrap text-fg">
               {valueFormatter(item.value)}
             </p>
           </div>

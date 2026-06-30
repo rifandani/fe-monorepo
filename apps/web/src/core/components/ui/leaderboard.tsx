@@ -33,7 +33,7 @@ export function LeaderboardTitle({ className, ...props }: React.ComponentProps<'
   return (
     <div
       data-slot="leaderboard-title"
-      className={twMerge('text-balance font-semibold text-base/6', className)}
+      className={twMerge('text-base/6 font-semibold text-balance', className)}
       {...props}
     />
   )

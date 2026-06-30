@@ -7,6 +7,7 @@ import type {
   TableHeaderProps as HeaderProps,
   RowProps,
   TableBodyProps,
+  TableFooterProps,
   TableProps as TablePrimitiveProps,
 } from 'react-aria-components/Table'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
@@ -22,6 +23,7 @@ import {
   ResizableTableContainer,
   Row,
   TableBody as TableBodyPrimitive,
+  TableFooter as TableFooterPrimitive,
   TableHeader as TableHeaderPrimitive,
   Table as TablePrimitive,
   useTableOptions,
@@ -29,7 +31,7 @@ import {
 import { twJoin, twMerge } from 'tailwind-merge'
 import { CardDescription, CardTitle } from '@/core/components/ui/card'
 import { cx } from '@/core/utils/primitive'
-import { Checkbox } from './checkbox'
+import { Checkbox, CheckboxField } from './checkbox'
 
 interface TableProps extends Omit<TablePrimitiveProps, 'className'> {
   allowResize?: boolean
@@ -65,7 +67,7 @@ function Table({
   ...props
 }: TableProps) {
   return (
-    <TableContext.Provider value={{ allowResize, bleed, grid, striped }}>
+    <TableContext value={{ allowResize, bleed, grid, striped }}>
       <div className="flow-root">
         <div
           className={twMerge(
@@ -88,7 +90,7 @@ function Table({
           </div>
         </div>
       </div>
-    </TableContext.Provider>
+    </TableContext>
   )
 }
 
@@ -277,7 +279,7 @@ function TableBody<T extends object>({ renderEmptyState, ...props }: TableBodyPr
                   />
 
                   <div className="absolute top-[65%] space-y-0.5 px-2 text-center">
-                    <CardTitle className="font-semibold text-lg">No data found</CardTitle>
+                    <CardTitle className="text-lg font-semibold">No data found</CardTitle>
                     <CardDescription>
                       No information is currently available in this section.
                     </CardDescription>
@@ -365,7 +367,7 @@ function TableHeader<T extends object>({
           data-slot="table-column"
           className={twMerge(
             'first:ps-(--gutter,--spacing(2))',
-            !bleed && 'sm:last:pe-1 sm:first:ps-1',
+            !bleed && 'sm:first:ps-1 sm:last:pe-1',
           )}
         />
       )}
@@ -374,11 +376,13 @@ function TableHeader<T extends object>({
           data-slot="table-column"
           className={twMerge(
             'first:ps-(--gutter,--spacing(2))',
-            !bleed && 'sm:last:pe-1 sm:first:ps-1',
+            !bleed && 'sm:first:ps-1 sm:last:pe-1',
           )}
         >
           {selectionMode === 'multiple' && (
-            <Checkbox className="[--indicator-mt:0] sm:[--indicator-mt:0]" slot="selection" />
+            <CheckboxField className="gap-x-0" slot="selection">
+              <Checkbox className="col-span-1" />
+            </CheckboxField>
           )}
         </Column>
       )}
@@ -423,7 +427,7 @@ function TableRow<T extends object>({
           twMerge(
             'group relative cursor-default outline outline-transparent',
             isFocusVisible
-            && 'bg-primary/5 outline-primary ring-3 ring-ring/20 hover:bg-primary/10',
+            && 'bg-primary/5 ring-3 ring-ring/20 outline-primary hover:bg-primary/10',
             isDragging && 'cursor-grabbing bg-primary/10 text-fg outline-primary',
             isSelected && 'bg-(--table-selected-bg) text-fg hover:bg-(--table-selected-bg)/50',
             striped && 'even:bg-muted',
@@ -431,7 +435,7 @@ function TableRow<T extends object>({
             && 'hover:bg-(--table-selected-bg) hover:text-fg',
             (props.href || props.onAction || selectionMode === 'multiple')
             && isFocusVisibleWithin
-            && 'bg-(--table-selected-bg)/50 selected:bg-(--table-selected-bg)/50 text-fg',
+            && 'bg-(--table-selected-bg)/50 text-fg selected:bg-(--table-selected-bg)/50',
             isDisabled && 'opacity-50',
             className,
           ),
@@ -467,7 +471,9 @@ function TableRow<T extends object>({
       )}
       {selectionBehavior === 'toggle' && (
         <TableCell className="px-0">
-          <Checkbox className="[--indicator-mt:0] sm:[--indicator-mt:0]" slot="selection" />
+          <CheckboxField className="gap-x-0" slot="selection">
+            <Checkbox className="col-span-1" />
+          </CheckboxField>
         </TableCell>
       )}
       <Collection items={columns}>{children}</Collection>
@@ -487,11 +493,11 @@ function TableCell({ className, ref, ...props }: TableCellProps) {
       {...props}
       className={cx(
         twJoin(
-          'group px-4 py-(--gutter-y) align-middle outline-hidden first:ps-(--gutter,--spacing(2)) last:pe-(--gutter,--spacing(2)) group-has-data-focus-visible-within:text-fg',
+          'group px-4 py-(--gutter-y) align-middle outline-hidden group-has-data-focus-visible-within:text-fg first:ps-(--gutter,--spacing(2)) last:pe-(--gutter,--spacing(2))',
           !striped && 'border-b',
           grid && 'border-l first:border-l-0',
-          !bleed && 'sm:last:pe-1 sm:first:ps-1',
-          allowResize && 'overflow-hidden truncate',
+          !bleed && 'sm:first:ps-1 sm:last:pe-1',
+          allowResize && 'truncate overflow-hidden',
         ),
         className,
       )}
@@ -530,5 +536,9 @@ function TableCell({ className, ref, ...props }: TableCellProps) {
   )
 }
 
+function TableFooter<T extends object>({ className, ...props }: TableFooterProps<T>) {
+  return <TableFooterPrimitive className={twMerge('**:font-semibold', className)} {...props} />
+}
+
 export type { TableColumnProps, TableProps, TableRowProps }
-export { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow }
+export { Table, TableBody, TableCell, TableColumn, TableFooter, TableHeader, TableRow }

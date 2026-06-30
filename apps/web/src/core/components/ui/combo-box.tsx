@@ -22,8 +22,10 @@ import { cx } from '@/core/utils/primitive'
 import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
 import { PopoverContent } from './popover'
 
-interface ComboBoxProps<T extends object, M extends 'single' | 'multiple' = 'single'>
-  extends Omit<ComboBoxPrimitiveProps<T, M>, 'children'> {
+interface ComboBoxProps<T extends object, M extends 'single' | 'multiple' = 'single'> extends Omit<
+  ComboBoxPrimitiveProps<T, M>,
+  'children'
+> {
   children: React.ReactNode
 }
 
@@ -37,8 +39,7 @@ function ComboBox<T extends object, M extends 'single' | 'multiple' = 'single'>(
 }
 
 interface ComboBoxListProps<T extends object>
-  extends Omit<ListBoxProps<T>, 'layout' | 'orientation'>,
-  Pick<PopoverProps, 'placement'> {
+  extends Omit<ListBoxProps<T>, 'layout' | 'orientation'>, Pick<PopoverProps, 'placement'> {
   popover?: Omit<PopoverProps, 'children'>
 }
 

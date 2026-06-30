@@ -3,6 +3,7 @@
 import type { ColorAreaProps } from 'react-aria-components/ColorArea'
 import {
   ColorArea as ColorAreaPrimitive,
+
 } from 'react-aria-components/ColorArea'
 import { cx } from '@/core/utils/primitive'
 import { ColorThumb } from './color-thumb'

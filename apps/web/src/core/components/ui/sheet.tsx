@@ -3,6 +3,7 @@
 import type { DialogProps } from 'react-aria-components/Dialog'
 import type { ModalOverlayProps } from 'react-aria-components/Modal'
 import {
+
   DialogTrigger as DialogTriggerPrimitive,
 } from 'react-aria-components/Dialog'
 import { Modal, ModalOverlay } from 'react-aria-components/Modal'
@@ -22,7 +23,8 @@ import {
 const Sheet = DialogTriggerPrimitive
 
 interface SheetContentProps
-  extends Omit<ModalOverlayProps, 'children'>,
+  extends
+  Omit<ModalOverlayProps, 'children'>,
   Pick<DialogProps, 'aria-label' | 'role' | 'aria-labelledby' | 'children'> {
   closeButton?: boolean
   isFloat?: boolean

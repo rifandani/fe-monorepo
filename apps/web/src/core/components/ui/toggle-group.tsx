@@ -7,6 +7,7 @@ import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import { ToggleButton } from 'react-aria-components/ToggleButton'
 import {
   ToggleButtonGroup,
+
 } from 'react-aria-components/ToggleButtonGroup'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
@@ -14,8 +15,10 @@ import { cx } from '@/core/utils/primitive'
 
 type ToggleSize = 'xs' | 'sm' | 'md' | 'lg' | 'sq-xs' | 'sq-sm' | 'sq-md' | 'sq-lg'
 
-interface ToggleGroupContextValue
-  extends Pick<ToggleButtonGroupProps, 'selectionMode' | 'orientation'> {
+interface ToggleGroupContextValue extends Pick<
+  ToggleButtonGroupProps,
+  'selectionMode' | 'orientation'
+> {
   size?: ToggleSize
 }
 
@@ -123,10 +126,13 @@ const toggleGroupItemStyles = tv({
         'touch-target size-11 *:data-[slot=loader]:size-5 sm:size-10 sm:*:data-[slot=loader]:size-5 *:[svg]:size-5 sm:*:[svg]:size-5',
     },
     isSelected: {
-      true: 'inset-ring-fg/20 bg-(--toggle-selected-bg) text-(--toggle-selected-fg) [--toggle-icon:var(--primary-fg)] hover:bg-(--toggle-selected-bg)/90',
+      true: 'bg-(--toggle-selected-bg) text-(--toggle-selected-fg) inset-ring-fg/20 [--toggle-icon:var(--primary-fg)] hover:bg-(--toggle-selected-bg)/90',
     },
     isFocused: {
       true: 'not-selected:bg-(--toggle-focused-bg) not-selected:text-(--toggle-focused-fg) not-selected:[--toggle-icon:var(--toggle-focused-fg)]',
+    },
+    isFocusVisible: {
+      true: 'inset-ring inset-ring-muted-fg/20',
     },
     isHovered: {
       true: 'enabled:not-selected:bg-(--toggle-hover-bg) enabled:not-selected:text-(--toggle-hover-fg) enabled:not-selected:[--toggle-icon:var(--toggle-hover-fg)]',
@@ -139,6 +145,11 @@ const toggleGroupItemStyles = tv({
     size: 'md',
   },
   compoundVariants: [
+    {
+      isSelected: true,
+      isFocusVisible: true,
+      className: 'inset-ring-(--toggle-selected-fg)/50',
+    },
     {
       selectionMode: 'multiple',
       orientation: 'horizontal',
