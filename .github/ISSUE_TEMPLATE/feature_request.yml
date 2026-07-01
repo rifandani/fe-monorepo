@@ -1,6 +1,6 @@
 name: "\U0001F680 New feature proposal"
 description: Suggest an idea/feature for vue-app
-labels: ['enhancement']
+labels: ['feature']
 body:
   - type: textarea
     id: feature-description
