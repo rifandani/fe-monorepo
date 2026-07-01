@@ -3,6 +3,7 @@ name: build-audit-logs
 description: >-
   Build or review audit trails in TypeScript/JavaScript apps using evlog (pipelines, typed actions,
   denials, retention, compliance-style reviews). For application code, not for extending the evlog package.
+disable-model-invocation: true
 ---
 
 # Build or Review an Audit System with evlog

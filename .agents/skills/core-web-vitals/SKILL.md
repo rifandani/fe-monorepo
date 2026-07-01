@@ -5,6 +5,7 @@ license: MIT
 metadata:
   author: web-quality-skills
   version: "1.0"
+disable-model-invocation: true
 ---
 
 # Core Web Vitals optimization

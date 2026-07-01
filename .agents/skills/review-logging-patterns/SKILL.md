@@ -5,6 +5,7 @@ license: MIT
 metadata:
   author: HugoRCD
   version: "0.5"
+disable-model-invocation: true
 ---
 
 # Review logging patterns

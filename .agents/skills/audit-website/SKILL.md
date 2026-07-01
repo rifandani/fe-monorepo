@@ -7,6 +7,7 @@ metadata:
   author: squirrelscan
   version: "1.18"
 allowed-tools: Bash(squirrel:*)
+disable-model-invocation: true
 ---
 
 # Website Audit Skill
