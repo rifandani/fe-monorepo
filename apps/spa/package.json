@@ -43,7 +43,7 @@
     "@tanstack/react-query": "5.101.2",
     "@tanstack/react-router": "1.170.16",
     "@unhead/react": "3.1.6",
-    "@unhead/schema-org": "3.1.6",
+    "@unhead/schema-org": "3.1.7",
     "@workspace/core": "workspace:*",
     "embla-carousel-react": "8.6.0",
     "input-otp": "1.4.2",
