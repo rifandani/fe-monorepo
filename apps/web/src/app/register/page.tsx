@@ -1,33 +1,36 @@
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { RegisterForm } from '@/auth/components/register-form.client'
-import { auth } from '@/auth/utils/auth'
-import { Link } from '@/core/components/ui'
-import { ENV } from '@/core/constants/env'
-import { createMetadata, createWebPage, createWebSite, JsonLd } from '@/core/utils/seo'
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-const title = 'Register'
-const description = 'Create an account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.'
+import { RegisterForm } from "@/auth/components/register-form.client";
+import { auth } from "@/auth/utils/auth";
+import { Link } from "@/core/components/ui";
+import { ENV } from "@/core/constants/env";
+import {
+  createMetadata,
+  createWebPage,
+  createWebSite,
+  JsonLd,
+} from "@/core/utils/seo";
+
+const title = "Register";
+const description =
+  "Create an account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.";
 const ldParams = {
+  description,
+  title,
   url: `${ENV.NEXT_PUBLIC_APP_URL}/register`,
-  title,
-  description,
-}
-
+};
 export const metadata = createMetadata({
-  title,
   description,
-})
-
+  title,
+});
 export default async function RegisterPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
-  })
-
+  });
   if (session) {
-    redirect('/')
+    redirect("/");
   }
-
   return (
     <div className="flex min-h-screen w-full">
       {/* form */}
@@ -37,8 +40,7 @@ export default async function RegisterPage() {
         <RegisterForm />
 
         <p className="py-12 text-center">
-          Already have an account?
-          {' '}
+          Already have an account?{" "}
           <Link aria-label="Login" className="hover:underline" href="/login">
             Login
           </Link>
@@ -48,20 +50,13 @@ export default async function RegisterPage() {
       {/* image */}
       <section className="hidden w-1/2 shadow-2xl md:block">
         <span className="relative h-screen w-full md:flex md:items-center md:justify-center">
-          <svg
-            viewBox="0 0 512 512"
-            className="size-60"
-          >
+          <svg viewBox="0 0 512 512" className="size-60">
             <use href="#icon-nextjs" />
           </svg>
         </span>
       </section>
 
-      <JsonLd graphs={[
-        createWebSite(ldParams),
-        createWebPage(ldParams),
-      ]}
-      />
+      <JsonLd graphs={[createWebSite(ldParams), createWebPage(ldParams)]} />
     </div>
-  )
+  );
 }

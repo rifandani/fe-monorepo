@@ -1,25 +1,26 @@
-import { useHead } from '@unhead/react'
-import { createHead, UnheadProvider } from '@unhead/react/client'
-import { ENV } from '@/core/constants/env'
+import { useHead } from "@unhead/react";
+import { createHead, UnheadProvider } from "@unhead/react/client";
 
-const head = createHead()
+import { ENV } from "@/core/constants/env";
 
-function SchemaOrgHostParams() {
+const head = createHead();
+const SchemaOrgHostParams = () => {
   useHead({
     templateParams: {
       schemaOrg: {
         host: ENV.VITE_APP_URL,
       },
     },
-  })
-  return null
-}
-
-export function AppHeadProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <UnheadProvider head={head}>
-      <SchemaOrgHostParams />
-      {children}
-    </UnheadProvider>
-  )
-}
+  });
+  return null;
+};
+export const AppHeadProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <UnheadProvider head={head}>
+    <SchemaOrgHostParams />
+    {children}
+  </UnheadProvider>
+);

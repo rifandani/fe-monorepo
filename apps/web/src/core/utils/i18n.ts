@@ -1,16 +1,22 @@
-import type { Formats, Locale } from 'next-intl'
+import type { Formats, Locale } from "next-intl";
+import { getRequestConfig } from "next-intl/server";
+import { cookies } from "next/headers";
 
-import { getRequestConfig } from 'next-intl/server'
-import { cookies } from 'next/headers'
-import { I18N_COOKIE_NAME, I18N_DEFAULT_LOCALE } from '@/core/constants/i18n'
-import 'server-only'
+import { I18N_COOKIE_NAME, I18N_DEFAULT_LOCALE } from "@/core/constants/i18n";
+import "server-only";
 
 export const formats = {
   dateTime: {
     short: {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    },
+  },
+  list: {
+    enumeration: {
+      style: "long",
+      type: "conjunction",
     },
   },
   number: {
@@ -18,20 +24,14 @@ export const formats = {
       maximumFractionDigits: 5,
     },
   },
-  list: {
-    enumeration: {
-      style: 'long',
-      type: 'conjunction',
-    },
-  },
-} satisfies Formats
-
+} satisfies Formats;
 export default getRequestConfig(async () => {
-  const cookie = await cookies()
-  const locale = (cookie.get(I18N_COOKIE_NAME)?.value || I18N_DEFAULT_LOCALE) as Locale
-
+  const cookie = await cookies();
+  const locale = (cookie.get(I18N_COOKIE_NAME)?.value ||
+    I18N_DEFAULT_LOCALE) as Locale;
+  const messagesModule = await import(`../../../messages/${locale}.json`);
   return {
     locale,
-    messages: (await import(`../../../messages/${locale}.json`)).default,
-  }
-})
+    messages: messagesModule.default,
+  };
+});

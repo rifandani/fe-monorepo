@@ -1,18 +1,17 @@
-'use client'
+"use client";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import * as React from "react";
 
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
-import * as React from 'react'
-import { getQueryClient } from '@/core/providers/query/client'
+import { getQueryClient } from "@/core/providers/query/client";
 
-export function Devtools() {
-  const queryClient = getQueryClient()
-
+export const Devtools = () => {
+  const queryClient = getQueryClient();
   return (
     <TanStackDevtools
       plugins={[
         {
-          name: 'TanStack Query',
+          name: "TanStack Query",
           render: <ReactQueryDevtoolsPanel client={queryClient} />,
         },
         // {
@@ -21,5 +20,5 @@ export function Devtools() {
         // },
       ]}
     />
-  )
-}
+  );
+};

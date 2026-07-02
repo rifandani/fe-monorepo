@@ -1,42 +1,41 @@
-import { getTranslations } from 'next-intl/server'
-import { headers } from 'next/headers'
-import { auth } from '@/auth/utils/auth'
-import { Link } from '@/core/components/ui'
+import { getTranslations } from "next-intl/server";
+import { headers } from "next/headers";
+
+import { auth } from "@/auth/utils/auth";
+import { Link } from "@/core/components/ui";
 
 export default async function NotFound() {
-  const t = await getTranslations()
+  const t = await getTranslations();
   const session = await auth.api.getSession({
     headers: await headers(),
-  })
-
+  });
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
         {/* Hero Section */}
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">404</h1>
-          <h2 className="text-2xl font-semibold">{t('notFound')}</h2>
-          <p className="text-muted-foreground">
-            {t('gone')}
-          </p>
+          <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
+          <p className="text-muted-foreground">{t("gone")}</p>
         </div>
 
         {/* Quick Actions */}
-        <div className={`
+        <div
+          className={`
           flex flex-col justify-center gap-4
           sm:flex-row
         `}
         >
           <Link
-            href={session != null ? '/' : '/login'}
+            href={session === null ? "/login" : "/"}
             className="flex items-center"
           >
-            {t('backTo', {
-              target: session != null ? t('title') : 'Login',
+            {t("backTo", {
+              target: session === null ? "Login" : t("title"),
             })}
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

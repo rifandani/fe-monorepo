@@ -1,83 +1,89 @@
-'use client'
-
-import { twMerge } from 'tailwind-merge'
+"use client";
+import { twMerge } from "tailwind-merge";
 
 export interface AvatarProps {
-  src?: string | null
-  initials?: string
-  alt?: string
-  className?: string
-  isSquare?: boolean
+  src?: string | null;
+  initials?: string;
+  alt?: string;
+  className?: string;
+  isSquare?: boolean;
   size?:
-    | 'xs'
-    | 'sm'
-    | 'md'
-    | 'lg'
-    | 'xl'
-    | '2xl'
-    | '3xl'
-    | '4xl'
-    | '5xl'
-    | '6xl'
-    | '7xl'
-    | '8xl'
-    | '9xl'
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "6xl"
+    | "7xl"
+    | "8xl"
+    | "9xl";
 }
+const AVATAR_SIZE_CLASSES: Record<NonNullable<AvatarProps["size"]>, string> = {
+  "2xl": "[--avatar-size:--spacing(14)]",
+  "3xl": "[--avatar-size:--spacing(16)]",
+  "4xl": "[--avatar-size:--spacing(20)]",
+  "5xl": "[--avatar-size:--spacing(24)]",
+  "6xl": "[--avatar-size:--spacing(28)]",
+  "7xl": "[--avatar-size:--spacing(32)]",
+  "8xl": "[--avatar-size:--spacing(36)]",
+  "9xl": "[--avatar-size:--spacing(42)]",
+  lg: "[--avatar-size:--spacing(10)]",
+  md: "[--avatar-size:--spacing(8)]",
+  sm: "[--avatar-size:--spacing(6)]",
+  xl: "[--avatar-size:--spacing(12)]",
+  xs: "[--avatar-size:--spacing(5)]",
+};
 
-export function Avatar({
+export const Avatar = ({
   src = null,
   isSquare = false,
-  size = 'md',
+  size = "md",
   initials,
-  alt = '',
+  alt = "",
   className,
   ...props
-}: AvatarProps & React.ComponentPropsWithoutRef<'span'>) {
-  return (
-    <span
-      data-slot="avatar"
-      {...props}
-      className={twMerge(
-        'inline-grid size-(--avatar-size) shrink-0 align-middle outline-1 -outline-offset-1 outline-fg/(--ring-opacity) [--avatar-radius:20%] [--ring-opacity:20%] *:col-start-1 *:row-start-1 *:size-(--avatar-size)',
-        size === 'xs' && '[--avatar-size:--spacing(5)]',
-        size === 'sm' && '[--avatar-size:--spacing(6)]',
-        size === 'md' && '[--avatar-size:--spacing(8)]',
-        size === 'lg' && '[--avatar-size:--spacing(10)]',
-        size === 'xl' && '[--avatar-size:--spacing(12)]',
-        size === '2xl' && '[--avatar-size:--spacing(14)]',
-        size === '3xl' && '[--avatar-size:--spacing(16)]',
-        size === '4xl' && '[--avatar-size:--spacing(20)]',
-        size === '5xl' && '[--avatar-size:--spacing(24)]',
-        size === '6xl' && '[--avatar-size:--spacing(28)]',
-        size === '7xl' && '[--avatar-size:--spacing(32)]',
-        size === '8xl' && '[--avatar-size:--spacing(36)]',
-        size === '9xl' && '[--avatar-size:--spacing(42)]',
-        isSquare
-          ? 'rounded-(--avatar-radius) *:rounded-(--avatar-radius)'
-          : 'rounded-full *:rounded-full',
-        className,
-      )}
-    >
-      {initials && (
-        <svg
-          className="font-md size-full fill-current p-[5%] text-[48px] uppercase select-none"
-          viewBox="0 0 100 100"
-          aria-hidden={alt ? undefined : 'true'}
+}: AvatarProps & React.ComponentPropsWithoutRef<"span">) => (
+  <span
+    data-slot="avatar"
+    {...props}
+    className={twMerge(
+      "inline-grid size-(--avatar-size) shrink-0 align-middle outline-1 -outline-offset-1 outline-fg/(--ring-opacity) [--avatar-radius:20%] [--ring-opacity:20%] *:col-start-1 *:row-start-1 *:size-(--avatar-size)",
+      AVATAR_SIZE_CLASSES[size],
+      isSquare
+        ? "rounded-(--avatar-radius) *:rounded-(--avatar-radius)"
+        : "rounded-full *:rounded-full",
+      className
+    )}
+  >
+    {initials && (
+      <svg
+        className="font-md size-full fill-current p-[5%] text-[48px] uppercase select-none"
+        viewBox="0 0 100 100"
+        aria-hidden={alt ? undefined : "true"}
+      >
+        {alt && <title>{alt}</title>}
+        <text
+          x="50%"
+          y="50%"
+          alignmentBaseline="middle"
+          dominantBaseline="middle"
+          textAnchor="middle"
+          dy=".125em"
         >
-          {alt && <title>{alt}</title>}
-          <text
-            x="50%"
-            y="50%"
-            alignmentBaseline="middle"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            dy=".125em"
-          >
-            {initials}
-          </text>
-        </svg>
-      )}
-      {src && <img className="size-full object-cover object-center" src={src} alt={alt} />}
-    </span>
-  )
-}
+          {initials}
+        </text>
+      </svg>
+    )}
+    {src && (
+      <img
+        className="size-full object-cover object-center"
+        src={src}
+        alt={alt}
+      />
+    )}
+  </span>
+);

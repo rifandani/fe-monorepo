@@ -1,22 +1,23 @@
-'use client'
+"use client";
+import type {
+  TimeFieldProps,
+  TimeValue,
+} from "react-aria-components/TimeField";
+import { TimeField as TimeFieldPrimitive } from "react-aria-components/TimeField";
 
-import type { TimeFieldProps, TimeValue } from 'react-aria-components/TimeField'
-import {
-  TimeField as TimeFieldPrimitive,
+import { DateInput } from "@/core/components/ui/date-field";
+import { cx } from "@/core/utils/primitive";
 
-} from 'react-aria-components/TimeField'
-import { DateInput } from '@/core/components/ui/date-field'
-import { cx } from '@/core/utils/primitive'
-import { fieldStyles } from './field'
+import { fieldStyles } from "./field";
 
-export function TimeField<T extends TimeValue>({ className, ...props }: TimeFieldProps<T>) {
-  return (
-    <TimeFieldPrimitive
-      {...props}
-      data-slot="control"
-      className={cx(fieldStyles({ className: 'w-fit' }), className)}
-    />
-  )
-}
-
-export const TimeInput = DateInput
+export const TimeField = <T extends TimeValue>({
+  className,
+  ...props
+}: TimeFieldProps<T>) => (
+  <TimeFieldPrimitive
+    {...props}
+    data-slot="control"
+    className={cx(fieldStyles({ className: "w-fit" }), className)}
+  />
+);
+export const TimeInput = DateInput;

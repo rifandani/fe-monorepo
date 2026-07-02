@@ -2,35 +2,20 @@
   "extends": "@workspace/typescript-config/react.json",
   "compilerOptions": {
     "paths": {
-      "react": [
-        "./node_modules/@types/react"
-      ],
+      "react": ["./node_modules/@types/react"],
       "*": ["./*"],
-      "@/*": [
-        "./src/*"
-      ],
-      "@workspace/core/*": [
-        "../../packages/core/src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@workspace/core/*": ["../../packages/core/src/*"]
     },
     "resolveJsonModule": true,
-    "types": [
-      "vite/client",
-      "react"
-    ]
+    "types": ["vite/client", "react"]
   },
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
   ],
-  "include": [
-    "**/*.js",
-    "**/*.jsx",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.json"
-  ],
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"],
   "exclude": [
     "node_modules",
     "dev-dist",

@@ -1,13 +1,11 @@
 export const ipAddressHeaders = {
-  cfConnectingIp: 'cf-connecting-ip',
-  xForwardedFor: 'x-forwarded-for',
-  xRealIp: 'x-real-ip',
-  xClientIp: 'x-client-ip',
-  forwarded: 'forwarded',
-} as const
-
-const forwardedRegex = /for=([^;,\s]+)/
-
+  cfConnectingIp: "cf-connecting-ip",
+  forwarded: "forwarded",
+  xClientIp: "x-client-ip",
+  xForwardedFor: "x-forwarded-for",
+  xRealIp: "x-real-ip",
+} as const;
+const forwardedRegex = /for=(?<ip>[^;,\s]+)/u;
 /**
  * Get the client IP address from the request headers.
  *
@@ -17,40 +15,36 @@ const forwardedRegex = /for=([^;,\s]+)/
  * @param headers - The headers object.
  * @returns The client IP address or `null` if not found.
  */
-export function getClientIpAddress(headers: Headers): string | null {
+export const getClientIpAddress = (headers: Headers): string | null => {
   // 1. Cloudflare
-  const cfConnectingIp = headers.get(ipAddressHeaders.cfConnectingIp)
+  const cfConnectingIp = headers.get(ipAddressHeaders.cfConnectingIp);
   if (cfConnectingIp) {
-    return cfConnectingIp
+    return cfConnectingIp;
   }
-
   // 2. X-Forwarded-For (most common)
-  const xForwardedFor = headers.get(ipAddressHeaders.xForwardedFor)
+  const xForwardedFor = headers.get(ipAddressHeaders.xForwardedFor);
   if (xForwardedFor) {
-    return xForwardedFor.split(',')[0]!.trim()
+    const [firstIp] = xForwardedFor.split(",");
+    return firstIp ? firstIp.trim() : null;
   }
-
   // 3. X-Real-IP (Nginx)
-  const xRealIp = headers.get(ipAddressHeaders.xRealIp)
+  const xRealIp = headers.get(ipAddressHeaders.xRealIp);
   if (xRealIp) {
-    return xRealIp
+    return xRealIp;
   }
-
   // 4. X-Client-IP (used by some load balancers and proxies)
-  const xClientIp = headers.get(ipAddressHeaders.xClientIp)
+  const xClientIp = headers.get(ipAddressHeaders.xClientIp);
   if (xClientIp) {
-    return xClientIp
+    return xClientIp;
   }
-
   // 5. Forwarded (RFC 7239 standard)
-  const forwarded = headers.get(ipAddressHeaders.forwarded)
+  const forwarded = headers.get(ipAddressHeaders.forwarded);
   if (forwarded) {
-    const match = forwarded.match(forwardedRegex)
-    if (match?.[1]) {
-      return match[1]
+    const match = forwarded.match(forwardedRegex);
+    if (match?.groups?.ip) {
+      return match.groups.ip;
     }
   }
-
   // 6. Fallback to null
-  return null
-}
+  return null;
+};

@@ -1,17 +1,14 @@
-'use client'
-
-import type { DialogTriggerProps } from 'react-aria-components/Dialog'
-import type { PopoverProps } from 'react-aria-components/Popover'
-import {
-  DialogTrigger as DialogTriggerPrimitive,
-
-} from 'react-aria-components/Dialog'
+"use client";
+import type { DialogTriggerProps } from "react-aria-components/Dialog";
+import { DialogTrigger as DialogTriggerPrimitive } from "react-aria-components/Dialog";
+import type { PopoverProps } from "react-aria-components/Popover";
 import {
   OverlayArrow,
   Popover as PopoverPrimitive,
+} from "react-aria-components/Popover";
 
-} from 'react-aria-components/Popover'
-import { cx } from '@/core/utils/primitive'
+import { cx } from "@/core/utils/primitive";
+
 import {
   DialogBody,
   DialogClose,
@@ -20,47 +17,44 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog'
+} from "./dialog";
 
-function Popover(props: DialogTriggerProps) {
-  return <DialogTriggerPrimitive {...props} />
-}
-
-const PopoverTitle = DialogTitle
-const PopoverHeader = DialogHeader
-const PopoverBody = DialogBody
-const PopoverFooter = DialogFooter
-
+const Popover = (props: DialogTriggerProps) => (
+  <DialogTriggerPrimitive {...props} />
+);
+const PopoverTitle = DialogTitle;
+const PopoverHeader = DialogHeader;
+const PopoverBody = DialogBody;
+const PopoverFooter = DialogFooter;
 interface PopoverContentProps extends PopoverProps {
-  arrow?: boolean
-  ref?: React.Ref<HTMLDivElement>
+  arrow?: boolean;
+  ref?: React.Ref<HTMLDivElement>;
 }
-
-function PopoverContent({
+const PopoverContent = ({
   children,
   arrow = false,
   className,
   ref,
   ...props
-}: PopoverContentProps) {
-  const offset = props.offset ?? (arrow ? 12 : 8)
+}: PopoverContentProps) => {
+  const offset = props.offset ?? (arrow ? 12 : 8);
   return (
     <PopoverPrimitive
       ref={ref}
       offset={offset}
       className={cx(
-        '[--visual-viewport-vertical-padding:16px] sm:[--visual-viewport-vertical-padding:32px]',
-        'max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding)*2)]',
-        'group/popover min-w-(--trigger-width) max-w-xs origin-(--trigger-anchor-point) rounded-(--popover-radius) bg-overlay text-overlay-fg shadow-xs outline-hidden ring ring-muted-fg/20 drop-shadow-xl transition-transform [--gutter:--spacing(6)] [--popover-radius:var(--radius-lg)] sm:text-sm dark:ring-border dark:backdrop-saturate-200 **:[[role=dialog]]:[--gutter:--spacing(6)]',
-        'entering:fade-in exiting:fade-out entering:animate-in exiting:animate-out',
-        'placement-left:entering:slide-in-from-right-1 placement-right:entering:slide-in-from-left-1 placement-top:entering:slide-in-from-bottom-1 placement-bottom:entering:slide-in-from-top-1',
-        'placement-left:exiting:slide-out-to-right-1 placement-right:exiting:slide-out-to-left-1 placement-top:exiting:slide-out-to-bottom-1 placement-bottom:exiting:slide-out-to-top-1',
-        'forced-colors:bg-[Canvas]',
-        className,
+        "[--visual-viewport-vertical-padding:16px] sm:[--visual-viewport-vertical-padding:32px]",
+        "max-h-[calc(var(--visual-viewport-height)-var(--visual-viewport-vertical-padding)*2)]",
+        "group/popover min-w-(--trigger-width) max-w-xs origin-(--trigger-anchor-point) rounded-(--popover-radius) bg-overlay text-overlay-fg shadow-xs outline-hidden ring ring-muted-fg/20 drop-shadow-xl transition-transform [--gutter:--spacing(6)] [--popover-radius:var(--radius-lg)] sm:text-sm dark:ring-border dark:backdrop-saturate-200 **:[[role=dialog]]:[--gutter:--spacing(6)]",
+        "entering:fade-in exiting:fade-out entering:animate-in exiting:animate-out",
+        "placement-left:entering:slide-in-from-right-1 placement-right:entering:slide-in-from-left-1 placement-top:entering:slide-in-from-bottom-1 placement-bottom:entering:slide-in-from-top-1",
+        "placement-left:exiting:slide-out-to-right-1 placement-right:exiting:slide-out-to-left-1 placement-top:exiting:slide-out-to-bottom-1 placement-bottom:exiting:slide-out-to-top-1",
+        "forced-colors:bg-[Canvas]",
+        className
       )}
       {...props}
     >
-      {values => (
+      {(values) => (
         <>
           {arrow && (
             <OverlayArrow className="group">
@@ -74,20 +68,21 @@ function PopoverContent({
               </svg>
             </OverlayArrow>
           )}
-          <div data-slot="popover-inner" className="flex max-h-[inherit] flex-col overflow-y-auto">
-            {typeof children === 'function' ? children(values) : children}
+          <div
+            data-slot="popover-inner"
+            className="flex max-h-[inherit] flex-col overflow-y-auto"
+          >
+            {typeof children === "function" ? children(values) : children}
           </div>
         </>
       )}
     </PopoverPrimitive>
-  )
-}
-
-const PopoverTrigger = DialogTrigger
-const PopoverClose = DialogClose
-const PopoverDescription = DialogDescription
-
-export type { PopoverContentProps, PopoverProps }
+  );
+};
+const PopoverTrigger = DialogTrigger;
+const PopoverClose = DialogClose;
+const PopoverDescription = DialogDescription;
+export type { PopoverContentProps, PopoverProps };
 export {
   Popover,
   PopoverBody,
@@ -98,4 +93,4 @@ export {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-}
+};

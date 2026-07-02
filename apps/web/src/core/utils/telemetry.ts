@@ -1,76 +1,72 @@
-import type { Attributes, Span, SpanContext, Tracer } from '@opentelemetry/api'
-import { context, SpanStatusCode, trace } from '@opentelemetry/api'
-import { SERVICE_NAME } from '@/core/constants/global'
+import type { Attributes, Span, SpanContext, Tracer } from "@opentelemetry/api";
+import { context, SpanStatusCode, trace } from "@opentelemetry/api";
+
+import { SERVICE_NAME } from "@/core/constants/global";
 
 const noopSpanContext: SpanContext = {
-  traceId: '',
-  spanId: '',
+  spanId: "",
   traceFlags: 0,
-}
-
+  traceId: "",
+};
 const noopSpan: Span = {
-  spanContext() {
-    return noopSpanContext
-  },
-  setAttribute() {
-    return this
-  },
-  setAttributes() {
-    return this
-  },
   addEvent() {
-    return this
+    return this;
   },
   addLink() {
-    return this
+    return this;
   },
   addLinks() {
-    return this
-  },
-  setStatus() {
-    return this
-  },
-  updateName() {
-    return this
+    return this;
   },
   end() {
-    return this
+    return this;
   },
   isRecording() {
-    return false
+    return false;
   },
   recordException() {
-    return this
+    return this;
   },
-}
-
+  setAttribute() {
+    return this;
+  },
+  setAttributes() {
+    return this;
+  },
+  setStatus() {
+    return this;
+  },
+  spanContext() {
+    return noopSpanContext;
+  },
+  updateName() {
+    return this;
+  },
+};
 /**
  * Tracer implementation that does nothing (null object).
  */
 export const noopTracer: Tracer = {
-  startSpan(): Span {
-    return noopSpan
-  },
-
   startActiveSpan<F extends (span: Span) => unknown>(
     _: unknown,
     arg1: unknown,
     arg2?: unknown,
-    arg3?: F,
-    // biome-ignore lint/suspicious/noExplicitAny: xxx
-  ): ReturnType<any> {
-    if (typeof arg1 === 'function') {
-      return arg1(noopSpan)
+    arg3?: F
+  ): ReturnType<F> {
+    if (typeof arg1 === "function") {
+      return arg1(noopSpan);
     }
-    if (typeof arg2 === 'function') {
-      return arg2(noopSpan)
+    if (typeof arg2 === "function") {
+      return arg2(noopSpan);
     }
-    if (typeof arg3 === 'function') {
-      return arg3(noopSpan)
+    if (typeof arg3 === "function") {
+      return arg3(noopSpan);
     }
   },
-}
-
+  startSpan(): Span {
+    return noopSpan;
+  },
+};
 /**
  * Get a tracer instance.
  *
@@ -82,24 +78,21 @@ export const noopTracer: Tracer = {
  * });
  * ```
  */
-export function getTracer({
+export const getTracer = ({
   isEnabled = false,
   tracer,
 }: {
-  isEnabled?: boolean
-  tracer?: Tracer
-} = {}): Tracer {
+  isEnabled?: boolean;
+  tracer?: Tracer;
+} = {}): Tracer => {
   if (!isEnabled) {
-    return noopTracer
+    return noopTracer;
   }
-
   if (tracer) {
-    return tracer
+    return tracer;
   }
-
-  return trace.getTracer(SERVICE_NAME)
-}
-
+  return trace.getTracer(SERVICE_NAME);
+};
 /**
  * Wraps a function with a tracer span.
  *
@@ -116,7 +109,7 @@ export function getTracer({
  * });
  * ```
  */
-export function recordSpan<T>({
+export const recordSpan = <T>({
   name,
   tracer,
   attributes = {},
@@ -126,64 +119,56 @@ export function recordSpan<T>({
   /**
    * The name of the span.
    */
-  name: string
+  name: string;
   /**
    * The tracer to use.
    */
-  tracer: Tracer
+  tracer: Tracer;
   /**
    * The attributes to set on the span.
    */
-  attributes?: Attributes
+  attributes?: Attributes;
   /**
    * The function to wrap.
    */
-  fn: (span: Span) => Promise<T>
+  fn: (span: Span) => Promise<T>;
   /**
    * Whether to end the span when the function is done.
    *
    * @default true
    */
-  endWhenDone?: boolean
-}) {
-  return tracer.startActiveSpan(name, { attributes }, async (span) => {
+  endWhenDone?: boolean;
+}) =>
+  tracer.startActiveSpan(name, { attributes }, async (span) => {
     try {
-      const result = await fn(span)
-
+      const result = await fn(span);
       if (endWhenDone) {
-        span.setStatus({ code: SpanStatusCode.OK })
-        span.end()
+        span.setStatus({ code: SpanStatusCode.OK });
+        span.end();
       }
-
-      return result
-    }
-    catch (error) {
+      return result;
+    } catch (error) {
       try {
         if (error instanceof Error) {
           span.recordException({
-            name: error.name,
             message: error.message,
+            name: error.name,
             stack: error.stack,
-          })
+          });
           span.setStatus({
             code: SpanStatusCode.ERROR,
             message: error.message,
-          })
+          });
+        } else {
+          span.setStatus({ code: SpanStatusCode.ERROR });
         }
-        else {
-          span.setStatus({ code: SpanStatusCode.ERROR })
-        }
-      }
-      finally {
+      } finally {
         // always stop the span when there is an error:
-        span.end()
+        span.end();
       }
-
-      throw error
+      throw error;
     }
-  })
-}
-
+  });
 /**
  * Record an exception.
  *
@@ -196,7 +181,7 @@ export function recordSpan<T>({
  * });
  * ```
  */
-export function recordException({
+export const recordException = ({
   name,
   error,
   tracer,
@@ -204,31 +189,34 @@ export function recordException({
   /**
    * the name of the span
    */
-  name: string
+  name: string;
   /**
    * the error to record
    */
   error: {
-    message: string
-    stack?: string
-    [key: string]: unknown
-    [key: number]: unknown
-    [key: symbol]: unknown
-  }
+    message: string;
+    stack?: string;
+    [key: string]: unknown;
+    [key: number]: unknown;
+    [key: symbol]: unknown;
+  };
   /**
    * the tracer
    */
-  tracer: Tracer
-}) {
-  const span = tracer.startSpan(name)
+  tracer: Tracer;
+}) => {
+  const span = tracer.startSpan(name);
   context.with(trace.setSpan(context.active(), span), () => {
     span.setAttributes(
       Object.fromEntries(
-        Object.entries(error).map(([key, value]) => [`error.${key}`, String(value)]),
-      ),
-    )
-    span.recordException(error)
-    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message })
-    span.end()
-  })
-}
+        Object.entries(error).map(([key, value]) => [
+          `error.${key}`,
+          String(value),
+        ])
+      )
+    );
+    span.recordException(error);
+    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+    span.end();
+  });
+};

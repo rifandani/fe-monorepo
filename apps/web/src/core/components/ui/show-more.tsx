@@ -1,66 +1,66 @@
-'use client'
+"use client";
+import { composeRenderProps } from "react-aria-components/composeRenderProps";
+import { ToggleButton } from "react-aria-components/ToggleButton";
+import { tv } from "tailwind-variants";
 
-import { composeRenderProps } from 'react-aria-components/composeRenderProps'
-import { ToggleButton } from 'react-aria-components/ToggleButton'
-import { tv } from 'tailwind-variants'
-import { buttonStyles } from '@/core/components/ui/button'
-import { Text } from '@/core/components/ui/text'
+import { buttonStyles } from "@/core/components/ui/button";
+import { Text } from "@/core/components/ui/text";
 
 const showMoreStyles = tv({
-  base: 'text-sm leading-6 before:border-border after:border-border',
-  variants: {
-    orientation: {
-      vertical: 'mx-1 h-auto self-stretch',
-      horizontal: 'my-0.5 h-px w-full self-stretch',
-    },
-  },
+  base: "text-sm leading-6 before:border-border after:border-border",
   compoundVariants: [
     {
-      orientation: 'vertical',
       className:
-        'mx-2 flex flex-col items-center before:mb-2 before:flex-1 before:border-l after:mt-2 after:flex-1 after:border-r',
+        "mx-2 flex flex-col items-center before:mb-2 before:flex-1 before:border-l after:mt-2 after:flex-1 after:border-r",
+      orientation: "vertical",
     },
     {
-      orientation: 'horizontal',
       className:
-        'my-2 flex items-center self-stretch before:me-2 before:flex-1 before:border-t after:ms-2 after:flex-1 after:border-t',
+        "my-2 flex items-center self-stretch before:me-2 before:flex-1 before:border-t after:ms-2 after:flex-1 after:border-t",
+      orientation: "horizontal",
     },
   ],
   defaultVariants: {
-    orientation: 'horizontal',
+    orientation: "horizontal",
   },
-})
-
-interface ShowMoreProps extends Omit<React.ComponentProps<typeof ToggleButton>, 'className'> {
-  className?: string
-  orientation?: 'horizontal' | 'vertical'
-  as?: 'text' | 'button'
-  text?: string
+  variants: {
+    orientation: {
+      horizontal: "my-0.5 h-px w-full self-stretch",
+      vertical: "mx-1 h-auto self-stretch",
+    },
+  },
+});
+interface ShowMoreProps extends Omit<
+  React.ComponentProps<typeof ToggleButton>,
+  "className"
+> {
+  className?: string;
+  orientation?: "horizontal" | "vertical";
+  as?: "text" | "button";
+  text?: string;
 }
-
-function ShowMore({
-  as = 'button',
-  orientation = 'horizontal',
+const ShowMore = ({
+  as = "button",
+  orientation = "horizontal",
   className,
   ...props
-}: ShowMoreProps) {
-  return (
-    <div className={showMoreStyles({ orientation, className })}>
-      {as === 'button'
-        ? (
-            <ToggleButton
-              {...props}
-              className={buttonStyles({ isCircle: true, intent: 'outline', size: 'sm' })}
-            >
-              {composeRenderProps(props.children, children => children)}
-            </ToggleButton>
-          )
-        : (
-            <Text>{props.text}</Text>
-          )}
-    </div>
-  )
-}
-
-export type { ShowMoreProps }
-export { ShowMore }
+}: ShowMoreProps) => (
+  <div className={showMoreStyles({ className, orientation })}>
+    {as === "button" ? (
+      <ToggleButton
+        {...props}
+        className={buttonStyles({
+          intent: "outline",
+          isCircle: true,
+          size: "sm",
+        })}
+      >
+        {composeRenderProps(props.children, (children) => children)}
+      </ToggleButton>
+    ) : (
+      <Text>{props.text}</Text>
+    )}
+  </div>
+);
+export type { ShowMoreProps };
+export { ShowMore };

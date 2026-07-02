@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef } from "react";
 
 /**
  * Iterator function for making the refs object iterable
@@ -6,13 +6,12 @@ import { useRef } from 'react'
  *
  * @returns The iterator object itself
  */
-function iterator(this: {
-  next: () => void
-  [Symbol.iterator]: () => unknown
+const iterator = function iterator(this: {
+  next: () => void;
+  [Symbol.iterator]: () => unknown;
 }) {
-  return this
-}
-
+  return this;
+};
 /**
  * Hook that creates an iterable collection of refs with the same initial value.
  * Useful when you need multiple refs with the same initialization, like in a list of elements.
@@ -37,24 +36,21 @@ function iterator(this: {
  * }
  * ```
  */
-// eslint-disable-next-line react/no-unnecessary-use-prefix
-export function useMultipleRefs<T>(initialValue: T) {
-  return {
-    /**
-     * Creates a new ref on each call to next()
-     * Required for iterator protocol
-     * @returns Object containing the new ref
-     */
-    next() {
-      return {
-        done: false,
-        // eslint-disable-next-line react/rules-of-hooks
-        value: useRef(initialValue),
-      }
-    },
-    /**
-     * Makes the object iterable by implementing Symbol.iterator
-     */
-    [Symbol.iterator]: iterator,
-  }
-}
+export const useMultipleRefs = <T>(initialValue: T) => ({
+  /**
+   * Creates a new ref on each call to next()
+   * Required for iterator protocol
+   * @returns Object containing the new ref
+   */
+  next() {
+    return {
+      done: false,
+      // eslint-disable-next-line react/rules-of-hooks
+      value: useRef(initialValue),
+    };
+  },
+  /**
+   * Makes the object iterable by implementing Symbol.iterator
+   */
+  [Symbol.iterator]: iterator,
+});

@@ -1,9 +1,9 @@
-'use client'
+"use client";
+import type { ComponentProps } from "react";
+import { Fragment, useId, useMemo } from "react";
+import { Area, AreaChart as AreaChartPrimitive } from "recharts";
 
-import type { ComponentProps } from 'react'
-import type { BaseChartProps } from './chart'
-import { Fragment, useId, useMemo } from 'react'
-import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
+import type { BaseChartProps } from "./chart";
 import {
   CartesianGrid,
   Chart,
@@ -17,98 +17,95 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from './chart'
+} from "./chart";
 
-const slugRegExp = /[^a-z0-9]/gi
-
-const fillNone = <stop stopColor="currentColor" stopOpacity={0} />
-
-const fillGradientEnd = <stop offset="95%" stopColor="currentColor" stopOpacity={0} />
-
-function getFillContent({
+const slugRegExp = /[^a-z0-9]/giu;
+const EMPTY_CHART_DATA: Record<string, unknown>[] = [];
+const defaultAreaValueFormatter = (value: number) => value.toString();
+const fillNone = <stop stopColor="currentColor" stopOpacity={0} />;
+const fillGradientEnd = (
+  <stop offset="95%" stopColor="currentColor" stopOpacity={0} />
+);
+const getFillContent = ({
   fillType,
   stopOpacity,
 }: {
-  fillType: AreaChartProps['fillType']
-  stopOpacity: number
-}): React.ReactNode {
+  fillType: AreaChartProps["fillType"];
+  stopOpacity: number;
+}): React.ReactNode => {
   switch (fillType) {
-    case 'none':
-      return fillNone
-    case 'gradient':
+    case "none": {
+      return fillNone;
+    }
+    case "gradient": {
       return (
         <>
-          <stop offset="5%" stopColor="currentColor" stopOpacity={stopOpacity} />
+          <stop
+            offset="5%"
+            stopColor="currentColor"
+            stopOpacity={stopOpacity}
+          />
           {fillGradientEnd}
         </>
-      )
-    default:
-      return <stop stopColor="currentColor" stopOpacity={stopOpacity} />
+      );
+    }
+    default: {
+      return <stop stopColor="currentColor" stopOpacity={stopOpacity} />;
+    }
   }
-}
-
+};
 export interface AreaChartProps extends BaseChartProps {
-  chartProps?: Omit<ComponentProps<typeof AreaChartPrimitive>, 'data' | 'stackOffset'>
-  areaProps?: Partial<ComponentProps<typeof Area>>
-  connectNulls?: boolean
-  fillType?: 'gradient' | 'solid' | 'none'
+  chartProps?: Omit<
+    ComponentProps<typeof AreaChartPrimitive>,
+    "data" | "stackOffset"
+  >;
+  areaProps?: Partial<ComponentProps<typeof Area>>;
+  connectNulls?: boolean;
+  fillType?: "gradient" | "solid" | "none";
 }
-
-export function AreaChart({
-  data = [],
+export const AreaChart = ({
+  data = EMPTY_CHART_DATA,
   dataKey,
   colors = DEFAULT_COLORS,
   connectNulls = false,
-  type = 'default',
-
-  fillType = 'gradient',
+  type = "default",
+  fillType = "gradient",
   config,
   children,
-
   areaProps,
-
   // Components
   tooltip = true,
   tooltipProps,
-
   cartesianGridProps,
-
   legend = true,
   legendProps,
-
-  intervalType = 'equidistantPreserveStart',
-
-  valueFormatter = (value: number) => value.toString(),
-
+  intervalType = "equidistantPreserveStart",
+  valueFormatter = defaultAreaValueFormatter,
   // XAxis
   displayEdgeLabelsOnly = false,
   hideXAxis = false,
   xAxisProps,
-
   // YAxis
   hideYAxis = false,
   yAxisProps,
-
   hideGridLines = false,
   chartProps,
   ...props
-}: AreaChartProps) {
-  const configKeys = useMemo(() => Object.keys(config), [config])
+}: AreaChartProps) => {
+  const configKeys = useMemo(() => Object.keys(config), [config]);
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
-    [configKeys, colors],
-  )
-  const stacked = type === 'stacked' || type === 'percent'
-  const areaId = useId()
-
-  const configEntries = useMemo(() => Object.entries(config), [config])
-
+    [configKeys, colors]
+  );
+  const stacked = type === "stacked" || type === "percent";
+  const areaId = useId();
+  const configEntries = useMemo(() => Object.entries(config), [config]);
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
       {({ onLegendSelect, selectedLegend }) => (
         <AreaChartPrimitive
           onClick={() => {
-            onLegendSelect(null)
+            onLegendSelect(null);
           }}
           data={data}
           margin={{
@@ -117,10 +114,12 @@ export function AreaChart({
             right: 0,
             top: 5,
           }}
-          stackOffset={type === 'percent' ? 'expand' : undefined}
+          stackOffset={type === "percent" ? "expand" : undefined}
           {...chartProps}
         >
-          {!hideGridLines && <CartesianGrid {...cartesianGridProps} strokeDasharray="3 3" />}
+          {!hideGridLines && (
+            <CartesianGrid {...cartesianGridProps} strokeDasharray="3 3" />
+          )}
           <XAxis
             className="**:[text]:fill-muted-fg"
             hide={hideXAxis}
@@ -131,13 +130,15 @@ export function AreaChart({
           <YAxis
             className="**:[text]:fill-muted-fg"
             hide={hideYAxis}
-            tickFormatter={type === 'percent' ? valueToPercent : valueFormatter}
+            tickFormatter={type === "percent" ? valueToPercent : valueFormatter}
             {...yAxisProps}
           />
 
           {legend && (
             <ChartLegend
-              content={typeof legend === 'boolean' ? <ChartLegendContent /> : legend}
+              content={
+                typeof legend === "boolean" ? <ChartLegendContent /> : legend
+              }
               {...legendProps}
             />
           )}
@@ -145,66 +146,73 @@ export function AreaChart({
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === 'boolean'
-                  ? (
-                      <ChartTooltipContent
-                        {...{
-                          hideIndicator: tooltipProps?.hideIndicator,
-                          hideLabel: tooltipProps?.hideLabel,
-                          cursor: tooltipProps?.cursor,
-                          indicator: tooltipProps?.indicator,
-                          labelSeparator: tooltipProps?.labelSeparator,
-                          formatter: tooltipProps?.formatter,
-                          labelFormatter: tooltipProps?.labelFormatter,
-                        }}
-                        accessibilityLayer
-                      />
-                    )
-                  : (
-                      tooltip
-                    )
+                typeof tooltip === "boolean" ? (
+                  <ChartTooltipContent
+                    {...{
+                      cursor: tooltipProps?.cursor,
+                      formatter: tooltipProps?.formatter,
+                      hideIndicator: tooltipProps?.hideIndicator,
+                      hideLabel: tooltipProps?.hideLabel,
+                      indicator: tooltipProps?.indicator,
+                      labelFormatter: tooltipProps?.labelFormatter,
+                      labelSeparator: tooltipProps?.labelSeparator,
+                    }}
+                    accessibilityLayer
+                  />
+                ) : (
+                  tooltip
+                )
               }
               {...tooltipProps}
             />
           )}
 
-          {!children
-            ? configEntries.map(([category, values]) => {
-                const categoryId = `${areaId}-${category.replace(slugRegExp, '')}`
-                const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
-                const stopOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 0.5
-                const color = getColorValue(values.color || categoryColors.get(category))
-
-                return (
-                  <Fragment key={categoryId}>
-                    <defs>
-                      <linearGradient style={{ color }} id={categoryId} x1="0" y1="0" x2="0" y2="1">
-                        {getFillContent({ fillType, stopOpacity })}
-                      </linearGradient>
-                    </defs>
-                    <Area
-                      dot={false}
-                      name={category}
-                      dataKey={category}
-                      stroke={color}
-                      style={{
-                        strokeWidth: 2,
-                        strokeOpacity,
-                      }}
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      isAnimationActive={true}
-                      connectNulls={connectNulls}
-                      stackId={stacked ? 'stack' : undefined}
-                      fill={`url(#${categoryId})`}
-                      {...areaProps}
-                    />
-                  </Fragment>
-                )
-              })
-            : children}
+          {children ||
+            configEntries.map(([category, values]) => {
+              const categoryId = `${areaId}-${category.replace(slugRegExp, "")}`;
+              const strokeOpacity =
+                selectedLegend && selectedLegend !== category ? 0.1 : 1;
+              const stopOpacity =
+                selectedLegend && selectedLegend !== category ? 0.1 : 0.5;
+              const color = getColorValue(
+                values.color || categoryColors.get(category)
+              );
+              return (
+                <Fragment key={categoryId}>
+                  <defs>
+                    <linearGradient
+                      style={{ color }}
+                      id={categoryId}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      {getFillContent({ fillType, stopOpacity })}
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    dot={false}
+                    name={category}
+                    dataKey={category}
+                    stroke={color}
+                    style={{
+                      strokeOpacity,
+                      strokeWidth: 2,
+                    }}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    isAnimationActive={true}
+                    connectNulls={connectNulls}
+                    stackId={stacked ? "stack" : undefined}
+                    fill={`url(#${categoryId})`}
+                    {...areaProps}
+                  />
+                </Fragment>
+              );
+            })}
         </AreaChartPrimitive>
       )}
     </Chart>
-  )
-}
+  );
+};

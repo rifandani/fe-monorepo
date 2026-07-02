@@ -1,28 +1,26 @@
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
-import { authLoginResponseSchema } from '@workspace/core/apis/auth'
-import { isFunction } from 'radashi'
-import * as React from 'react'
-import { z } from 'zod'
-import { create, createStore, useStore } from 'zustand'
-import { createJSONStorage, devtools, persist } from 'zustand/middleware'
+import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
+import { authLoginResponseSchema } from "@workspace/core/apis/auth";
+import { isFunction } from "radashi";
+import * as React from "react";
+import { z } from "zod";
+import { create, createStore, useStore } from "zustand";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-export type UserStoreState = z.infer<typeof userStoreStateSchema>
+export type UserStoreState = z.infer<typeof userStoreStateSchema>;
 export interface UserStoreAction {
-  setUser: (user: AuthLoginResponseSchema) => void
-  clearUser: () => void
+  setUser: (user: AuthLoginResponseSchema) => void;
+  clearUser: () => void;
 }
-export type UserStore = UserStoreState & UserStoreAction
-export type UserStoreLocalStorage = z.infer<typeof userStoreLocalStorageSchema>
-
-export const userStoreName = 'app-user' as const
+export type UserStore = UserStoreState & UserStoreAction;
+export type UserStoreLocalStorage = z.infer<typeof userStoreLocalStorageSchema>;
+export const userStoreName = "app-user" as const;
 const userStoreStateSchema = z.object({
   user: authLoginResponseSchema.nullable(),
-})
+});
 export const userStoreLocalStorageSchema = z.object({
   state: userStoreStateSchema,
   version: z.number(),
-})
-
+});
 /**
  * Hooks to manipulate user store
  *
@@ -35,85 +33,72 @@ export const userStoreLocalStorageSchema = z.object({
 export const useAuthUserStore = create<UserStore>()(
   devtools(
     persist(
-      set => ({
-        user: null,
-
-        setUser: (user) => {
-          set({ user })
-        },
+      (set) => ({
         clearUser: () => {
-          set({ user: null })
+          set({ user: null });
         },
+        setUser: (user) => {
+          set({ user });
+        },
+        user: null,
       }),
       {
-        name: userStoreName, // name of the item in the storage (must be unique)
-        version: 0, // a migration will be triggered if the version in the storage mismatches this one
-        storage: createJSONStorage(() => localStorage), // by default, 'localStorage' is used
+        // name of the item in the storage (must be unique)
+        name: userStoreName,
+        // by default, 'localStorage' is used
+        storage: createJSONStorage(() => localStorage),
+        // a migration will be triggered if the version in the storage mismatches this one
+        version: 0,
+      }
+    )
+  )
+);
+const createUserStore = (initialState?: Partial<UserStoreState>) =>
+  createStore<UserStore>()(
+    devtools((set) => ({
+      clearUser: () => {
+        set({ user: null });
       },
-    ),
-  ),
-)
-
-/**
- * for use with react context to initialize the store with props (default state)
- *
- * @link https://docs.pmnd.rs/zustand/guides/initialize-state-with-props
- */
-function createUserStore(initialState?: Partial<UserStoreState>) {
-  return createStore<UserStore>()(
-    devtools(set => ({
+      setUser: (user) => {
+        set({ user });
+      },
       user: null,
       ...initialState,
-
-      setUser: (user) => {
-        set({ user })
-      },
-      clearUser: () => {
-        set({ user: null })
-      },
-    })),
-  )
-}
-
+    }))
+  );
 export const UserContext = React.createContext<ReturnType<
   typeof createUserStore
-> | null>(null)
-
-export function useUserContext<T>(selector: (_store: UserStore) => T): T {
-  const store = React.use(UserContext)
-  if (!store)
-    throw new Error('useUserContext: cannot find the UserContext')
-
-  return useStore(store, selector)
-}
-
+> | null>(null);
+export const useUserContext = <T,>(selector: (_store: UserStore) => T): T => {
+  const store = React.use(UserContext);
+  if (!store) {
+    throw new Error("useUserContext: cannot find the UserContext");
+  }
+  return useStore(store, selector);
+};
 /**
  * for use with react context to initialize the store with props (default state)
  *
- * @link https://docs.pmnd.rs/zustand/guides/initialize-state-with-props
+ * @see https://docs.pmnd.rs/zustand/guides/initialize-state-with-props
  */
-export function UserProvider({
+export const UserProvider = ({
   children,
   initialState,
 }: {
   children:
     | React.ReactNode
-    | ((context: ReturnType<typeof createUserStore>) => React.ReactNode)
-  initialState?: Parameters<typeof createUserStore>[0]
-}) {
+    | ((context: ReturnType<typeof createUserStore>) => React.ReactNode);
+  initialState?: Parameters<typeof createUserStore>[0];
+}) => {
   const storeRef = React.useRef<ReturnType<typeof createUserStore> | null>(
-    null,
-  )
-
+    null
+  );
   if (!storeRef.current) {
-    storeRef.current = createUserStore(initialState)
+    storeRef.current = createUserStore(initialState);
   }
-
   return (
-
     <UserContext value={storeRef.current}>
-      { }
       {isFunction(children) ? children(storeRef.current) : children}
     </UserContext>
-  )
-}
+  );
+};

@@ -1,7 +1,16 @@
-'use client'
-
-import type { ReactElement } from 'react'
-import type { ToggleButtonGroupProps } from 'react-aria-components/ToggleButtonGroup'
+"use client";
+import type { ReactElement } from "react";
+import {
+  createContext,
+  use,
+  useCallback,
+  useId,
+  useMemo,
+  useState,
+} from "react";
+import { ToggleButton } from "react-aria-components/ToggleButton";
+import type { ToggleButtonGroupProps } from "react-aria-components/ToggleButtonGroup";
+import { ToggleButtonGroup } from "react-aria-components/ToggleButtonGroup";
 import type {
   CartesianGridProps as CartesianGridPrimitiveProps,
   CartesianGridProps,
@@ -10,20 +19,7 @@ import type {
   TooltipProps,
   XAxisProps as XAxisPropsPrimitive,
   YAxisProps as YAxisPrimitiveProps,
-} from 'recharts'
-import type { ContentType as LegendContentType } from 'recharts/types/component/DefaultLegendContent'
-import type {
-  NameType,
-  Props as TooltipContentProps,
-  ValueType,
-} from 'recharts/types/component/DefaultTooltipContent'
-import type { ContentType as TooltipContentType } from 'recharts/types/component/Tooltip'
-import { createContext, use, useCallback, useId, useMemo, useState } from 'react'
-import { ToggleButton } from 'react-aria-components/ToggleButton'
-import {
-  ToggleButtonGroup,
-
-} from 'react-aria-components/ToggleButtonGroup'
+} from "recharts";
 import {
   CartesianGrid as CartesianGridPrimitive,
   Legend as LegendPrimitive,
@@ -31,218 +27,163 @@ import {
   Tooltip as TooltipPrimitive,
   XAxis as XAxisPrimitive,
   YAxis as YAxisPrimitive,
-} from 'recharts'
-import { twJoin, twMerge } from 'tailwind-merge'
-import { useIsMobile } from '@/core/hooks/use-mobile'
-import { cx } from '@/core/utils/primitive'
+} from "recharts";
+import type { ContentType as LegendContentType } from "recharts/types/component/DefaultLegendContent";
+import type {
+  NameType,
+  Props as TooltipContentProps,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+import type { ContentType as TooltipContentType } from "recharts/types/component/Tooltip";
+import { twJoin, twMerge } from "tailwind-merge";
 
+import { useIsMobile } from "@/core/hooks/use-mobile";
+import { cx } from "@/core/utils/primitive";
 // #region Chart Types
-type ChartType = 'default' | 'stacked' | 'percent'
-type ChartLayout = 'horizontal' | 'vertical' | 'radial'
-type IntervalType = 'preserveStartEnd' | 'equidistantPreserveStart'
-
-type ChartConfig = {
-  [k in string]: {
-    label?: React.ReactNode
-    icon?: React.ComponentType
+type ChartType = "default" | "stacked" | "percent";
+type ChartLayout = "horizontal" | "vertical" | "radial";
+type IntervalType = "preserveStartEnd" | "equidistantPreserveStart";
+type ChartConfig = Record<
+  string,
+  {
+    label?: React.ReactNode;
+    icon?: React.ComponentType;
   } & (
-    | { color?: ChartColorKeys | (string & {}), theme?: never }
-    | { color?: never, theme: Record<keyof typeof THEMES, string> }
+    | {
+        color?: ChartColorKeys | string;
+        theme?: never;
+      }
+    | {
+        color?: never;
+        theme: Record<keyof typeof THEMES, string>;
+      }
   )
-}
-
+>;
 const CHART_COLORS = {
-  'chart-1': 'var(--chart-1)',
-  'chart-2': 'var(--chart-2)',
-  'chart-3': 'var(--chart-3)',
-  'chart-4': 'var(--chart-4)',
-  'chart-5': 'var(--chart-5)',
-} as const
-
-type ChartColorKeys = keyof typeof CHART_COLORS | (string & {})
-
-const DEFAULT_COLORS = ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'] as const
-
+  "chart-1": "var(--chart-1)",
+  "chart-2": "var(--chart-2)",
+  "chart-3": "var(--chart-3)",
+  "chart-4": "var(--chart-4)",
+  "chart-5": "var(--chart-5)",
+} as const;
+type ChartColorKeys = keyof typeof CHART_COLORS | string;
+const DEFAULT_COLORS = [
+  "chart-1",
+  "chart-2",
+  "chart-3",
+  "chart-4",
+  "chart-5",
+] as const;
 interface ChartContextProps {
-  config: ChartConfig
-  data?: Record<string, any>[]
-  layout: ChartLayout
-  dataKey?: string
-  selectedLegend: string | null
-  onLegendSelect: (legendItem: string | null) => void
+  config: ChartConfig;
+  data?: Record<string, unknown>[];
+  layout: ChartLayout;
+  dataKey?: string;
+  selectedLegend: string | null;
+  onLegendSelect: (legendItem: string | null) => void;
 }
-
-const ChartContext = createContext<ChartContextProps | null>(null)
-
-export function useChart() {
-  const context = use(ChartContext)
-
+const ChartContext = createContext<ChartContextProps | null>(null);
+export const useChart = () => {
+  const context = use(ChartContext);
   if (!context) {
-    throw new Error('useChart must be used within a <Chart />')
+    throw new Error("useChart must be used within a <Chart />");
   }
-
-  return context
-}
-
-export function valueToPercent(value: number) {
-  return `${(value * 100).toFixed(0)}%`
-}
-
-function constructCategoryColors(categories: string[], colors: readonly ChartColorKeys[]): Map<string, ChartColorKeys> {
-  const categoryColors = new Map<string, ChartColorKeys>()
-
-  categories.forEach((category, index) => {
-    const color = colors[index % colors.length]
+  return context;
+};
+export const valueToPercent = (value: number) => `${(value * 100).toFixed(0)}%`;
+const constructCategoryColors = (
+  categories: string[],
+  colors: readonly ChartColorKeys[]
+): Map<string, ChartColorKeys> => {
+  const categoryColors = new Map<string, ChartColorKeys>();
+  for (const [index, category] of categories.entries()) {
+    const color = colors[index % colors.length];
     if (color !== undefined) {
-      categoryColors.set(category, color)
+      categoryColors.set(category, color);
     }
-  })
-
-  return categoryColors
-}
-
-function getColorValue(color?: string): string {
+  }
+  return categoryColors;
+};
+const getColorValue = (color?: string): string => {
   if (!color) {
-    return 'var(--chart-1)'
+    return "var(--chart-1)";
   }
-
-  return CHART_COLORS[color as 'chart-1'] ?? color
-}
-
-function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
-  if (typeof payload !== 'object' || payload === null) {
-    return undefined
+  return CHART_COLORS[color as "chart-1"] ?? color;
+};
+const getPayloadConfigFromPayload = (
+  config: ChartConfig,
+  payload: unknown,
+  key: string
+) => {
+  if (typeof payload !== "object" || payload === null) {
+    return;
   }
-
-  const payloadPayload
-    = 'payload' in payload && typeof payload.payload === 'object' && payload.payload !== null
+  const payloadPayload =
+    "payload" in payload &&
+    typeof payload.payload === "object" &&
+    payload.payload !== null
       ? payload.payload
-      : undefined
-
-  let configLabelKey: string = key
-
-  if (key in payload && typeof payload[key as keyof typeof payload] === 'string') {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  }
-  else if (
-    payloadPayload
-    && key in payloadPayload
-    && typeof payloadPayload[key as keyof typeof payloadPayload] === 'string'
+      : undefined;
+  let configLabelKey: string = key;
+  if (
+    key in payload &&
+    typeof payload[key as keyof typeof payload] === "string"
   ) {
-    configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string
+    configLabelKey = payload[key as keyof typeof payload] as string;
+  } else if (
+    payloadPayload &&
+    key in payloadPayload &&
+    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+  ) {
+    configLabelKey = payloadPayload[
+      key as keyof typeof payloadPayload
+    ] as string;
   }
-
-  return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config]
-}
-
+  return configLabelKey in config
+    ? config[configLabelKey]
+    : config[key as keyof typeof config];
+};
 interface BaseChartProps extends React.HTMLAttributes<HTMLDivElement> {
-  containerHeight?: number
-  config: ChartConfig
-  data: Record<string, any>[]
-  dataKey: string
-  colors?: readonly (ChartColorKeys | (string & {}))[]
-  type?: ChartType
-  intervalType?: IntervalType
-  layout?: ChartLayout
-  valueFormatter?: (value: number) => string
-
-  tooltip?: TooltipContentType<ValueType, NameType> | boolean
-  tooltipProps?: Omit<TooltipProps, 'content'> & {
-    hideLabel?: boolean
-    labelSeparator?: boolean
-    hideIndicator?: boolean
-    indicator?: 'line' | 'dot' | 'dashed'
-    nameKey?: string
-    labelKey?: string
-  }
-
-  cartesianGridProps?: CartesianGridProps
-
-  legend?: LegendContentType | boolean
-  legendProps?: Omit<React.ComponentProps<typeof LegendPrimitive>, 'content' | 'ref'>
-
-  xAxisProps?: XAxisPropsPrimitive
-  yAxisProps?: YAxisPrimitiveProps
-
+  containerHeight?: number;
+  config: ChartConfig;
+  data: Record<string, unknown>[];
+  dataKey: string;
+  colors?: readonly ChartColorKeys[];
+  type?: ChartType;
+  intervalType?: IntervalType;
+  layout?: ChartLayout;
+  valueFormatter?: (value: number) => string;
+  tooltip?: TooltipContentType<ValueType, NameType> | boolean;
+  tooltipProps?: Omit<TooltipProps, "content"> & {
+    hideLabel?: boolean;
+    labelSeparator?: boolean;
+    hideIndicator?: boolean;
+    indicator?: "line" | "dot" | "dashed";
+    nameKey?: string;
+    labelKey?: string;
+  };
+  cartesianGridProps?: CartesianGridProps;
+  legend?: LegendContentType | boolean;
+  legendProps?: Omit<
+    React.ComponentProps<typeof LegendPrimitive>,
+    "content" | "ref"
+  >;
+  xAxisProps?: XAxisPropsPrimitive;
+  yAxisProps?: YAxisPrimitiveProps;
   // XAxis
-  displayEdgeLabelsOnly?: boolean
-
-  hideGridLines?: boolean
-  hideXAxis?: boolean
-  hideYAxis?: boolean
+  displayEdgeLabelsOnly?: boolean;
+  hideGridLines?: boolean;
+  hideXAxis?: boolean;
+  hideYAxis?: boolean;
 }
-
-function Chart({
-  id,
-  className,
-  children,
-  config,
-  data,
-  dataKey,
-  ref,
-  layout = 'horizontal',
-  containerHeight,
-  ...props
-}: Omit<React.ComponentProps<'div'>, 'children'>
-  & Pick<ChartContextProps, 'data' | 'dataKey'> & {
-    config: ChartConfig
-    containerHeight?: number
-    layout?: ChartLayout
-    children: ReactElement | ((props: ChartContextProps) => ReactElement)
-  }) {
-  const isMobile = useIsMobile()
-  const uniqueId = useId()
-  const chartId = useMemo(() => `chart-${id || uniqueId.replace(/:/g, '')}`, [id, uniqueId])
-
-  const [selectedLegend, setSelectedLegend] = useState<string | null>(null)
-
-  const onLegendSelect = useCallback((legendItem: string | null) => {
-    setSelectedLegend(legendItem)
-  }, [])
-
-  const _data = data ?? []
-  const _dataKey = dataKey ?? 'value'
-
-  const value = useMemo(
-    () => ({
-      config,
-      selectedLegend,
-      onLegendSelect,
-      data: _data,
-      dataKey: _dataKey,
-      layout,
-    }),
-    [config, selectedLegend, onLegendSelect, _data, _dataKey, layout],
-  )
-
-  return (
-    <ChartContext value={value}>
-      <div
-        data-chart={chartId}
-        ref={ref}
-        className={twMerge(
-          'z-20 flex w-full justify-center text-xs',
-          className,
-        )}
-        {...props}
-      >
-        <ChartStyle id={chartId} config={config} />
-        <ResponsiveContainer height={containerHeight ?? (isMobile ? 200 : 370)}>
-          {typeof children === 'function' ? children(value) : children}
-        </ResponsiveContainer>
-      </div>
-    </ChartContext>
-  )
-}
-
-const THEMES = { light: '', dark: '.dark' } as const
-function ChartStyle({ id, config }: { id: string, config: ChartConfig }) {
-  const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color)
-
+const THEMES = { dark: ".dark", light: "" } as const;
+const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const colorConfig = Object.entries(config).filter(
+    ([_, itemConfig]) => itemConfig.theme || itemConfig.color
+  );
   if (!colorConfig.length) {
-    return null
+    return null;
   }
-
   return (
     <style
       dangerouslySetInnerHTML={{
@@ -251,144 +192,361 @@ function ChartStyle({ id, config }: { id: string, config: ChartConfig }) {
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-      .map(([key, itemConfig]) => {
-        const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
-        return color ? `  --color-${key}: ${color};` : null
-      })
-      .join('\n')}
+  .map(([key, itemConfig]) => {
+    const color =
+      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+      itemConfig.color;
+    return color ? `  --color-${key}: ${color};` : null;
+  })
+  .join("\n")}
 }
-`,
+`
           )
-          .join('\n'),
+          .join("\n"),
       }}
     />
-  )
-}
-
-type ChartTooltipProps<TValue extends ValueType, TName extends NameType> = TooltipProps<
-  TValue,
-  TName
->
-
-const tooltipWrapperStyle = { outline: 'none' } as const
-
+  );
+};
+const Chart = ({
+  id,
+  className,
+  children,
+  config,
+  data,
+  dataKey,
+  ref,
+  layout = "horizontal",
+  containerHeight,
+  ...props
+}: Omit<React.ComponentProps<"div">, "children"> &
+  Pick<ChartContextProps, "data" | "dataKey"> & {
+    config: ChartConfig;
+    containerHeight?: number;
+    layout?: ChartLayout;
+    children: ReactElement | ((props: ChartContextProps) => ReactElement);
+  }) => {
+  const isMobile = useIsMobile();
+  const uniqueId = useId();
+  const chartId = useMemo(
+    () => `chart-${id || uniqueId.replaceAll(":", "")}`,
+    [id, uniqueId]
+  );
+  const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
+  const onLegendSelect = useCallback((legendItem: string | null) => {
+    setSelectedLegend(legendItem);
+  }, []);
+  const _data = data ?? [];
+  const _dataKey = dataKey ?? "value";
+  const value = useMemo(
+    () => ({
+      config,
+      data: _data,
+      dataKey: _dataKey,
+      layout,
+      onLegendSelect,
+      selectedLegend,
+    }),
+    [config, selectedLegend, onLegendSelect, _data, _dataKey, layout]
+  );
+  return (
+    <ChartContext value={value}>
+      <div
+        data-chart={chartId}
+        ref={ref}
+        className={twMerge(
+          "z-20 flex w-full justify-center text-xs",
+          className
+        )}
+        {...props}
+      >
+        <ChartStyle id={chartId} config={config} />
+        <ResponsiveContainer height={containerHeight ?? (isMobile ? 200 : 370)}>
+          {typeof children === "function" ? children(value) : children}
+        </ResponsiveContainer>
+      </div>
+    </ChartContext>
+  );
+};
+type ChartTooltipProps<
+  TValue extends ValueType,
+  TName extends NameType,
+> = TooltipProps<TValue, TName>;
+const tooltipWrapperStyle = { outline: "none" } as const;
 const cursorStyleRadial = {
-  stroke: 'var(--muted)',
+  fill: "var(--muted)",
+  fillOpacity: 0.5,
+  stroke: "var(--muted)",
   strokeWidth: 0.1,
-  fill: 'var(--muted)',
-  fillOpacity: 0.5,
-} as const
-
+} as const;
 const cursorStyleDefault = {
-  stroke: 'var(--muted)',
-  strokeWidth: 1,
-  fill: 'var(--muted)',
+  fill: "var(--muted)",
   fillOpacity: 0.5,
-} as const
-
-function ChartTooltip(props: TooltipProps) {
-  const { layout } = useChart()
-  const cursorStyle = layout === 'radial' ? cursorStyleRadial : cursorStyleDefault
-
-  return <TooltipPrimitive wrapperStyle={tooltipWrapperStyle} cursor={cursorStyle} {...props} />
+  stroke: "var(--muted)",
+  strokeWidth: 1,
+} as const;
+const ChartTooltip = (props: TooltipProps) => {
+  const { layout } = useChart();
+  const cursorStyle =
+    layout === "radial" ? cursorStyleRadial : cursorStyleDefault;
+  return (
+    <TooltipPrimitive
+      wrapperStyle={tooltipWrapperStyle}
+      cursor={cursorStyle}
+      {...props}
+    />
+  );
+};
+type ChartLegendProps = Omit<
+  React.ComponentProps<typeof LegendPrimitive>,
+  "ref"
+>;
+const ChartLegend = (props: ChartLegendProps) => (
+  <LegendPrimitive align="center" verticalAlign="bottom" {...props} />
+);
+interface XAxisProps extends Omit<XAxisPropsPrimitive, "ref"> {
+  displayEdgeLabelsOnly?: boolean;
+  intervalType?: IntervalType;
 }
-
-type ChartLegendProps = Omit<React.ComponentProps<typeof LegendPrimitive>, 'ref'>
-
-function ChartLegend(props: ChartLegendProps) {
-  return <LegendPrimitive align="center" verticalAlign="bottom" {...props} />
-}
-
-interface XAxisProps extends Omit<XAxisPropsPrimitive, 'ref'> {
-  displayEdgeLabelsOnly?: boolean
-  intervalType?: IntervalType
-}
-
 const tickHorizontal = {
-  transform: 'translate(32, 6)',
-} as const
-
-function XAxis({
+  transform: "translate(32, 6)",
+} as const;
+const XAxis = ({
   displayEdgeLabelsOnly,
   className,
-  intervalType = 'preserveStartEnd',
+  intervalType = "preserveStartEnd",
   minTickGap = 5,
   ...props
-}: XAxisProps) {
-  const { dataKey, data, layout } = useChart()
-
-  const ticks
-    = displayEdgeLabelsOnly && data?.length && dataKey
-      ? [data[0]?.[dataKey], data[data.length - 1]?.[dataKey]]
-      : undefined
-
-  const tick = layout === 'horizontal' ? tickHorizontal : undefined
+}: XAxisProps) => {
+  const { dataKey, data, layout } = useChart();
+  const ticks =
+    displayEdgeLabelsOnly && data?.length && dataKey
+      ? [data[0]?.[dataKey], data.at(-1)?.[dataKey]]
+      : undefined;
+  const tick = layout === "horizontal" ? tickHorizontal : undefined;
   return (
     <XAxisPrimitive
-      className={twMerge('text-xs text-muted-fg **:[text]:fill-muted-fg', className)}
-      interval={displayEdgeLabelsOnly ? 'preserveStartEnd' : intervalType}
+      className={twMerge(
+        "text-xs text-muted-fg **:[text]:fill-muted-fg",
+        className
+      )}
+      interval={displayEdgeLabelsOnly ? "preserveStartEnd" : intervalType}
       tick={tick}
       ticks={ticks}
       tickLine={false}
       axisLine={false}
       minTickGap={minTickGap}
-      dataKey={layout === 'horizontal' ? dataKey : undefined}
+      dataKey={layout === "horizontal" ? dataKey : undefined}
       {...props}
     />
-  )
-}
-
+  );
+};
 const yAxisTickHorizontal = {
-  transform: 'translate(-3, 0)',
-} as const
-
+  transform: "translate(-3, 0)",
+} as const;
 const yAxisTickVertical = {
-  transform: 'translate(0, 0)',
-} as const
+  transform: "translate(0, 0)",
+} as const;
+const DEFAULT_Y_AXIS_DOMAIN: YAxisPrimitiveProps["domain"] = ["auto", "auto"];
 
-function YAxis({
+const getLegendAlignClass = (
+  align: "center" | "left" | "right" | undefined
+) => {
+  if (align === "right") {
+    return "justify-end";
+  }
+  if (align === "left") {
+    return "justify-start";
+  }
+  return "justify-center";
+};
+
+const YAxis = ({
   className,
   width,
-  domain = ['auto', 'auto'],
+  domain = DEFAULT_Y_AXIS_DOMAIN,
   type,
   ...props
-}: Omit<YAxisPrimitiveProps, 'ref'>) {
-  const { layout, dataKey } = useChart()
-
-  const tick = layout === 'horizontal' ? yAxisTickHorizontal : yAxisTickVertical
-
+}: Omit<YAxisPrimitiveProps, "ref">) => {
+  const { layout, dataKey } = useChart();
+  const tick =
+    layout === "horizontal" ? yAxisTickHorizontal : yAxisTickVertical;
   return (
     <YAxisPrimitive
-      className={twMerge('text-xs text-muted-fg **:[text]:fill-muted-fg', className)}
-      width={(width ?? layout === 'horizontal') ? 40 : 80}
+      className={twMerge(
+        "text-xs text-muted-fg **:[text]:fill-muted-fg",
+        className
+      )}
+      width={(width ?? layout === "horizontal") ? 40 : 80}
       domain={domain}
       tick={tick}
-      dataKey={layout === 'horizontal' ? undefined : dataKey}
-      type={type || layout === 'horizontal' ? 'number' : 'category'}
-      interval={layout === 'horizontal' ? undefined : 'equidistantPreserveStart'}
+      dataKey={layout === "horizontal" ? undefined : dataKey}
+      type={type || layout === "horizontal" ? "number" : "category"}
+      interval={
+        layout === "horizontal" ? undefined : "equidistantPreserveStart"
+      }
       axisLine={false}
       tickLine={false}
       {...props}
     />
-  )
-}
-
-function CartesianGrid({ className, ...props }: CartesianGridPrimitiveProps) {
-  const { layout } = useChart()
+  );
+};
+const CartesianGrid = ({
+  className,
+  ...props
+}: CartesianGridPrimitiveProps) => {
+  const { layout } = useChart();
   return (
     <CartesianGridPrimitive
-      className={twMerge('stroke-muted stroke-1', className)}
-      horizontal={layout !== 'vertical'}
-      vertical={layout === 'vertical'}
+      className={twMerge("stroke-muted stroke-1", className)}
+      horizontal={layout !== "vertical"}
+      vertical={layout === "vertical"}
       {...props}
     />
-  )
+  );
+};
+interface ChartTooltipPayloadItemProps<
+  TValue extends ValueType,
+  TName extends NameType,
+> {
+  color?: string;
+  formatter?: TooltipContentProps<TValue, TName>["formatter"];
+  hideIndicator: boolean;
+  index: number;
+  indicator: "dashed" | "dot" | "line";
+  item: NonNullable<TooltipContentProps<TValue, TName>["payload"]>[number];
+  nameKey?: string;
+  nestLabel: boolean;
+  tooltipLabel: React.ReactNode;
 }
+const getTooltipIndicatorClassName = (
+  indicator: "dashed" | "dot" | "line",
+  nestLabel: boolean
+) =>
+  twMerge(
+    "shrink-0 rounded-full border-(--color-border) bg-(--color-bg)",
+    indicator === "dot" && "size-2.5",
+    indicator === "line" && "w-1",
+    indicator === "dashed" && "w-0 border-[1.5px] border-dashed bg-transparent",
+    nestLabel && indicator === "dashed" && "my-0.5"
+  );
 
-function ChartTooltipContent<TValue extends ValueType, TName extends NameType>({
+const ChartTooltipIndicator = ({
+  hideIndicator,
+  icon: Icon,
+  indicator,
+  indicatorColor,
+  nestLabel,
+}: {
+  hideIndicator: boolean;
+  icon?: React.ComponentType;
+  indicator: "dashed" | "dot" | "line";
+  indicatorColor?: string;
+  nestLabel: boolean;
+}) => {
+  if (hideIndicator) {
+    return null;
+  }
+  if (Icon) {
+    return <Icon />;
+  }
+  return (
+    <div
+      className={getTooltipIndicatorClassName(indicator, nestLabel)}
+      style={
+        {
+          "--color-bg": indicatorColor,
+          "--color-border": indicatorColor,
+        } as React.CSSProperties
+      }
+    />
+  );
+};
+
+const ChartTooltipItemDetails = ({
+  itemConfig,
+  itemName,
+  itemValue,
+  nestLabel,
+  tooltipLabel,
+}: {
+  itemConfig?: ChartConfig[string];
+  itemName?: string;
+  itemValue?: ValueType;
+  nestLabel: boolean;
+  tooltipLabel: React.ReactNode;
+}) => (
+  <div
+    className={twMerge(
+      "flex flex-1 justify-between leading-none",
+      nestLabel ? "items-end" : "items-center"
+    )}
+  >
+    <div className="grid gap-1.5">
+      {nestLabel ? tooltipLabel : null}
+      <span className="text-muted-fg">{itemConfig?.label || itemName}</span>
+    </div>
+    {itemValue ? (
+      <span className="font-mono font-medium text-fg tabular-nums">
+        {itemValue.toString()}
+      </span>
+    ) : null}
+  </div>
+);
+
+const ChartTooltipPayloadItem = <
+  TValue extends ValueType,
+  TName extends NameType,
+>({
+  color,
+  formatter,
+  hideIndicator,
+  index,
+  indicator,
+  item,
+  nameKey,
+  nestLabel,
+  tooltipLabel,
+}: ChartTooltipPayloadItemProps<TValue, TName>) => {
+  const { config } = useChart();
+  const key = `${nameKey || item.name || item.dataKey || "value"}`;
+  const itemConfig = getPayloadConfigFromPayload(config, item, key);
+  const indicatorColor = color || item.payload.fill || item.color;
+  return (
+    <div
+      key={key}
+      className={twMerge(
+        "flex w-full flex-wrap items-stretch gap-2 *:[svg]:text-muted-fg",
+        indicator === "dot" && "items-center *:[svg]:size-2.5",
+        indicator === "line" && "*:[svg]:h-full *:[svg]:w-2.5"
+      )}
+    >
+      {formatter && item?.value !== undefined && item.name ? (
+        formatter(item.value, item.name, item, index, item.payload)
+      ) : (
+        <>
+          <ChartTooltipIndicator
+            hideIndicator={hideIndicator}
+            icon={itemConfig?.icon}
+            indicator={indicator}
+            indicatorColor={indicatorColor}
+            nestLabel={nestLabel}
+          />
+          <ChartTooltipItemDetails
+            itemConfig={itemConfig}
+            itemName={item.name}
+            itemValue={item.value}
+            nestLabel={nestLabel}
+            tooltipLabel={tooltipLabel}
+          />
+        </>
+      )}
+    </div>
+  );
+};
+const ChartTooltipContent = <TValue extends ValueType, TName extends NameType>({
   payload,
   className,
-  indicator = 'dot',
+  indicator = "dot",
   hideLabel = false,
   hideIndicator = false,
   label,
@@ -400,214 +558,161 @@ function ChartTooltipContent<TValue extends ValueType, TName extends NameType>({
   nameKey,
   labelKey,
   ref,
-}: TooltipContentProps<TValue, TName>
-  & React.ComponentProps<'div'> & {
-    hideLabel?: boolean
-    labelSeparator?: boolean
-    hideIndicator?: boolean
-    indicator?: 'line' | 'dot' | 'dashed'
-    nameKey?: string
-    labelKey?: string
-  }) {
-  const { config } = useChart()
-
+}: TooltipContentProps<TValue, TName> &
+  React.ComponentProps<"div"> & {
+    hideLabel?: boolean;
+    labelSeparator?: boolean;
+    hideIndicator?: boolean;
+    indicator?: "line" | "dot" | "dashed";
+    nameKey?: string;
+    labelKey?: string;
+  }) => {
+  const { config } = useChart();
   const tooltipLabel = useMemo(() => {
     if (hideLabel || !payload?.length) {
-      return null
+      return null;
     }
-
-    const [item] = payload
-
+    const [item] = payload;
     if (!item) {
-      return null
+      return null;
     }
-
-    const key = `${labelKey || item.dataKey || item.name || 'value'}`
-    const itemConfig = getPayloadConfigFromPayload(config, item, key)
-    const value
-      = !labelKey && typeof label === 'string'
+    const key = `${labelKey || item.dataKey || item.name || "value"}`;
+    const itemConfig = getPayloadConfigFromPayload(config, item, key);
+    const value =
+      !labelKey && typeof label === "string"
         ? config[label as keyof typeof config]?.label || label
-        : itemConfig?.label
-
+        : itemConfig?.label;
     if (labelFormatter) {
-      return <div className={labelClassName}>{labelFormatter(value, payload)}</div>
+      return (
+        <div className={labelClassName}>{labelFormatter(value, payload)}</div>
+      );
     }
-
     if (!value) {
-      return null
+      return null;
     }
-
-    return <div className={labelClassName}>{value}</div>
-  }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey])
-
+    return <div className={labelClassName}>{value}</div>;
+  }, [
+    label,
+    labelFormatter,
+    payload,
+    hideLabel,
+    labelClassName,
+    config,
+    labelKey,
+  ]);
   if (!payload?.length) {
-    return null
+    return null;
   }
-
-  const nestLabel = payload.length === 1 && indicator !== 'dot'
-
+  const nestLabel = payload.length === 1 && indicator !== "dot";
   return (
     <div
       ref={ref}
       className={twMerge(
-        'grid min-w-48 items-start rounded-lg bg-overlay/70 p-3 py-2 text-xs text-overlay-fg ring ring-current/10 backdrop-blur-lg',
-        className,
+        "grid min-w-48 items-start rounded-lg bg-overlay/70 p-3 py-2 text-xs text-overlay-fg ring ring-current/10 backdrop-blur-lg",
+        className
       )}
     >
       {!hideLabel && (
         <>
-          {!nestLabel ? <span className="font-medium">{tooltipLabel}</span> : null}
-          {labelSeparator && <span aria-hidden className="mt-2 mb-3 block h-px w-full bg-bg/10" />}
+          {nestLabel ? null : (
+            <span className="font-medium">{tooltipLabel}</span>
+          )}
+          {labelSeparator && (
+            <span
+              aria-hidden
+              className="mt-2 mb-3 block h-px w-full bg-bg/10"
+            />
+          )}
         </>
       )}
       <div className="grid gap-3">
-        {payload.map((item, index) => {
-          const key = `${nameKey || item.name || item.dataKey || 'value'}`
-          const itemConfig = getPayloadConfigFromPayload(config, item, key)
-          const indicatorColor = color || item.payload.fill || item.color
-
-          return (
-            <div
-              key={key}
-              className={twMerge(
-                'flex w-full flex-wrap items-stretch gap-2 *:[svg]:text-muted-fg',
-                indicator === 'dot' && 'items-center *:[svg]:size-2.5',
-                indicator === 'line' && '*:[svg]:h-full *:[svg]:w-2.5',
-              )}
-            >
-              {formatter && item?.value !== undefined && item.name
-                ? (
-                    formatter(item.value, item.name, item, index, item.payload)
-                  )
-                : (
-                    <>
-                      {itemConfig?.icon
-                        ? (
-                            <itemConfig.icon />
-                          )
-                        : (
-                            !hideIndicator && (
-                              <div
-                                className={twMerge(
-                                  'shrink-0 rounded-full border-(--color-border) bg-(--color-bg)',
-                                  indicator === 'dot' && 'size-2.5',
-                                  indicator === 'line' && 'w-1',
-                                  indicator === 'dashed'
-                                  && 'w-0 border-[1.5px] border-dashed bg-transparent',
-                                  nestLabel && indicator === 'dashed' && 'my-0.5',
-                                )}
-                                style={
-                                  {
-                                    '--color-bg': indicatorColor,
-                                    '--color-border': indicatorColor,
-                                  } as React.CSSProperties
-                                }
-                              />
-                            )
-                          )}
-                      <div
-                        className={twMerge(
-                          'flex flex-1 justify-between leading-none',
-                          nestLabel ? 'items-end' : 'items-center',
-                        )}
-                      >
-                        <div className="grid gap-1.5">
-                          {nestLabel ? tooltipLabel : null}
-                          <span className="text-muted-fg">{itemConfig?.label || item.name}</span>
-                        </div>
-
-                        {item.value && (
-                          <span className="font-mono font-medium text-fg tabular-nums">
-                            {item.value.toString()}
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  )}
-            </div>
-          )
-        })}
+        {payload.map((item, index) => (
+          <ChartTooltipPayloadItem
+            key={`${nameKey || item.name || item.dataKey || "value"}`}
+            color={color}
+            formatter={formatter}
+            hideIndicator={hideIndicator}
+            index={index}
+            indicator={indicator}
+            item={item}
+            nameKey={nameKey}
+            nestLabel={nestLabel}
+            tooltipLabel={tooltipLabel}
+          />
+        ))}
       </div>
     </div>
-  )
-}
-
-type ChartLegendContentProps = ToggleButtonGroupProps
-  & Pick<LegendProps, 'align' | 'verticalAlign'> & {
-    payload?: ReadonlyArray<LegendPayload>
-    hideIcon?: boolean
-    nameKey?: string
-    ref?: React.Ref<any>
-  }
-
-function ChartLegendContent({
+  );
+};
+type ChartLegendContentProps = ToggleButtonGroupProps &
+  Pick<LegendProps, "align" | "verticalAlign"> & {
+    payload?: readonly LegendPayload[];
+    hideIcon?: boolean;
+    nameKey?: string;
+    ref?: React.Ref<HTMLDivElement>;
+  };
+const ChartLegendContent = ({
   className,
   hideIcon = false,
   payload,
-  align = 'right',
-  verticalAlign = 'bottom',
+  align = "right",
+  verticalAlign = "bottom",
   nameKey,
   ref,
-}: ChartLegendContentProps) {
-  const { config, selectedLegend, onLegendSelect } = useChart()
-
+}: ChartLegendContentProps) => {
+  const { config, selectedLegend, onLegendSelect } = useChart();
   if (!payload?.length) {
-    return null
+    return null;
   }
-
   return (
     <ToggleButtonGroup
       ref={ref}
       className={cx(
         twJoin(
-          'flex flex-wrap items-center gap-x-1',
-          verticalAlign === 'top' ? 'pb-3' : 'pt-3',
-          align === 'right' ? 'justify-end' : align === 'left' ? 'justify-start' : 'justify-center',
+          "flex flex-wrap items-center gap-x-1",
+          verticalAlign === "top" ? "pb-3" : "pt-3",
+          getLegendAlignClass(align)
         ),
-        className,
+        className
       )}
       selectedKeys={selectedLegend ? [selectedLegend] : undefined}
       onSelectionChange={(v) => {
-        const key = [...v][0]?.toString() ?? null
-        onLegendSelect(key)
+        const key = [...v][0]?.toString() ?? null;
+        onLegendSelect(key);
       }}
       selectionMode="single"
     >
       {payload.map((item: LegendPayload) => {
-        const key = `${nameKey || item.dataKey || 'value'}`
-        const itemConfig = getPayloadConfigFromPayload(config, item, key)
-
+        const key = `${nameKey || item.dataKey || "value"}`;
+        const itemConfig = getPayloadConfigFromPayload(config, item, key);
         return (
           <ToggleButton
             key={key}
             id={key}
             className={twMerge(
-              'flex items-center gap-2 rounded-sm px-2 py-1 text-muted-fg *:[svg]:-mx-0.5 *:[svg]:size-2.5 *:[svg]:shrink-0 *:[svg]:text-muted-fg',
-              'selected:bg-secondary/70 selected:text-secondary-fg',
-              'hover:bg-secondary/70 hover:text-secondary-fg',
+              "flex items-center gap-2 rounded-sm px-2 py-1 text-muted-fg *:[svg]:-mx-0.5 *:[svg]:size-2.5 *:[svg]:shrink-0 *:[svg]:text-muted-fg",
+              "selected:bg-secondary/70 selected:text-secondary-fg",
+              "hover:bg-secondary/70 hover:text-secondary-fg"
             )}
             aria-label="Legend Item"
           >
-            {itemConfig?.icon && !hideIcon
-              ? (
-                  <itemConfig.icon />
-                )
-              : (
-                  <div
-                    className="size-2.5 rounded-full"
-                    style={{
-                      backgroundColor: item.color,
-                    }}
-                  />
-                )}
+            {itemConfig?.icon && !hideIcon ? (
+              <itemConfig.icon />
+            ) : (
+              <div
+                className="size-2.5 rounded-full"
+                style={{
+                  backgroundColor: item.color,
+                }}
+              />
+            )}
             {itemConfig?.label}
           </ToggleButton>
-        )
+        );
       })}
     </ToggleButtonGroup>
-  )
-}
-
+  );
+};
 export type {
   BaseChartProps,
   ChartColorKeys,
@@ -619,7 +724,7 @@ export type {
   ChartType,
   IntervalType,
   XAxisProps,
-}
+};
 export {
   CartesianGrid,
   Chart,
@@ -633,4 +738,4 @@ export {
   getColorValue,
   XAxis,
   YAxis,
-}
+};

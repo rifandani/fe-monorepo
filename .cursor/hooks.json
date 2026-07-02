@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "bun lint:fix"
+      }
+    ]
+  },
+  "version": 1
+}

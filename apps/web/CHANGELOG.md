@@ -38,7 +38,6 @@
   - Added comprehensive Tailwind CSS class name validation
 
   #### 📱 Mobile (Expo)
-
   - Added `@react-navigation/native` dependency
   - Updated `react-hook-form` to v7.59.0
   - Fixed TypeScript compilation issues
@@ -59,21 +58,18 @@
   - Added "use client" directives for proper client-side rendering
 
   #### 🐛 Bug Fixes
-
   - Fixed TypeScript compilation errors across all apps
   - Resolved import issues in slider UI components
   - Fixed linting violations across 91 files
   - Corrected color picker and date picker component behaviors
 
   #### 📦 Dependencies Updates
-
   - Major dependency bumps across all packages
   - Removed `@swc/core` from trusted dependencies
   - Updated build tools and development dependencies
   - Enhanced security with updated packages
 
   #### 🔧 Developer Experience
-
   - Moved Docker configuration to dedicated folder
   - Enhanced documentation with environment variable tutorials
   - Improved development setup instructions

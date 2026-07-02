@@ -1,82 +1,57 @@
-import type { AuthSessionSchema, AuthUserSchema } from '@workspace/core/apis/better-auth'
-import type { FetchHandlerResult } from 'next/experimental/testmode/playwright.js'
-import { faker } from '@faker-js/faker'
+import { faker } from "@faker-js/faker";
+import type {
+  AuthSessionSchema,
+  AuthUserSchema,
+} from "@workspace/core/apis/better-auth";
+import type { FetchHandlerResult } from "next/experimental/testmode/playwright.js";
 
 export type FetchHandler = (
-  request: Request,
-) => FetchHandlerResult | Promise<FetchHandlerResult>
-
+  request: Request
+) => FetchHandlerResult | Promise<FetchHandlerResult>;
 export const validUser = {
-  username: 'vaandani',
-  email: 'vaandani@email.com',
-  password: 'vaandani',
-}
-
-export function mockUser(): AuthUserSchema {
-  return {
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-    emailVerified: faker.datatype.boolean(),
-    image: faker.image.avatar(),
-    createdAt: faker.date.past().toISOString(),
-    updatedAt: faker.date.recent().toISOString(),
-  }
-}
-
-export function mockSession(): AuthSessionSchema {
-  return {
-    id: faker.string.uuid(),
-    userId: faker.string.uuid(),
-    expiresAt: faker.date.future().toISOString(),
+  email: "vaandani@email.com",
+  password: "vaandani",
+  username: "vaandani",
+};
+export const mockUser = (): AuthUserSchema => ({
+  createdAt: faker.date.past().toISOString(),
+  email: faker.internet.email(),
+  emailVerified: faker.datatype.boolean(),
+  id: faker.string.uuid(),
+  image: faker.image.avatar(),
+  name: faker.person.fullName(),
+  updatedAt: faker.date.recent().toISOString(),
+});
+export const mockSession = (): AuthSessionSchema => ({
+  createdAt: faker.date.past().toISOString(),
+  expiresAt: faker.date.future().toISOString(),
+  id: faker.string.uuid(),
+  ipAddress: faker.internet.ip(),
+  token: faker.string.uuid(),
+  updatedAt: faker.date.recent().toISOString(),
+  userAgent: faker.internet.userAgent(),
+  userId: faker.string.uuid(),
+});
+export const mockAuthSession = () => ({
+  method: "GET" as const,
+  response: Response.json({
+    session: mockSession(),
+    user: mockUser(),
+  }) satisfies FetchHandlerResult,
+  url: "**/api/auth/get-session" as const,
+});
+export const mockNoAuthSession = () => ({
+  method: "GET" as const,
+  response: null satisfies FetchHandlerResult,
+  url: "**/api/auth/get-session" as const,
+});
+export const mockSignInWithEmail = () => ({
+  method: "POST" as const,
+  response: Response.json({
+    redirect: true,
     token: faker.string.uuid(),
-    ipAddress: faker.internet.ip(),
-    userAgent: faker.internet.userAgent(),
-    createdAt: faker.date.past().toISOString(),
-    updatedAt: faker.date.recent().toISOString(),
-  }
-}
-
-/**
- * Mock the get-session API call to return a successful session response
- * This prevents database access during testing
- */
-export function mockAuthSession() {
-  return {
-    url: '**/api/auth/get-session' as const,
-    method: 'GET' as const,
-    response: new Response(JSON.stringify({
-      session: mockSession(),
-      user: mockUser(),
-    }), {
-      status: 200,
-    }) satisfies FetchHandlerResult,
-  }
-}
-
-/**
- * Mock the get-session API call to return null (no session)
- * This simulates an unauthenticated state without database access
- */
-export function mockNoAuthSession() {
-  return {
-    url: '**/api/auth/get-session' as const,
-    method: 'GET' as const,
-    response: null satisfies FetchHandlerResult,
-  }
-}
-
-export function mockSignInWithEmail() {
-  return {
-    url: '**/api/auth/sign-in/email' as const,
-    method: 'POST' as const,
-    response: new Response(JSON.stringify({
-      redirect: true,
-      token: faker.string.uuid(),
-      url: null,
-      user: mockUser(),
-    }), {
-      status: 200,
-    }) satisfies FetchHandlerResult,
-  }
-}
+    url: null,
+    user: mockUser(),
+  }) satisfies FetchHandlerResult,
+  url: "**/api/auth/sign-in/email" as const,
+});

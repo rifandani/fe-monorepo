@@ -1,6 +1,6 @@
-import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
-import { isNumber } from 'radashi'
-import { useCallback, useEffect, useRef } from 'react'
+import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
+import { isNumber } from "radashi";
+import { useCallback, useEffect, useRef } from "react";
 
 /**
  * A hook that provides a declarative way to set up an interval.
@@ -25,49 +25,48 @@ import { useCallback, useEffect, useRef } from 'react'
  * }, 1000, { immediate: true })
  * ```
  */
-export function useInterval(
+export const useInterval = (
   fn: () => void,
   delay?: number,
-  options: { immediate?: boolean } = {},
-) {
+  options: {
+    immediate?: boolean;
+  } = {}
+) => {
   /**
    * Memoized version of the callback to maintain referential equality
    */
-  const timerCallback = useMemoizedFn(fn)
-
+  const timerCallback = useMemoizedFn(fn);
   /**
    * Reference to store the interval ID for cleanup
    */
-  const timerRef = useRef<number | null>(null)
-
+  const timerRef = useRef<number | null>(null);
   /**
    * Clears the current interval if it exists
    * @returns void
    */
   const clear = useCallback(() => {
-    if (timerRef.current)
-      clearInterval(timerRef.current)
-  }, [])
-
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  }, []);
   useEffect(() => {
     // Skip setup if delay is invalid
-    if (!isNumber(delay) || delay < 0)
-      return
-
+    if (!isNumber(delay) || delay < 0) {
+      return;
+    }
     // Execute immediately if option is set
-    if (options.immediate)
-      timerCallback()
-
+    if (options.immediate) {
+      timerCallback();
+    }
     // Set up the interval
-    timerRef.current = setInterval(timerCallback, delay) as unknown as number
-
+    timerRef.current = setInterval(timerCallback, delay) as unknown as number;
     // Cleanup function to clear interval on unmount or delay change
     return () => {
-      if (timerRef.current)
-        clearInterval(timerRef.current)
-    }
-  // timerCallback is memoized via useMemoizedFn but included for completeness
-  }, [delay, options.immediate, timerCallback])
-
-  return clear
-}
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+    // timerCallback is memoized via useMemoizedFn but included for completeness
+  }, [delay, options.immediate, timerCallback]);
+  return clear;
+};

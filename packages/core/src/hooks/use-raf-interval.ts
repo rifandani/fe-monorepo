@@ -1,44 +1,6 @@
-import { useLatest } from '@workspace/core/hooks/use-latest'
-import { isNumber } from 'radashi'
-import { useCallback, useEffect, useRef } from 'react'
-
-interface Handle {
-  id: number
-}
-
-function setRafInterval(callback: () => void, delay = 0) {
-  if (typeof requestAnimationFrame === typeof undefined) {
-    return {
-      id: setInterval(callback, delay),
-    }
-  }
-  let start = Date.now()
-  const handle: Handle = {
-    id: 0,
-  }
-  const loop = () => {
-    const current = Date.now()
-    if (current - start >= delay) {
-      callback()
-      start = Date.now()
-    }
-    handle.id = requestAnimationFrame(loop)
-  }
-  handle.id = requestAnimationFrame(loop)
-  return handle
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: intended
-function cancelAnimationFrameIsNotDefined(_t: any): _t is number {
-  return typeof cancelAnimationFrame === typeof undefined
-}
-
-function clearRafInterval(handle: Handle) {
-  if (cancelAnimationFrameIsNotDefined(handle.id))
-    return clearInterval(handle.id)
-
-  cancelAnimationFrame(handle.id)
-}
+import { useLatest } from "@workspace/core/hooks/use-latest";
+import { isNumber } from "radashi";
+import { useCallback, useEffect, useRef } from "react";
 
 /**
  * A hook implements with `requestAnimationFrame` for better performance. The API is consistent with `useInterval`,
@@ -50,38 +12,36 @@ function clearRafInterval(handle: Handle) {
  * - the time interval is less than 16ms
  * - want to execute the timer when page is not rendering;
  */
-export function useRafInterval(
+export const useRafInterval = (
   fn: () => void,
   delay: number | undefined,
   options?: {
-    immediate?: boolean
-  },
-) {
-  const immediate = options?.immediate
-
-  const fnRef = useLatest(fn)
-  const timerRef = useRef<Handle>(null)
-
+    immediate?: boolean;
+  }
+) => {
+  const immediate = options?.immediate;
+  const fnRef = useLatest(fn);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
-    if (!isNumber(delay) || delay < 0)
-      return
-    if (immediate)
-      fnRef.current()
-
-    timerRef.current = setRafInterval(() => {
-      fnRef.current()
-    }, delay) as Handle
-
-    return () => {
-      if (timerRef.current)
-        clearRafInterval(timerRef.current)
+    if (!isNumber(delay) || delay < 0) {
+      return;
     }
-  }, [delay])
-
+    if (immediate) {
+      fnRef.current();
+    }
+    timerRef.current = setInterval(() => {
+      fnRef.current();
+    }, delay);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [delay, fnRef, immediate]);
   const clear = useCallback(() => {
-    if (timerRef.current)
-      clearRafInterval(timerRef.current)
-  }, [])
-
-  return clear
-}
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  }, []);
+  return clear;
+};
