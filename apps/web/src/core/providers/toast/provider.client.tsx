@@ -1,15 +1,16 @@
-"use client";
-import type { PropsWithChildren } from "react";
-import { Toaster } from "sonner";
+'use client'
 
-import { ToastContext, useCreateToastContext } from "./context.client";
+import type { PropsWithChildren } from 'react'
+import { Toaster } from 'sonner'
+import { ToastContext, useCreateToastContext } from './context.client'
 
-export const AppToastProvider = ({ children }: PropsWithChildren) => {
-  const value = useCreateToastContext();
+export function AppToastProvider({ children }: PropsWithChildren) {
+  const value = useCreateToastContext()
+
   return (
     <ToastContext value={value}>
       {children}
       <Toaster {...value[0]} />
     </ToastContext>
-  );
-};
+  )
+}

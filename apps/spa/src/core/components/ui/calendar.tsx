@@ -1,9 +1,7 @@
-"use client";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import type {
-  CalendarProps as CalendarPrimitiveProps,
-  DateValue,
-} from "react-aria-components/Calendar";
+'use client'
+
+import type { CalendarProps as CalendarPrimitiveProps, DateValue } from 'react-aria-components/Calendar'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import {
   CalendarCell,
   CalendarGrid,
@@ -12,57 +10,70 @@ import {
   CalendarHeaderCell,
   CalendarMonthPicker,
   Calendar as CalendarPrimitive,
-  CalendarYearPicker,
-} from "react-aria-components/Calendar";
-import { composeRenderProps } from "react-aria-components/composeRenderProps";
-import { Heading } from "react-aria-components/Heading";
-import { useLocale } from "react-aria-components/I18nProvider";
-import { twMerge } from "tailwind-merge";
 
-import { Button } from "./button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-} from "./select";
+  CalendarYearPicker,
+
+} from 'react-aria-components/Calendar'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import { Heading } from 'react-aria-components/Heading'
+import { useLocale } from 'react-aria-components/I18nProvider'
+import { twMerge } from 'tailwind-merge'
+import { Button } from './button'
+import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger } from './select'
 
 interface CalendarProps<T extends DateValue> extends CalendarPrimitiveProps<T> {
-  className?: string;
+  className?: string
 }
 
-const CalendarGridHeader = () => (
-  <CalendarGridHeaderPrimitive>
-    {(day) => (
-      <CalendarHeaderCell className="pb-2 text-center text-sm/6 font-semibold text-muted-fg sm:px-0 sm:py-0.5 lg:text-xs">
-        {day}
-      </CalendarHeaderCell>
-    )}
-  </CalendarGridHeaderPrimitive>
-);
+function Calendar<T extends DateValue>({ className, ...props }: CalendarProps<T>) {
+  return (
+    <CalendarPrimitive data-slot="calendar" {...props}>
+      <CalendarHeader />
+      <CalendarGrid>
+        <CalendarGridHeader />
+        <CalendarGridBody>
+          {date => (
+            <CalendarCell
+              date={date}
+              className={composeRenderProps(
+                className,
+                (className, { isSelected, isToday, isDisabled }) =>
+                  twMerge(
+                    'relative flex size-11 cursor-default items-center justify-center rounded-lg text-fg tabular-nums outline-hidden hover:bg-secondary-fg/15 sm:size-9 sm:text-sm/6 forced-colors:text-[ButtonText] forced-colors:outline-0',
+                    isSelected
+                    && 'bg-primary text-primary-fg hover:bg-primary/90 data-invalid:bg-danger data-invalid:text-danger-fg forced-colors:bg-[Highlight] forced-colors:text-[Highlight] forced-colors:data-invalid:bg-[Mark] pressed:bg-primary',
+                    isDisabled && 'text-muted-fg forced-colors:text-[GrayText]',
+                    isToday
+                    && 'after:pointer-events-none after:absolute after:bottom-1 after:left-1/2 after:z-10 after:size-0.75 after:-translate-x-1/2 after:rounded-full after:bg-primary focus-visible:after:bg-primary-fg selected:after:bg-primary-fg',
+                    className,
+                  ),
+              )}
+            />
+          )}
+        </CalendarGridBody>
+      </CalendarGrid>
+    </CalendarPrimitive>
+  )
+}
 
-const CalendarHeader = ({
-  className,
-  ...props
-}: React.ComponentProps<"header">) => {
-  const { direction } = useLocale();
+function CalendarHeader({ className, ...props }: React.ComponentProps<'header'>) {
+  const { direction } = useLocale()
   return (
     <header
       data-slot="calendar-header"
       className={twMerge(
-        "flex w-full justify-between gap-1.5 ps-1.5 pe-1 pt-1 pb-5 sm:pb-4",
-        className
+        'flex w-full justify-between gap-1.5 ps-1.5 pe-1 pt-1 pb-5 sm:pb-4',
+        className,
       )}
       {...props}
     >
       <div className="flex items-center gap-1.5">
         <CalendarMonthPicker>
-          {({ items, ...selectProps }) => (
-            <Select {...selectProps}>
+          {({ items, ...props }) => (
+            <Select {...props}>
               <SelectTrigger />
               <SelectContent items={items}>
-                {(item) => (
+                {item => (
                   <SelectItem textValue={item.formatted}>
                     <SelectLabel>{item.formatted}</SelectLabel>
                   </SelectItem>
@@ -72,11 +83,11 @@ const CalendarHeader = ({
           )}
         </CalendarMonthPicker>
         <CalendarYearPicker>
-          {({ items, ...selectProps }) => (
-            <Select {...selectProps}>
+          {({ items, ...props }) => (
+            <Select {...props}>
               <SelectTrigger />
               <SelectContent items={items}>
-                {(item) => (
+                {item => (
                   <SelectItem textValue={item.formatted}>
                     <SelectLabel>{item.formatted}</SelectLabel>
                   </SelectItem>
@@ -95,7 +106,7 @@ const CalendarHeader = ({
           intent="plain"
           slot="previous"
         >
-          {direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          {direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </Button>
         <Button
           size="sq-sm"
@@ -104,44 +115,24 @@ const CalendarHeader = ({
           intent="plain"
           slot="next"
         >
-          {direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          {direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
         </Button>
       </div>
     </header>
-  );
-};
+  )
+}
 
-const Calendar = <T extends DateValue>({
-  className,
-  ...props
-}: CalendarProps<T>) => (
-  <CalendarPrimitive data-slot="calendar" {...props}>
-    <CalendarHeader />
-    <CalendarGrid>
-      <CalendarGridHeader />
-      <CalendarGridBody>
-        {(date) => (
-          <CalendarCell
-            date={date}
-            className={composeRenderProps(
-              className,
-              (renderClassName, { isSelected, isToday, isDisabled }) =>
-                twMerge(
-                  "relative flex size-11 cursor-default items-center justify-center rounded-lg text-fg tabular-nums outline-hidden hover:bg-secondary-fg/15 sm:size-9 sm:text-sm/6 forced-colors:text-[ButtonText] forced-colors:outline-0",
-                  isSelected &&
-                    "bg-primary text-primary-fg hover:bg-primary/90 data-invalid:bg-danger data-invalid:text-danger-fg forced-colors:bg-[Highlight] forced-colors:text-[Highlight] forced-colors:data-invalid:bg-[Mark] pressed:bg-primary",
-                  isDisabled && "text-muted-fg forced-colors:text-[GrayText]",
-                  isToday &&
-                    "after:pointer-events-none after:absolute after:bottom-1 after:left-1/2 after:z-10 after:size-0.75 after:-translate-x-1/2 after:rounded-full after:bg-primary focus-visible:after:bg-primary-fg selected:after:bg-primary-fg",
-                  renderClassName
-                )
-            )}
-          />
-        )}
-      </CalendarGridBody>
-    </CalendarGrid>
-  </CalendarPrimitive>
-);
+function CalendarGridHeader() {
+  return (
+    <CalendarGridHeaderPrimitive>
+      {day => (
+        <CalendarHeaderCell className="pb-2 text-center text-sm/6 font-semibold text-muted-fg sm:px-0 sm:py-0.5 lg:text-xs">
+          {day}
+        </CalendarHeaderCell>
+      )}
+    </CalendarGridHeaderPrimitive>
+  )
+}
 
-export type { CalendarProps };
-export { Calendar, CalendarGridHeader, CalendarHeader };
+export type { CalendarProps }
+export { Calendar, CalendarGridHeader, CalendarHeader }

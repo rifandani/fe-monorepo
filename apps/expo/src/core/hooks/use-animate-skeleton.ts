@@ -1,33 +1,32 @@
-import { useEffect } from "react";
+import { useEffect } from 'react'
 import {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
-} from "react-native-reanimated";
+} from 'react-native-reanimated'
 
 interface IUseSkeletonAnimationProps {
-  speed?: number;
-  targetOpacityValue?: number;
+  speed?: number
+  targetOpacityValue?: number
 }
+
 /**
  * @returns animated style
  */
-export const useSkeletonAnimation = ({
+export function useSkeletonAnimation({
   speed = 1000,
   targetOpacityValue = 0.2,
-}: IUseSkeletonAnimationProps) => {
-  const shared = useSharedValue(0);
+}: IUseSkeletonAnimationProps) {
+  const shared = useSharedValue(0)
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(shared.value, [0, 1], [targetOpacityValue, 1]),
-  }));
+  }))
+
   useEffect(() => {
-    shared.value = withRepeat(
-      withTiming(1, { duration: speed }),
-      Infinity,
-      true
-    );
-  }, [shared, speed, targetOpacityValue]);
-  return animatedStyle;
-};
+    shared.value = withRepeat(withTiming(1, { duration: speed }), Infinity, true)
+  }, [])
+
+  return animatedStyle
+}

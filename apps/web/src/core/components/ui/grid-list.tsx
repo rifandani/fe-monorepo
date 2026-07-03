@@ -1,73 +1,75 @@
-"use client";
-import { Button } from "react-aria-components/Button";
-import type {
-  GridListItemProps,
-  GridListProps,
-} from "react-aria-components/GridList";
+'use client'
+
+import type { GridListItemProps, GridListProps } from 'react-aria-components/GridList'
+import type { TextProps } from 'react-aria-components/Text'
+import { Button } from 'react-aria-components/Button'
 import {
   GridListHeader as GridListHeaderPrimitive,
   GridListItem as GridListItemPrimitive,
   GridList as GridListPrimitive,
   GridListSection as GridListSectionPrimitive,
-} from "react-aria-components/GridList";
-import type { TextProps } from "react-aria-components/Text";
-import { Text } from "react-aria-components/Text";
-import { twMerge } from "tailwind-merge";
+} from 'react-aria-components/GridList'
+import { Text } from 'react-aria-components/Text'
+import { twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
+import { Checkbox, CheckboxField } from './checkbox'
 
-import { cx } from "@/core/utils/primitive";
+function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
+  return (
+    <GridListPrimitive
+      data-slot="grid-list"
+      className={cx(
+        'relative divide-y overflow-hidden rounded-lg border bg-bg *:drop-target:border-accent sm:text-sm/6 dark:bg-muted',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
 
-import { Checkbox, CheckboxField } from "./checkbox";
-
-const GridList = <T extends object>({
+function GridListSection<T extends object>({
   className,
   ...props
-}: GridListProps<T>) => (
-  <GridListPrimitive
-    data-slot="grid-list"
-    className={cx(
-      "relative divide-y overflow-hidden rounded-lg border bg-bg *:drop-target:border-accent sm:text-sm/6 dark:bg-muted",
-      className
-    )}
-    {...props}
-  />
-);
-const GridListSection = <T extends object>({
+}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) {
+  return (
+    <GridListSectionPrimitive
+      data-slot="grid-list-section"
+      className={twMerge('divide-y', className)}
+      {...props}
+    />
+  )
+}
+
+function GridListHeader({
   className,
   ...props
-}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) => (
-  <GridListSectionPrimitive
-    data-slot="grid-list-section"
-    className={twMerge("divide-y", className)}
-    {...props}
-  />
-);
-const GridListHeader = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof GridListHeaderPrimitive>) => (
-  <GridListHeaderPrimitive
-    data-slot="grid-list-header"
-    className={twMerge("px-3 py-2.5 text-sm/6 font-semibold", className)}
-    {...props}
-  />
-);
-const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
-  const textValue = typeof children === "string" ? children : undefined;
+}: React.ComponentProps<typeof GridListHeaderPrimitive>) {
+  return (
+    <GridListHeaderPrimitive
+      data-slot="grid-list-header"
+      className={twMerge('px-3 py-2.5 text-sm/6 font-semibold', className)}
+      {...props}
+    />
+  )
+}
+
+function GridListItem({ className, children, ...props }: GridListItemProps) {
+  const textValue = typeof children === 'string' ? children : undefined
   return (
     <GridListItemPrimitive
       textValue={textValue}
       {...props}
       className={cx(
-        "group relative min-w-0 px-3 py-2.5 outline-hidden [--me-icon:--spacing(2)]",
-        "flex min-w-0 cursor-default items-center gap-2 sm:gap-2.5",
-        "dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-fg",
-        "hover:bg-accent/50 **:[svg:not([data-slot='check-indicator'])]:size-5 **:[svg:not([data-slot='check-indicator'])]:shrink-0 **:[svg:not([data-slot='check-indicator'])]:text-muted-fg sm:**:[svg:not([data-slot='check-indicator'])]:size-4",
-        "selected:bg-accent/40 selected:text-fg selected:hover:bg-accent/80 selected:**:[.text-muted-fg]:text-accent-fg/80",
-        "href" in props && "cursor-pointer",
-        className
+        'group relative min-w-0 px-3 py-2.5 outline-hidden [--me-icon:--spacing(2)]',
+        'flex min-w-0 cursor-default items-center gap-2 sm:gap-2.5',
+        'dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-fg',
+        'hover:bg-accent/50 **:[svg:not([data-slot=\'check-indicator\'])]:size-5 **:[svg:not([data-slot=\'check-indicator\'])]:shrink-0 **:[svg:not([data-slot=\'check-indicator\'])]:text-muted-fg sm:**:[svg:not([data-slot=\'check-indicator\'])]:size-4',
+        'selected:bg-accent/40 selected:text-fg selected:hover:bg-accent/80 selected:**:[.text-muted-fg]:text-accent-fg/80',
+        'href' in props && 'cursor-pointer',
+        className,
       )}
     >
-      {(values) => (
+      {values => (
         <>
           {values.allowsDragging && (
             <Button slot="drag">
@@ -106,70 +108,56 @@ const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
             </Button>
           )}
 
-          {values.selectionMode === "multiple" &&
-            values.selectionBehavior === "toggle" && (
-              <CheckboxField className="gap-x-0" slot="selection">
-                <Checkbox className="col-span-1" />
-              </CheckboxField>
-            )}
-          {typeof children === "function" ? children(values) : children}
+          {values.selectionMode === 'multiple' && values.selectionBehavior === 'toggle' && (
+            <CheckboxField className="gap-x-0" slot="selection">
+              <Checkbox className="col-span-1" />
+            </CheckboxField>
+          )}
+          {typeof children === 'function' ? children(values) : children}
         </>
       )}
     </GridListItemPrimitive>
-  );
-};
-const GridListEmptyState = ({
-  ref,
-  className,
-  ...props
-}: React.ComponentProps<"div">) => (
-  <div ref={ref} className={twMerge("p-6", className)} {...props} />
-);
-const GridListSpacer = ({
-  className,
-  ref,
-  ...props
-}: React.ComponentProps<"div">) => (
-  <div
-    ref={ref}
-    aria-hidden
-    className={twMerge("-ms-4 flex-1", className)}
-    {...props}
-  />
-);
-const GridListStart = ({
-  className,
-  ref,
-  ...props
-}: React.ComponentProps<"div">) => (
-  <div
-    ref={ref}
-    className={twMerge(
-      "relative flex items-center gap-x-2.5 sm:gap-x-3",
-      className
-    )}
-    {...props}
-  />
-);
-interface GridListTextProps extends TextProps {
-  ref?: React.Ref<HTMLDivElement>;
+  )
 }
-const GridListLabel = ({ className, ref, ...props }: GridListTextProps) => (
-  <Text ref={ref} className={twMerge("font-medium", className)} {...props} />
-);
-const GridListDescription = ({
-  className,
-  ref,
-  ...props
-}: GridListTextProps) => (
-  <Text
-    slot="description"
-    ref={ref}
-    className={twMerge("text-sm font-normal text-muted-fg", className)}
-    {...props}
-  />
-);
-export type { GridListItemProps, GridListProps };
+
+function GridListEmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
+  return <div ref={ref} className={twMerge('p-6', className)} {...props} />
+}
+
+function GridListSpacer({ className, ref, ...props }: React.ComponentProps<'div'>) {
+  return <div ref={ref} aria-hidden className={twMerge('-ms-4 flex-1', className)} {...props} />
+}
+
+function GridListStart({ className, ref, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      ref={ref}
+      className={twMerge('relative flex items-center gap-x-2.5 sm:gap-x-3', className)}
+      {...props}
+    />
+  )
+}
+
+interface GridListTextProps extends TextProps {
+  ref?: React.Ref<HTMLDivElement>
+}
+
+function GridListLabel({ className, ref, ...props }: GridListTextProps) {
+  return <Text ref={ref} className={twMerge('font-medium', className)} {...props} />
+}
+
+function GridListDescription({ className, ref, ...props }: GridListTextProps) {
+  return (
+    <Text
+      slot="description"
+      ref={ref}
+      className={twMerge('text-sm font-normal text-muted-fg', className)}
+      {...props}
+    />
+  )
+}
+
+export type { GridListItemProps, GridListProps }
 export {
   GridList,
   GridListDescription,
@@ -180,4 +168,4 @@ export {
   GridListSection,
   GridListSpacer,
   GridListStart,
-};
+}

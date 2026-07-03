@@ -1,4 +1,4 @@
-import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
+import type { RequireAtLeastOne, UnknownRecord } from 'type-fest'
 
 /**
  * Clamps a value to a specified range.
@@ -13,130 +13,146 @@ import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
  * @param {number} options.max - maximum value
  * @returns {number} clamped value
  */
-export const clamp = ({
+export function clamp({
   value,
   min,
   max,
 }: {
-  value: number;
-  min: number;
-  max: number;
-}): number => Math.min(Math.max(value, min), max);
-const indonesianPhoneNumberFormatRegex = /(?<prefix>\d{3})(?<rest>\d+)/u;
-const indonesianPhoneNumberFormatRegex2 = /(?<prefix>\d{3})(?<rest>\d{4})/u;
-const indonesianPhoneNumberFormatRegex3 = /(?<prefix>\d{4})(?<rest>\d{4})/u;
-const indonesianPhoneNumberFormatRegex4 = /(?<prefix>\d{4})(?<rest>\d{5,})/u;
+  value: number
+  min: number
+  max: number
+}): number {
+  return Math.min(Math.max(value, min), max)
+}
+
+const indonesianPhoneNumberFormatRegex = /(\d{3})(\d+)/
+const indonesianPhoneNumberFormatRegex2 = /(\d{3})(\d{4})/
+const indonesianPhoneNumberFormatRegex3 = /(\d{4})(\d{4})/
+const indonesianPhoneNumberFormatRegex4 = /(\d{4})(\d{5,})/
+
 /**
  * Format phone number based on mockup, currently only covered minimum 11 characters and max 15 characters include +62
  * e.g +62-812-7363-6365
  *
  * @param phoneNumber - input should include "+62"
  */
-export const indonesianPhoneNumberFormat = (phoneNumber: string) => {
-  const code = phoneNumber.slice(0, 3);
-  const numbers = phoneNumber.slice(3);
-  const ndc = numbers.slice(0, 3);
-  const uniqNumber = numbers.slice(3);
-  let regexp: RegExp;
-  if (uniqNumber.length <= 6) {
-    regexp = indonesianPhoneNumberFormatRegex;
-  } else if (uniqNumber.length === 7) {
-    regexp = indonesianPhoneNumberFormatRegex2;
-  } else if (uniqNumber.length === 8) {
-    regexp = indonesianPhoneNumberFormatRegex3;
-  } else {
-    regexp = indonesianPhoneNumberFormatRegex4;
-  }
-  const matches = uniqNumber.replace(regexp, "$<prefix>-$<rest>");
-  return [code, ndc, matches].join("-");
-};
-const replaceCamelCaseRegex = /\.?(?<group>[A-Z]+)/gu;
-const replaceCamelCaseRegex2 = /^_/u;
-const replaceCamelCaseRegex3 = /(?<underscore>_w)|(?<hyphen>-\w)/gu;
+export function indonesianPhoneNumberFormat(phoneNumber: string) {
+  // e.g: +62
+  const code = phoneNumber.slice(0, 3)
+  const numbers = phoneNumber.slice(3)
+  // e.g 812, 852
+  const ndc = numbers.slice(0, 3)
+  // e.g the rest of the numbers
+  const uniqNumber = numbers.slice(3)
+  let regexp: RegExp
+
+  if (uniqNumber.length <= 6)
+    regexp = indonesianPhoneNumberFormatRegex
+  else if (uniqNumber.length === 7)
+    regexp = indonesianPhoneNumberFormatRegex2
+  else if (uniqNumber.length === 8)
+    regexp = indonesianPhoneNumberFormatRegex3
+  else regexp = indonesianPhoneNumberFormatRegex4
+
+  const matches = uniqNumber.replace(regexp, '$1-$2')
+
+  return [code, ndc, matches].join('-')
+}
+
+const replaceCamelCaseRegex = /\.?([A-Z]+)/g
+const replaceCamelCaseRegex2 = /^_/
+const replaceCamelCaseRegex3 = /(_\w)|(-\w)/g
+
 /**
  * convert deep nested object keys to camelCase.
  */
-export const toCamelCase = <T>(object: unknown): T => {
-  let transformedObject = object as Record<string, unknown>;
-  if (typeof object === "object" && object !== null) {
+export function toCamelCase<T>(object: unknown): T {
+  let transformedObject = object as Record<string, unknown>
+  if (typeof object === 'object' && object !== null) {
     if (Array.isArray(object)) {
       transformedObject = object.map(toCamelCase) as unknown as Record<
         string,
         unknown
-      >;
-    } else {
-      transformedObject = {};
+      >
+    }
+    else {
+      transformedObject = {}
       for (const key of Object.keys(object)) {
         if ((object as Record<string, unknown>)[key] !== undefined) {
-          const firstUnderscore = key.replace(replaceCamelCaseRegex2, "");
-          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, (k) =>
-            (k[1] as string).toUpperCase()
-          );
+          const firstUnderscore = key.replace(replaceCamelCaseRegex2, '')
+          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, k =>
+            (k[1] as string).toUpperCase())
           transformedObject[newKey] = toCamelCase(
-            (object as Record<string, unknown>)[key]
-          );
+            (object as Record<string, unknown>)[key],
+          )
         }
       }
     }
   }
-  return transformedObject as T;
-};
+  return transformedObject as T
+}
+
 /**
  * convert deep nested object keys to snake_case.
  */
-export const toSnakeCase = <T>(object: unknown): T => {
-  let transformedObject = object as Record<string, unknown>;
-  if (typeof object === "object" && object !== null) {
+export function toSnakeCase<T>(object: unknown): T {
+  let transformedObject = object as Record<string, unknown>
+  if (typeof object === 'object' && object !== null) {
     if (Array.isArray(object)) {
       transformedObject = object.map(toSnakeCase) as unknown as Record<
         string,
         unknown
-      >;
-    } else {
-      transformedObject = {};
+      >
+    }
+    else {
+      transformedObject = {}
       for (const key of Object.keys(object)) {
         if ((object as Record<string, unknown>)[key] !== undefined) {
           const newKey = key
             .replace(
               replaceCamelCaseRegex,
-              (_, y) => `_${y ? (y as string).toLowerCase() : ""}`
+              (_, y) => `_${y ? (y as string).toLowerCase() : ''}`,
             )
-            .replace(replaceCamelCaseRegex2, "");
+            .replace(replaceCamelCaseRegex2, '')
           transformedObject[newKey] = toSnakeCase(
-            (object as Record<string, unknown>)[key]
-          );
+            (object as Record<string, unknown>)[key],
+          )
         }
       }
     }
   }
-  return transformedObject as T;
-};
-const removeLeadingZerosRegex = /^0+[1-9]+/u;
-const removeLeadingZeroRegex = /^(?<zero>0)/u;
-const removeLeadingZeros2Regex = /^0{2,}/u;
+  return transformedObject as T
+}
+
+const removeLeadingZerosRegex = /^0+[1-9]+/
+const removeLeadingZeroRegex = /^(0)/
+const removeLeadingZeros2Regex = /^0{2,}/
+
 /**
  * Remove leading zero
  */
-export const removeLeadingZeros = (value: string) => {
-  if (removeLeadingZerosRegex.test(value)) {
-    return value.replace(removeLeadingZeroRegex, "");
-  }
-  return value.replace(removeLeadingZeros2Regex, "0");
-};
-const removeLeadingWhitespaceRegex = /^\s*$/u;
-const removeLeadingWhitespace2Regex = /^\s*/u;
+export function removeLeadingZeros(value: string) {
+  if (removeLeadingZerosRegex.test(value))
+    return value.replace(removeLeadingZeroRegex, '')
+
+  return value.replace(removeLeadingZeros2Regex, '0')
+}
+
+const removeLeadingWhitespaceRegex = /^\s*$/
+const removeLeadingWhitespace2Regex = /^\s*/
+
 /**
  * Remove leading whitespaces
  */
-export const removeLeadingWhitespace = (value?: string) => {
-  if (!value) {
-    return "";
-  }
-  if (removeLeadingWhitespaceRegex.test(value)) {
-    return value.replace(removeLeadingWhitespace2Regex, "");
-  }
-  return value;
-};
+export function removeLeadingWhitespace(value?: string) {
+  if (!value)
+    return ''
+  if (removeLeadingWhitespaceRegex.test(value))
+    return value.replace(removeLeadingWhitespace2Regex, '')
+
+  return value
+}
+
 /**
  * Convert deep object to FormData.
  * Supports File, array, and options to add object rootName and ignore object keys.
@@ -179,52 +195,63 @@ export const removeLeadingWhitespace = (value?: string) => {
  * (2) ['another_object.value', 'whatever']
  * (2) ['array[0].nested_key1.name', 'key1']
  */
-export const objectToFormData = <T extends UnknownRecord>(
+export function objectToFormData<T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
-    rootName?: string;
-    ignoreList: (keyof T)[];
-  }>
-) => {
-  const formData = new FormData();
-  const ignore = function ignore(_key?: string) {
+    rootName?: string
+    ignoreList: Array<keyof T>
+  }>,
+) {
+  const formData = new FormData()
+
+  function ignore(_key?: string) {
     return (
-      Array.isArray(options?.ignoreList) &&
-      options?.ignoreList.includes(_key as keyof T)
-    );
-  };
-  const appendFormData = function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_;
+      Array.isArray(options?.ignoreList)
+      && options?.ignoreList.includes(_key as keyof T)
+    )
+  }
+
+  function appendFormData(_obj: T, _rootName_?: string) {
+    let _rootName = _rootName_
+
     if (!ignore(_rootName)) {
-      _rootName ||= "";
+      _rootName = _rootName || ''
+
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj);
-      } else if (Array.isArray(_obj)) {
-        for (let i = 0; i < _obj.length; i += 1) {
-          appendFormData(_obj[i], `${_rootName}[${i}]`);
+        formData.append(_rootName, _obj)
+      }
+      else if (Array.isArray(_obj)) {
+        for (let i = 0; i < _obj.length; i++) {
+          appendFormData(_obj[i], `${_rootName}[${i}]`)
         }
-      } else if (typeof _obj === "object" && _obj) {
+      }
+      else if (typeof _obj === 'object' && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === "") {
+            if (_rootName === '') {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key);
-            } else {
+              appendFormData(_obj[key], key)
+            }
+            else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`);
+              appendFormData(_obj[key], `${_rootName}.${key}`)
             }
           }
         }
-      } else {
-        if (_obj !== null && _obj !== undefined) {
-          formData.append(_rootName, _obj);
+      }
+      else {
+        if (_obj !== null && typeof _obj !== 'undefined') {
+          formData.append(_rootName, _obj)
         }
       }
     }
-  };
-  appendFormData(obj, options?.rootName);
-  return formData;
-};
+  }
+
+  appendFormData(obj, options?.rootName)
+
+  return formData
+}
+
 /**
  * Convert deep object to FormData.
  * Supports File, array, and options to add object rootName and ignore object keys.
@@ -264,50 +291,61 @@ export const objectToFormData = <T extends UnknownRecord>(
  * (2) ['another_object.value', 'whatever']
  * (2) ['array', 'value1,value2']
  */
-export const objectToFormDataArrayWithComma = <T extends UnknownRecord>(
+export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
-    rootName?: string;
-    ignoreList: (keyof T)[];
-  }>
-) => {
-  const formData = new FormData();
-  const ignore = function ignore(_key?: string) {
+    rootName?: string
+    ignoreList: Array<keyof T>
+  }>,
+) {
+  const formData = new FormData()
+
+  function ignore(_key?: string) {
     return (
-      Array.isArray(options?.ignoreList) &&
-      options?.ignoreList.includes(_key as keyof T)
-    );
-  };
-  const appendFormData = function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_;
+      Array.isArray(options?.ignoreList)
+      && options?.ignoreList.includes(_key as keyof T)
+    )
+  }
+
+  function appendFormData(_obj: T, _rootName_?: string) {
+    let _rootName = _rootName_
+
     if (!ignore(_rootName)) {
-      _rootName ||= "";
+      _rootName = _rootName || ''
+
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj);
-      } else if (Array.isArray(_obj)) {
-        formData.append(_rootName, _obj.join(","));
-      } else if (typeof _obj === "object" && _obj) {
+        formData.append(_rootName, _obj)
+      }
+      else if (Array.isArray(_obj)) {
+        formData.append(_rootName, _obj.join(','))
+      }
+      else if (typeof _obj === 'object' && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === "") {
+            if (_rootName === '') {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key);
-            } else {
+              appendFormData(_obj[key], key)
+            }
+            else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`);
+              appendFormData(_obj[key], `${_rootName}.${key}`)
             }
           }
         }
-      } else {
-        if (_obj !== null && _obj !== undefined) {
-          formData.append(_rootName, _obj);
+      }
+      else {
+        if (_obj !== null && typeof _obj !== 'undefined') {
+          formData.append(_rootName, _obj)
         }
       }
     }
-  };
-  appendFormData(obj, options?.rootName);
-  return formData;
-};
+  }
+
+  appendFormData(obj, options?.rootName)
+
+  return formData
+}
+
 /**
  * Safely access deep values in an object via a string path seperated by `.`
  * This util is largely inspired by [dlv](https://github.com/developit/dlv/blob/master/index.js) and passes all its tests
@@ -331,34 +369,25 @@ export const objectToFormDataArrayWithComma = <T extends UnknownRecord>(
  * // => 'not found'
  * ```
  */
-export const deepReadObject = <T = unknown>(
-  obj: Record<string, unknown>,
-  path: string,
-  defaultValue?: unknown
-): T => {
-  const segments = path.trim().split(".");
-  let value: unknown = obj;
-  for (const segment of segments) {
-    if (value && typeof value === "object" && segment in value) {
-      value = (value as Record<string, unknown>)[segment];
-    } else {
-      value = undefined;
-      break;
-    }
-  }
-  return value === undefined ? (defaultValue as T) : (value as T);
-};
+export function deepReadObject<T = any>(obj: Record<string, unknown>, path: string, defaultValue?: unknown): T {
+  const value = path
+    .trim()
+    .split('.')
+    .reduce<any>((a, b) => (a ? a[b] : undefined), obj)
+
+  return value !== undefined ? value : defaultValue as T
+}
+
 /**
  * Converts a File object to a base64 encoded string
  * @param file - The File object to convert
  * @returns Promise that resolves with the base64 string representation of the file
  */
-export const toBase64 = async (file: File): Promise<string> => {
-  const buffer = await file.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (const byte of bytes) {
-    binary += String.fromCodePoint(byte);
-  }
-  return `data:${file.type};base64,${btoa(binary)}`;
-};
+export function toBase64(file: File) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+  })
+}

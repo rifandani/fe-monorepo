@@ -1,94 +1,84 @@
-import type {
-  SwitchButtonProps,
-  SwitchFieldProps,
-} from "react-aria-components/Switch";
+import type { SwitchButtonProps, SwitchFieldProps } from 'react-aria-components/Switch'
 import {
   SwitchButton,
+
   SwitchField as SwitchFieldPrimitive,
-} from "react-aria-components/Switch";
-import { twJoin, twMerge } from "tailwind-merge";
 
-import { Label } from "@/core/components/ui/field";
-import { cx } from "@/core/utils/primitive";
+} from 'react-aria-components/Switch'
+import { twJoin, twMerge } from 'tailwind-merge'
+import { Label } from '@/core/components/ui/field'
+import { cx } from '@/core/utils/primitive'
 
-export const SwitchField = ({ className, ...props }: SwitchFieldProps) => (
-  <SwitchFieldPrimitive
-    {...props}
-    data-slot="control"
-    className={cx(
-      "has-[[slot=description]]:**:data-[slot=control-label]:font-medium",
-      className
-    )}
-    style={({ defaultStyle }) => ({
-      ...defaultStyle,
-      WebkitTapHighlightColor: "transparent",
-    })}
-  />
-);
+export function SwitchField({ className, ...props }: SwitchFieldProps) {
+  return (
+    <SwitchFieldPrimitive
+      {...props}
+      data-slot="control"
+      className={cx('has-[[slot=description]]:**:data-[slot=control-label]:font-medium', className)}
+      style={({ defaultStyle }) => ({
+        ...defaultStyle,
+        WebkitTapHighlightColor: 'transparent',
+      })}
+    />
+  )
+}
 
-const renderSwitchChildren = (
-  children: SwitchButtonProps["children"],
-  values: Parameters<NonNullable<SwitchButtonProps["children"]>>[0]
-) => {
-  if (typeof children === "function") {
-    return children(values);
-  }
-  if (typeof children === "string") {
-    return (
-      <Label elementType="span" data-slot="control-label">
-        {children}
-      </Label>
-    );
-  }
-  return children;
-};
-
-export const Switch = ({
-  children,
-  className,
-  ...props
-}: SwitchButtonProps) => (
-  <SwitchButton
-    className={cx(
-      "[--switch-bg-ring:var(--color-blue-700)]/90 [--switch-bg:var(--color-blue-600)] dark:[--switch-bg-ring:transparent]",
-      "[--switch-ring:var(--color-blue-700)]/90 [--switch-shadow:var(--color-blue-900)]/20 [--switch:white]",
-      "group relative grid cursor-default gap-x-6 gap-y-1 ltr:grid-cols-[1fr_auto] rtl:grid-cols-[auto_1fr]",
-      "*:data-[slot=control-label]:row-start-1 ltr:*:data-[slot=control-label]:col-start-1 rtl:*:data-[slot=control-label]:col-start-2",
-      "*:[[slot=description]]:row-start-2 ltr:*:[[slot=description]]:col-start-1 rtl:*:[[slot=description]]:col-start-2",
-      "disabled:opacity-50",
-      className
-    )}
-    {...props}
-  >
-    {(values) => (
-      <>
-        <span
-          data-slot="indicator"
-          className={twMerge(
-            "relative isolate inline-flex h-6 w-10 cursor-default self-start rounded-full p-0.75 sm:mt-0.5 sm:h-5 sm:w-8 ltr:col-start-2 rtl:col-start-1",
-            "transition duration-200 ease-in-out",
-            "bg-input/30 inset-ring inset-ring-input",
-            "forced-colors:outline forced-colors:[--switch-bg:Highlight]",
-            values.isHovered && "inset-ring-muted-fg/30",
-            values.isFocusVisible &&
-              "bg-(--switch-bg)/20 ring-2 ring-(--switch-bg)/20 inset-ring-ring/70 dark:inset-ring-(--switch-bg)/70 selected:inset-ring-(--switch-bg)/30",
-            values.isSelected &&
-              "bg-(--switch-bg) inset-ring-(--switch-shadow) dark:bg-(--switch-bg) dark:inset-ring-(--switch-bg-ring)",
-            values.isDisabled &&
-              "dark:group-disabled:bg-muted-fg/30 dark:group-disabled:group-selected:bg-(--switch-bg) dark:group-disabled:group-selected:inset-ring-muted-fg/30"
-          )}
-        >
+export function Switch({ children, className, ...props }: SwitchButtonProps) {
+  return (
+    <SwitchButton
+      className={cx(
+        '[--switch-bg-ring:var(--color-blue-700)]/90 [--switch-bg:var(--color-blue-600)] dark:[--switch-bg-ring:transparent]',
+        '[--switch-ring:var(--color-blue-700)]/90 [--switch-shadow:var(--color-blue-900)]/20 [--switch:white]',
+        'group relative grid cursor-default gap-x-6 gap-y-1 ltr:grid-cols-[1fr_auto] rtl:grid-cols-[auto_1fr]',
+        '*:data-[slot=control-label]:row-start-1 ltr:*:data-[slot=control-label]:col-start-1 rtl:*:data-[slot=control-label]:col-start-2',
+        '*:[[slot=description]]:row-start-2 ltr:*:[[slot=description]]:col-start-1 rtl:*:[[slot=description]]:col-start-2',
+        'disabled:opacity-50',
+        className,
+      )}
+      {...props}
+    >
+      {values => (
+        <>
           <span
-            aria-hidden="true"
-            className={twJoin(
-              "pointer-events-none relative inline-block size-4.5 translate-x-0 rounded-full border border-transparent bg-white shadow-sm ring ring-fg/5 transition duration-200 ease-in-out sm:size-3.5",
-              values.isSelected &&
-                "bg-(--switch) shadow-(--switch-shadow) ring-(--switch-ring) group-disabled:shadow-sm group-disabled:ring-secondary-fg/5 ltr:translate-x-4 ltr:sm:translate-x-3 rtl:-translate-x-4 rtl:sm:-translate-x-3"
+            data-slot="indicator"
+            className={twMerge(
+              'relative isolate inline-flex h-6 w-10 cursor-default self-start rounded-full p-0.75 sm:mt-0.5 sm:h-5 sm:w-8 ltr:col-start-2 rtl:col-start-1',
+              'transition duration-200 ease-in-out',
+              'bg-input/30 inset-ring inset-ring-input',
+              'forced-colors:outline forced-colors:[--switch-bg:Highlight]',
+              values.isHovered && 'inset-ring-muted-fg/30',
+              values.isFocusVisible
+              && 'bg-(--switch-bg)/20 ring-2 ring-(--switch-bg)/20 inset-ring-ring/70 dark:inset-ring-(--switch-bg)/70 selected:inset-ring-(--switch-bg)/30',
+              values.isSelected
+              && 'bg-(--switch-bg) inset-ring-(--switch-shadow) dark:bg-(--switch-bg) dark:inset-ring-(--switch-bg-ring)',
+              values.isDisabled
+              && 'dark:group-disabled:bg-muted-fg/30 dark:group-disabled:group-selected:bg-(--switch-bg) dark:group-disabled:group-selected:inset-ring-muted-fg/30',
             )}
-          />
-        </span>
-        {renderSwitchChildren(children, values)}
-      </>
-    )}
-  </SwitchButton>
-);
+          >
+            <span
+              aria-hidden="true"
+              className={twJoin(
+                'pointer-events-none relative inline-block size-4.5 translate-x-0 rounded-full border border-transparent bg-white shadow-sm ring ring-fg/5 transition duration-200 ease-in-out sm:size-3.5',
+                values.isSelected
+                && 'bg-(--switch) shadow-(--switch-shadow) ring-(--switch-ring) group-disabled:shadow-sm group-disabled:ring-secondary-fg/5 ltr:translate-x-4 ltr:sm:translate-x-3 rtl:-translate-x-4 rtl:sm:-translate-x-3',
+              )}
+            />
+          </span>
+          {typeof children === 'function'
+            ? (
+                children(values)
+              )
+            : typeof children === 'string'
+              ? (
+                  <Label elementType="span" data-slot="control-label">
+                    {children}
+                  </Label>
+                )
+              : (
+                  children
+                )}
+        </>
+      )}
+    </SwitchButton>
+  )
+}

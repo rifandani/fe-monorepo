@@ -1,11 +1,11 @@
 {
   "name": "@workspace/spa",
+  "type": "module",
   "version": "1.1.0",
   "private": true,
   "description": "Bulletproof React.js 19 Template",
-  "license": "MIT",
   "author": "Tri Rizeki Rifandani",
-  "type": "module",
+  "license": "MIT",
   "scripts": {
     "sitemap:gen": "bun scripts/gen-sitemap.ts",
     "pwa-assets:gen": "pwa-assets-generator",

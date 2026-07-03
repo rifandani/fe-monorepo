@@ -1,10 +1,11 @@
-"use client";
-import { useMemo } from "react";
-import type { LineProps } from "recharts";
-import { Line, LineChart as LineChartPrimitive } from "recharts";
+'use client'
 
-import type { BaseChartProps } from "./chart";
+import type { LineProps } from 'recharts'
+import type { BaseChartProps } from './chart'
+import { useMemo } from 'react'
+import { Line, LineChart as LineChartPrimitive } from 'recharts'
 import {
+
   CartesianGrid,
   Chart,
   ChartLegend,
@@ -17,58 +18,62 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from "./chart";
+} from './chart'
 
 export interface LineChartProps extends BaseChartProps {
-  connectNulls?: boolean;
-  lineProps?: LineProps;
-  chartProps?: Omit<
-    React.ComponentProps<typeof LineChartPrimitive>,
-    "data" | "stackOffset"
-  >;
+  connectNulls?: boolean
+  lineProps?: LineProps
+  chartProps?: Omit<React.ComponentProps<typeof LineChartPrimitive>, 'data' | 'stackOffset'>
 }
-const DEFAULT_LINE_CHART_DATA: never[] = [];
-const DEFAULT_LINE_CHART_FORMATTER = (value: number) => value.toString();
 
-export const LineChart = ({
-  data = DEFAULT_LINE_CHART_DATA,
+export function LineChart({
+  data = [],
   dataKey,
   colors = DEFAULT_COLORS,
   connectNulls = false,
-  type = "default",
+  type = 'default',
   config,
   children,
+
   // Components
   tooltip = true,
   tooltipProps,
+
   legend = true,
   legendProps,
-  intervalType = "equidistantPreserveStart",
-  valueFormatter = DEFAULT_LINE_CHART_FORMATTER,
+
+  intervalType = 'equidistantPreserveStart',
+
+  valueFormatter = (value: number) => value.toString(),
+
   // XAxis
   displayEdgeLabelsOnly = false,
   xAxisProps,
   hideXAxis = false,
+
   // YAxis
   yAxisProps,
   hideYAxis = false,
+
   hideGridLines = false,
   chartProps,
   lineProps,
   ...props
-}: LineChartProps) => {
-  const configKeys = useMemo(() => Object.keys(config), [config]);
+}: LineChartProps) {
+  const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
-    [configKeys, colors]
-  );
-  const configEntries = useMemo(() => Object.entries(config), [config]);
+    [configKeys, colors],
+  )
+
+  const configEntries = useMemo(() => Object.entries(config), [config])
+
   return (
     <Chart config={config} data={data} dataKey={dataKey} {...props}>
       {({ onLegendSelect, selectedLegend }) => (
         <LineChartPrimitive
           onClick={() => {
-            onLegendSelect(null);
+            onLegendSelect(null)
           }}
           data={data}
           margin={{
@@ -77,7 +82,7 @@ export const LineChart = ({
             right: 0,
             top: 5,
           }}
-          stackOffset={type === "percent" ? "expand" : undefined}
+          stackOffset={type === 'percent' ? 'expand' : undefined}
           {...chartProps}
         >
           {!hideGridLines && <CartesianGrid strokeDasharray="4 4" />}
@@ -89,15 +94,13 @@ export const LineChart = ({
           />
           <YAxis
             hide={hideYAxis}
-            tickFormatter={type === "percent" ? valueToPercent : valueFormatter}
+            tickFormatter={type === 'percent' ? valueToPercent : valueFormatter}
             {...yAxisProps}
           />
 
           {legend && (
             <ChartLegend
-              content={
-                typeof legend === "boolean" ? <ChartLegendContent /> : legend
-              }
+              content={typeof legend === 'boolean' ? <ChartLegendContent /> : legend}
               {...legendProps}
             />
           )}
@@ -105,47 +108,42 @@ export const LineChart = ({
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === "boolean" ? (
-                  <ChartTooltipContent accessibilityLayer />
-                ) : (
-                  tooltip
-                )
+                typeof tooltip === 'boolean' ? <ChartTooltipContent accessibilityLayer /> : tooltip
               }
               {...tooltipProps}
             />
           )}
 
-          {children ??
-            configEntries.map(([category, values]) => {
-              const strokeOpacity =
-                selectedLegend && selectedLegend !== category ? 0.1 : 1;
-              const color = getColorValue(
-                values.color || categoryColors.get(category)
-              );
-              return (
-                <Line
-                  key={category}
-                  dot={false}
-                  name={category}
-                  type="linear"
-                  dataKey={category}
-                  stroke={color}
-                  style={
-                    {
-                      "--line-color": color,
-                      strokeOpacity,
-                      strokeWidth: 2,
-                    } as React.CSSProperties
-                  }
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  connectNulls={connectNulls}
-                  {...lineProps}
-                />
-              );
-            })}
+          {!children
+            ? configEntries.map(([category, values]) => {
+                const strokeOpacity = selectedLegend && selectedLegend !== category ? 0.1 : 1
+                const color = getColorValue(values.color || categoryColors.get(category))
+
+                return (
+                  <Line
+                    key={category}
+                    dot={false}
+                    name={category}
+                    type="linear"
+                    dataKey={category}
+                    stroke={color}
+                    style={
+                      {
+                        strokeOpacity,
+                        'strokeWidth': 2,
+                        '--line-color': color,
+                      } as React.CSSProperties
+                    }
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    connectNulls={connectNulls}
+                    {...lineProps}
+                  />
+                )
+              })
+            : children}
         </LineChartPrimitive>
       )}
     </Chart>
-  );
-};
+  )
+}

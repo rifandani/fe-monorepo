@@ -1,3 +1,1 @@
-export interface Register {
-  readonly _?: never;
-}
+export interface Register {}

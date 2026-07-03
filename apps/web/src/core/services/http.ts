@@ -1,7 +1,7 @@
-import { Http } from "@workspace/core/services/http";
+import { Http } from '@workspace/core/services/http'
+import { ENV } from '@/core/constants/env'
 
-import { ENV } from "@/core/constants/env";
 // Set config defaults when creating the instance
 export const http = new Http({
   prefix: ENV.NEXT_PUBLIC_API_BASE_URL,
-});
+})

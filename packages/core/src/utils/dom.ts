@@ -1,28 +1,30 @@
-import type { URLSearchParamsInit } from "@workspace/core/types/core";
+import type { URLSearchParamsInit } from '@workspace/core/types/core'
+
 /**
  * Check if we are in browser, not server
  */
-export const isBrowser = () => typeof window !== "undefined";
+export const isBrowser = () => typeof window !== 'undefined'
+
 /**
  * This will works with below rules, otherwise it only view on new tab
  * 1. If the file source located in the same origin as the application.
  * 2. If the file source is on different location e.g s3 bucket, etc. Set the response headers `Content-Disposition: attachment`.
  */
-export const doDownload = (url: string) => {
-  if (!url) {
-    return;
-  }
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = url;
-  link.target = "_blank";
-  document.body.append(link);
-  link.click();
+export function doDownload(url: string) {
+  if (!url)
+    return
+  const link = document.createElement('a')
+  link.href = url
+  link.download = url
+  link.target = '_blank'
+  document.body.appendChild(link)
+  link.click()
   // Delay removal to ensure download has started
   setTimeout(() => {
-    link.remove();
-  }, 100);
-};
+    document.body.removeChild(link)
+  }, 100)
+}
+
 /**
  * Creates a URLSearchParams object using the given initializer.
  *
@@ -47,29 +49,23 @@ export const doDownload = (url: string) => {
  * });
  * ```
  */
-export const createSearchParams = (
-  init: URLSearchParamsInit = ""
-): URLSearchParams => {
-  if (
-    typeof init === "string" ||
-    Array.isArray(init) ||
-    init instanceof URLSearchParams
-  ) {
-    return new URLSearchParams(init);
-  }
-  const pairs: [string, string][] = [];
-  for (const key of Object.keys(init)) {
-    const value = init[key];
-    if (Array.isArray(value)) {
-      for (const v of value) {
-        pairs.push([key, v]);
-      }
-    } else {
-      pairs.push([key, value as string]);
-    }
-  }
-  return new URLSearchParams(pairs);
-};
+export function createSearchParams(
+  init: URLSearchParamsInit = '',
+): URLSearchParams {
+  return new URLSearchParams(
+    typeof init === 'string'
+    || Array.isArray(init)
+    || init instanceof URLSearchParams
+      ? init
+      : Object.keys(init).reduce((memo, key) => {
+          const value = init[key]
+          return memo.concat(
+            Array.isArray(value) ? value.map(v => [key, v]) : [[key, value as string]],
+          )
+        }, [] as [string, string][]),
+  )
+}
+
 /**
  * instead of using `createSearchParams`, this function will convert an object into a URLSearchParams and joins array of string value with a comma
  *
@@ -86,32 +82,33 @@ export const createSearchParams = (
  * // returns => sort=asc&filters=model,category
  * // instead of => sort=asc&filters=model&filters=category
  */
-export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
-  const searchParams = init ? createSearchParams(init) : new URLSearchParams();
+export function createSearchParamsWithComma(init?: URLSearchParamsInit) {
+  const searchParams = init ? createSearchParams(init) : new URLSearchParams()
+
   // replace array of string values with a comma separated value
   for (const [key, value] of Object.entries(init ?? {})) {
     if (Array.isArray(value)) {
-      searchParams.delete(key);
-      searchParams.set(key, value.join(","));
+      searchParams.delete(key)
+      searchParams.set(key, value.join(','))
     }
   }
-  return searchParams;
-};
+
+  return searchParams
+}
+
 interface ExperimentalNavigator {
   userAgentData?: {
-    brands: {
-      brand: string;
-      version: string;
-    }[];
-    mobile: boolean;
-    platform: string;
+    brands: { brand: string, version: string }[]
+    mobile: boolean
+    platform: string
     getHighEntropyValues: (hints: string[]) => Promise<{
-      platform: string;
-      platformVersion: string;
-      uaFullVersion: string;
-    }>;
-  };
+      platform: string
+      platformVersion: string
+      uaFullVersion: string
+    }>
+  }
 }
+
 /**
  * Retrieves the current platform
  *
@@ -120,18 +117,22 @@ interface ExperimentalNavigator {
  *
  * @returns {string} The platform name
  */
-export const getPlatform = (): string => {
-  const nav = navigator as ExperimentalNavigator;
+export function getPlatform(): string {
+  const nav = navigator as ExperimentalNavigator
+
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
-    return nav.userAgentData.platform;
+    return nav.userAgentData.platform
   }
+
   // Fallback to navigator.platform (deprecated but widely supported)
-  if (typeof navigator.platform === "string") {
-    return navigator.platform;
+  if (typeof navigator.platform === 'string') {
+    return navigator.platform
   }
-  return "";
-};
+
+  return ''
+}
+
 /**
  * Retrieves the current platform asynchronously with high entropy values
  *
@@ -140,56 +141,63 @@ export const getPlatform = (): string => {
  *
  * @returns {Promise<string>} The platform name
  */
-export const getPlatformAsync = async (): Promise<string> => {
-  const nav = navigator as ExperimentalNavigator;
+export async function getPlatformAsync(): Promise<string> {
+  const nav = navigator as ExperimentalNavigator
+
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
-    return nav.userAgentData.platform;
+    return nav.userAgentData.platform
   }
+
   // Try high entropy values for more accurate platform info
   if (nav?.userAgentData?.getHighEntropyValues) {
     try {
-      const highEntropyValues = await nav.userAgentData.getHighEntropyValues([
-        "platform",
-      ]);
+      const highEntropyValues = await nav.userAgentData.getHighEntropyValues(['platform'])
       if (highEntropyValues.platform) {
-        return highEntropyValues.platform;
+        return highEntropyValues.platform
       }
-    } catch {
+    }
+    catch {
       // Fall through to next fallback
     }
   }
+
   // Fallback to navigator.platform (deprecated but widely supported)
-  if (typeof navigator.platform === "string") {
-    return navigator.platform;
+  if (typeof navigator.platform === 'string') {
+    return navigator.platform
   }
-  return "";
-};
+
+  return ''
+}
+
 /**
  * Checks if the current platform is macOS
  *
  * @returns {boolean} `true` if the current platform is macOS, `false` otherwise
  */
-export const isMacOS = (): boolean =>
-  getPlatform().toLowerCase().includes("mac");
+export function isMacOS(): boolean {
+  return getPlatform().toLowerCase().includes('mac')
+}
+
 /**
  * Retrieves the shortcut key for a given key
  *
  * @param {string} key - The key to retrieve the shortcut for
  * @returns {string} The shortcut key for the given key
  */
-export const getShortcutKey = (key: string): string => {
-  if (key.toLowerCase() === "mod") {
-    return isMacOS() ? "⌘" : "Ctrl";
+export function getShortcutKey(key: string): string {
+  if (key.toLowerCase() === 'mod') {
+    return isMacOS() ? '⌘' : 'Ctrl'
   }
-  if (key.toLowerCase() === "alt") {
-    return isMacOS() ? "⌥" : "Alt";
+  if (key.toLowerCase() === 'alt') {
+    return isMacOS() ? '⌥' : 'Alt'
   }
-  if (key.toLowerCase() === "shift") {
-    return isMacOS() ? "⇧" : "Shift";
+  if (key.toLowerCase() === 'shift') {
+    return isMacOS() ? '⇧' : 'Shift'
   }
-  return key;
-};
+  return key
+}
+
 /**
  * Generates a string of shortcut keys for a given array of keys.
  *
@@ -200,19 +208,21 @@ export const getShortcutKey = (key: string): string => {
  * @example getShortcutKeys(['mod', 'N']) '⌘N' (on macOS)
  * @example getShortcutKeys(['mod', 'N']) 'Ctrl+N' (on non-macOS)
  */
-export const getShortcutKeys = (keys: string[]): string =>
-  keys.map((key) => getShortcutKey(key)).join("+");
+export function getShortcutKeys(keys: string[]): string {
+  return keys.map(key => getShortcutKey(key)).join('+')
+}
+
 /**
  * Save a file to the user's device.
  * @param data - The data to save.
  * @param fileName - The name of the file to save.
  */
-export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
-  const url = window.URL.createObjectURL(data);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
-  a.remove();
-};
+export function saveFile(data: Blob | MediaSource, fileName: string): void {
+  const url = window.URL.createObjectURL(data)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  a.click()
+  window.URL.revokeObjectURL(url)
+  a.remove()
+}

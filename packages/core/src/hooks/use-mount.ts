@@ -1,18 +1,19 @@
-import { isFunction } from "radashi";
-import { useEffect } from "react";
+import { isFunction } from 'radashi'
+import { useEffect } from 'react'
 
 /**
  * A hook that executes a function after the component is mounted.
  */
-export const useMount = (fn: () => void) => {
+export function useMount(fn: () => void) {
   if (!isFunction(fn)) {
     console.error(
-      `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`
-    );
-    return;
+      `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`,
+    )
+    return
   }
+
   // eslint-disable-next-line react/rules-of-hooks
   useEffect(() => {
-    fn();
-  }, [fn]);
-};
+    fn()
+  }, [])
+}

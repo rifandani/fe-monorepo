@@ -1,55 +1,55 @@
 /* lato-regular - latin */
 @font-face {
   font-display: swap;
-  font-family: "Lato";
+  font-family: 'Lato';
   font-style: normal;
   font-weight: 400;
-  src: url("../assets/fonts/lato-v24-latin-regular.woff2") format("woff2");
+  src: url('../assets/fonts/lato-v24-latin-regular.woff2') format('woff2');
 }
 
 /* lato-italic - latin */
 @font-face {
   font-display: swap;
-  font-family: "Lato";
+  font-family: 'Lato';
   font-style: italic;
   font-weight: 400;
-  src: url("../assets/fonts/lato-v24-latin-italic.woff2") format("woff2");
+  src: url('../assets/fonts/lato-v24-latin-italic.woff2') format('woff2');
 }
 
 /* lato-700 - latin */
 @font-face {
   font-display: swap;
-  font-family: "Lato";
+  font-family: 'Lato';
   font-style: normal;
   font-weight: 700;
-  src: url("../assets/fonts/lato-v24-latin-700.woff2") format("woff2");
+  src: url('../assets/fonts/lato-v24-latin-700.woff2') format('woff2');
 }
 
 /* lato-700italic - latin */
 @font-face {
   font-display: swap;
-  font-family: "Lato";
+  font-family: 'Lato';
   font-style: italic;
   font-weight: 700;
-  src: url("../assets/fonts/lato-v24-latin-700italic.woff2") format("woff2");
+  src: url('../assets/fonts/lato-v24-latin-700italic.woff2') format('woff2');
 }
 
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 @plugin "tailwindcss-react-aria-components";
 
 @variant dark (&:is(.dark *));
 
 @theme inline {
   --font-sans:
-    "Lato", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    'Lato', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono:
-    "Lato", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas",
-    '"Liberation Mono"', '"Courier New"', "monospace";
+    'Lato', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"',
+    'monospace';
 
-  --font-sans--font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  --font-mono--font-feature-settings: "ss02", "zero";
+  --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  --font-mono--font-feature-settings: 'ss02', 'zero';
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -248,7 +248,7 @@
 @utility touch-target {
   position: relative;
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     top: 50%;
@@ -310,11 +310,11 @@
 [data-chart] .recharts-cartesian-axis-tick text {
   fill: var(--muted-fg);
 }
-[data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
+[data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
   stroke: var(--border);
 }
 @supports (color: color-mix(in lab, red, red)) {
-  [data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
+  [data-chart] .recharts-cartesian-grid line[stroke='#ccc'] {
     stroke: color-mix(in oklab, var(--border) 80%, transparent);
   }
 }
@@ -325,16 +325,16 @@
 [data-chart] .recharts-layer {
   outline: none;
 }
-[data-chart] .recharts-polar-grid [stroke="#ccc"] {
+[data-chart] .recharts-polar-grid [stroke='#ccc'] {
   stroke: var(--border);
 }
 [data-chart] .recharts-radial-bar-background-sector {
   fill: var(--muted);
 }
-[data-chart] .recharts-reference-line [stroke="#ccc"] {
+[data-chart] .recharts-reference-line [stroke='#ccc'] {
   stroke: var(--border);
 }
-[data-chart] .recharts-sector[stroke="#fff"] {
+[data-chart] .recharts-sector[stroke='#fff'] {
   stroke: transparent;
 }
 [data-chart] .recharts-sector {
@@ -343,7 +343,7 @@
 [data-chart] .recharts-surface {
   outline: none;
 }
-[data-chart] .recharts-dot[fill="#fff"] {
+[data-chart] .recharts-dot[fill='#fff'] {
   fill: var(--line-color, var(--border));
 }
 [data-chart] .recharts-active-dot > .recharts-dot {

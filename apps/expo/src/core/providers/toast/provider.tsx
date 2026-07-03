@@ -1,22 +1,27 @@
-import type { ToastProviderProps } from "@tamagui/toast";
-import { ToastProvider } from "@tamagui/toast";
+import type { ToastProviderProps } from '@tamagui/toast'
+import { ToastProvider } from '@tamagui/toast'
+import { SafeToastViewport } from '@/core/providers/toast/safe-toast-viewport'
+import { TheToast } from '@/core/providers/toast/the-toast'
 
-import { SafeToastViewport } from "@/core/providers/toast/safe-toast-viewport";
-import { TheToast } from "@/core/providers/toast/the-toast";
+const SWIPE_DIRECTION = 'horizontal'
+const DURATION = 3_000 // 3s
 
-const SWIPE_DIRECTION = "horizontal";
-// 3s
-const DURATION = 3000;
-export const AppToastProvider = ({ children, ...rest }: ToastProviderProps) => (
-  <ToastProvider
-    burntOptions={{ from: "bottom" }}
-    duration={DURATION}
-    swipeDirection={SWIPE_DIRECTION}
-    {...rest}
-  >
-    {children}
+/**
+ * tamagui toast provider.
+ * `TheToast` and `SafeToastViewport` included.
+ */
+export function AppToastProvider({ children, ...rest }: ToastProviderProps) {
+  return (
+    <ToastProvider
+      swipeDirection={SWIPE_DIRECTION}
+      duration={DURATION}
+      burntOptions={{ from: 'bottom' }} // only on iOS
+      {...rest}
+    >
+      {children}
 
-    <TheToast />
-    <SafeToastViewport />
-  </ToastProvider>
-);
+      <TheToast />
+      <SafeToastViewport />
+    </ToastProvider>
+  )
+}

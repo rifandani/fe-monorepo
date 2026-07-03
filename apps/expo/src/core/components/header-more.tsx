@@ -1,29 +1,30 @@
-import Feather from "@expo/vector-icons/Feather";
-import { isFunction } from "radashi";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
-import * as React from "react";
-import { Button, Sheet } from "tamagui";
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { HeaderButtonProps } from '@/core/types/navigation'
+import Feather from '@expo/vector-icons/Feather'
+import { isFunction } from 'radashi'
+import * as React from 'react'
+import { Button, Sheet } from 'tamagui'
 
-import type { HeaderButtonProps } from "@/core/types/navigation";
-
-interface State {
-  open: boolean;
-  position: number;
-}
+interface State { open: boolean, position: number }
 interface RenderProps {
-  state: State;
+  state: State
   setState: Dispatch<
     SetStateAction<{
-      open: boolean;
-      position: number;
+      open: boolean
+      position: number
     }>
-  >;
+  >
 }
 type HeaderMoreProps = HeaderButtonProps & {
-  children: ReactNode | (({ state, setState }: RenderProps) => ReactNode);
-};
-export const HeaderMore = ({ children }: HeaderMoreProps) => {
-  const [state, setState] = React.useState<State>({ open: false, position: 0 });
+  children: ReactNode | (({ state, setState }: RenderProps) => ReactNode)
+}
+
+/**
+ * an example of using `children` as "render props"
+ */
+export function HeaderMore({ children }: HeaderMoreProps) {
+  const [state, setState] = React.useState<State>({ open: false, position: 0 })
+
   return (
     <>
       <Button
@@ -31,7 +32,7 @@ export const HeaderMore = ({ children }: HeaderMoreProps) => {
         circular
         icon={<Feather name="more-vertical" size={20} />}
         onPress={() => {
-          setState({ ...state, open: true });
+          setState({ ...state, open: true })
         }}
       />
 
@@ -45,25 +46,23 @@ export const HeaderMore = ({ children }: HeaderMoreProps) => {
         forceRemoveScrollEnabled={state.open}
         position={state.position}
         onOpenChange={(open: boolean) => {
-          setState({ ...state, open });
+          setState({ ...state, open })
         }}
         onPositionChange={(position) => {
-          setState({ ...state, position });
+          setState({ ...state, position })
         }}
         animation="medium"
       >
-        <Sheet.Overlay
-          animation="lazy"
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
+        <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
 
         <Sheet.Handle />
 
         <Sheet.Frame paddingStart="$2" justify="center" items="center">
-          {isFunction(children) ? children({ setState, state }) : null}
+          {isFunction(children)
+            ? children({ state, setState })
+            : null}
         </Sheet.Frame>
       </Sheet>
     </>
-  );
-};
+  )
+}

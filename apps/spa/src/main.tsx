@@ -1,57 +1,60 @@
-import { trace } from "@opentelemetry/api";
-import { createRoot } from "react-dom/client";
+import { trace } from '@opentelemetry/api'
+import { createRoot } from 'react-dom/client'
 
 import {
   TRACER_REACT_ENTRY,
   TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
   TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
   TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
-} from "@/core/constants/global";
-import { Entry } from "@/core/entry";
-import { recordException } from "@/core/utils/telemetry";
+} from '@/core/constants/global'
+import { Entry } from '@/core/entry'
+import { recordException } from '@/core/utils/telemetry'
+import '@/core/styles/globals.css'
+import './instrumentation'
 
-import "@/core/styles/globals.css";
-import "./instrumentation";
+const tracer = trace.getTracer(TRACER_REACT_ENTRY)
+const root = document.getElementById('root')
 
-const tracer = trace.getTracer(TRACER_REACT_ENTRY);
-const root = document.querySelector("#root");
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(
-    "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got mispelled?"
-  );
+    'Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got mispelled?',
+  )
 }
+
 createRoot(root as HTMLElement, {
   onCaughtError(error, errorInfo) {
     recordException({
-      error: {
-        componentStack: errorInfo.componentStack,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      },
+      tracer,
       name: TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
-      tracer,
-    });
-  },
-  onRecoverableError(error, errorInfo) {
-    recordException({
       error: {
-        componentStack: errorInfo.componentStack,
         message: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
       },
-      name: TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
-      tracer,
-    });
+    })
   },
   onUncaughtError(error, errorInfo) {
     recordException({
+      tracer,
+      name: TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
       error: {
-        componentStack: errorInfo.componentStack,
         message: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
       },
-      name: TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
-      tracer,
-    });
+    })
   },
-}).render(<Entry />);
+  onRecoverableError(error, errorInfo) {
+    recordException({
+      tracer,
+      name: TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
+      error: {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        componentStack: errorInfo.componentStack,
+      },
+    })
+  },
+}).render(
+  <Entry />,
+)

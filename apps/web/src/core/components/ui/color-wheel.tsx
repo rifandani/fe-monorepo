@@ -1,27 +1,31 @@
-"use client";
-import type { ColorWheelProps as PrimitiveColorWheelProps } from "react-aria-components/ColorWheel";
+'use client'
+
+import type { ColorWheelProps as PrimitiveColorWheelProps } from 'react-aria-components/ColorWheel'
 import {
   ColorWheelTrack,
   ColorWheel as PrimitiveColorWheel,
-} from "react-aria-components/ColorWheel";
 
-import { ColorThumb } from "./color-thumb";
+} from 'react-aria-components/ColorWheel'
+import { ColorThumb } from './color-thumb'
 
-export type ColorWheelProps = Omit<
+export interface ColorWheelProps extends Omit<
   PrimitiveColorWheelProps,
-  "outerRadius" | "innerRadius"
->;
-export const ColorWheel = (props: ColorWheelProps) => (
-  <PrimitiveColorWheel {...props} outerRadius={100} innerRadius={74}>
-    <ColorWheelTrack
-      className="disabled:bg-muted-fg forced-colors:disabled:bg-[GrayText]"
-      style={({ defaultStyle, isDisabled }) => ({
-        ...defaultStyle,
-        background: isDisabled
-          ? undefined
-          : `${defaultStyle.background}, repeating-conic-gradient(#CCC 0% 25%, white 0% 50%) 50% / 16px 16px`,
-      })}
-    />
-    <ColorThumb />
-  </PrimitiveColorWheel>
-);
+  'outerRadius' | 'innerRadius'
+> {}
+
+export function ColorWheel(props: ColorWheelProps) {
+  return (
+    <PrimitiveColorWheel {...props} outerRadius={100} innerRadius={74}>
+      <ColorWheelTrack
+        className="disabled:bg-muted-fg forced-colors:disabled:bg-[GrayText]"
+        style={({ defaultStyle, isDisabled }) => ({
+          ...defaultStyle,
+          background: isDisabled
+            ? undefined
+            : `${defaultStyle.background}, repeating-conic-gradient(#CCC 0% 25%, white 0% 50%) 50% / 16px 16px`,
+        })}
+      />
+      <ColorThumb />
+    </PrimitiveColorWheel>
+  )
+}

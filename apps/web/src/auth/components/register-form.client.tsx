@@ -1,29 +1,23 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { authSignUpEmailRequestSchema } from "@workspace/core/apis/better-auth";
-import { useTranslations } from "next-intl";
-import { Controller } from "react-hook-form";
+'use client'
 
-import { registerAction } from "@/auth/actions/auth";
-import {
-  Button,
-  FieldError,
-  Input,
-  Label,
-  Note,
-  TextField,
-} from "@/core/components/ui";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
+import { authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
+import { useTranslations } from 'next-intl'
+import { Controller } from 'react-hook-form'
+import { registerAction } from '@/auth/actions/auth'
+import { Button, FieldError, Input, Label, Note, TextField } from '@/core/components/ui'
 
-export const RegisterForm = () => {
-  const t = useTranslations();
+export function RegisterForm() {
+  const t = useTranslations()
   const { action, form, handleSubmitWithAction } = useHookFormAction(
     registerAction,
     zodResolver(authSignUpEmailRequestSchema),
     {
-      formProps: { mode: "onChange" },
-    }
-  );
+      formProps: { mode: 'onChange' },
+    },
+  )
+
   return (
     <form
       className="flex flex-col pt-3 md:pt-8"
@@ -47,13 +41,8 @@ export const RegisterForm = () => {
             isInvalid={invalid}
             isDisabled={action.isPending}
           >
-            <Label htmlFor={name}>{t("name")}</Label>
-            <Input
-              id={name}
-              aria-label={t("name")}
-              placeholder={t("namePlaceholder")}
-              type="text"
-            />
+            <Label htmlFor={name}>{t('name')}</Label>
+            <Input id={name} aria-label={t('name')} placeholder={t('namePlaceholder')} type="text" />
             <FieldError>{error?.message}</FieldError>
           </TextField>
         )}
@@ -77,13 +66,8 @@ export const RegisterForm = () => {
             isInvalid={invalid}
             isDisabled={action.isPending}
           >
-            <Label htmlFor={name}>{t("email")}</Label>
-            <Input
-              id={name}
-              aria-label={t("email")}
-              placeholder={t("emailPlaceholder")}
-              type="email"
-            />
+            <Label htmlFor={name}>{t('email')}</Label>
+            <Input id={name} aria-label={t('email')} placeholder={t('emailPlaceholder')} type="email" />
             <FieldError>{error?.message}</FieldError>
           </TextField>
         )}
@@ -108,22 +92,15 @@ export const RegisterForm = () => {
             isInvalid={invalid}
             isDisabled={action.isPending}
           >
-            <Label htmlFor={name}>{t("password")}</Label>
-            <Input
-              id={name}
-              aria-label={t("password")}
-              placeholder={t("passwordPlaceholder")}
-              type="password"
-            />
+            <Label htmlFor={name}>{t('password')}</Label>
+            <Input id={name} aria-label={t('password')} placeholder={t('passwordPlaceholder')} type="password" />
             <FieldError>{error?.message}</FieldError>
           </TextField>
         )}
       />
 
       {action.result.data?.error && (
-        <Note data-testid="mutation-error" intent="danger" className="mt-4">
-          {action.result.data.error}
-        </Note>
+        <Note data-testid="mutation-error" intent="danger" className="mt-4">{action.result.data.error}</Note>
       )}
 
       <Button
@@ -131,8 +108,8 @@ export const RegisterForm = () => {
         className="mt-8 w-full normal-case"
         isDisabled={action.isPending || !form.formState.isValid}
       >
-        {action.isPending ? t("registerLoading") : t("register")}
+        {action.isPending ? t('registerLoading') : t('register')}
       </Button>
     </form>
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
-import { useMemo, useState } from "react";
+import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
+import { useMemo, useState } from 'react'
 
 /**
  * This hook is used for Checkbox group, supports multiple selection, single selection, select-all, select-none and semi-selected etc.
@@ -33,102 +33,117 @@ import { useMemo, useState } from "react";
  * );
  * ```
  */
-export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
-  const [selected, setSelected] = useState<T[]>(defaultSelected);
-  const selectedSet = useMemo(() => new Set(selected), [selected]);
+export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
+  // Selected Items, Set selected items
+  const [selected, setSelected] = useState<T[]>(defaultSelected)
+
+  const selectedSet = useMemo(() => new Set(selected), [selected])
+
   /**
    * Check if an item is selected
    * @param item The item to check
    * @returns True if the item is selected, false otherwise
    */
-  const isSelected = (item: T) => selectedSet.has(item);
+  const isSelected = (item: T) => selectedSet.has(item)
+
   /**
    * Select an item
    * @param item The item to select
    * @returns The updated selected items
    */
   const select = (item: T) => {
-    const newSet = new Set([...selectedSet, item]);
-    return setSelected([...newSet]);
-  };
+    const newSet = new Set(selectedSet)
+    newSet.add(item)
+    return setSelected(Array.from(newSet))
+  }
+
   /**
    * UnSelect an item
    * @param item The item to unselect
    * @returns The updated selected items
    */
   const unSelect = (item: T) => {
-    const newSet = new Set(selectedSet);
-    newSet.delete(item);
-    return setSelected([...newSet]);
-  };
+    const newSet = new Set(selectedSet)
+    newSet.delete(item)
+    return setSelected(Array.from(newSet))
+  }
+
   /**
    * Toggle the select status of an item
    * @param item The item to toggle
    */
   const toggle = (item: T) => {
     if (isSelected(item)) {
-      unSelect(item);
-    } else {
-      select(item);
+      unSelect(item)
     }
-  };
+    else {
+      select(item)
+    }
+  }
+
   /**
    * Select all items in the list
    */
   const selectAll = () => {
-    const newSet = new Set(selectedSet);
-    for (const item of items) {
-      newSet.add(item);
-    }
-    setSelected([...newSet]);
-  };
+    const newSet = new Set(selectedSet)
+    items.forEach((o) => {
+      newSet.add(o)
+    })
+    setSelected(Array.from(newSet))
+  }
+
   /**
    * UnSelect all items in the list
    */
   const unSelectAll = () => {
-    const newSet = new Set(selectedSet);
-    for (const item of items) {
-      newSet.delete(item);
-    }
-    setSelected([...newSet]);
-  };
+    const newSet = new Set(selectedSet)
+    items.forEach((o) => {
+      newSet.delete(o)
+    })
+    setSelected(Array.from(newSet))
+  }
+
   /**
    * Check if no item is selected
    */
   const noneSelected = useMemo(
-    () => items.every((o) => !selectedSet.has(o)),
-    [items, selectedSet]
-  );
+    () => items.every(o => !selectedSet.has(o)),
+    [items, selectedSet],
+  )
+
   /**
    * Check if all items are selected
    */
   const allSelected = useMemo(
-    () => items.every((o) => selectedSet.has(o)) && !noneSelected,
-    [items, selectedSet, noneSelected]
-  );
+    () => items.every(o => selectedSet.has(o)) && !noneSelected,
+    [items, selectedSet, noneSelected],
+  )
+
   /**
    * Check if partially items are selected
    */
   const partiallySelected = useMemo(
     () => !noneSelected && !allSelected,
-    [noneSelected, allSelected]
-  );
+    [noneSelected, allSelected],
+  )
+
   /**
    * Toggle select all items
    */
-  const toggleAll = () => (allSelected ? unSelectAll() : selectAll());
+  const toggleAll = () => (allSelected ? unSelectAll() : selectAll())
+
   return {
-    allSelected,
-    isSelected,
-    noneSelected,
-    partiallySelected,
-    select: useMemoizedFn(select),
-    selectAll: useMemoizedFn(selectAll),
     selected,
+    noneSelected,
+    allSelected,
+    partiallySelected,
     setSelected,
-    toggle: useMemoizedFn(toggle),
-    toggleAll: useMemoizedFn(toggleAll),
+    isSelected,
+    select: useMemoizedFn(select),
     unSelect: useMemoizedFn(unSelect),
+    toggle: useMemoizedFn(toggle),
+    selectAll: useMemoizedFn(selectAll),
     unSelectAll: useMemoizedFn(unSelectAll),
-  } as const;
-};
+    toggleAll: useMemoizedFn(toggleAll),
+  } as const
+}

@@ -1,54 +1,43 @@
-import {
-  ArrowRightStartOnRectangleIcon,
-  Cog6ToothIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
-import { useNavigate } from "@tanstack/react-router";
+import { ArrowRightStartOnRectangleIcon, Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from '@tanstack/react-router'
+import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
+import { Avatar } from '@/core/components/ui/avatar'
+import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui/menu'
+import { useTranslation } from '@/core/providers/i18n/context'
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
-import { Avatar } from "@/core/components/ui/avatar";
-import {
-  Menu,
-  MenuContent,
-  MenuHeader,
-  MenuItem,
-  MenuSection,
-  MenuSeparator,
-  MenuTrigger,
-} from "@/core/components/ui/menu";
-import { useTranslation } from "@/core/providers/i18n/context";
+export function ProfileMenu() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { user, clearUser } = useAuthUserStore()
 
-export const ProfileMenu = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { user, clearUser } = useAuthUserStore();
   return (
     <Menu>
       <MenuTrigger>
-        <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? "??"} />
+        <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? '??'} />
       </MenuTrigger>
 
       <MenuContent
         onAction={(key) => {
-          const currentKey = key as "profile" | "settings" | "logout";
-          if (currentKey === "logout") {
-            clearUser();
+          const currentKey = key as 'profile' | 'settings' | 'logout'
+
+          if (currentKey === 'logout') {
+            clearUser()
             navigate({
-              to: "/login",
-            });
+              to: '/login',
+            })
           }
         }}
       >
         <MenuSection>
-          <MenuHeader separator>{t("account")}</MenuHeader>
+          <MenuHeader separator>{t('account')}</MenuHeader>
 
           <MenuItem id="profile" className="mt-1 gap-x-2">
             <UserIcon className="size-6" />
-            <span>{t("profile")}</span>
+            <span>{t('profile')}</span>
           </MenuItem>
           <MenuItem id="settings" className="gap-x-2">
             <Cog6ToothIcon className="size-6" />
-            <span>{t("settings")}</span>
+            <span>{t('settings')}</span>
           </MenuItem>
         </MenuSection>
 
@@ -57,10 +46,10 @@ export const ProfileMenu = () => {
         <MenuSection>
           <MenuItem id="logout" className="gap-x-2">
             <ArrowRightStartOnRectangleIcon className="size-6" />
-            <p>{t("logout")}</p>
+            <p>{t('logout')}</p>
           </MenuItem>
         </MenuSection>
       </MenuContent>
     </Menu>
-  );
-};
+  )
+}

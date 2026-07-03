@@ -1,11 +1,14 @@
-import { isFunction } from "radashi";
-import { useMemo, useRef } from "react";
+import { isFunction } from 'radashi'
+import { useMemo, useRef } from 'react'
+
 // biome-ignore lint/suspicious/noExplicitAny: intended
-type noop = (this: unknown, ...args: unknown[]) => unknown;
+type noop = (this: any, ...args: any[]) => any
+
 type PickFunction<T extends noop> = (
   this: ThisParameterType<T>,
   ...args: Parameters<T>
-) => ReturnType<T>;
+) => ReturnType<T>
+
 /**
  * Hooks for persistent functions.
  * In general, `useMemoizedFn` can be used instead of useCallback.
@@ -17,21 +20,25 @@ type PickFunction<T extends noop> = (
  * Using `useMemoizedFn`, you can omit the second parameter deps,
  * and ensure that the function reference never change.
  */
-export const useMemoizedFn = <T extends noop>(fn: T) => {
+export function useMemoizedFn<T extends noop>(fn: T) {
   if (!isFunction(fn)) {
     console.error(
-      `useMemoizedFn expected parameter is a function, got ${typeof fn}`
-    );
+      `useMemoizedFn expected parameter is a function, got ${typeof fn}`,
+    )
   }
-  const fnRef = useRef<T>(fn);
+
+  const fnRef = useRef<T>(fn)
+
   // why not write `fnRef.current = fn`?
   // https://github.com/alibaba/hooks/issues/728
-  fnRef.current = useMemo(() => fn, [fn]);
-  const memoizedFnRef = useRef<PickFunction<T>>(null);
+  fnRef.current = useMemo(() => fn, [fn])
+
+  const memoizedFnRef = useRef<PickFunction<T>>(null)
   if (!memoizedFnRef.current) {
-    memoizedFnRef.current = function current(this, ...args) {
-      return fnRef.current.apply(this, args);
-    };
+    memoizedFnRef.current = function (this, ...args) {
+      return fnRef.current.apply(this, args)
+    }
   }
-  return memoizedFnRef.current as T;
-};
+
+  return memoizedFnRef.current as T
+}

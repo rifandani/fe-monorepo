@@ -1,6 +1,6 @@
-import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
-import { isNumber } from "radashi";
-import { useCallback, useEffect, useRef } from "react";
+import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
+import { isNumber } from 'radashi'
+import { useCallback, useEffect, useRef } from 'react'
 
 /**
  * A hook that handles the setTimeout timer function.
@@ -11,24 +11,26 @@ import { useCallback, useEffect, useRef } from "react";
  *   setCount(count + 1);
  * }, delay);
  */
-export const useTimeout = (fn: () => void, delay?: number) => {
-  const timerCallback = useMemoizedFn(fn);
-  const timerRef = useRef<number | null>(null);
+export function useTimeout(fn: () => void, delay?: number) {
+  const timerCallback = useMemoizedFn(fn)
+  const timerRef = useRef<number | null>(null)
+
   const clear = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-  }, []);
+    if (timerRef.current)
+      clearTimeout(timerRef.current)
+  }, [])
+
   useEffect(() => {
-    if (!isNumber(delay) || delay < 0) {
-      return;
-    }
-    timerRef.current = setTimeout(timerCallback, delay) as unknown as number;
+    if (!isNumber(delay) || delay < 0)
+      return
+
+    timerRef.current = setTimeout(timerCallback, delay) as unknown as number
+
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [delay, timerCallback]);
-  return clear;
-};
+      if (timerRef.current)
+        clearTimeout(timerRef.current)
+    }
+  }, [delay])
+
+  return clear
+}

@@ -1,40 +1,67 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from '@playwright/test'
+
 // make sure to sync this with `e2e/_base.ts`
 interface TestOptions {
-  user: {
-    password: string;
-    username: string;
-  };
+  user: { username: string, password: string }
 }
+
 /**
  * http://localhost:3001
  * http://localhost:4173
  * http://127.0.0.1:3001
  * http://127.0.0.1:4173
  */
-const port = process.env.CI ? 4173 : 3001;
-const baseURL = `http://localhost:${port}`;
+const port = process.env.CI ? 4173 : 3001
+const baseURL = `http://localhost:${port}`
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig<TestOptions>({
-  /* Capture git info in trace viewer and report */
-  captureGitInfo: { commit: true, diff: true },
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
-  outputDir: "playwright-test-results",
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  forbidOnly: !!process.env.CI,
+  // Timeout for each test in milliseconds.
+  timeout: 20 * 1_000,
+  /* Retry on CI only */
+  retries: process.env.CI ? 2 : 0,
+  /* Opt out of parallel tests on CI. */
+  workers: process.env.CI ? 1 : undefined,
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  reporter: 'html',
+  outputDir: 'playwright-test-results',
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  use: {
+    /* Base URL to use in actions like `await page.goto('/')`. */
+    baseURL,
+
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    trace: 'on-first-retry',
+
+    /* Reduce animation motion from frammer motion. See https://motion.dev/docs/react-accessibility */
+    contextOptions: {
+      reducedMotion: 'reduce',
+    },
+
+    /* Populates context with given storage state */
+    // storageState: 'e2e/.auth/user.json',
+  },
+  /* Capture git info in trace viewer and report */
+  captureGitInfo: { commit: true, diff: true },
+
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    { name: "setup", testMatch: /.*\.setup\.ts/u },
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
-      dependencies: ["setup"],
-      name: "chromium",
+      name: 'chromium',
+      dependencies: ['setup'],
       use: {
-        ...devices["Desktop Chrome"],
-        storageState: "playwright/.auth/user.json",
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/user.json',
+
         // we can adjust user per project here, this will override the user in the base config
         // user: {
         //   username: 'emilysnew',
@@ -52,37 +79,15 @@ export default defineConfig<TestOptions>({
     //   },
     // },
   ],
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
-  testDir: "./e2e",
-  // Timeout for each test in milliseconds.
-  timeout: 20 * 1000,
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL,
-    /* Reduce animation motion from frammer motion. See https://motion.dev/docs/react-accessibility */
-    contextOptions: {
-      reducedMotion: "reduce",
-    },
-    /* Populates context with given storage state */
-    // storageState: 'e2e/.auth/user.json',
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
-  },
+
   /* Run your local dev server before starting the tests */
   webServer: {
-    // in CI, we run `build-and-preview` instead of `dev`
-    command: process.env.CI ? "bun build-and-preview" : "bun dev",
-    reuseExistingServer: !process.env.CI,
-    stderr: "pipe",
-    stdout: "pipe",
-    // default is 60s
-    timeout: 5 * 60 * 1000,
+    timeout: 5 * 60 * 1_000, // default is 60s
     url: baseURL,
+    // in CI, we run `build-and-preview` instead of `dev`
+    command: process.env.CI ? 'bun build-and-preview' : 'bun dev',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-});
+})

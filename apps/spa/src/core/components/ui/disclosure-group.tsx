@@ -1,97 +1,77 @@
-"use client";
-import { use } from "react";
-import type { ButtonProps } from "react-aria-components/Button";
-import { Button } from "react-aria-components/Button";
-import { composeRenderProps } from "react-aria-components/composeRenderProps";
-import type { DisclosureProps } from "react-aria-components/Disclosure";
-import { Disclosure as PrimitiveDisclosure } from "react-aria-components/Disclosure";
+'use client'
+
+import type { ButtonProps } from 'react-aria-components/Button'
+import type { DisclosureProps } from 'react-aria-components/Disclosure'
 import type {
   DisclosureGroupProps,
   DisclosurePanelProps,
-} from "react-aria-components/DisclosureGroup";
+} from 'react-aria-components/DisclosureGroup'
+import { use } from 'react'
+import { Button } from 'react-aria-components/Button'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import {
+
+  Disclosure as PrimitiveDisclosure,
+} from 'react-aria-components/Disclosure'
 import {
   DisclosureStateContext,
   DisclosureGroup as PrimitiveDisclosureGroup,
   DisclosurePanel as PrimitiveDisclosurePanel,
-} from "react-aria-components/DisclosureGroup";
-import { Heading } from "react-aria-components/Heading";
-import { twJoin, twMerge } from "tailwind-merge";
+} from 'react-aria-components/DisclosureGroup'
+import { Heading } from 'react-aria-components/Heading'
+import { twJoin, twMerge } from 'tailwind-merge'
+import { cx } from '@/core/utils/primitive'
 
-import { cx } from "@/core/utils/primitive";
-
-export const DisclosureGroup = ({
-  className,
-  ...props
-}: DisclosureGroupProps) => (
-  <PrimitiveDisclosureGroup
-    className={cx(
-      [
-        "[--disclosure-gutter-x:--spacing(4)]",
-        "[--disclosure-radius:var(--radius-lg)]",
-        "[--disclosure-collapsed-border:var(--color-border)]",
-        "[--disclosure-expanded-border:var(--color-muted-fg)]/30",
-        "[--disclosure-collapsed-bg:var(--color-bg)]",
-        "[--disclosure-collapsed-fg:var(--color-muted-fg)]",
-        "[--disclosure-expanded-bg:var(--color-secondary)]/20",
-        "[--disclosure-expanded-fg:var(--color-fg)]",
-        "flex flex-col gap-y-2",
-      ],
-      className
-    )}
-    {...props}
-  />
-);
-export const Disclosure = ({ className, ...props }: DisclosureProps) => (
-  <PrimitiveDisclosure
-    className={composeRenderProps(
-      className,
-      (renderClassName, { isExpanded, isFocusVisibleWithin }) =>
-        twMerge(
-          "group/disclosure-item w-full rounded-(--disclosure-radius,--spacing(0)) bg-(--disclosure-collapsed-bg,transparent) inset-ring inset-ring-(--disclosure-collapsed-border,transparent) duration-200",
-          (isExpanded || isFocusVisibleWithin) &&
-            "bg-(--disclosure-expanded-bg) inset-ring-(--disclosure-expanded-border,transparent)",
-          "has-data-hovered:bg-(--disclosure-expanded-bg) has-data-hovered:inset-ring-(--disclosure-expanded-border,transparent)",
-          renderClassName
-        )
-    )}
-    {...props}
-  />
-);
-export const DisclosureIndicator = ({
-  className,
-  ...props
-}: React.ComponentProps<"span">) => (
-  <span
-    data-slot="disclosure-indicator"
-    className={twMerge(
-      "pointer-events-none relative ms-(--disclosure-gutter-x,--spacing(0)) -me-[calc(var(--disclosure-gutter-x,--spacing(0))-(--spacing(2)))] flex size-6 shrink-0 items-center justify-center [--width:--spacing(2.5)]",
-      className
-    )}
-    {...props}
-  >
-    <span
-      className={twJoin([
-        "absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300",
-        "rotate-90 group-expanded:rotate-0 group-expanded/disclosure-item:rotate-0",
-      ])}
+export function DisclosureGroup({ className, ...props }: DisclosureGroupProps) {
+  return (
+    <PrimitiveDisclosureGroup
+      className={cx(
+        [
+          '[--disclosure-gutter-x:--spacing(4)]',
+          '[--disclosure-radius:var(--radius-lg)]',
+          '[--disclosure-collapsed-border:var(--color-border)]',
+          '[--disclosure-expanded-border:var(--color-muted-fg)]/30',
+          '[--disclosure-collapsed-bg:var(--color-bg)]',
+          '[--disclosure-collapsed-fg:var(--color-muted-fg)]',
+          '[--disclosure-expanded-bg:var(--color-secondary)]/20',
+          '[--disclosure-expanded-fg:var(--color-fg)]',
+          'flex flex-col gap-y-2',
+        ],
+        className,
+      )}
+      {...props}
     />
-    <span className="absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300" />
-  </span>
-);
-export interface DisclosureTriggerProps extends ButtonProps {
-  ref?: React.Ref<HTMLButtonElement>;
-  triggerIndicator?: boolean;
+  )
 }
-export const DisclosureTrigger = ({
+
+export function Disclosure({ className, ...props }: DisclosureProps) {
+  return (
+    <PrimitiveDisclosure
+      className={composeRenderProps(className, (className, { isExpanded, isFocusVisibleWithin }) =>
+        twMerge(
+          'group/disclosure-item w-full rounded-(--disclosure-radius,--spacing(0)) bg-(--disclosure-collapsed-bg,transparent) inset-ring inset-ring-(--disclosure-collapsed-border,transparent) duration-200',
+          (isExpanded || isFocusVisibleWithin)
+          && 'bg-(--disclosure-expanded-bg) inset-ring-(--disclosure-expanded-border,transparent)',
+          'has-data-hovered:bg-(--disclosure-expanded-bg) has-data-hovered:inset-ring-(--disclosure-expanded-border,transparent)',
+          className,
+        ))}
+      {...props}
+    />
+  )
+}
+
+export interface DisclosureTriggerProps extends ButtonProps {
+  ref?: React.Ref<HTMLButtonElement>
+  triggerIndicator?: boolean
+}
+
+export function DisclosureTrigger({
   ref,
   className,
   triggerIndicator = true,
   ...props
-}: DisclosureTriggerProps) => {
-  const state = use(DisclosureStateContext);
-  if (!state) {
-    throw new Error("DisclosureTrigger must be used within a Disclosure");
-  }
+}: DisclosureTriggerProps) {
+  const state = use(DisclosureStateContext)!
   return (
     <Heading>
       <Button
@@ -100,44 +80,63 @@ export const DisclosureTrigger = ({
         slot="trigger"
         className={cx(
           [
-            "relative isolate flex w-full cursor-default items-center justify-between px-(--disclosure-gutter-x,--spacing(0)) py-[calc(var(--disclosure-gutter-x,--spacing(0))-(--spacing(1)))] text-start font-medium text-sm/6 outline-hidden",
-            "[&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-4 **:[svg]:shrink-0",
-            "disabled:opacity-50",
+            'relative isolate flex w-full cursor-default items-center justify-between px-(--disclosure-gutter-x,--spacing(0)) py-[calc(var(--disclosure-gutter-x,--spacing(0))-(--spacing(1)))] text-start font-medium text-sm/6 outline-hidden',
+            '[&_svg:not([class*=\'size-\'])]:size-5 sm:[&_svg:not([class*=\'size-\'])]:size-4 **:[svg]:shrink-0',
+            'disabled:opacity-50',
             state.isExpanded
-              ? "rounded-t-(--disclosure-radius) rounded-b-none text-(--disclosure-expanded-fg)"
-              : "rounded-(--disclosure-radius) text-(--disclosure-collapsed-fg) hover:text-(--disclosure-expanded-fg)",
+              ? 'rounded-t-(--disclosure-radius) rounded-b-none text-(--disclosure-expanded-fg)'
+              : 'rounded-(--disclosure-radius) text-(--disclosure-collapsed-fg) hover:text-(--disclosure-expanded-fg)',
           ],
-          className
+          className,
         )}
       >
-        {(values) => (
+        {values => (
           <>
-            {typeof props.children === "function"
-              ? props.children(values)
-              : props.children}
+            {typeof props.children === 'function' ? props.children(values) : props.children}
             {triggerIndicator && <DisclosureIndicator />}
           </>
         )}
       </Button>
     </Heading>
-  );
-};
-export const DisclosurePanel = ({
-  className,
-  ...props
-}: DisclosurePanelProps) => (
-  <PrimitiveDisclosurePanel
-    data-slot="disclosure-panel"
-    className={cx(
-      "h-(--disclosure-panel-height) overflow-clip text-sm/6 transition-[height] duration-200",
-      className
-    )}
-  >
-    <div
-      data-slot="disclosure-panel-content"
-      className="justify-start self-stretch px-(--disclosure-gutter-x,--spacing(0)) pt-2 pb-(--disclosure-gutter-x,--spacing(0)) text-pretty text-(--disclosure-collapsed-fg)"
+  )
+}
+
+export function DisclosureIndicator({ className, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-slot="disclosure-indicator"
+      className={twMerge(
+        'pointer-events-none relative ms-(--disclosure-gutter-x,--spacing(0)) -me-[calc(var(--disclosure-gutter-x,--spacing(0))-(--spacing(2)))] flex size-6 shrink-0 items-center justify-center [--width:--spacing(2.5)]',
+        className,
+      )}
+      {...props}
     >
-      {props.children}
-    </div>
-  </PrimitiveDisclosurePanel>
-);
+      <span
+        className={twJoin([
+          'absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300',
+          'rotate-90 group-expanded:rotate-0 group-expanded/disclosure-item:rotate-0',
+        ])}
+      />
+      <span className="absolute h-[1.5px] w-(--width) origin-center bg-current transition-transform duration-300" />
+    </span>
+  )
+}
+
+export function DisclosurePanel({ className, ...props }: DisclosurePanelProps) {
+  return (
+    <PrimitiveDisclosurePanel
+      data-slot="disclosure-panel"
+      className={cx(
+        'h-(--disclosure-panel-height) overflow-clip text-sm/6 transition-[height] duration-200',
+        className,
+      )}
+    >
+      <div
+        data-slot="disclosure-panel-content"
+        className="justify-start self-stretch px-(--disclosure-gutter-x,--spacing(0)) pt-2 pb-(--disclosure-gutter-x,--spacing(0)) text-pretty text-(--disclosure-collapsed-fg)"
+      >
+        {props.children}
+      </div>
+    </PrimitiveDisclosurePanel>
+  )
+}

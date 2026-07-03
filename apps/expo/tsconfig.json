@@ -7,8 +7,12 @@
       //   "./node_modules/@types/react"
       // ],
       "*": ["./*"],
-      "@/*": ["./src/*"],
-      "@workspace/core/*": ["../../packages/core/src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@workspace/core/*": [
+        "../../packages/core/src/*"
+      ]
     },
     "strict": true
   },

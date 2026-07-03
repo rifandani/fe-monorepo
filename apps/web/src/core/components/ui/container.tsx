@@ -1,22 +1,21 @@
-"use client";
-import { twMerge } from "tailwind-merge";
+'use client'
 
-export interface ContainerProps extends React.ComponentProps<"div"> {
-  constrained?: boolean;
+import { twMerge } from 'tailwind-merge'
+
+export interface ContainerProps extends React.ComponentProps<'div'> {
+  constrained?: boolean
 }
-export const Container = ({
-  className,
-  constrained = false,
-  ref,
-  ...props
-}: ContainerProps) => (
-  <div
-    className={twMerge(
-      "mx-auto w-full max-w-(--container-breakpoint) [--container-breakpoint:var(--breakpoint-xl)] [--container-padding:--spacing(4)]",
-      constrained ? "sm:px-(--container-padding)" : "px-(--container-padding)",
-      className
-    )}
-    {...props}
-    ref={ref}
-  />
-);
+
+export function Container({ className, constrained = false, ref, ...props }: ContainerProps) {
+  return (
+    <div
+      className={twMerge(
+        'mx-auto w-full max-w-(--container-breakpoint) [--container-breakpoint:var(--breakpoint-xl)] [--container-padding:--spacing(4)]',
+        constrained ? 'sm:px-(--container-padding)' : 'px-(--container-padding)',
+        className,
+      )}
+      {...props}
+      ref={ref}
+    />
+  )
+}

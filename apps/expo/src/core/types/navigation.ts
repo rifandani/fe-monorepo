@@ -2,16 +2,17 @@ export interface HeaderButtonProps {
   /**
    * Tint color for the header.
    */
-  tintColor?: string;
+  tintColor?: string
   /**
    * Whether it's possible to navigate back in stack.
    */
-  canGoBack: boolean;
+  canGoBack: boolean
 }
+
 export type HeaderBackButtonProps = HeaderButtonProps & {
   /**
    * Label text for the button. Usually the title of the previous screen.
    * By default, this is only shown on iOS.
    */
-  label?: string;
-};
+  label?: string
+}

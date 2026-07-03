@@ -1,4 +1,4 @@
-appId: ${MAESTRO_APP_ID}
+appId: ${MAESTRO_APP_ID} 
 ---
 - runFlow: ./login.yaml
 - assertVisible: "Expo App using:"
