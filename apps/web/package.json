@@ -45,7 +45,7 @@
     "@opentelemetry/instrumentation-dns": "0.62.0",
     "@opentelemetry/instrumentation-http": "0.219.0",
     "@opentelemetry/instrumentation-net": "0.63.0",
-    "@opentelemetry/instrumentation-pg": "0.71.0",
+    "@opentelemetry/instrumentation-pg": "0.72.0",
     "@opentelemetry/instrumentation-runtime-node": "0.32.0",
     "@opentelemetry/instrumentation-undici": "0.29.0",
     "@opentelemetry/resources": "2.8.0",
