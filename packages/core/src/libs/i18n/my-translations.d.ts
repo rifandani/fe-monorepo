@@ -1,2 +1,5 @@
-// oxlint-disable-next-line typescript/no-empty-interface typescript/no-empty-object-type
-export interface Register {}
+import type enUS from "./locales/en-US";
+
+export interface Register {
+  translations: typeof enUS;
+}

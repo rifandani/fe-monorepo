@@ -73,8 +73,6 @@ type NormalizedTranslationAtKeyWithParams<Key extends string> =
     TranslationAtKeyWithParams<RegisteredTranslations, Key>
   >;
 type Params<S extends DotPathsFor> = ExtractParamArgs<
-  // eslint-disable-next-line ts/ban-ts-comment
-  // @ts-expect-error i don't know
   NormalizedTranslationAtKeyWithParams<S>[0],
   NormalizedTranslationAtKeyWithParams<S>[1] extends {
     enum: infer E;
