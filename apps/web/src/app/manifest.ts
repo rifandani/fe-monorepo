@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import type { MetadataRoute } from "next";
 
-export function manifest(): MetadataRoute.Manifest {
+export default function manifest(): MetadataRoute.Manifest {
   return {
     background_color: "#FFFFFF", // Color for potential splash if any system tried to use it
     description: "Bulletproof Next.js 15 Template",

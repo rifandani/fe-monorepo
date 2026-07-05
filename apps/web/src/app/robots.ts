@@ -6,7 +6,7 @@ const url = new URL(
     ? "https://web.com"
     : "https://web.localhost"
 );
-export function robots(): MetadataRoute.Robots {
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
