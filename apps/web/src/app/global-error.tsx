@@ -1,16 +1,24 @@
-'use client'
+"use client";
 
-import { trace } from '@opentelemetry/api'
-import { log } from 'evlog/next/client'
-import NextError from 'next/error'
-import { useEffect } from 'react'
-import { TRACER_GLOBAL_ERROR, TRACER_GLOBAL_ERROR_ON_ERROR } from '@/core/constants/global'
-import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
-import { recordException } from '@/core/utils/telemetry'
+import { trace } from "@opentelemetry/api";
+import { log } from "evlog/next/client";
+import NextError from "next/error";
+import { useEffect } from "react";
 
-const tracer = trace.getTracer(TRACER_GLOBAL_ERROR)
+import {
+  TRACER_GLOBAL_ERROR,
+  TRACER_GLOBAL_ERROR_ON_ERROR,
+} from "@/core/constants/global";
+import { errorAttributesFromUnknown } from "@/core/utils/error-helper";
+import { recordException } from "@/core/utils/telemetry";
 
-export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
+const tracer = trace.getTracer(TRACER_GLOBAL_ERROR);
+
+export default function GlobalError({
+  error,
+}: {
+  error: Error & { digest?: string };
+}) {
   useEffect(() => {
     recordException({
       tracer,
@@ -20,21 +28,25 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
         stack: error.stack,
         digest: error.digest,
       },
-    })
+    });
     log.error({
-      area: 'app.globalError',
-      phase: 'render',
-      summary: 'Error on global error page',
+      area: "app.globalError",
+      phase: "render",
+      summary: "Error on global error page",
       ...errorAttributesFromUnknown(error),
-    })
-  }, [error])
+    });
+  }, [error]);
 
   return (
     <html lang="en">
       <head>
         <meta name="msapplication-TileColor" content="#ffffff" />
         <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" sizes="180x180" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon-180x180.png"
+          sizes="180x180"
+        />
         <title>Global Error</title>
       </head>
 
@@ -46,5 +58,5 @@ export default function GlobalError({ error }: { error: Error & { digest?: strin
         <NextError statusCode={0} />
       </body>
     </html>
-  )
+  );
 }

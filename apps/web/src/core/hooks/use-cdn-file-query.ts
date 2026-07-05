@@ -1,20 +1,18 @@
-import type { UndefinedInitialDataOptions } from '@tanstack/react-query'
-import type { CdnValidKeys, GetCdnFileSuccessSchema } from '@workspace/core/apis/cdn'
-import type { HTTPError } from 'ky'
-import type { Except } from 'type-fest'
-import {
-  skipToken,
-  useQuery,
-} from '@tanstack/react-query'
-import {
-  cdnKeys,
-  cdnRepositories,
-} from '@workspace/core/apis/cdn'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import type {
+  CdnValidKeys,
+  GetCdnFileSuccessSchema,
+} from "@workspace/core/apis/cdn";
+import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
+import type { HTTPError } from "ky";
+import type { Except } from "type-fest";
 
 interface Opt {
-  key: CdnValidKeys
-  url?: string | undefined
-  filename?: string
+  key: CdnValidKeys;
+  url?: string | undefined;
+  filename?: string;
 }
 
 /**
@@ -24,26 +22,24 @@ export function useCdnFileQuery(
   opt: Opt,
   queryOptions?: Except<
     UndefinedInitialDataOptions<unknown, HTTPError, GetCdnFileSuccessSchema>,
-    'queryKey' | 'queryFn'
-  >,
+    "queryKey" | "queryFn"
+  >
 ) {
   const query = useQuery({
-    queryKey: cdnKeys[opt.key](opt.url),
     queryFn: opt.url
       ? ({ signal }) =>
           cdnRepositories().getCdnFile({ url: opt.url as string }, { signal })
       : skipToken,
+    queryKey: cdnKeys[opt.key](opt.url),
+    // oxlint-disable-next-line oxc/const-comparisons
     ...(queryOptions && queryOptions),
-  })
-
+  });
   // create file object from blob
   const file = query.data?.blob
-    ? new File([query.data.blob], opt.filename ?? 'unknown-filename', {
-        type: query.data.blob.type,
-
+    ? new File([query.data.blob], opt.filename ?? "unknown-filename", {
         lastModified: Date.now(),
+        type: query.data.blob.type,
       })
-    : null
-
-  return { ...query, file }
+    : null;
+  return { ...query, file };
 }

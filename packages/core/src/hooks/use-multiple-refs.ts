@@ -1,4 +1,5 @@
-import { useRef } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useRef } from "react";
 
 /**
  * Iterator function for making the refs object iterable
@@ -7,10 +8,10 @@ import { useRef } from 'react'
  * @returns The iterator object itself
  */
 function iterator(this: {
-  next: () => void
-  [Symbol.iterator]: () => unknown
+  next: () => void;
+  [Symbol.iterator]: () => unknown;
 }) {
-  return this
+  return this;
 }
 
 /**
@@ -50,11 +51,11 @@ export function useMultipleRefs<T>(initialValue: T) {
         done: false,
         // eslint-disable-next-line react/rules-of-hooks
         value: useRef(initialValue),
-      }
+      };
     },
     /**
      * Makes the object iterable by implementing Symbol.iterator
      */
     [Symbol.iterator]: iterator,
-  }
+  };
 }

@@ -1,4 +1,6 @@
-import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
+
 import {
   METRICS_METER_WEB_VITALS,
   METRICS_METER_WEB_VITALS_CLS,
@@ -6,38 +8,29 @@ import {
   METRICS_METER_WEB_VITALS_INP,
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
-} from '@/core/constants/global'
-import { meterProvider } from '@/instrumentation'
+} from "@/core/constants/global";
+import { meterProvider } from "@/instrumentation";
 
-const meter = meterProvider.getMeter(METRICS_METER_WEB_VITALS)
-
+const meter = meterProvider.getMeter(METRICS_METER_WEB_VITALS);
 const lcpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_LCP, {
-  description: 'Largest Contentful Paint',
-  unit: 'ms',
-})
-
+  description: "Largest Contentful Paint",
+  unit: "ms",
+});
 const inpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_INP, {
-  description: 'Interaction to Next Paint',
-  unit: 'ms',
-})
-
+  description: "Interaction to Next Paint",
+  unit: "ms",
+});
 const clsMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_CLS, {
-  description: 'Cumulative Layout Shift',
-})
-
+  description: "Cumulative Layout Shift",
+});
 const fcpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_FCP, {
-  description: 'First Contentful Paint',
-  unit: 'ms',
-})
-
+  description: "First Contentful Paint",
+  unit: "ms",
+});
 const ttfbMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_TTFB, {
-  description: 'Time to First Byte',
-  unit: 'ms',
-})
-
-/**
- * Report web vitals to the opentelemetry. Enabled on production for now. Use per page basis.
- */
+  description: "Time to First Byte",
+  unit: "ms",
+});
 export function reportWebVitals() {
   // we could send to analytics here if the rating is not "good"
   onLCP((metric) => {
@@ -45,34 +38,34 @@ export function reportWebVitals() {
       delta: metric.delta,
       navigationType: metric.navigationType,
       rating: metric.rating,
-    })
-  })
+    });
+  });
   onINP((metric) => {
     inpMetric.record(metric.value, {
       delta: metric.delta,
       navigationType: metric.navigationType,
       rating: metric.rating,
-    })
-  })
+    });
+  });
   onCLS((metric) => {
     clsMetric.record(metric.value, {
       delta: metric.delta,
       navigationType: metric.navigationType,
       rating: metric.rating,
-    })
-  })
+    });
+  });
   onFCP((metric) => {
     fcpMetric.record(metric.value, {
       delta: metric.delta,
       navigationType: metric.navigationType,
       rating: metric.rating,
-    })
-  })
+    });
+  });
   onTTFB((metric) => {
     ttfbMetric.record(metric.value, {
       delta: metric.delta,
       navigationType: metric.navigationType,
       rating: metric.rating,
-    })
-  })
+    });
+  });
 }

@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useCallback, useRef, useState } from "react";
 
 /**
  * A hook that helps you manage dynamic list and generate unique key for each item.
@@ -39,168 +40,149 @@ import { useCallback, useRef, useState } from 'react'
  * ```
  */
 export function useDynamicList<T>(initialList: T[] = []) {
-  const counterRef = useRef(-1)
-
-  const keyListRef = useRef<number[]>([])
-
+  const counterRef = useRef(-1);
+  const keyListRef = useRef<number[]>([]);
   const setKey = useCallback((index: number) => {
-    counterRef.current += 1
-    keyListRef.current.splice(index, 0, counterRef.current)
-  }, [])
-
+    counterRef.current += 1;
+    keyListRef.current.splice(index, 0, counterRef.current);
+  }, []);
   // Current list
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization
-    initialList.forEach(() => {
-      counterRef.current += 1
-      keyListRef.current.push(counterRef.current)
-    })
-    return initialList
-  })
-
+    for (const _ of initialList) {
+      counterRef.current += 1;
+      keyListRef.current.push(counterRef.current);
+    }
+    return initialList;
+  });
   // Reset list current data
   const resetList = useCallback(
     (newList: T[]) => {
-      keyListRef.current = []
+      keyListRef.current = [];
       setList(() => {
-        newList.forEach((_, index) => {
-          setKey(index)
-        })
-        return newList
-      })
+        for (const [index] of newList.entries()) {
+          setKey(index);
+        }
+        return newList;
+      });
     },
-    [setKey],
-  )
-
+    [setKey]
+  );
   // Add item at specific position
   const insert = useCallback(
     (index: number, item: T) => {
       setList((l) => {
-        const temp = [...l]
-        temp.splice(index, 0, item)
-        setKey(index)
-        return temp
-      })
+        const temp = [...l];
+        temp.splice(index, 0, item);
+        setKey(index);
+        return temp;
+      });
     },
-    [setKey],
-  )
-
+    [setKey]
+  );
   // Get the uuid of specific item
-  const getKey = useCallback((index: number) => keyListRef.current[index], [])
-
+  const getKey = useCallback((index: number) => keyListRef.current[index], []);
   // Retrieve index from uuid
   const getIndex = useCallback(
-    (key: number) => keyListRef.current.findIndex(ele => ele === key),
-    [],
-  )
-
+    (key: number) => keyListRef.current.indexOf(key),
+    []
+  );
   // Merge items into specific position
   const merge = useCallback(
     (index: number, items: T[]) => {
       setList((l) => {
-        const temp = [...l]
-        items.forEach((_, i) => {
-          setKey(index + i)
-        })
-        temp.splice(index, 0, ...items)
-        return temp
-      })
+        const temp = [...l];
+        for (const [i] of items.entries()) {
+          setKey(index + i);
+        }
+        temp.splice(index, 0, ...items);
+        return temp;
+      });
     },
-    [setKey],
-  )
-
+    [setKey]
+  );
   // Replace item at specific position
   const replace = useCallback((index: number, item: T) => {
     setList((l) => {
-      const temp = [...l]
-      temp[index] = item
-      return temp
-    })
-  }, [])
-
+      const temp = [...l];
+      temp[index] = item;
+      return temp;
+    });
+  }, []);
   // Delete specific item
   const remove = useCallback((index: number) => {
     setList((l) => {
-      const temp = [...l]
-      temp.splice(index, 1)
-
+      const temp = [...l];
+      temp.splice(index, 1);
       // remove keys if necessary
-      keyListRef.current.splice(index, 1)
-      return temp
-    })
-  }, [])
-
+      keyListRef.current.splice(index, 1);
+      return temp;
+    });
+  }, []);
   // Move item from old index to new index
   const move = useCallback((oldIndex: number, newIndex: number) => {
-    if (oldIndex === newIndex)
-      return
-
+    if (oldIndex === newIndex) {
+      return;
+    }
     setList((l) => {
-      const newList = [...l]
-      const temp = newList.filter((_, index: number) => index !== oldIndex)
-      temp.splice(newIndex, 0, newList[oldIndex] as T)
-
+      const newList = [...l];
+      const temp = newList.filter((_, index: number) => index !== oldIndex);
+      temp.splice(newIndex, 0, newList[oldIndex] as T);
       // move keys if necessary
       const keyTemp = keyListRef.current.filter(
-        (_, index: number) => index !== oldIndex,
-      )
-      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number)
-      keyListRef.current = keyTemp
-
-      return temp
-    })
-  }, [])
-
+        (_, index: number) => index !== oldIndex
+      );
+      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
+      keyListRef.current = keyTemp;
+      return temp;
+    });
+  }, []);
   // Push new item at the end of list
   const push = useCallback(
     (item: T) => {
       setList((l) => {
-        setKey(l.length)
-        return l.concat([item])
-      })
+        setKey(l.length);
+        return [...l, item];
+      });
     },
-    [setKey],
-  )
-
+    [setKey]
+  );
   // Remove the last item from the list
   const pop = useCallback(() => {
     // remove keys if necessary
-    keyListRef.current = keyListRef.current.slice(0, keyListRef.current.length - 1)
-    setList(l => l.slice(0, l.length - 1))
-  }, [])
-
+    keyListRef.current = keyListRef.current.slice(0, -1);
+    setList((l) => l.slice(0, -1));
+  }, []);
   // Add new item at the front of the list
   const unshift = useCallback(
     (item: T) => {
       setList((l) => {
-        setKey(0)
-        return [item].concat(l)
-      })
+        setKey(0);
+        return [item, ...l];
+      });
     },
-    [setKey],
-  )
-
+    [setKey]
+  );
   // Remove the first item from the list
   const shift = useCallback(() => {
     // remove keys if necessary
-    keyListRef.current = keyListRef.current.slice(1, keyListRef.current.length)
-    setList(l => l.slice(1, l.length))
-  }, [])
-
+    keyListRef.current = keyListRef.current.slice(1);
+    setList((l) => l.slice(1));
+  }, []);
   return {
-    list,
-    insert,
-    merge,
-    replace,
-    remove,
-    getKey,
     getIndex,
+    getKey,
+    insert,
+    list,
+    merge,
     move,
-    push,
     pop,
-    unshift,
-    shift,
+    push,
+    remove,
+    replace,
     resetList,
-  } as const
+    shift,
+    unshift,
+  } as const;
 }

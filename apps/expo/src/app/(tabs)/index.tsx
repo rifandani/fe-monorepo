@@ -1,15 +1,15 @@
-import { useTranslation } from 'react-i18next'
-import { H6, YStack } from 'tamagui'
-import { BaseErrorBoundary } from '@/core/components/base-error-boundary'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useTranslation } from "react-i18next";
+import { H6, YStack } from "tamagui";
 
-export const ErrorBoundary = BaseErrorBoundary
+import { BaseErrorBoundary } from "@/core/components/base-error-boundary";
 
+export const ErrorBoundary = BaseErrorBoundary;
 export default function TabsIndexScreen() {
-  const { t } = useTranslation()
-
+  const { t } = useTranslation();
   return (
     <YStack flex={1} p="$3" justify="center">
-      <H6>{t('home.title')}</H6>
+      <H6>{t("home.title")}</H6>
     </YStack>
-  )
+  );
 }

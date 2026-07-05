@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Shared TypeScript configuration for React Monorepo",
-  "author": "Tri Rizeki Rifandani",
   "license": "MIT",
+  "author": "Tri Rizeki Rifandani",
   "publishConfig": {
     "access": "public"
   }

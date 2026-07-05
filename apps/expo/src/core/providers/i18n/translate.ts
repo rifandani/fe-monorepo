@@ -1,32 +1,39 @@
-import type { TOptions } from 'i18next'
-import type en from './locales/en.json'
-import i18n from 'i18next'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { TOptions } from "i18next";
+import i18n from "i18next";
 
+import type en from "./locales/en.json";
 /**
  * Builds up valid keypaths for translations.
  */
-export type TxKeyPath = RecursiveKeyOf<typeof en>
-
+export type TxKeyPath = RecursiveKeyOf<typeof en>;
 // via: https://stackoverflow.com/a/65333050
 type RecursiveKeyOf<TObj extends object> = {
-  [TKey in keyof TObj & (string | number)]: RecursiveKeyOfHandleValue<TObj[TKey], `${TKey}`, true>
-}[keyof TObj & (string | number)]
-
+  [TKey in keyof TObj & (string | number)]: RecursiveKeyOfHandleValue<
+    TObj[TKey],
+    `${TKey}`,
+    true
+  >;
+}[keyof TObj & (string | number)];
 type RecursiveKeyOfInner<TObj extends object> = {
-  [TKey in keyof TObj & (string | number)]: RecursiveKeyOfHandleValue<TObj[TKey], `${TKey}`, false>
-}[keyof TObj & (string | number)]
-
+  [TKey in keyof TObj & (string | number)]: RecursiveKeyOfHandleValue<
+    TObj[TKey],
+    `${TKey}`,
+    false
+  >;
+}[keyof TObj & (string | number)];
 type RecursiveKeyOfHandleValue<
   TValue,
   Text extends string,
   IsFirstLevel extends boolean,
+  // oxlint-disable-next-line typescript/no-explicit-any
 > = TValue extends any[]
   ? Text
   : TValue extends object
     ? IsFirstLevel extends true
       ? Text | `${Text}:${RecursiveKeyOfInner<TValue>}`
       : Text | `${Text}.${RecursiveKeyOfInner<TValue>}`
-    : Text
+    : Text;
 
 /**
  * Translates text.
@@ -54,7 +61,8 @@ type RecursiveKeyOfHandleValue<
 export function translate(key: TxKeyPath, options?: TOptions): string {
   if (i18n.isInitialized) {
     // @ts-expect-error unused anyway
-    return i18n.t(key, options)
+    // oxlint-disable-next-line import/no-named-as-default-member
+    return i18n.t(key, options);
   }
-  return key
+  return key;
 }

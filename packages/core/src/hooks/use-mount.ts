@@ -1,5 +1,6 @@
-import { isFunction } from 'radashi'
-import { useEffect } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { isFunction } from "radashi";
+import { useEffect } from "react";
 
 /**
  * A hook that executes a function after the component is mounted.
@@ -7,13 +8,13 @@ import { useEffect } from 'react'
 export function useMount(fn: () => void) {
   if (!isFunction(fn)) {
     console.error(
-      `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`,
-    )
-    return
+      `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`
+    );
+    return;
   }
-
   // eslint-disable-next-line react/rules-of-hooks
   useEffect(() => {
-    fn()
-  }, [])
+    fn();
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 }

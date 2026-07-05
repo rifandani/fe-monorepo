@@ -1,8 +1,7 @@
-appId: ${MAESTRO_APP_ID} 
+appId: ${MAESTRO_APP_ID}
 onFlowStart:
   - runFlow: ../shared/_on-flow-start.yaml
 ---
-
 # run failed login
 - tapOn: "Your username..."
 - inputText: "em"

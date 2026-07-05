@@ -1,5 +1,7 @@
-const isProduction: boolean = process.env.NODE_ENV === 'production'
-const prefix: string = 'Invariant failed'
+/* oxlint-disable eslint/func-style -- function declarations */
+// @ts-expect-error -- process is not defined in the browser
+const isProduction = process.env.NODE_ENV === "production";
+const prefix = "Invariant failed";
 
 /**
  * `invariant` is used to [assert](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions) that the `condition` is [truthy](https://github.com/getify/You-Dont-Know-JS/blob/bdbe570600d4e1107d0b131787903ca1c9ec8140/up%20%26%20going/ch2.md#truthy--falsy).
@@ -17,32 +19,30 @@ const prefix: string = 'Invariant failed'
  * ```
  */
 export function invariant(
+  // oxlint-disable-next-line typescript/no-explicit-any -- accepts any truthy check
   condition: any,
   // Not providing an inline default argument for message as the result is smaller
   /**
    * Can provide a string, or a function that returns a string for cases where
    * the message takes a fair amount of effort to compute
    */
-  message?: string | (() => string),
+  message?: string | (() => string)
 ): asserts condition {
   if (condition) {
-    return
+    return;
   }
   // Condition not passed
-
   // In production we strip the message but still throw
   if (isProduction) {
-    throw new Error(prefix)
+    throw new Error(prefix);
   }
-
   // When not in production we allow the message to pass through
   // *This block will be removed in production builds*
-
-  const provided: string | undefined = typeof message === 'function' ? message() : message
-
+  const provided: string | undefined =
+    typeof message === "function" ? message() : message;
   // Options:
   // 1. message provided: `${prefix}: ${provided}`
   // 2. message not provided: prefix
-  const value: string = provided ? `${prefix}: ${provided}` : prefix
-  throw new Error(value)
+  const value: string = provided ? `${prefix}: ${provided}` : prefix;
+  throw new Error(value);
 }

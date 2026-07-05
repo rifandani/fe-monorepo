@@ -1,13 +1,18 @@
-import * as React from 'react'
-import { Suspense } from 'react'
-import { Loader } from '@/core/components/ui'
-import { TRACER_REACT_ENTRY } from '@/core/constants/global'
-import { AppHeadProvider } from '@/core/providers/head/provider'
-import { AppI18nProvider, AppTranslationProvider } from '@/core/providers/i18n/provider'
-import { AppQueryProvider } from '@/core/providers/query/provider'
-import { ReloadPromptSw } from '@/core/providers/reload-prompt-sw'
-import { AppRouterProvider } from '@/core/providers/router/provider'
-import { AppToastProvider } from '@/core/providers/toast/provider'
+/* oxlint-disable eslint/func-style -- function declarations */
+import * as React from "react";
+import { Suspense } from "react";
+
+import { Loader } from "@/core/components/ui";
+import { TRACER_REACT_ENTRY } from "@/core/constants/global";
+import { AppHeadProvider } from "@/core/providers/head/provider";
+import {
+  AppI18nProvider,
+  AppTranslationProvider,
+} from "@/core/providers/i18n/provider";
+import { AppQueryProvider } from "@/core/providers/query/provider";
+import { ReloadPromptSw } from "@/core/providers/reload-prompt-sw";
+import { AppRouterProvider } from "@/core/providers/router/provider";
+import { AppToastProvider } from "@/core/providers/toast/provider";
 
 export function Entry() {
   return (
@@ -19,12 +24,7 @@ export function Entry() {
               <AppToastProvider>
                 <Suspense
                   name={TRACER_REACT_ENTRY}
-                  fallback={(
-                    <Loader
-                      className="size-4.5"
-                      variant="spin"
-                    />
-                  )}
+                  fallback={<Loader className="size-4.5" variant="spin" />}
                 >
                   {/* Router entry point */}
                   <AppRouterProvider />
@@ -38,5 +38,5 @@ export function Entry() {
         </AppQueryProvider>
       </AppHeadProvider>
     </React.StrictMode>
-  )
+  );
 }

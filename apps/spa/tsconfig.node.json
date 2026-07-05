@@ -5,14 +5,8 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "skipLibCheck": true
   },
-  "include": [
-    "vite.config.*",
-    "playwright.config.*",
-    "pwa-assets.config.*"
-  ]
+  "include": ["vite.config.*", "playwright.config.*", "pwa-assets.config.*"]
 }

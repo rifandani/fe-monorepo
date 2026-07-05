@@ -1,6 +1,11 @@
-import type { BaseSheetProps, BaseSheetState } from '@/core/components/sheet/types'
-import { useCallback } from 'react'
-import { Sheet } from 'tamagui'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useCallback } from "react";
+import { Sheet } from "tamagui";
+
+import type {
+  BaseSheetProps,
+  BaseSheetState,
+} from "@/core/components/sheet/types";
 
 export function BaseSheet<T extends BaseSheetState>({
   state,
@@ -11,17 +16,16 @@ export function BaseSheet<T extends BaseSheetState>({
 }: BaseSheetProps<T>) {
   const onOpenChange = useCallback(
     (open: boolean) => {
-      setState({ ...state, open })
+      setState({ ...state, open });
     },
-    [setState, state],
-  )
+    [setState, state]
+  );
   const onPositionChange = useCallback(
     (position: number) => {
-      setState({ ...state, position })
+      setState({ ...state, position });
     },
-    [setState, state],
-  )
-
+    [setState, state]
+  );
   return (
     <Sheet
       modal
@@ -43,16 +47,11 @@ export function BaseSheet<T extends BaseSheetState>({
         exitStyle={{ opacity: 0 }}
       />
 
-      <Sheet.Handle
-        theme="blue"
-      />
+      <Sheet.Handle theme="blue" />
 
-      <Sheet.Frame
-        theme="blue"
-        {...frameProps}
-      >
+      <Sheet.Frame theme="blue" {...frameProps}>
         {children}
       </Sheet.Frame>
     </Sheet>
-  )
+  );
 }

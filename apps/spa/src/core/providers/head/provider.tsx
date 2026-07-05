@@ -1,9 +1,10 @@
-import { useHead } from '@unhead/react'
-import { createHead, UnheadProvider } from '@unhead/react/client'
-import { ENV } from '@/core/constants/env'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useHead } from "@unhead/react";
+import { createHead, UnheadProvider } from "@unhead/react/client";
 
-const head = createHead()
+import { ENV } from "@/core/constants/env";
 
+const head = createHead();
 function SchemaOrgHostParams() {
   useHead({
     templateParams: {
@@ -11,15 +12,14 @@ function SchemaOrgHostParams() {
         host: ENV.VITE_APP_URL,
       },
     },
-  })
-  return null
+  });
+  return null;
 }
-
 export function AppHeadProvider({ children }: { children: React.ReactNode }) {
   return (
     <UnheadProvider head={head}>
       <SchemaOrgHostParams />
       {children}
     </UnheadProvider>
-  )
+  );
 }

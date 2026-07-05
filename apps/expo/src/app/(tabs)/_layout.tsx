@@ -1,15 +1,25 @@
-import Feather from '@expo/vector-icons/Feather'
-import { Tabs } from 'expo-router'
-import { useTranslation } from 'react-i18next'
+/* oxlint-disable eslint/func-style -- function declarations */
+import Feather from "@expo/vector-icons/Feather";
+import { Tabs } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
-  initialRouteName: 'index',
+  initialRouteName: "index",
+};
+
+function HomeTabIcon({ color }: { color: string }) {
+  return <Feather testID="home-tab-icon" name="home" size={24} color={color} />;
+}
+
+function ProfileTabIcon({ color }: { color: string }) {
+  return (
+    <Feather testID="profile-tab-icon" name="user" size={24} color={color} />
+  );
 }
 
 export default function TabsLayout() {
-  const { t } = useTranslation()
-
+  const { t } = useTranslation();
   return (
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
@@ -17,17 +27,17 @@ export default function TabsLayout() {
         options={{
           // use href null to hide tab bar
           // href: null,
-          title: t('home.home'),
-          tabBarIcon: ({ color }) => <Feather testID="home-tab-icon" name="home" size={24} color={color} />,
+          title: t("home.home"),
+          tabBarIcon: HomeTabIcon,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: t('user.profile'),
-          tabBarIcon: ({ color }) => <Feather testID="profile-tab-icon" name="user" size={24} color={color} />,
+          tabBarIcon: ProfileTabIcon,
+          title: t("user.profile"),
         }}
       />
     </Tabs>
-  )
+  );
 }

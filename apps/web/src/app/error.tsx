@@ -1,14 +1,18 @@
-'use client' // Error boundaries must be Client Components
+"use client"; // Error boundaries must be Client Components
 
-import { trace } from '@opentelemetry/api'
-import { log } from 'evlog/next/client'
-import { useEffect } from 'react'
-import { Button } from '@/core/components/ui'
-import { TRACER_ROOT_ROUTE, TRACER_ROOT_ROUTE_ON_ERROR } from '@/core/constants/global'
-import { errorAttributesFromUnknown } from '@/core/utils/error-helper'
-import { recordException } from '@/core/utils/telemetry'
+import { trace } from "@opentelemetry/api";
+import { log } from "evlog/next/client";
+import { useEffect } from "react";
 
-const tracer = trace.getTracer(TRACER_ROOT_ROUTE)
+import { Button } from "@/core/components/ui";
+import {
+  TRACER_ROOT_ROUTE,
+  TRACER_ROOT_ROUTE_ON_ERROR,
+} from "@/core/constants/global";
+import { errorAttributesFromUnknown } from "@/core/utils/error-helper";
+import { recordException } from "@/core/utils/telemetry";
+
+const tracer = trace.getTracer(TRACER_ROOT_ROUTE);
 
 /**
  * designed to catch errors during rendering (not inside event handlers) to show a fallback UI instead of crashing the whole app.
@@ -17,8 +21,8 @@ export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
     recordException({
@@ -29,14 +33,14 @@ export default function Error({
         stack: error.stack,
         digest: error.digest,
       },
-    })
+    });
     log.error({
-      area: 'app.error',
-      phase: 'render',
-      summary: 'Error on error page',
+      area: "app.error",
+      phase: "render",
+      summary: "Error on error page",
       ...errorAttributesFromUnknown(error),
-    })
-  }, [error])
+    });
+  }, [error]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -45,13 +49,12 @@ export default function Error({
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-fg">
-            Something went wrong
-          </p>
+          <p className="text-muted-fg">Something went wrong</p>
         </div>
 
         {/* Quick Actions */}
-        <div className={`
+        <div
+          className={`
           flex flex-col justify-center gap-4
           sm:flex-row
         `}
@@ -69,5 +72,5 @@ export default function Error({
         </div>
       </div>
     </div>
-  )
+  );
 }

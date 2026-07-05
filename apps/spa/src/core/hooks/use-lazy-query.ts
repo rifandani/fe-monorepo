@@ -1,24 +1,20 @@
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
-/**
- * the lazy version of `useQuery`
- */
 export function useLazyQuery<TData, TError>(
-  options: Omit<UseQueryOptions<TData, TError>, 'enabled'>,
+  options: Omit<UseQueryOptions<TData, TError>, "enabled">
 ) {
-  const [enabled, setEnabled] = useState(false)
-
+  const [enabled, setEnabled] = useState(false);
   const query = useQuery<TData, TError>({
     ...options,
     enabled,
-  })
-
-  const trigger = () => {
-    if (!enabled)
-      setEnabled(true)
+  });
+  function trigger() {
+    if (!enabled) {
+      setEnabled(true);
+    }
   }
-
-  return [trigger, query] as const
+  return [trigger, query] as const;
 }

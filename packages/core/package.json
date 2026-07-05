@@ -1,11 +1,11 @@
 {
   "name": "@workspace/core",
-  "type": "module",
   "version": "1.1.0",
   "private": true,
   "description": "Shared core module for React Monorepo",
-  "author": "Tri Rizeki Rifandani",
   "license": "MIT",
+  "author": "Tri Rizeki Rifandani",
+  "type": "module",
   "exports": {
     "./apis/*": "./src/apis/*.ts",
     "./assets/*": "./src/assets/*",
@@ -16,17 +16,17 @@
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },
+  "devDependencies": {
+    "@types/node": "26.0.1",
+    "@types/react": "19.2.17",
+    "@workspace/typescript-config": "workspace:*",
+    "typescript": "6.0.3"
+  },
   "peerDependencies": {
     "ky": "2.0.2",
     "radashi": "12.9.1",
     "react": ">=19.0.0",
     "type-fest": "5.7.0",
     "zod": "4.4.3"
-  },
-  "devDependencies": {
-    "@types/node": "26.0.1",
-    "@types/react": "19.2.17",
-    "@workspace/typescript-config": "workspace:*",
-    "typescript": "6.0.3"
   }
 }

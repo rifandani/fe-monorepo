@@ -1,53 +1,55 @@
-import type { ConfigContext, ExpoConfig } from 'expo/config'
-import { version } from './package.json'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { ConfigContext, ExpoConfig } from "expo/config";
 
+import { version } from "./package.json";
 /**
  * create a new project in EAS, and copy the project ID, slug, and expo account username, and paste here
  */
-const EAS_PROJECT_ID = '28f2412b-baec-4843-b0d3-c51706061d29'
-const PROJECT_SLUG = 'expoapp'
-const OWNER = 'rifandani'
-
-function getDynamicAppConfig(environment: 'development' | 'preview' | 'production') {
-  const APP_NAME = 'Expo App'
-  const BUNDLE_IDENTIFIER = 'com.rifandani.expoapp'
-  const BASE_ICON_SRC = './src/core/assets/icons'
-  const SCHEME = 'expoapp'
-
-  if (environment === 'production') {
+const EAS_PROJECT_ID = "28f2412b-baec-4843-b0d3-c51706061d29";
+const PROJECT_SLUG = "expoapp";
+const OWNER = "rifandani";
+function getDynamicAppConfig(
+  environment: "development" | "preview" | "production"
+) {
+  const APP_NAME = "Expo App";
+  const BUNDLE_IDENTIFIER = "com.rifandani.expoapp";
+  const BASE_ICON_SRC = "./src/core/assets/icons";
+  const SCHEME = "expoapp";
+  if (environment === "production") {
     return {
-      name: APP_NAME,
+      adaptiveIcon: `${BASE_ICON_SRC}/android.png`,
       bundleIdentifier: BUNDLE_IDENTIFIER,
       icon: `${BASE_ICON_SRC}/ios.png`,
-      adaptiveIcon: `${BASE_ICON_SRC}/android.png`,
+      name: APP_NAME,
       scheme: SCHEME,
-    }
+    };
   }
-
-  if (environment === 'preview') {
+  if (environment === "preview") {
     return {
-      name: `${APP_NAME} (Preview)`,
+      adaptiveIcon: `${BASE_ICON_SRC}/android-preview.png`,
       bundleIdentifier: `${BUNDLE_IDENTIFIER}.preview`,
       icon: `${BASE_ICON_SRC}/ios-preview.png`,
-      adaptiveIcon: `${BASE_ICON_SRC}/android-preview.png`,
+      name: `${APP_NAME} (Preview)`,
       scheme: `${SCHEME}-preview`,
-    }
+    };
   }
-
   return {
-    name: `${APP_NAME} (Development)`,
+    adaptiveIcon: `${BASE_ICON_SRC}/android-development.png`,
     bundleIdentifier: `${BUNDLE_IDENTIFIER}.development`,
     icon: `${BASE_ICON_SRC}/ios-development.png`,
-    adaptiveIcon: `${BASE_ICON_SRC}/android-development.png`,
+    name: `${APP_NAME} (Development)`,
     scheme: `${SCHEME}-development`,
-  }
+  };
 }
-
-export default ({ config }: ConfigContext): ExpoConfig => {
-  console.log(`🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT -> `, process.env.APP_VARIANT)
-  const { name, bundleIdentifier, icon, adaptiveIcon, scheme }
-    = getDynamicAppConfig((process.env.APP_VARIANT as 'development' | 'preview' | 'production'))
-
+export default function appConfig({ config }: ConfigContext): ExpoConfig {
+  console.log(
+    `🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT ->`,
+    process.env.APP_VARIANT
+  );
+  const { name, bundleIdentifier, icon, adaptiveIcon, scheme } =
+    getDynamicAppConfig(
+      process.env.APP_VARIANT as "development" | "preview" | "production"
+    );
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,
@@ -56,25 +58,25 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     name,
     scheme,
     version, // automatically bump project version with `npm version patch`, `npm version minor` or `npm version major`.
-    orientation: 'portrait',
-    userInterfaceStyle: 'automatic', // to support dark mode
-    platforms: ['android', 'ios'],
-    assetBundlePatterns: ['**/*'],
+    orientation: "portrait",
+    userInterfaceStyle: "automatic", // to support dark mode
+    platforms: ["android", "ios"],
+    assetBundlePatterns: ["**/*"],
     updates: {
       fallbackToCacheTimeout: 0,
       url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
     },
     runtimeVersion: {
-      policy: 'appVersion',
+      policy: "appVersion",
     },
     icon,
     android: {
-      package: bundleIdentifier,
       adaptiveIcon: {
+        backgroundColor: "#ffffff",
         foregroundImage: adaptiveIcon,
-        backgroundColor: '#ffffff',
       },
       edgeToEdgeEnabled: true,
+      package: bundleIdentifier,
     },
     ios: {
       bundleIdentifier,
@@ -90,11 +92,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // },
     },
     extra: {
-      router: {
-        origin: false,
-      },
       eas: {
         projectId: EAS_PROJECT_ID,
+      },
+      router: {
+        origin: false,
       },
     },
     experiments: {
@@ -102,23 +104,23 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       // reactCanary: true, // improved errors using react 19.1.0. link: https://expo.dev/changelog/sdk-53
     },
     plugins: [
-      'expo-localization',
-      'expo-router',
+      "expo-localization",
+      "expo-router",
       [
-        'expo-splash-screen',
+        "expo-splash-screen",
         {
-          image: './src/core/assets/icons/splash.png',
+          image: "./src/core/assets/icons/splash.png",
           // dark: {
           //   image: './src/core/assets/splash-dark.png',
           //   backgroundColor: '#000000',
           // },
           imageWidth: 200,
-          resizeMode: 'contain',
-          backgroundColor: '#ffffff',
+          resizeMode: "contain",
+          backgroundColor: "#ffffff",
         },
       ],
       [
-        'expo-font',
+        "expo-font",
         {
           /**
            * <Text style={{ fontFamily: 'SpaceGrotesk_300Light' }}>Space Grotesk 300 Light</Text>
@@ -128,11 +130,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
            * <Text style={{ fontFamily: 'SpaceGrotesk_700Bold' }}>Space Grotesk 700 Bold</Text>
            */
           fonts: [
-            '../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/600SemiBold/SpaceGrotesk_600SemiBold.ttf',
-            '../../node_modules/@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf',
+            "../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf",
+            "../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf",
+            "../../node_modules/@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf",
+            "../../node_modules/@expo-google-fonts/space-grotesk/600SemiBold/SpaceGrotesk_600SemiBold.ttf",
+            "../../node_modules/@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf",
           ],
         },
       ],
@@ -146,5 +148,5 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       //   }
       // ],
     ],
-  }
+  };
 }

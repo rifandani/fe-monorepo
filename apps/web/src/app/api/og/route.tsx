@@ -1,88 +1,12 @@
-import type { NextRequest } from 'next/server'
-import type { ReactElement } from 'react'
-import { ImageResponse } from 'next/og'
-import { createError, useLogger, withEvlog } from '@/core/utils/evlog'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { ImageResponse } from "next/og";
+import type { NextRequest } from "next/server";
+import type { ReactElement } from "react";
 
+import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
 // const interSemiBold = fetch(
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
-
-export const GET = withEvlog(async (req: NextRequest): Promise<Response | ImageResponse> => {
-  const log = useLogger()
-
-  try {
-    const { searchParams } = new URL(req.url)
-    const isLight = req.headers.get('Sec-CH-Prefers-Color-Scheme') === 'light'
-
-    const title = searchParams.has('title')
-      ? searchParams.get('title')
-      : '@workspace/web'
-    const logo = searchParams.has('logo')
-      ? searchParams.get('logo')
-      : 'next'
-
-    log.set({ og: { title, logo, isLight } })
-
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          {logo === 'next' && (isLight ? <LightNextSvg /> : <DarkNextSvg />)}
-          {logo === 'react' && (isLight ? <LightReactSvg /> : <DarkReactSvg />)}
-          <div
-            style={{
-              position: 'absolute',
-              fontFamily: 'Inter',
-              fontSize: '48px',
-              fontWeight: '600',
-              letterSpacing: '-0.04em',
-              color: isLight ? 'black' : 'white',
-              top: '250px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              whiteSpace: 'pre-wrap',
-              maxWidth: '750px',
-              textAlign: 'center',
-              wordWrap: 'break-word',
-              overflowWrap: 'break-word',
-            }}
-          >
-            {title}
-          </div>
-        </div>
-      ),
-      {
-        width: 843,
-        height: 441,
-        // fonts: [
-        //   {
-        //     name: 'Inter',
-        //     data: await interSemiBold,
-        //     style: 'normal',
-        //     weight: 400,
-        //   },
-        // ],
-      },
-    )
-  }
-  catch (err) {
-    if (!(err instanceof Error))
-      throw err
-
-    throw createError({
-      status: 500,
-      message: 'Failed to generate the image',
-      why: 'Failed to generate the image',
-      fix: 'Please try again later',
-    })
-  }
-})
 
 function LightNextSvg(): ReactElement {
   return (
@@ -386,9 +310,8 @@ function LightNextSvg(): ReactElement {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
-
 function DarkNextSvg(): ReactElement {
   return (
     <svg
@@ -641,9 +564,8 @@ function DarkNextSvg(): ReactElement {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
-
 function LightReactSvg(): ReactElement {
   return (
     <svg
@@ -858,9 +780,8 @@ function LightReactSvg(): ReactElement {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
-
 function DarkReactSvg(): ReactElement {
   return (
     <svg
@@ -1075,5 +996,73 @@ function DarkReactSvg(): ReactElement {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
+
+export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
+  const log = useLogger();
+  try {
+    const { searchParams } = new URL(req.url);
+    const isLight = req.headers.get("Sec-CH-Prefers-Color-Scheme") === "light";
+    const title = searchParams.has("title")
+      ? searchParams.get("title")
+      : "@workspace/web";
+    const logo = searchParams.has("logo") ? searchParams.get("logo") : "next";
+    log.set({ og: { isLight, logo, title } });
+    return new ImageResponse(
+      <div
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        {logo === "next" && (isLight ? <LightNextSvg /> : <DarkNextSvg />)}
+        {logo === "react" && (isLight ? <LightReactSvg /> : <DarkReactSvg />)}
+        <div
+          style={{
+            color: isLight ? "black" : "white",
+            fontFamily: "Inter",
+            fontSize: "48px",
+            fontWeight: "600",
+            left: "50%",
+            letterSpacing: "-0.04em",
+            maxWidth: "750px",
+            overflowWrap: "break-word",
+            position: "absolute",
+            textAlign: "center",
+            top: "250px",
+            transform: "translateX(-50%)",
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+          }}
+        >
+          {title}
+        </div>
+      </div>,
+      {
+        width: 843,
+        height: 441,
+        // fonts: [
+        //   {
+        //     name: 'Inter',
+        //     data: await interSemiBold,
+        //     style: 'normal',
+        //     weight: 400,
+        //   },
+        // ],
+      }
+    );
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
+    }
+    throw createError({
+      fix: "Please try again later",
+      message: "Failed to generate the image",
+      status: 500,
+      why: "Failed to generate the image",
+    });
+  }
+});

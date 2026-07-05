@@ -4,19 +4,10 @@
     "rootDir": "./src",
     "module": "NodeNext",
     "paths": {
-      "*": [
-        "./*"
-      ],
-      "@workspace/core/*": [
-        "./src/*"
-      ]
+      "*": ["./*"],
+      "@workspace/core/*": ["./src/*"]
     }
   },
-  "include": [
-    "."
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
 }

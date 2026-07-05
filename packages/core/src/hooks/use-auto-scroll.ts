@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseAutoScrollOptions {
-  isLoading: boolean
-  dependency: number
-  isStreaming: () => boolean
-  threshold?: number
-  intervalMs?: number
+  isLoading: boolean;
+  dependency: number;
+  isStreaming: () => boolean;
+  threshold?: number;
+  intervalMs?: number;
 }
 
 /**
@@ -27,54 +28,48 @@ export function useAutoScroll({
   threshold = 162,
   intervalMs = 100,
 }: UseAutoScrollOptions) {
-  const anchorRef = useRef<HTMLDivElement>(null)
-  const [isAutoScroll, setIsAutoScroll] = useState(true)
-
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [isAutoScroll, setIsAutoScroll] = useState(true);
   // Detect user scroll to toggle auto-scroll
   const handleScroll = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return
+    if (typeof window === "undefined") {
+      return;
     }
-    const scrollHeight = document.documentElement.scrollHeight
-    const atBottom
-      = window.innerHeight + window.scrollY >= scrollHeight - threshold
-    setIsAutoScroll(atBottom)
-  }, [threshold])
-
+    const { scrollHeight } = document.documentElement;
+    const atBottom =
+      window.innerHeight + window.scrollY >= scrollHeight - threshold;
+    setIsAutoScroll(atBottom);
+  }, [threshold]);
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
+    if (typeof window === "undefined") {
+      return;
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
-
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
   // Scroll to anchor element
   const scrollToBottom = useCallback(() => {
     anchorRef.current?.scrollIntoView({
-      behavior: dependency > 5 ? 'instant' : 'smooth',
-    })
-  }, [dependency])
-
+      behavior: dependency > 5 ? "instant" : "smooth",
+    });
+  }, [dependency]);
   // Auto-scroll on updates and during streaming
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!isAutoScroll) {
-      return
+      return;
     }
-
-    scrollToBottom()
-    let intervalId: ReturnType<typeof setInterval> | undefined
+    scrollToBottom();
+    let intervalId: ReturnType<typeof setInterval> | undefined;
     if (isAutoScroll && isStreaming() && isLoading) {
-      intervalId = setInterval(scrollToBottom, intervalMs)
+      intervalId = setInterval(scrollToBottom, intervalMs);
     }
     return () => {
       if (intervalId) {
-        clearInterval(intervalId)
+        clearInterval(intervalId);
       }
-    }
+    };
   }, [
     dependency,
     isLoading,
@@ -82,7 +77,6 @@ export function useAutoScroll({
     isStreaming,
     intervalMs,
     scrollToBottom,
-  ])
-
-  return { anchorRef, isAutoScroll }
+  ]);
+  return { anchorRef, isAutoScroll };
 }

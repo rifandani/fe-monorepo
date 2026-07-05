@@ -1,23 +1,21 @@
+/* oxlint-disable eslint/func-style -- function declarations */
 export function simplifyErrorObject(error: Error) {
   return {
-    name: error.name,
     message: error.message,
+    name: error.name,
     stack: error.stack,
-  }
+  };
 }
-
-/** For `catch (e)` where `e` is unknown — safe OTEL / log attributes */
 export function errorAttributesFromUnknown(caught: unknown) {
   if (caught instanceof Error) {
-    return simplifyErrorObject(caught)
+    return simplifyErrorObject(caught);
   }
-  if (typeof caught === 'string') {
-    return { message: caught }
+  if (typeof caught === "string") {
+    return { message: caught };
   }
   try {
-    return { message: JSON.stringify(caught) }
-  }
-  catch {
-    return { message: String(caught) }
+    return { message: JSON.stringify(caught) };
+  } catch {
+    return { message: String(caught) };
   }
 }

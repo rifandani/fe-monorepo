@@ -1,4 +1,5 @@
-import type { RequireAtLeastOne, UnknownRecord } from 'type-fest'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
 
 /**
  * Clamps a value to a specified range.
@@ -18,17 +19,20 @@ export function clamp({
   min,
   max,
 }: {
-  value: number
-  min: number
-  max: number
+  value: number;
+  min: number;
+  max: number;
 }): number {
-  return Math.min(Math.max(value, min), max)
+  return Math.min(Math.max(value, min), max);
 }
-
-const indonesianPhoneNumberFormatRegex = /(\d{3})(\d+)/
-const indonesianPhoneNumberFormatRegex2 = /(\d{3})(\d{4})/
-const indonesianPhoneNumberFormatRegex3 = /(\d{4})(\d{4})/
-const indonesianPhoneNumberFormatRegex4 = /(\d{4})(\d{5,})/
+const indonesianPhoneNumberFormatRegex =
+  /(?<firstGroup>\d{3})(?<secondGroup>\d+)/u;
+const indonesianPhoneNumberFormatRegex2 =
+  /(?<firstGroup>\d{3})(?<secondGroup>\d{4})/u;
+const indonesianPhoneNumberFormatRegex3 =
+  /(?<firstGroup>\d{4})(?<secondGroup>\d{4})/u;
+const indonesianPhoneNumberFormatRegex4 =
+  /(?<firstGroup>\d{4})(?<secondGroup>\d{5,})/u;
 
 /**
  * Format phone number based on mockup, currently only covered minimum 11 characters and max 15 characters include +62
@@ -38,119 +42,111 @@ const indonesianPhoneNumberFormatRegex4 = /(\d{4})(\d{5,})/
  */
 export function indonesianPhoneNumberFormat(phoneNumber: string) {
   // e.g: +62
-  const code = phoneNumber.slice(0, 3)
-  const numbers = phoneNumber.slice(3)
+  const code = phoneNumber.slice(0, 3);
+  const numbers = phoneNumber.slice(3);
   // e.g 812, 852
-  const ndc = numbers.slice(0, 3)
+  const ndc = numbers.slice(0, 3);
   // e.g the rest of the numbers
-  const uniqNumber = numbers.slice(3)
-  let regexp: RegExp
-
-  if (uniqNumber.length <= 6)
-    regexp = indonesianPhoneNumberFormatRegex
-  else if (uniqNumber.length === 7)
-    regexp = indonesianPhoneNumberFormatRegex2
-  else if (uniqNumber.length === 8)
-    regexp = indonesianPhoneNumberFormatRegex3
-  else regexp = indonesianPhoneNumberFormatRegex4
-
-  const matches = uniqNumber.replace(regexp, '$1-$2')
-
-  return [code, ndc, matches].join('-')
+  const uniqNumber = numbers.slice(3);
+  let regexp: RegExp;
+  if (uniqNumber.length <= 6) {
+    regexp = indonesianPhoneNumberFormatRegex;
+  } else if (uniqNumber.length === 7) {
+    regexp = indonesianPhoneNumberFormatRegex2;
+  } else if (uniqNumber.length === 8) {
+    regexp = indonesianPhoneNumberFormatRegex3;
+  } else {
+    regexp = indonesianPhoneNumberFormatRegex4;
+  }
+  const matches = uniqNumber.replace(regexp, "$1-$2");
+  return [code, ndc, matches].join("-");
 }
-
-const replaceCamelCaseRegex = /\.?([A-Z]+)/g
-const replaceCamelCaseRegex2 = /^_/
-const replaceCamelCaseRegex3 = /(_\w)|(-\w)/g
+const replaceCamelCaseRegex = /\.?(?<group>[A-Z]+)/gu;
+const replaceCamelCaseRegex2 = /^_/u;
+const replaceCamelCaseRegex3 = /(?<group>_\w)|(?<group>-\w)/gu;
 
 /**
  * convert deep nested object keys to camelCase.
  */
 export function toCamelCase<T>(object: unknown): T {
-  let transformedObject = object as Record<string, unknown>
-  if (typeof object === 'object' && object !== null) {
+  let transformedObject = object as Record<string, unknown>;
+  if (typeof object === "object" && object !== null) {
     if (Array.isArray(object)) {
       transformedObject = object.map(toCamelCase) as unknown as Record<
         string,
         unknown
-      >
-    }
-    else {
-      transformedObject = {}
+      >;
+    } else {
+      transformedObject = {};
       for (const key of Object.keys(object)) {
         if ((object as Record<string, unknown>)[key] !== undefined) {
-          const firstUnderscore = key.replace(replaceCamelCaseRegex2, '')
-          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, k =>
-            (k[1] as string).toUpperCase())
+          const firstUnderscore = key.replace(replaceCamelCaseRegex2, "");
+          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, (k) =>
+            (k[1] as string).toUpperCase()
+          );
           transformedObject[newKey] = toCamelCase(
-            (object as Record<string, unknown>)[key],
-          )
+            (object as Record<string, unknown>)[key]
+          );
         }
       }
     }
   }
-  return transformedObject as T
+  return transformedObject as T;
 }
-
-/**
- * convert deep nested object keys to snake_case.
- */
 export function toSnakeCase<T>(object: unknown): T {
-  let transformedObject = object as Record<string, unknown>
-  if (typeof object === 'object' && object !== null) {
+  let transformedObject = object as Record<string, unknown>;
+  if (typeof object === "object" && object !== null) {
     if (Array.isArray(object)) {
       transformedObject = object.map(toSnakeCase) as unknown as Record<
         string,
         unknown
-      >
-    }
-    else {
-      transformedObject = {}
+      >;
+    } else {
+      transformedObject = {};
       for (const key of Object.keys(object)) {
         if ((object as Record<string, unknown>)[key] !== undefined) {
           const newKey = key
             .replace(
               replaceCamelCaseRegex,
-              (_, y) => `_${y ? (y as string).toLowerCase() : ''}`,
+              (_, y) => `_${y ? (y as string).toLowerCase() : ""}`
             )
-            .replace(replaceCamelCaseRegex2, '')
+            .replace(replaceCamelCaseRegex2, "");
           transformedObject[newKey] = toSnakeCase(
-            (object as Record<string, unknown>)[key],
-          )
+            (object as Record<string, unknown>)[key]
+          );
         }
       }
     }
   }
-  return transformedObject as T
+  return transformedObject as T;
 }
-
-const removeLeadingZerosRegex = /^0+[1-9]+/
-const removeLeadingZeroRegex = /^(0)/
-const removeLeadingZeros2Regex = /^0{2,}/
+const removeLeadingZerosRegex = /^0+[1-9]+/u;
+const removeLeadingZeroRegex = /^(?<group>0)/u;
+const removeLeadingZeros2Regex = /^0{2,}/u;
 
 /**
  * Remove leading zero
  */
 export function removeLeadingZeros(value: string) {
-  if (removeLeadingZerosRegex.test(value))
-    return value.replace(removeLeadingZeroRegex, '')
-
-  return value.replace(removeLeadingZeros2Regex, '0')
+  if (removeLeadingZerosRegex.test(value)) {
+    return value.replace(removeLeadingZeroRegex, "");
+  }
+  return value.replace(removeLeadingZeros2Regex, "0");
 }
-
-const removeLeadingWhitespaceRegex = /^\s*$/
-const removeLeadingWhitespace2Regex = /^\s*/
+const removeLeadingWhitespaceRegex = /^\s*$/u;
+const removeLeadingWhitespace2Regex = /^\s*/u;
 
 /**
  * Remove leading whitespaces
  */
 export function removeLeadingWhitespace(value?: string) {
-  if (!value)
-    return ''
-  if (removeLeadingWhitespaceRegex.test(value))
-    return value.replace(removeLeadingWhitespace2Regex, '')
-
-  return value
+  if (!value) {
+    return "";
+  }
+  if (removeLeadingWhitespaceRegex.test(value)) {
+    return value.replace(removeLeadingWhitespace2Regex, "");
+  }
+  return value;
 }
 
 /**
@@ -198,58 +194,48 @@ export function removeLeadingWhitespace(value?: string) {
 export function objectToFormData<T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
-    rootName?: string
-    ignoreList: Array<keyof T>
-  }>,
+    rootName?: string;
+    ignoreList: (keyof T)[];
+  }>
 ) {
-  const formData = new FormData()
-
+  const formData = new FormData();
   function ignore(_key?: string) {
     return (
-      Array.isArray(options?.ignoreList)
-      && options?.ignoreList.includes(_key as keyof T)
-    )
+      Array.isArray(options?.ignoreList) &&
+      options?.ignoreList.includes(_key as keyof T)
+    );
   }
-
   function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_
-
+    let _rootName = _rootName_;
     if (!ignore(_rootName)) {
-      _rootName = _rootName || ''
-
+      _rootName ||= "";
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj)
-      }
-      else if (Array.isArray(_obj)) {
-        for (let i = 0; i < _obj.length; i++) {
-          appendFormData(_obj[i], `${_rootName}[${i}]`)
+        formData.append(_rootName, _obj);
+      } else if (Array.isArray(_obj)) {
+        for (let i = 0; i < _obj.length; i += 1) {
+          appendFormData(_obj[i], `${_rootName}[${i}]`);
         }
-      }
-      else if (typeof _obj === 'object' && _obj) {
+      } else if (typeof _obj === "object" && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === '') {
+            if (_rootName === "") {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key)
-            }
-            else {
+              appendFormData(_obj[key], key);
+            } else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`)
+              appendFormData(_obj[key], `${_rootName}.${key}`);
             }
           }
         }
-      }
-      else {
-        if (_obj !== null && typeof _obj !== 'undefined') {
-          formData.append(_rootName, _obj)
+      } else {
+        if (_obj !== null && _obj !== undefined) {
+          formData.append(_rootName, _obj);
         }
       }
     }
   }
-
-  appendFormData(obj, options?.rootName)
-
-  return formData
+  appendFormData(obj, options?.rootName);
+  return formData;
 }
 
 /**
@@ -294,56 +280,46 @@ export function objectToFormData<T extends UnknownRecord>(
 export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
-    rootName?: string
-    ignoreList: Array<keyof T>
-  }>,
+    rootName?: string;
+    ignoreList: (keyof T)[];
+  }>
 ) {
-  const formData = new FormData()
-
+  const formData = new FormData();
   function ignore(_key?: string) {
     return (
-      Array.isArray(options?.ignoreList)
-      && options?.ignoreList.includes(_key as keyof T)
-    )
+      Array.isArray(options?.ignoreList) &&
+      options?.ignoreList.includes(_key as keyof T)
+    );
   }
-
   function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_
-
+    let _rootName = _rootName_;
     if (!ignore(_rootName)) {
-      _rootName = _rootName || ''
-
+      _rootName ||= "";
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj)
-      }
-      else if (Array.isArray(_obj)) {
-        formData.append(_rootName, _obj.join(','))
-      }
-      else if (typeof _obj === 'object' && _obj) {
+        formData.append(_rootName, _obj);
+      } else if (Array.isArray(_obj)) {
+        formData.append(_rootName, _obj.join(","));
+      } else if (typeof _obj === "object" && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === '') {
+            if (_rootName === "") {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key)
-            }
-            else {
+              appendFormData(_obj[key], key);
+            } else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`)
+              appendFormData(_obj[key], `${_rootName}.${key}`);
             }
           }
         }
-      }
-      else {
-        if (_obj !== null && typeof _obj !== 'undefined') {
-          formData.append(_rootName, _obj)
+      } else {
+        if (_obj !== null && _obj !== undefined) {
+          formData.append(_rootName, _obj);
         }
       }
     }
   }
-
-  appendFormData(obj, options?.rootName)
-
-  return formData
+  appendFormData(obj, options?.rootName);
+  return formData;
 }
 
 /**
@@ -369,13 +345,18 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
  * // => 'not found'
  * ```
  */
-export function deepReadObject<T = any>(obj: Record<string, unknown>, path: string, defaultValue?: unknown): T {
+// oxlint-disable-next-line typescript/no-explicit-any
+export function deepReadObject<T = any>(
+  obj: Record<string, unknown>,
+  path: string,
+  defaultValue?: unknown
+): T {
   const value = path
     .trim()
-    .split('.')
-    .reduce<any>((a, b) => (a ? a[b] : undefined), obj)
-
-  return value !== undefined ? value : defaultValue as T
+    .split(".")
+    // oxlint-disable-next-line typescript/no-explicit-any -- dynamic path traversal
+    .reduce<any>((a, b) => (a ? a[b] : undefined), obj);
+  return value === undefined ? (defaultValue as T) : value;
 }
 
 /**
@@ -384,10 +365,13 @@ export function deepReadObject<T = any>(obj: Record<string, unknown>, path: stri
  * @returns Promise that resolves with the base64 string representation of the file
  */
 export function toBase64(file: File) {
+  // oxlint-disable-next-line promise/avoid-new -- FileReader has no promise API
   return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = reject
-  })
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
+    reader.onload = () => resolve(reader.result);
+    // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
+    reader.onerror = reject;
+  });
 }

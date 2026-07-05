@@ -1,15 +1,15 @@
-import { useMemoizedFn } from '@workspace/core/hooks/use-memoized-fn'
-import { useUpdateEffect } from '@workspace/core/hooks/use-update-effect'
-import { isFunction } from 'radashi'
-import { useState } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
+import { useUpdateEffect } from "@workspace/core/hooks/use-update-effect";
+import { isFunction } from "radashi";
+import { useState } from "react";
 
-export type SetState<S> = S | ((prevState?: S) => S)
-
+export type SetState<S> = S | ((prevState?: S) => S);
 export interface Options<T> {
-  defaultValue?: T | (() => T)
-  serializer?: (value: T) => string
-  deserializer?: (value: string) => T
-  onError?: (error: unknown) => void
+  defaultValue?: T | (() => T);
+  serializer?: (value: T) => string;
+  deserializer?: (value: string) => T;
+  onError?: (error: unknown) => void;
 }
 
 /**
@@ -25,93 +25,80 @@ export function createUseStorageState(getStorage: () => Storage | undefined) {
    * @returns [storedValue, setValue] tuple for reading/writing storage
    */
   function useStorageState<T>(key: string, options: Options<T> = {}) {
-    let storage: Storage | undefined
+    let storage: Storage | undefined;
     const {
       onError = (e) => {
-        console.error(e)
+        console.error(e);
       },
-    } = options
-
+    } = options;
     // Try to get storage instance, with error handling
     // https://github.com/alibaba/hooks/issues/800
     try {
-      storage = getStorage()
+      storage = getStorage();
+    } catch (error) {
+      onError(error);
     }
-    catch (err) {
-      onError(err)
-    }
-
     /**
      * Serializes a value before storing in storage
      * Uses custom serializer if provided, otherwise JSON.stringify
      */
     const serializer = (value: T) => {
-      if (options.serializer)
-        return options.serializer(value)
-
-      return JSON.stringify(value)
-    }
-
+      if (options.serializer) {
+        return options.serializer(value);
+      }
+      return JSON.stringify(value);
+    };
     /**
      * Deserializes a value retrieved from storage
      * Uses custom deserializer if provided, otherwise JSON.parse
      */
     const deserializer = (value: string): T => {
-      if (options.deserializer)
-        return options.deserializer(value)
-
-      return JSON.parse(value)
-    }
-
+      if (options.deserializer) {
+        return options.deserializer(value);
+      }
+      return JSON.parse(value);
+    };
     /**
      * Retrieves and deserializes the stored value from storage
      * Falls back to defaultValue if storage access fails or value doesn't exist
      */
-    function getStoredValue() {
+    const getStoredValue = () => {
       try {
-        const raw = storage?.getItem(key)
-        if (raw)
-          return deserializer(raw)
+        const raw = storage?.getItem(key);
+        if (raw) {
+          return deserializer(raw);
+        }
+      } catch (error) {
+        onError(error);
       }
-      catch (e) {
-        onError(e)
+      if (isFunction(options.defaultValue)) {
+        return options.defaultValue();
       }
-      if (isFunction(options.defaultValue))
-        return options.defaultValue()
-
-      return options.defaultValue
-    }
-
-    const [state, setState] = useState(getStoredValue)
-
+      return options.defaultValue;
+    };
+    const [state, setState] = useState(getStoredValue);
     // Update state when key changes
     useUpdateEffect(() => {
-      setState(getStoredValue())
-    }, [key])
-
+      setState(getStoredValue());
+    }, [key]);
     /**
      * Updates both the React state and storage value
      * @param value New value or function to update current value
      */
     const updateState = (value?: SetState<T>) => {
-      const currentState = isFunction(value) ? value(state) : value
-      setState(currentState)
-
+      const currentState = isFunction(value) ? value(state) : value;
+      setState(currentState);
       if (currentState === undefined) {
-        storage?.removeItem(key)
-      }
-      else {
+        storage?.removeItem(key);
+      } else {
         try {
-          storage?.setItem(key, serializer(currentState))
-        }
-        catch (e) {
-          console.error(e)
+          storage?.setItem(key, serializer(currentState));
+        } catch (error) {
+          console.error(error);
         }
       }
-    }
-
-    return [state, useMemoizedFn(updateState)] as const
+    };
+    return [state, useMemoizedFn(updateState)] as const;
   }
-
-  return useStorageState
+  return useStorageState;
 }

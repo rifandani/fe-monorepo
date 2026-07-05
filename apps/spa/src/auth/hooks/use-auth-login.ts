@@ -1,63 +1,46 @@
-import type { MutationState, UseMutationOptions } from '@tanstack/react-query'
-import type { AuthLoginRequestSchema } from '@workspace/core/apis/auth'
-import type { ErrorResponseSchema } from '@workspace/core/apis/core'
-import type { TimeoutError } from 'ky'
-import type { Except } from 'type-fest'
-import type { z } from 'zod'
-import {
-  useMutation,
-  useMutationState,
-} from '@tanstack/react-query'
-import {
-  authKeys,
-  authRepositories,
-} from '@workspace/core/apis/auth'
-import {
-  errorResponseSchema,
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
+import { useMutation, useMutationState } from "@tanstack/react-query";
+import type { AuthLoginRequestSchema } from "@workspace/core/apis/auth";
+import { authKeys, authRepositories } from "@workspace/core/apis/auth";
+import type { ErrorResponseSchema } from "@workspace/core/apis/core";
+import { errorResponseSchema } from "@workspace/core/apis/core";
+import type { TimeoutError } from "ky";
+import { HTTPError } from "ky";
+import { toast } from "sonner";
+import type { Except } from "type-fest";
+import type { z } from "zod";
 
-} from '@workspace/core/apis/core'
-import { HTTPError } from 'ky'
-import { toast } from 'sonner'
-import { http } from '@/core/services/http'
+import { http } from "@/core/services/http";
 
-type Params = Parameters<typeof authKeys.login>[0]
-type Success = Awaited<ReturnType<ReturnType<typeof authRepositories>['login']>>
-type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError
-
-/**
- * @url POST ${ENV.VITE_API_BASE_URL}/auth/login
- * @note includes error handling for convenience
- */
+type Params = Parameters<typeof authKeys.login>[0];
+type Success = Awaited<
+  ReturnType<ReturnType<typeof authRepositories>["login"]>
+>;
+type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
 export function useAuthLogin(
   params: Params,
   mutationOptions?: Except<
     UseMutationOptions<Success, Error, Exclude<Params, undefined>>,
-    'mutationKey' | 'mutationFn'
-  >,
+    "mutationKey" | "mutationFn"
+  >
 ) {
-  const { onError, ..._mutationOptions } = mutationOptions ?? {}
-
+  const { onError, ..._mutationOptions } = mutationOptions ?? {};
   return useMutation<Success, Error, Exclude<Params, undefined>>({
+    mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),
-    mutationFn: json => authRepositories(http).login({ json }),
     onError: (error, variables, onMutateResult, context) => {
       if (error instanceof HTTPError) {
-        const parsed = errorResponseSchema.safeParse(error.data)
-        toast.error(parsed.success ? parsed.data.message : error.message)
+        const parsed = errorResponseSchema.safeParse(error.data);
+        toast.error(parsed.success ? parsed.data.message : error.message);
+      } else {
+        toast.error(error.message);
       }
-      else {
-        toast.error(error.message)
-      }
-
-      onError?.(error, variables, onMutateResult, context)
+      onError?.(error, variables, onMutateResult, context);
     },
     ..._mutationOptions,
-  })
+  });
 }
-
-/**
- * Get mutation state based on the mutation key.
- */
 export function useAuthLoginMutationState(params: AuthLoginRequestSchema) {
   return useMutationState<
     MutationState<Success, Error, Exclude<Params, undefined>>
@@ -65,5 +48,5 @@ export function useAuthLoginMutationState(params: AuthLoginRequestSchema) {
     filters: {
       mutationKey: authKeys.login(params),
     },
-  })
+  });
 }

@@ -1,14 +1,15 @@
-import type { PropsWithChildren } from 'react'
-import { Toaster } from 'sonner'
-import { ToastContext, useCreateToastContext } from './context'
+/* oxlint-disable eslint/func-style -- function declarations */
+import type { PropsWithChildren } from "react";
+import { Toaster } from "sonner";
+
+import { ToastContext, useCreateToastContext } from "./context";
 
 export function AppToastProvider({ children }: PropsWithChildren) {
-  const value = useCreateToastContext()
-
+  const value = useCreateToastContext();
   return (
     <ToastContext value={value}>
       {children}
       <Toaster {...value[0]} />
     </ToastContext>
-  )
+  );
 }

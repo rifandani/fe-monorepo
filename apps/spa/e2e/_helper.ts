@@ -1,34 +1,34 @@
-import type { AuthLoginResponseSchema } from '@workspace/core/apis/auth'
-import type { UserStoreState } from '@/auth/hooks/use-auth-user-store'
-import { faker } from '@faker-js/faker'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { faker } from "@faker-js/faker";
+import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
+
+import type { UserStoreState } from "@/auth/hooks/use-auth-user-store";
 
 export function seedUser(): AuthLoginResponseSchema {
   return {
-    id: faker.number.int(),
-    username: faker.person.middleName(),
+    accessToken: faker.string.uuid(),
     email: faker.internet.email(),
     firstName: faker.person.firstName(),
-    lastName: faker.person.lastName(),
-    gender: faker.helpers.arrayElement(['male', 'female']),
+    gender: faker.helpers.arrayElement(["male", "female"]),
+    id: faker.number.int(),
     image: faker.image.avatar(),
-    accessToken: faker.string.uuid(),
+    lastName: faker.person.lastName(),
     refreshToken: faker.string.uuid(),
-  }
+    username: faker.person.middleName(),
+  };
 }
-
 export function getLocalStorageUser(): {
-  version: number
-  state: UserStoreState
+  version: number;
+  state: UserStoreState;
 } | null {
-  if (!localStorage)
-    throw new Error('You are not in the browser env!')
-
-  return JSON.parse(localStorage.getItem('app-user') ?? 'null')
+  if (!localStorage) {
+    throw new Error("You are not in the browser env!");
+  }
+  return JSON.parse(localStorage.getItem("app-user") ?? "null");
 }
-
 export function setLocalStorageUser(user: AuthLoginResponseSchema) {
-  if (!localStorage)
-    throw new Error('You are not in the browser env!')
-
-  localStorage.setItem('app-user', JSON.stringify(user))
+  if (!localStorage) {
+    throw new Error("You are not in the browser env!");
+  }
+  localStorage.setItem("app-user", JSON.stringify(user));
 }

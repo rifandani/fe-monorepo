@@ -1,19 +1,19 @@
 name: "\U0001F680 New feature proposal"
 description: Suggest an idea/feature for vue-app
-labels: ['feature']
+labels: ["feature"]
 body:
   - type: textarea
     id: feature-description
     attributes:
       label: What problem is this solving
-      description: 'A clear and concise description of what the problem is. Ex. when using the function X we cannot do Y.'
+      description: "A clear and concise description of what the problem is. Ex. when using the function X we cannot do Y."
     validations:
       required: true
   - type: textarea
     id: proposed-solution
     attributes:
       label: Proposed solution
-      description: 'A clear and concise description of what you want to happen with an API proposal when applicable'
+      description: "A clear and concise description of what you want to happen with an API proposal when applicable"
     validations:
       required: true
   - type: textarea

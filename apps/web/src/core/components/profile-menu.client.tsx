@@ -1,42 +1,53 @@
-'use client'
+"use client";
+/* oxlint-disable eslint/func-style -- function declarations */
+import {
+  ArrowRightStartOnRectangleIcon,
+  Cog6ToothIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useAction } from "next-safe-action/hooks";
+import * as React from "react";
 
-import { ArrowRightStartOnRectangleIcon, Cog6ToothIcon, UserIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
-import { useAction } from 'next-safe-action/hooks'
-import * as React from 'react'
-import { logoutAction } from '@/auth/actions/auth'
-import { Menu, MenuContent, MenuHeader, MenuItem, MenuSection, MenuSeparator, MenuTrigger } from '@/core/components/ui'
-import { Avatar } from '@/core/components/ui/avatar'
+import { logoutAction } from "@/auth/actions/auth";
+import {
+  Menu,
+  MenuContent,
+  MenuHeader,
+  MenuItem,
+  MenuSection,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/core/components/ui";
+import { Avatar } from "@/core/components/ui/avatar";
 
 export function ProfileMenu({ username }: { username: string }) {
-  const t = useTranslations()
-  const { execute, isPending } = useAction(logoutAction)
-
+  const t = useTranslations();
+  const { execute, isPending } = useAction(logoutAction);
   return (
     <Menu>
       <MenuTrigger>
-        <Avatar initials={username.slice(0, 2).toUpperCase() ?? '??'} />
+        <Avatar initials={username.slice(0, 2).toUpperCase() ?? "??"} />
       </MenuTrigger>
 
       <MenuContent
-        onAction={async (key) => {
-          const currentKey = key as 'profile' | 'settings' | 'logout'
-
-          if (currentKey === 'logout') {
-            execute()
+        onAction={(key) => {
+          const currentKey = key as "profile" | "settings" | "logout";
+          if (currentKey === "logout") {
+            execute();
           }
         }}
       >
         <MenuSection>
-          <MenuHeader separator>{t('account')}</MenuHeader>
+          <MenuHeader separator>{t("account")}</MenuHeader>
 
           <MenuItem id="profile" className="gap-x-2" isDisabled={isPending}>
             <UserIcon className="size-6" />
-            <span>{t('profile')}</span>
+            <span>{t("profile")}</span>
           </MenuItem>
           <MenuItem id="settings" className="gap-x-2" isDisabled={isPending}>
             <Cog6ToothIcon className="size-6" />
-            <span>{t('settings')}</span>
+            <span>{t("settings")}</span>
           </MenuItem>
         </MenuSection>
 
@@ -45,10 +56,10 @@ export function ProfileMenu({ username }: { username: string }) {
         <MenuSection>
           <MenuItem id="logout" className="gap-x-2" isDisabled={isPending}>
             <ArrowRightStartOnRectangleIcon className="size-6" />
-            <p>{t('logout')}</p>
+            <p>{t("logout")}</p>
           </MenuItem>
         </MenuSection>
       </MenuContent>
     </Menu>
-  )
+  );
 }

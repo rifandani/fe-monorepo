@@ -1,43 +1,42 @@
-import { useLatest } from '@workspace/core/hooks/use-latest'
-import { isNumber } from 'radashi'
-import { useCallback, useEffect, useRef } from 'react'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { useLatest } from "@workspace/core/hooks/use-latest";
+import { isNumber } from "radashi";
+import { useCallback, useEffect, useRef } from "react";
 
 interface Handle {
-  id: number
+  id: number;
 }
-
 function setRafInterval(callback: () => void, delay = 0) {
   if (typeof requestAnimationFrame === typeof undefined) {
     return {
       id: setInterval(callback, delay),
-    }
+    };
   }
-  let start = Date.now()
+  let start = Date.now();
   const handle: Handle = {
     id: 0,
-  }
-  const loop = () => {
-    const current = Date.now()
+  };
+  function loop() {
+    const current = Date.now();
     if (current - start >= delay) {
-      callback()
-      start = Date.now()
+      // oxlint-disable-next-line promise/prefer-await-to-callbacks node/callback-return
+      callback();
+      start = Date.now();
     }
-    handle.id = requestAnimationFrame(loop)
+    handle.id = requestAnimationFrame(loop);
   }
-  handle.id = requestAnimationFrame(loop)
-  return handle
+  handle.id = requestAnimationFrame(loop);
+  return handle;
 }
-
-// biome-ignore lint/suspicious/noExplicitAny: intended
+// oxlint-disable-next-line typescript/no-explicit-any
 function cancelAnimationFrameIsNotDefined(_t: any): _t is number {
-  return typeof cancelAnimationFrame === typeof undefined
+  return typeof cancelAnimationFrame === typeof undefined;
 }
-
 function clearRafInterval(handle: Handle) {
-  if (cancelAnimationFrameIsNotDefined(handle.id))
-    return clearInterval(handle.id)
-
-  cancelAnimationFrame(handle.id)
+  if (cancelAnimationFrameIsNotDefined(handle.id)) {
+    return clearInterval(handle.id);
+  }
+  cancelAnimationFrame(handle.id);
 }
 
 /**
@@ -54,34 +53,33 @@ export function useRafInterval(
   fn: () => void,
   delay: number | undefined,
   options?: {
-    immediate?: boolean
-  },
+    immediate?: boolean;
+  }
 ) {
-  const immediate = options?.immediate
-
-  const fnRef = useLatest(fn)
-  const timerRef = useRef<Handle>(null)
-
+  const immediate = options?.immediate;
+  const fnRef = useLatest(fn);
+  const timerRef = useRef<Handle>(null);
   useEffect(() => {
-    if (!isNumber(delay) || delay < 0)
-      return
-    if (immediate)
-      fnRef.current()
-
-    timerRef.current = setRafInterval(() => {
-      fnRef.current()
-    }, delay) as Handle
-
-    return () => {
-      if (timerRef.current)
-        clearRafInterval(timerRef.current)
+    if (!isNumber(delay) || delay < 0) {
+      return;
     }
-  }, [delay])
-
+    if (immediate) {
+      fnRef.current();
+    }
+    timerRef.current = setRafInterval(() => {
+      fnRef.current();
+    }, delay) as Handle;
+    return () => {
+      if (timerRef.current) {
+        clearRafInterval(timerRef.current);
+      }
+    };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [delay]);
   const clear = useCallback(() => {
-    if (timerRef.current)
-      clearRafInterval(timerRef.current)
-  }, [])
-
-  return clear
+    if (timerRef.current) {
+      clearRafInterval(timerRef.current);
+    }
+  }, []);
+  return clear;
 }

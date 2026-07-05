@@ -1,53 +1,28 @@
-import type { ErrorComponentProps } from '@tanstack/react-router'
-import { trace } from '@opentelemetry/api'
-import { createRouter } from '@tanstack/react-router'
-import { useColorMode } from '@workspace/core/hooks/use-color-mode'
-import { logger } from '@workspace/core/utils/logger'
-import { useAuthUserStore } from '@/auth/hooks/use-auth-user-store'
-import { Button } from '@/core/components/ui'
-import { Link } from '@/core/components/ui/link'
-import { TRACER_ROUTER, TRACER_ROUTER_ON_ERROR } from '@/core/constants/global'
-import { useTranslation } from '@/core/providers/i18n/context'
-import { queryClient } from '@/core/providers/query/client'
-import { recordException } from '@/core/utils/telemetry'
-import { routeTree } from '../../../routeTree.gen'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { trace } from "@opentelemetry/api";
+import type { ErrorComponentProps } from "@tanstack/react-router";
+import { createRouter } from "@tanstack/react-router";
+import { useColorMode } from "@workspace/core/hooks/use-color-mode";
+import { logger } from "@workspace/core/utils/logger";
+
+import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { Button } from "@/core/components/ui";
+import { Link } from "@/core/components/ui/link";
+import { TRACER_ROUTER, TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
+import { useTranslation } from "@/core/providers/i18n/context";
+import { queryClient } from "@/core/providers/query/client";
+import { recordException } from "@/core/utils/telemetry";
+
+// oxlint-disable-next-line import/no-cycle
+import { routeTree } from "../../../routeTree.gen";
 
 // Register the router instance for type safety
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }
-
-const tracer = trace.getTracer(TRACER_ROUTER)
-
-// Create a new router instance
-export const router = createRouter({
-  routeTree,
-  defaultOnCatch: (error, errorInfo) => {
-    recordException({
-      tracer,
-      name: TRACER_ROUTER_ON_ERROR,
-      error: {
-        name: error instanceof Error ? error.name : undefined,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        ...errorInfo,
-      },
-    })
-  },
-  defaultNotFoundComponent: NotFoundRoute,
-  defaultPendingComponent: PendingRoute,
-  defaultErrorComponent: ErrorRoute,
-  context: {
-    queryClient,
-  },
-  defaultPreload: 'intent',
-  // Since we're using React Query, we don't want loader calls to ever be stale
-  // This will ensure that the loader is always called when the route is preloaded or visited
-  defaultPreloadStaleTime: 0,
-})
-
+const tracer = trace.getTracer(TRACER_ROUTER);
 function PendingRoute() {
   return (
     <div className="flex items-center justify-center">
@@ -55,12 +30,10 @@ function PendingRoute() {
         <use href="#svg-spinners--3-dots-fade" />
       </svg>
     </div>
-  )
+  );
 }
-
 function ErrorRoute({ reset, error, info }: ErrorComponentProps) {
-  logger.error('[ErrorRoute]: Error', { error, info })
-
+  logger.error("[ErrorRoute]: Error", { error, info });
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
@@ -68,9 +41,7 @@ function ErrorRoute({ reset, error, info }: ErrorComponentProps) {
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-fg">
-            Something went wrong
-          </p>
+          <p className="text-muted-fg">Something went wrong</p>
         </div>
 
         {/* Quick Actions */}
@@ -88,42 +59,65 @@ function ErrorRoute({ reset, error, info }: ErrorComponentProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
 function NotFoundRoute() {
-  useColorMode()
-  const userStore = useAuthUserStore()
-  const { t } = useTranslation()
-
+  useColorMode();
+  const userStore = useAuthUserStore();
+  const { t } = useTranslation();
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
         {/* Hero Section */}
         <div className="space-y-4">
           <h1 className="text-8xl font-bold text-primary">404</h1>
-          <h2 className="text-2xl font-semibold">{t('notFound')}</h2>
-          <p className="text-muted-fg">
-            {t('gone')}
-          </p>
+          <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
+          <p className="text-muted-fg">{t("gone")}</p>
         </div>
 
         {/* Quick Actions */}
-        <div className={`
+        <div
+          className={`
           flex flex-col justify-center gap-4
           sm:flex-row
         `}
         >
           <Link
-            href={userStore.user ? '/' : '/login'}
+            href={userStore.user ? "/" : "/login"}
             className="flex items-center"
           >
-            {t('backTo', {
-              target: userStore.user ? 'Home' : 'Login',
+            {t("backTo", {
+              target: userStore.user ? "Home" : "Login",
             })}
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }
+// Create a new router instance
+export const router = createRouter({
+  routeTree,
+  defaultOnCatch: (error, errorInfo) => {
+    recordException({
+      error: {
+        message: error instanceof Error ? error.message : String(error),
+        name: error instanceof Error ? error.name : undefined,
+        stack: error instanceof Error ? error.stack : undefined,
+        ...errorInfo,
+      },
+      name: TRACER_ROUTER_ON_ERROR,
+      tracer,
+    });
+  },
+  defaultNotFoundComponent: NotFoundRoute,
+  defaultPendingComponent: PendingRoute,
+  defaultErrorComponent: ErrorRoute,
+  context: {
+    queryClient,
+  },
+  defaultPreload: "intent",
+  // Since we're using React Query, we don't want loader calls to ever be stale
+  // This will ensure that the loader is always called when the route is preloaded or visited
+  defaultPreloadStaleTime: 0,
+});

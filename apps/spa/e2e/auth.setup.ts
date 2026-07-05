@@ -1,25 +1,20 @@
-import { expect, test } from './_base'
+import { expect, test } from "./_base";
 
-const usernameRegex = /username/i
-const passwordRegex = /password/i
-const loginRegex = /login|masuk/i
-
-test('auth setup', async ({ page }) => {
+const usernameRegex = /username/iu;
+const passwordRegex = /password/iu;
+const loginRegex = /login|masuk/iu;
+test("auth setup", async ({ page }) => {
   // when we're not authenticated, the app redirects to the login page
-  await page.goto('')
-
-  const usernameInput = page.getByRole('textbox', { name: usernameRegex })
-  const passwordInput = page.getByRole('textbox', { name: passwordRegex })
-  const submitBtn = page.getByRole('button', { name: loginRegex })
-
-  await usernameInput.fill('emilys')
-  await passwordInput.fill('emilyspass')
-  await submitBtn.click()
-
-  await page.waitForURL('')
-  await expect(usernameInput).toBeHidden({ timeout: 10_000 })
-  await expect(passwordInput).toBeHidden({ timeout: 10_000 })
-  await expect(submitBtn).toBeHidden({ timeout: 10_000 })
-
-  await page.context().storageState({ path: 'playwright/.auth/user.json' })
-})
+  await page.goto("");
+  const usernameInput = page.getByRole("textbox", { name: usernameRegex });
+  const passwordInput = page.getByRole("textbox", { name: passwordRegex });
+  const submitBtn = page.getByRole("button", { name: loginRegex });
+  await usernameInput.fill("emilys");
+  await passwordInput.fill("emilyspass");
+  await submitBtn.click();
+  await page.waitForURL("");
+  await expect(usernameInput).toBeHidden({ timeout: 10_000 });
+  await expect(passwordInput).toBeHidden({ timeout: 10_000 });
+  await expect(submitBtn).toBeHidden({ timeout: 10_000 });
+  await page.context().storageState({ path: "playwright/.auth/user.json" });
+});

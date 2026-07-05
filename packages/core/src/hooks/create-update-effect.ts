@@ -1,10 +1,10 @@
-import type { useEffect, useLayoutEffect } from 'react'
-import { useRef } from 'react'
+import type { useEffect, useLayoutEffect } from "react";
+import { useRef } from "react";
 
 /**
  * Type representing either useEffect or useLayoutEffect hook
  */
-type EffectHookType = typeof useEffect | typeof useLayoutEffect
+type EffectHookType = typeof useEffect | typeof useLayoutEffect;
 
 /**
  * Creates a modified effect hook that only runs on updates, skipping the initial mount
@@ -17,27 +17,26 @@ type EffectHookType = typeof useEffect | typeof useLayoutEffect
  * const useUpdateLayoutEffect = createUpdateEffect(useLayoutEffect)
  * ```
  */
-export const createUpdateEffect: (hook: EffectHookType) => EffectHookType
-  = hook => (effect, deps) => {
+export const createUpdateEffect: (hook: EffectHookType) => EffectHookType =
+  (hook) => (effect, deps) => {
     // Track whether component has mounted
-    const isMountedRef = useRef(false)
+    const isMountedRef = useRef(false);
 
     // Reset mounted state when component unmounts (helps with React strict mode)
-    hook(() => {
-      return () => {
-        isMountedRef.current = false
-      }
-    }, [])
+    hook(
+      () => () => {
+        isMountedRef.current = false;
+      },
+      []
+    );
 
     // Only execute effect if component has already mounted once
     hook(() => {
-      if (!isMountedRef.current) {
-        // Skip effect on initial mount and set mounted flag
-        isMountedRef.current = true
-      }
-      else {
+      if (isMountedRef.current) {
         // Run effect on subsequent updates
-        return effect()
+        return effect();
       }
-    }, deps)
-  }
+      // Skip effect on initial mount and set mounted flag
+      isMountedRef.current = true;
+    }, deps);
+  };

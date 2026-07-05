@@ -1,6 +1,5 @@
-import { logger as baseLogger } from 'react-native-logs'
-
+import { logger as baseLogger } from "react-native-logs";
 /**
  * by default using console transport
  */
-export const logger = baseLogger.createLogger()
+export const logger = baseLogger.createLogger();

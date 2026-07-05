@@ -1,28 +1,31 @@
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { FormDevtoolsPanel } from '@tanstack/react-form-devtools'
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import * as React from 'react'
-import { queryClient } from '@/core/providers/query/client'
-import { router } from '@/core/providers/router/client'
+/* oxlint-disable eslint/func-style -- function declarations */
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import * as React from "react";
+
+import { queryClient } from "@/core/providers/query/client";
+// oxlint-disable-next-line import/no-cycle
+import { router } from "@/core/providers/router/client";
 
 export function Devtools() {
   return (
     <TanStackDevtools
       plugins={[
         {
-          name: 'TanStack Query',
+          name: "TanStack Query",
           render: <ReactQueryDevtoolsPanel client={queryClient} />,
         },
         {
-          name: 'TanStack Router',
+          name: "TanStack Router",
           render: <TanStackRouterDevtoolsPanel router={router} />,
         },
         {
-          name: 'TanStack Form',
+          name: "TanStack Form",
           render: <FormDevtoolsPanel />,
         },
       ]}
     />
-  )
+  );
 }

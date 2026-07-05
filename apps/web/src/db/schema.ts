@@ -1,4 +1,3 @@
-import type { z } from 'zod'
 import {
   bigint,
   boolean,
@@ -7,79 +6,73 @@ import {
   text,
   timestamp,
   uuid,
-} from 'drizzle-orm/pg-core'
-import { createSelectSchema } from 'drizzle-zod'
-
+} from "drizzle-orm/pg-core";
+import { createSelectSchema } from "drizzle-zod";
+import type { z } from "zod";
 // #region COMMON
 const timestamps = {
   createdAt: timestamp().defaultNow().notNull(),
-  updatedAt: timestamp(),
   deletedAt: timestamp(),
-}
+  updatedAt: timestamp(),
+};
 // #endregion COMMON
-
 // #region AUTH
-export const userTable = pgTable('user', {
-  id: text().primaryKey(),
-  name: text().notNull(),
+export const userTable = pgTable("user", {
   email: text().notNull().unique(),
   emailVerified: boolean().default(false).notNull(),
-  image: text(),
-  ...timestamps,
-})
-export const selectUserTableSchema = createSelectSchema(userTable)
-export type UserTable = z.infer<typeof selectUserTableSchema>
-
-export const sessionTable = pgTable('session', {
   id: text().primaryKey(),
+  image: text(),
+  name: text().notNull(),
+  ...timestamps,
+});
+export const selectUserTableSchema = createSelectSchema(userTable);
+export type UserTable = z.infer<typeof selectUserTableSchema>;
+export const sessionTable = pgTable("session", {
   expiresAt: timestamp().notNull(),
-  token: text().notNull().unique(),
+  id: text().primaryKey(),
   ipAddress: text(),
+  token: text().notNull().unique(),
   userAgent: text(),
   userId: text()
     .notNull()
-    .references(() => userTable.id, { onDelete: 'cascade' }),
+    .references(() => userTable.id, { onDelete: "cascade" }),
   ...timestamps,
-})
-export const selectSessionTableSchema = createSelectSchema(sessionTable)
-export type SessionTable = z.infer<typeof selectSessionTableSchema>
-
-export const accountTable = pgTable('account', {
-  id: text().primaryKey(),
-  accountId: text().notNull(),
-  providerId: text().notNull(),
-  userId: text()
-    .notNull()
-    .references(() => userTable.id, { onDelete: 'cascade' }),
+});
+export const selectSessionTableSchema = createSelectSchema(sessionTable);
+export type SessionTable = z.infer<typeof selectSessionTableSchema>;
+export const accountTable = pgTable("account", {
   accessToken: text(),
-  refreshToken: text(),
-  idToken: text(),
   accessTokenExpiresAt: timestamp(),
+  accountId: text().notNull(),
+  id: text().primaryKey(),
+  idToken: text(),
+  password: text(),
+  providerId: text().notNull(),
+  refreshToken: text(),
   refreshTokenExpiresAt: timestamp(),
   scope: text(),
-  password: text(),
+  userId: text()
+    .notNull()
+    .references(() => userTable.id, { onDelete: "cascade" }),
   ...timestamps,
-})
-export const selectAccountTableSchema = createSelectSchema(accountTable)
-export type AccountTable = z.infer<typeof selectAccountTableSchema>
-
-export const verificationTable = pgTable('verification', {
+});
+export const selectAccountTableSchema = createSelectSchema(accountTable);
+export type AccountTable = z.infer<typeof selectAccountTableSchema>;
+export const verificationTable = pgTable("verification", {
+  expiresAt: timestamp().notNull(),
   id: text().primaryKey(),
   identifier: text().notNull(),
   value: text().notNull(),
-  expiresAt: timestamp().notNull(),
   ...timestamps,
-})
-export const selectVerificationTableSchema
-  = createSelectSchema(verificationTable)
-export type VerificationTable = z.infer<typeof selectVerificationTableSchema>
+});
+export const selectVerificationTableSchema =
+  createSelectSchema(verificationTable);
+export type VerificationTable = z.infer<typeof selectVerificationTableSchema>;
 // #endregion AUTH
-
 // #region RATE LIMIT
-export const rateLimitTable = pgTable('rate_limit', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  key: text('key').notNull().unique(), // unique identifier for each rate limit key
-  count: integer('count').default(0).notNull(), // number of requests in current window
-  lastRequest: bigint('last_request', { mode: 'number' }).notNull(), // timestamp of last request
-})
-// #endregion RATE LIMIT
+export const rateLimitTable = pgTable("rate_limit", {
+  count: integer("count").default(0).notNull(), // number of requests in current window
+  id: uuid("id").defaultRandom().primaryKey(),
+  key: text("key").notNull().unique(), // unique identifier for each rate limit key
+  lastRequest: bigint("last_request", { mode: "number" }).notNull(), // timestamp of last request
+});

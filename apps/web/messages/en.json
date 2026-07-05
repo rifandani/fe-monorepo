@@ -24,8 +24,7 @@
   "continue": "Continue",
   "reload": "Reload",
   "appReady": "App is ready to use offline",
-  "newContentAvailable":
-    "New content is available, click the reload button to update",
+  "newContentAvailable": "New content is available, click the reload button to update",
 
   "name": "Name",
   "namePlaceholder": "Your name...",

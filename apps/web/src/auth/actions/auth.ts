@@ -1,29 +1,28 @@
-'use server'
+"use server";
+import { metrics, trace } from "@opentelemetry/api";
+import {
+  authSignInEmailRequestSchema,
+  authSignUpEmailRequestSchema,
+} from "@workspace/core/apis/better-auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { tryit } from "radashi";
 
-import { metrics, trace } from '@opentelemetry/api'
-import { authSignInEmailRequestSchema, authSignUpEmailRequestSchema } from '@workspace/core/apis/better-auth'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { tryit } from 'radashi'
-import { auth } from '@/auth/utils/auth'
-import { actionClient } from '@/core/utils/action'
-import { serverErrorMapper } from '@/core/utils/error'
-import { recordSpan } from '@/core/utils/telemetry'
+import { auth } from "@/auth/utils/auth";
+import { actionClient } from "@/core/utils/action";
+import { serverErrorMapper } from "@/core/utils/error";
+import { recordSpan } from "@/core/utils/telemetry";
 
-const meter = metrics.getMeter('auth.action')
-
-const loginCounter = meter.createCounter('login', {
-  description: 'How many times the login action is called',
-})
-
-const logoutCounter = meter.createCounter('logout', {
-  description: 'How many times the logout action is called',
-})
-
-const registerCounter = meter.createCounter('register', {
-  description: 'How many times the register action is called',
-})
-
+const meter = metrics.getMeter("auth.action");
+const loginCounter = meter.createCounter("login", {
+  description: "How many times the login action is called",
+});
+const logoutCounter = meter.createCounter("logout", {
+  description: "How many times the logout action is called",
+});
+const registerCounter = meter.createCounter("register", {
+  description: "How many times the register action is called",
+});
 /**
  * Server action to handle user login.
  *
@@ -35,45 +34,39 @@ const registerCounter = meter.createCounter('register', {
  * @returns {Promise<LoginActionResult | void>} Returns error object if login fails (zod error or server error), void if successful (redirects)
  */
 export const loginAction = actionClient
-  .metadata({ actionName: 'login' })
+  .metadata({ actionName: "login" })
   .inputSchema(authSignInEmailRequestSchema)
   .action(async ({ parsedInput }) => {
     const result = await recordSpan({
-      name: 'loginAction',
-      tracer: trace.getTracer('auth.action'),
       attributes: parsedInput,
       fn: async (span) => {
-        loginCounter.add(1)
-
+        loginCounter.add(1);
         // cookie automatically set by plugin nextCookies
         const [error, response] = await tryit(auth.api.signInEmail)({
-          headers: await headers(),
           body: {
+            callbackURL: "/",
             email: parsedInput.email,
             password: parsedInput.password,
-            callbackURL: '/',
           },
-        })
-
+          headers: await headers(),
+        });
         if (error) {
-          return await serverErrorMapper(error, span)
+          return await serverErrorMapper(error, span);
         }
-
-        span.addEvent('Login success', {
-          'token': response.token,
-          'user.id': response.user.id,
-          'user.email': response.user.email,
-        })
+        span.addEvent("Login success", {
+          token: response.token,
+          "user.email": response.user.email,
+          "user.id": response.user.id,
+        });
       },
-    })
-
+      name: "loginAction",
+      tracer: trace.getTracer("auth.action"),
+    });
     if (result) {
-      return result
+      return result;
     }
-
-    redirect('/')
-  })
-
+    redirect("/");
+  });
 /**
  * Server action to handle user register.
  *
@@ -83,45 +76,39 @@ export const loginAction = actionClient
  * 3. Redirect user to home page
  */
 export const registerAction = actionClient
-  .metadata({ actionName: 'register' })
+  .metadata({ actionName: "register" })
   .inputSchema(authSignUpEmailRequestSchema)
   .action(async ({ parsedInput }) => {
     const result = await recordSpan({
-      name: 'registerAction',
-      tracer: trace.getTracer('auth.action'),
       attributes: parsedInput,
       fn: async (span) => {
-        registerCounter.add(1)
-
+        registerCounter.add(1);
         // cookie automatically set by plugin nextCookies
         const [error, response] = await tryit(auth.api.signUpEmail)({
-          headers: await headers(),
           body: {
-            name: parsedInput.name,
+            callbackURL: "/",
             email: parsedInput.email,
+            name: parsedInput.name,
             password: parsedInput.password,
-            callbackURL: '/',
           },
-        })
-
+          headers: await headers(),
+        });
         if (error) {
-          return await serverErrorMapper(error, span)
+          return await serverErrorMapper(error, span);
         }
-
-        span.addEvent('Register success', {
-          'user.id': response.user.id,
-          'user.email': response.user.email,
-        })
+        span.addEvent("Register success", {
+          "user.email": response.user.email,
+          "user.id": response.user.id,
+        });
       },
-    })
-
+      name: "registerAction",
+      tracer: trace.getTracer("auth.action"),
+    });
     if (result) {
-      return result
+      return result;
     }
-
-    redirect('/')
-  })
-
+    redirect("/");
+  });
 /**
  * Server action to handle user logout.
  * 1. Remove session from database
@@ -129,31 +116,26 @@ export const registerAction = actionClient
  * 3. Redirect user to the login page
  */
 export const logoutAction = actionClient
-  .metadata({ actionName: 'logoutAction' })
+  .metadata({ actionName: "logoutAction" })
   .action(async () => {
     const result = await recordSpan({
-      name: 'logoutAction',
-      tracer: trace.getTracer('auth.action'),
       fn: async (span) => {
-        logoutCounter.add(1)
-
+        logoutCounter.add(1);
         const [error, response] = await tryit(auth.api.signOut)({
           headers: await headers(),
-        })
-
+        });
         if (error) {
-          return await serverErrorMapper(error, span)
+          return await serverErrorMapper(error, span);
         }
-
-        span.addEvent('Logout success', {
+        span.addEvent("Logout success", {
           success: response.success,
-        })
+        });
       },
-    })
-
+      name: "logoutAction",
+      tracer: trace.getTracer("auth.action"),
+    });
     if (result) {
-      return result
+      return result;
     }
-
-    redirect('/login')
-  })
+    redirect("/login");
+  });
