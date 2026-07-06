@@ -103,6 +103,7 @@
     "@types/react-dom": "19.2.3",
     "@vite-pwa/assets-generator": "1.0.2",
     "@workspace/typescript-config": "workspace:*",
+    "agentation": "3.0.2",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "0.31.10",
     "postcss": "8.5.16",

@@ -84,6 +84,7 @@
     "@vitejs/devtools": "0.3.3",
     "@vitejs/plugin-react": "6.0.3",
     "@workspace/typescript-config": "workspace:*",
+    "agentation": "3.0.2",
     "babel-plugin-react-compiler": "1.0.0",
     "https-localhost": "4.7.1",
     "rollup-plugin-visualizer": "7.0.1",

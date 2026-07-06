@@ -26,6 +26,7 @@ export default defineConfig({
   ],
   ignorePatterns: [
     ...(core.ignorePatterns ?? []),
+    "**/apps/spa/src/routeTree.gen.ts",
     "**/apps/*/src/core/components/ui/**",
     "**/.agents",
     "**/.claude",

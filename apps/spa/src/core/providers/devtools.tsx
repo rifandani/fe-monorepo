@@ -3,6 +3,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Agentation } from "agentation";
 import * as React from "react";
 
 import { queryClient } from "@/core/providers/query/client";
@@ -11,21 +12,27 @@ import { router } from "@/core/providers/router/client";
 
 export function Devtools() {
   return (
-    <TanStackDevtools
-      plugins={[
-        {
-          name: "TanStack Query",
-          render: <ReactQueryDevtoolsPanel client={queryClient} />,
-        },
-        {
-          name: "TanStack Router",
-          render: <TanStackRouterDevtoolsPanel router={router} />,
-        },
-        {
-          name: "TanStack Form",
-          render: <FormDevtoolsPanel />,
-        },
-      ]}
-    />
+    <>
+      <TanStackDevtools
+        config={{
+          position: "bottom-left",
+        }}
+        plugins={[
+          {
+            name: "TanStack Query",
+            render: <ReactQueryDevtoolsPanel client={queryClient} />,
+          },
+          {
+            name: "TanStack Router",
+            render: <TanStackRouterDevtoolsPanel router={router} />,
+          },
+          {
+            name: "TanStack Form",
+            render: <FormDevtoolsPanel />,
+          },
+        ]}
+      />
+      {import.meta.env.DEV && <Agentation />}
+    </>
   );
 }
