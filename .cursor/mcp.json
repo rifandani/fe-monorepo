@@ -2,17 +2,7 @@
   "mcpServers": {
     "next-devtools": {
       "command": "npx",
-      "args": [
-        "-y",
-        "next-devtools-mcp@latest"
-      ]
-    },
-    "agentation": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "agentation-mcp"
-      ]
+      "args": ["-y", "next-devtools-mcp@latest"]
     }
   }
 }
