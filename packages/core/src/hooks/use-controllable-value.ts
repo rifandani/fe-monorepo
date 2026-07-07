@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { useUpdate } from "@workspace/core/hooks/use-update";
 import { isFunction } from "radashi";

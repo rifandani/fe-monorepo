@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization sonarjs/function-name */
 import { useLocales } from "expo-localization";
 import type { PropsWithChildren } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -55,7 +55,7 @@ export function AppI18nProvider({ children }: PropsWithChildren) {
   const [isI18nInitialized, setIsI18nInitialized] = useState(false);
   // init locales for the first time
   useEffect(() => {
-    // oxlint-disable-next-line promise/prefer-await-to-then
+    // oxlint-disable-next-line promise/prefer-await-to-then github/no-then
     initI18n().then(() => setIsI18nInitialized(true));
   }, []);
   // do not load app, if locale not yet loaded

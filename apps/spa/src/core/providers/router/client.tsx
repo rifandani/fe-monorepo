@@ -26,7 +26,12 @@ const tracer = trace.getTracer(TRACER_ROUTER);
 function PendingRoute() {
   return (
     <div className="flex items-center justify-center">
-      <svg viewBox="0 0 24 24" height="5em" className="text-primary">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        height="5em"
+        className="text-primary"
+      >
         <use href="#svg-spinners--3-dots-fade" />
       </svg>
     </div>

@@ -1,14 +1,12 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { Link } from "expo-router";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { H3, Paragraph, YStack } from "tamagui";
 
 import { LoginForm } from "@/auth/components/login-form";
-import { BaseErrorBoundary } from "@/core/components/base-error-boundary";
 
-export const ErrorBoundary = BaseErrorBoundary;
+export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
 export default function LoginScreen() {
   const { t } = useTranslation();
   return (

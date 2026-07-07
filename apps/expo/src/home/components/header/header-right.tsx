@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import * as React from "react";
+import { useState } from "react";
 import { ListItem, Separator, YGroup } from "tamagui";
 
 import { BaseButton } from "@/core/components/button/base-button";
@@ -13,7 +13,7 @@ import type { HeaderButtonProps } from "@/core/types/navigation";
 export function HeaderRight(_: HeaderButtonProps) {
   const router = useRouter();
   const resetUser = useAppStore((state) => state.resetUser);
-  const [state, setState] = React.useState<BaseSheetState>({
+  const [state, setState] = useState<BaseSheetState>({
     open: false,
     position: 0,
   });
@@ -32,7 +32,7 @@ export function HeaderRight(_: HeaderButtonProps) {
       <BaseSheet
         state={state}
         setState={setState}
-        sheetProps={{ snapPoints: undefined, snapPointsMode: "fit" }}
+        sheetProps={{ snapPointsMode: "fit" }}
         frameProps={{ p: "$5" }}
       >
         <YGroup verticalAlign="center" bordered separator={<Separator />}>

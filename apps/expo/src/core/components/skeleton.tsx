@@ -1,6 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import type { ComponentPropsWithoutRef } from "react";
-import * as React from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 

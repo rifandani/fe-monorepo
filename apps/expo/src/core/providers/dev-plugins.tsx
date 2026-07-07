@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/function-name */
 import { useMMKVDevTools } from "@dev-plugins/react-native-mmkv";
 import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";

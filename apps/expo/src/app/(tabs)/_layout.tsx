@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/variable-name -- function declarations; expo-router unstable_settings export */
 import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
 import { useTranslation } from "react-i18next";

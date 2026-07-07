@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
       why: `Level is required and must be one of the following: ${VALID_LEVELS.join(", ")}`,
     });
   }
+  // oxlint-disable-next-line sonarjs/no-unused-vars -- omit client-provided service field
   const { service: _clientService, ...sanitizedPayload } = body;
   const wideEvent = {
     ...sanitizedPayload,
@@ -77,7 +78,6 @@ export async function POST(request: NextRequest) {
     service: SERVICE_NAME,
     source: "client",
   };
-  // eslint-disable-next-line no-console
   console.log("[CLIENT_LOG]", wideEvent);
   return new Response(null, { status: 204 });
 }

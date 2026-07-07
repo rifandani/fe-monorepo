@@ -60,7 +60,7 @@ export default async function LoginPage() {
       {/* image */}
       <section className="hidden w-1/2 shadow-2xl md:block">
         <span className="relative h-screen w-full md:flex md:items-center md:justify-center">
-          <svg viewBox="0 0 512 512" className="size-60">
+          <svg aria-hidden="true" viewBox="0 0 512 512" className="size-60">
             <use href="#icon-nextjs" />
           </svg>
         </span>

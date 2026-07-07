@@ -45,6 +45,7 @@ const darkShadows = {
   shadow5: "rgba(0,0,0,0.6)",
   shadow6: "rgba(0,0,0,0.7)",
 };
+const accentPaletteEnd = "hsla(250, 50%, 95%, 1)";
 // we're adding some example sub-themes for you to show how they are done, "success" "warning", "error":
 const builtThemes = createThemes({
   componentThemes: defaultComponentThemes,
@@ -84,7 +85,7 @@ const builtThemes = createThemes({
         "hsla(250, 50%, 57%, 1)",
         "hsla(250, 50%, 60%, 1)",
         "hsla(250, 50%, 90%, 1)",
-        "hsla(250, 50%, 95%, 1)",
+        accentPaletteEnd,
       ],
       light: [
         "hsla(250, 50%, 40%, 1)",
@@ -97,8 +98,8 @@ const builtThemes = createThemes({
         "hsla(250, 50%, 59%, 1)",
         "hsla(250, 50%, 62%, 1)",
         "hsla(250, 50%, 65%, 1)",
-        "hsla(250, 50%, 95%, 1)",
-        "hsla(250, 50%, 95%, 1)",
+        accentPaletteEnd,
+        accentPaletteEnd,
       ],
     },
   },

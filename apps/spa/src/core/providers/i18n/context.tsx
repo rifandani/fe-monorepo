@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization */
 import type { LanguageMessages } from "@workspace/core/libs/i18n/init";
 import { initI18n } from "@workspace/core/libs/i18n/init";
 import type { ReactNode } from "react";

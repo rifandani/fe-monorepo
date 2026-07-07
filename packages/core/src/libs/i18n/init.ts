@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/js-hoist-intl sonarjs/no-duplicate-string */
 import type {
   defineTranslation,
   ParamOptions,

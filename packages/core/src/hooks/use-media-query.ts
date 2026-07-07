@@ -1,5 +1,5 @@
-/* oxlint-disable eslint/func-style -- function declarations */
-import * as React from "react";
+/* oxlint-disable eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/rerender-lazy-state-init */
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * Easily retrieve media dimensions with this Hook React which also works onResize.
@@ -11,18 +11,18 @@ import * as React from "react";
  * ```
  */
 export function useMediaQuery(query: string): boolean {
-  const getMatches = React.useCallback((_query: string): boolean => {
+  const getMatches = useCallback((_query: string): boolean => {
     // Prevents SSR issues
     if (typeof window !== "undefined") {
       return window.matchMedia(_query).matches;
     }
     return false;
   }, []);
-  const [matches, setMatches] = React.useState<boolean>(getMatches(query));
-  const handleChange = React.useCallback(() => {
+  const [matches, setMatches] = useState<boolean>(getMatches(query));
+  const handleChange = useCallback(() => {
     setMatches(getMatches(query));
   }, [query, getMatches]);
-  React.useEffect(() => {
+  useEffect(() => {
     const matchMedia = window.matchMedia(query);
     // Triggered at the first client-side load and if query changes
     handleChange();

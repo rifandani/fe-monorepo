@@ -10,10 +10,12 @@ export function useMount(fn: () => void) {
     console.error(
       `useMount: parameter \`fn\` expected to be a function, but got "${typeof fn}".`
     );
-    return;
   }
-  // eslint-disable-next-line react/rules-of-hooks
+
   useEffect(() => {
+    if (!isFunction(fn)) {
+      return;
+    }
     fn();
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);

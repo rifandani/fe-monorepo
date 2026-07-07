@@ -5,6 +5,7 @@ const validPassword = "emilyspass";
 const invalidUsername = "km";
 const invalidPassword = "0lelp";
 const errorUsername = "1emilys";
+// oxlint-disable-next-line sonarjs/no-hardcoded-passwords -- e2e fixture credentials
 const errorPassword = "1emilyspass";
 test.describe("authorized", () => {
   test("should redirect back to home page", async ({ page }) => {

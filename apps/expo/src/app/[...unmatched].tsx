@@ -1,6 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { Link, Stack } from "expo-router";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { H3, YStack } from "tamagui";
 

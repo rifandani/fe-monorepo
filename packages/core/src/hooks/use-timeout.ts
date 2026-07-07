@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * A hook that handles the setTimeout timer function.
@@ -15,11 +15,11 @@ import { useCallback, useEffect, useRef } from "react";
 export function useTimeout(fn: () => void, delay?: number) {
   const timerCallback = useMemoizedFn(fn);
   const timerRef = useRef<number | null>(null);
-  const clear = useCallback(() => {
+  const clear = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
-  }, []);
+  };
   useEffect(() => {
     if (!isNumber(delay) || delay < 0) {
       return;

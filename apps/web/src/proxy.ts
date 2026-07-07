@@ -11,6 +11,8 @@ const securityMiddleware = createMiddleware({
   contentSecurityPolicy: false,
 });
 
+const REQUEST_ID_HEADER = "x-request-id";
+
 /**
  * Middleware allows you to run code before a request is completed.
  * Then, based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.
@@ -30,18 +32,18 @@ const securityMiddleware = createMiddleware({
  */
 export default async function proxy(request: NextRequest) {
   // Generate or reuse request ID
-  const existingId = request.headers.get("x-request-id");
+  const existingId = request.headers.get(REQUEST_ID_HEADER);
   const requestId = existingId || crypto.randomUUID();
   // Forward modified headers to the route handler
   const requestHeaders = new Headers(request.headers as HeadersInit);
-  requestHeaders.set("x-request-id", requestId);
+  requestHeaders.set(REQUEST_ID_HEADER, requestId);
   requestHeaders.set("x-evlog-start", String(Date.now()));
   const { NextResponse: nextResponse } = await import("next/server");
   const response = nextResponse.next({
     request: { headers: requestHeaders },
   });
   // Also set on response for downstream consumers
-  response.headers.set("x-request-id", requestId);
+  response.headers.set(REQUEST_ID_HEADER, requestId);
   return securityMiddleware();
 }
 export const config = {

@@ -8,9 +8,11 @@ import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
 
+// oxlint-disable-next-line react-doctor/no-giant-component -- OG image SVG markup
 function LightNextSvg(): ReactElement {
   return (
     <svg
+      aria-hidden="true"
       fill="none"
       height="441"
       viewBox="0 0 843 441"
@@ -122,31 +124,31 @@ function LightNextSvg(): ReactElement {
           strokeWidth="0.794118"
         />
         <path
-          d="M841 105L7.39098e-06 105"
+          d="M841 105L0 105"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 57L7.39098e-06 57"
+          d="M841 57L0 57"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 153L7.39098e-06 153"
+          d="M841 153L0 153"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 201L7.39098e-06 201"
+          d="M841 201L0 201"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 9L7.39098e-06 8.99998"
+          d="M841 9L0 9"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
@@ -154,7 +156,7 @@ function LightNextSvg(): ReactElement {
         <rect fill="url(#paint0_radial_5_3)" height="441" width="841" x="2" />
         <g filter="url(#filter0_f_5_3)" opacity="0.3">
           <path
-            d="M380.212 410C317.656 297.133 289.595 147.189 339.938 79.0527C390.281 10.9163 508.998 45.4216 547 153.881L452.005 204.983L380.212 410Z"
+            d="M380.2 410C317.7 297.1 289.6 147.2 339.9 79.1C390.3 10.9 509 45.4 547 153.9L452 205L380.2 410Z"
             fill="#7E7E7E"
           />
         </g>
@@ -190,7 +192,7 @@ function LightNextSvg(): ReactElement {
           y="197.75"
         />
         <path
-          d="M448.943 183.13L411.967 135.5H405V168.613H410.573V142.578L444.568 186.5C446.102 185.473 447.564 184.347 448.943 183.13Z"
+          d="M448.9 183.1L412 135.5H405V168.6H410.6V142.6L444.6 186.5C446.1 185.5 447.6 184.3 448.9 183.1Z"
           fill="url(#paint3_linear_5_3)"
         />
         <rect
@@ -202,7 +204,7 @@ function LightNextSvg(): ReactElement {
         />
         <g filter="url(#filter1_f_5_3)">
           <path
-            d="M376.011 119.882L378.011 188.882C378.011 171.215 379.511 132.682 379.511 123.882C379.511 115.082 386.178 111.882 389.511 111.382L460.011 107.882C438.844 106.382 393.511 107.082 385.511 107.882C377.511 108.682 375.844 116.215 376.011 119.882Z"
+            d="M376 119.9L378 188.9C378 171.2 379.5 132.7 379.5 123.9C379.5 115.1 386.2 111.9 389.5 111.4L460 107.9C438.8 106.4 393.5 107.1 385.5 107.9C377.5 108.7 375.8 116.2 376 119.9Z"
             fill="white"
           />
         </g>
@@ -315,6 +317,7 @@ function LightNextSvg(): ReactElement {
 function DarkNextSvg(): ReactElement {
   return (
     <svg
+      aria-hidden="true"
       fill="none"
       height="441"
       viewBox="0 0 843 441"
@@ -324,133 +327,133 @@ function DarkNextSvg(): ReactElement {
       <g clipPath="url(#clip0_1_4)">
         <rect fill="black" height="441" width="843" />
         <path
-          d="M421.176 4.22058V306.779"
+          d="M421.2 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M468.824 4.22058V306.779"
+          d="M468.8 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M516.471 4.22058V306.779"
+          d="M516.5 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M564.118 4.22058V306.779"
+          d="M564.1 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M373.529 4.22058V306.779"
+          d="M373.5 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M325.882 4.22058V306.779"
+          d="M325.9 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 105L7.39098e-06 105"
+          d="M841 105L0 105"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 57L7.39098e-06 57"
+          d="M841 57L0 57"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 153L7.39098e-06 153"
+          d="M841 153L0 153"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 201L7.39098e-06 201"
+          d="M841 201L0 201"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 9L7.39098e-06 8.99998"
+          d="M841 9L0 9"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M135.294 4.22058V306.779"
+          d="M135.3 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M182.941 4.22058V306.779"
+          d="M182.9 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M230.588 4.22058V306.779"
+          d="M230.6 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M278.235 4.22058V306.779"
+          d="M278.2 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M87.6471 4.22058V306.779"
+          d="M87.6 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M40 4.22058V306.779"
+          d="M40 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M707.059 4.22058V306.779"
+          d="M707.1 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M754.706 4.22058V306.779"
+          d="M754.7 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M802.353 4.22058V306.779"
+          d="M802.4 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M659.412 4.22058V306.779"
+          d="M659.4 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M611.765 4.22058V306.779"
+          d="M611.8 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
@@ -458,7 +461,7 @@ function DarkNextSvg(): ReactElement {
         <rect fill="url(#paint0_radial_1_4)" height="441" width="841" />
         <g filter="url(#filter0_f_1_4)" opacity="0.3">
           <path
-            d="M380.212 410C317.656 297.133 289.595 147.189 339.938 79.0527C390.281 10.9163 508.998 45.4216 547 153.881L452.005 204.983L380.212 410Z"
+            d="M380.2 410C317.7 297.1 289.6 147.2 339.9 79.1C390.3 10.9 509 45.4 547 153.9L452 205L380.2 410Z"
             fill="#0141FF"
           />
         </g>
@@ -492,7 +495,7 @@ function DarkNextSvg(): ReactElement {
           y="109.456"
         />
         <path
-          d="M448.943 183.13L411.967 135.5H405V168.613H410.573V142.578L444.568 186.5C446.102 185.473 447.564 184.347 448.943 183.13Z"
+          d="M448.9 183.1L412 135.5H405V168.6H410.6V142.6L444.6 186.5C446.1 185.5 447.6 184.3 448.9 183.1Z"
           fill="url(#paint3_linear_1_4)"
         />
         <rect
@@ -569,6 +572,7 @@ function DarkNextSvg(): ReactElement {
 function LightReactSvg(): ReactElement {
   return (
     <svg
+      aria-hidden="true"
       fill="none"
       height="441"
       viewBox="0 0 843 441"
@@ -680,31 +684,31 @@ function LightReactSvg(): ReactElement {
           strokeWidth="0.794118"
         />
         <path
-          d="M841 105L7.39098e-06 105"
+          d="M841 105L0 105"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 57L7.39098e-06 57"
+          d="M841 57L0 57"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 153L7.39098e-06 153"
+          d="M841 153L0 153"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 201L7.39098e-06 201"
+          d="M841 201L0 201"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 9L7.39098e-06 8.99998"
+          d="M841 9L0 9"
           stroke="#999999"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
@@ -712,7 +716,7 @@ function LightReactSvg(): ReactElement {
         <rect fill="url(#paint0_radial_5_3)" height="441" width="841" x="2" />
         <g filter="url(#filter0_f_5_3)" opacity="0.3">
           <path
-            d="M380.212 410C317.656 297.133 289.595 147.189 339.938 79.0527C390.281 10.9163 508.998 45.4216 547 153.881L452.005 204.983L380.212 410Z"
+            d="M380.2 410C317.7 297.1 289.6 147.2 339.9 79.1C390.3 10.9 509 45.4 547 153.9L452 205L380.2 410Z"
             fill="#61DAFB"
           />
         </g>
@@ -785,6 +789,7 @@ function LightReactSvg(): ReactElement {
 function DarkReactSvg(): ReactElement {
   return (
     <svg
+      aria-hidden="true"
       fill="none"
       height="441"
       viewBox="0 0 843 441"
@@ -794,133 +799,133 @@ function DarkReactSvg(): ReactElement {
       <g clipPath="url(#clip0_1_4)">
         <rect fill="black" height="441" width="843" />
         <path
-          d="M421.176 4.22058V306.779"
+          d="M421.2 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M468.824 4.22058V306.779"
+          d="M468.8 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M516.471 4.22058V306.779"
+          d="M516.5 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M564.118 4.22058V306.779"
+          d="M564.1 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M373.529 4.22058V306.779"
+          d="M373.5 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M325.882 4.22058V306.779"
+          d="M325.9 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 105L7.39098e-06 105"
+          d="M841 105L0 105"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 57L7.39098e-06 57"
+          d="M841 57L0 57"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 153L7.39098e-06 153"
+          d="M841 153L0 153"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 201L7.39098e-06 201"
+          d="M841 201L0 201"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M841 9L7.39098e-06 8.99998"
+          d="M841 9L0 9"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M135.294 4.22058V306.779"
+          d="M135.3 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M182.941 4.22058V306.779"
+          d="M182.9 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M230.588 4.22058V306.779"
+          d="M230.6 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M278.235 4.22058V306.779"
+          d="M278.2 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M87.6471 4.22058V306.779"
+          d="M87.6 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M40 4.22058V306.779"
+          d="M40 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M707.059 4.22058V306.779"
+          d="M707.1 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M754.706 4.22058V306.779"
+          d="M754.7 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M802.353 4.22058V306.779"
+          d="M802.4 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M659.412 4.22058V306.779"
+          d="M659.4 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
         />
         <path
-          d="M611.765 4.22058V306.779"
+          d="M611.8 4.2V306.8"
           stroke="#333333"
           strokeDasharray="3.18 3.18"
           strokeWidth="0.794118"
@@ -928,7 +933,7 @@ function DarkReactSvg(): ReactElement {
         <rect fill="url(#paint0_radial_1_4)" height="441" width="841" />
         <g filter="url(#filter0_f_1_4)" opacity="0.3">
           <path
-            d="M380.212 410C317.656 297.133 289.595 147.189 339.938 79.0527C390.281 10.9163 508.998 45.4216 547 153.881L452.005 204.983L380.212 410Z"
+            d="M380.2 410C317.7 297.1 289.6 147.2 339.9 79.1C390.3 10.9 509 45.4 547 153.9L452 205L380.2 410Z"
             fill="#61DAFB"
           />
         </g>

@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/only-export-components react/no-danger -- function declarations; SEO helpers; JSON-LD script */
 import type { Metadata } from "next";
 import { assign, uid } from "radashi";
 import type { Graph, Thing, WebPage, WebSite } from "schema-dts";

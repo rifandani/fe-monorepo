@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization */
 import { useCallback } from "react";
 import { Sheet } from "tamagui";
 

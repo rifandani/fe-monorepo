@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler */
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import type {

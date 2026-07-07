@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/function-name -- function declarations; Next.js route handler convention */
 import type { NextRequest } from "next/server";
 
 import { rateLimit } from "@/core/middlewares/rate-limit/rate-limit";

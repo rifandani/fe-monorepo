@@ -11,6 +11,7 @@ interface CookieAttributes {
   // oxlint-disable-next-line typescript/no-explicit-any -- cookie attribute index signature
   [key: string]: any;
 }
+
 export function parseSetCookieHeader(
   setCookie: string
 ): Map<string, CookieAttributes> {
@@ -32,7 +33,7 @@ export function parseSetCookieHeader(
       switch (normalizedAttrName) {
         case "max-age": {
           attrObj["max-age"] = attrValue
-            ? Number.parseInt(attrValue.trim(), 10)
+            ? Math.trunc(Number(attrValue.trim()))
             : undefined;
           break;
         }

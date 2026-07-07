@@ -1,4 +1,5 @@
 /* eslint-disable react/rules-of-hooks */
+/* oxlint-disable github/filenames-match-regex -- Playwright test base file */
 import { test as base, expect } from "@playwright/test";
 
 const username = "emilys";

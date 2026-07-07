@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/async-parallel react-doctor/server-sequential-independent-await */
 import { ENV } from "@/core/constants/env";
 import { SERVICE_NAME } from "@/core/constants/global";
 import "server-only";

@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/no-duplicate-string */
 "use server";
 import { metrics, trace } from "@opentelemetry/api";
 import {

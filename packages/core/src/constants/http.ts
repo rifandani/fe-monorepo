@@ -92,7 +92,6 @@ export type UnofficialStatusCode = -1;
  * @deprecated
  * Use `UnofficialStatusCode` instead.
  */
-export type UnOfficalStatusCode = UnofficialStatusCode;
 /**
  * If you want to use an unofficial status, use `UnofficialStatusCode`.
  */

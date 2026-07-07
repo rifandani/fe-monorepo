@@ -1,7 +1,7 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable typescript/no-explicit-any eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization */
 import { isFunction } from "radashi";
 import { useMemo, useRef } from "react";
-// oxlint-disable-next-line typescript/no-explicit-any -- generic function memoization
+
 type noop = (this: any, ...args: any[]) => any;
 type PickFunction<T extends noop> = (
   this: ThisParameterType<T>,

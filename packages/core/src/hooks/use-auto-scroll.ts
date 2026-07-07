@@ -1,5 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface UseAutoScrollOptions {
   isLoading: boolean;
@@ -31,35 +31,41 @@ export function useAutoScroll({
   const anchorRef = useRef<HTMLDivElement>(null);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
   // Detect user scroll to toggle auto-scroll
-  const handleScroll = useCallback(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const { scrollHeight } = document.documentElement;
-    const atBottom =
-      window.innerHeight + window.scrollY >= scrollHeight - threshold;
-    setIsAutoScroll(atBottom);
-  }, [threshold]);
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    const anchor = anchorRef.current;
+    if (!anchor) {
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) {
+          setIsAutoScroll(entry.isIntersecting);
+        }
+      },
+      {
+        root: null,
+        rootMargin: `0px 0px -${threshold}px 0px`,
+        threshold: 0,
+      }
+    );
+    observer.observe(anchor);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
     };
-  }, [handleScroll]);
-  // Scroll to anchor element
-  const scrollToBottom = useCallback(() => {
-    anchorRef.current?.scrollIntoView({
-      behavior: dependency > 5 ? "instant" : "smooth",
-    });
-  }, [dependency]);
+  }, [threshold, dependency]);
   // Auto-scroll on updates and during streaming
   useEffect(() => {
     if (!isAutoScroll) {
       return;
     }
+    const scrollToBottom = () => {
+      anchorRef.current?.scrollIntoView({
+        behavior: dependency > 5 ? "instant" : "smooth",
+      });
+    };
     scrollToBottom();
     let intervalId: ReturnType<typeof setInterval> | undefined;
     if (isAutoScroll && isStreaming() && isLoading) {
@@ -70,13 +76,6 @@ export function useAutoScroll({
         clearInterval(intervalId);
       }
     };
-  }, [
-    dependency,
-    isLoading,
-    isAutoScroll,
-    isStreaming,
-    intervalMs,
-    scrollToBottom,
-  ]);
+  }, [dependency, isLoading, isAutoScroll, isStreaming, intervalMs]);
   return { anchorRef, isAutoScroll };
 }

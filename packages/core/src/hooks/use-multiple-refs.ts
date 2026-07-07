@@ -1,17 +1,8 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useRef } from "react";
 
-/**
- * Iterator function for making the refs object iterable
- * This allows using the refs in a for...of loop or spread operator
- *
- * @returns The iterator object itself
- */
-function iterator(this: {
-  next: () => void;
-  [Symbol.iterator]: () => unknown;
-}) {
-  return this;
+interface RefObject<T> {
+  current: T;
 }
 
 /**
@@ -38,24 +29,26 @@ function iterator(this: {
  * }
  * ```
  */
-// eslint-disable-next-line react/no-unnecessary-use-prefix
 export function useMultipleRefs<T>(initialValue: T) {
+  const cache = useRef<RefObject<T>[]>([]);
+  const callIndex = useRef(0);
+
   return {
-    /**
-     * Creates a new ref on each call to next()
-     * Required for iterator protocol
-     * @returns Object containing the new ref
-     */
     next() {
+      const index = callIndex.current;
+      if (!cache.current[index]) {
+        cache.current[index] = { current: initialValue };
+      }
+      const value = cache.current[index];
+      callIndex.current = index + 1;
       return {
         done: false,
-        // eslint-disable-next-line react/rules-of-hooks
-        value: useRef(initialValue),
+        value,
       };
     },
-    /**
-     * Makes the object iterable by implementing Symbol.iterator
-     */
-    [Symbol.iterator]: iterator,
+    [Symbol.iterator]() {
+      callIndex.current = 0;
+      return this;
+    },
   };
 }

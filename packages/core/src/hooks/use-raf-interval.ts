@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface Handle {
   id: number;
@@ -76,10 +76,10 @@ export function useRafInterval(
     };
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [delay]);
-  const clear = useCallback(() => {
+  const clear = () => {
     if (timerRef.current) {
       clearRafInterval(timerRef.current);
     }
-  }, []);
+  };
   return clear;
 }

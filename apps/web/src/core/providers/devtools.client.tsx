@@ -3,7 +3,6 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Agentation } from "agentation";
-import * as React from "react";
 
 import { getQueryClient } from "@/core/providers/query/client";
 

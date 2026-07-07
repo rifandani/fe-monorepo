@@ -139,7 +139,6 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
   return (
     <SearchField
       aria-label="Quick search"
-      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       className={cx('flex w-full items-center px-2.5 py-1', className)}
       {...props}

@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization sonarjs/no-duplicate-string */
 import type { Theme } from "@react-navigation/native";
 import { ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";

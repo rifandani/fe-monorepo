@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/no-wildcard-import */
 // if English isn't your default language, move Translations to the appropriate language file.
 import * as Localization from "expo-localization";
 import i18n from "i18next";

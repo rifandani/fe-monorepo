@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/no-built-in-override react-doctor/query-mutation-missing-invalidation */
 import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
 import { useMutation, useMutationState } from "@tanstack/react-query";
 import type { AuthLoginRequestSchema } from "@workspace/core/apis/auth";

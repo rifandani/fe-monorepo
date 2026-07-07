@@ -7,6 +7,7 @@ export function useLazyQuery<TData, TError>(
   options: Omit<UseQueryOptions<TData, TError>, "enabled">
 ) {
   const [enabled, setEnabled] = useState(false);
+  // oxlint-disable-next-line react-doctor/query-destructure-result
   const query = useQuery<TData, TError>({
     ...options,
     enabled,

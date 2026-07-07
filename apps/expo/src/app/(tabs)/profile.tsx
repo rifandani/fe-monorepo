@@ -1,11 +1,10 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/no-wildcard-import -- function declarations; expo-updates namespace API */
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
 import * as Updates from "expo-updates";
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import {
@@ -18,7 +17,6 @@ import {
   YStack,
 } from "tamagui";
 
-import { BaseErrorBoundary } from "@/core/components/base-error-boundary";
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
 import { useAppStore } from "@/core/hooks/use-app-store";
@@ -62,37 +60,31 @@ function EditProfileSection() {
   );
 }
 function CheckForUpdatesListItem() {
-  const toast = useToastController();
+  const { show } = useToastController();
   const { t } = useTranslation();
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
-  useFocusEffect(
-    useCallback(() => {
-      // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks
-      Updates.checkForUpdateAsync().catch((error) =>
-        toast.show(error.message, {
+  useFocusEffect(() => {
+    // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
+    Updates.checkForUpdateAsync().catch((error) =>
+      show(error.message, {
+        customData: {
+          preset: "error",
+        } as ToastCustomData,
+      })
+    );
+  });
+  useFocusEffect(() => {
+    if (isUpdatePending) {
+      // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
+      Updates.reloadAsync().catch((error) =>
+        show(error.message, {
           customData: {
             preset: "error",
           } as ToastCustomData,
         })
       );
-      // oxlint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-  );
-  useFocusEffect(
-    useCallback(() => {
-      if (isUpdatePending) {
-        // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks
-        Updates.reloadAsync().catch((error) =>
-          toast.show(error.message, {
-            customData: {
-              preset: "error",
-            } as ToastCustomData,
-          })
-        );
-      }
-      // oxlint-disable-next-line react-hooks/exhaustive-deps
-    }, [isUpdatePending])
-  );
+    }
+  });
   if (!isUpdateAvailable) {
     return null;
   }
@@ -100,9 +92,9 @@ function CheckForUpdatesListItem() {
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
       onPress={() =>
-        // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks
+        // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
         Updates.fetchUpdateAsync().catch((error) =>
-          toast.show(error.message, {
+          show(error.message, {
             customData: {
               preset: "error",
             } as ToastCustomData,
@@ -138,7 +130,7 @@ function LogoutListItem() {
     </ProfileListItem>
   );
 }
-export const ErrorBoundary = BaseErrorBoundary;
+export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
 export default function TabsProfileScreen() {
   return (
     <YStack flex={1} p="$3" pt={Platform.select({ android: "$6", ios: "$9" })}>

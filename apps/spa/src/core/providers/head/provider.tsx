@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/function-name */
 import { useHead } from "@unhead/react";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 

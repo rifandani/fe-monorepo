@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style sonarjs/max-union-size */
 import Feather from "@expo/vector-icons/Feather";
 import { Toast, useToastState } from "@tamagui/toast";
 import type { ThemeName } from "tamagui";

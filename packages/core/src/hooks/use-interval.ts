@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * A hook that provides a declarative way to set up an interval.
@@ -45,11 +45,11 @@ export function useInterval(
    * Clears the current interval if it exists
    * @returns void
    */
-  const clear = useCallback(() => {
+  const clear = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-  }, []);
+  };
   useEffect(() => {
     // Skip setup if delay is invalid
     if (!isNumber(delay) || delay < 0) {

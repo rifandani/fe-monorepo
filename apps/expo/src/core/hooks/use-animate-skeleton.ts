@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler */
 import { useEffect } from "react";
 import {
   interpolate,

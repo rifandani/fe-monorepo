@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/no-prevent-default */
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
@@ -182,7 +182,7 @@ function LoginRoute() {
           <svg
             viewBox="0 0 256 228"
             className="size-60"
-            aria-label="cool react logo"
+            aria-label="Cool React logo"
           >
             <use href="#icon-reactjs" width="100%" height="100%" />
           </svg>

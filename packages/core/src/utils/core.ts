@@ -205,31 +205,31 @@ export function objectToFormData<T extends UnknownRecord>(
       options?.ignoreList.includes(_key as keyof T)
     );
   }
-  function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_;
-    if (!ignore(_rootName)) {
-      _rootName ||= "";
+  function appendFormData(_obj: T, _rootName?: string) {
+    let newRootName = _rootName;
+    if (!ignore(newRootName)) {
+      newRootName ||= "";
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj);
+        formData.append(newRootName, _obj);
       } else if (Array.isArray(_obj)) {
         for (let i = 0; i < _obj.length; i += 1) {
-          appendFormData(_obj[i], `${_rootName}[${i}]`);
+          appendFormData(_obj[i], `${newRootName}[${i}]`);
         }
       } else if (typeof _obj === "object" && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === "") {
+            if (newRootName === "") {
               // @ts-expect-error i'm not typescript wizard
               appendFormData(_obj[key], key);
             } else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`);
+              appendFormData(_obj[key], `${newRootName}.${key}`);
             }
           }
         }
       } else {
         if (_obj !== null && _obj !== undefined) {
-          formData.append(_rootName, _obj);
+          formData.append(newRootName, _obj);
         }
       }
     }
@@ -285,35 +285,36 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
   }>
 ) {
   const formData = new FormData();
+  // oxlint-disable-next-line sonarjs/no-identical-functions -- shared ignore helper per FormData converter
   function ignore(_key?: string) {
     return (
       Array.isArray(options?.ignoreList) &&
       options?.ignoreList.includes(_key as keyof T)
     );
   }
-  function appendFormData(_obj: T, _rootName_?: string) {
-    let _rootName = _rootName_;
-    if (!ignore(_rootName)) {
-      _rootName ||= "";
+  function appendFormData(_obj: T, _rootName?: string) {
+    let newRootName = _rootName;
+    if (!ignore(newRootName)) {
+      newRootName ||= "";
       if (_obj instanceof File) {
-        formData.append(_rootName, _obj);
+        formData.append(newRootName, _obj);
       } else if (Array.isArray(_obj)) {
-        formData.append(_rootName, _obj.join(","));
+        formData.append(newRootName, _obj.join(","));
       } else if (typeof _obj === "object" && _obj) {
         for (const key in _obj) {
           if (Object.hasOwn(_obj, key)) {
-            if (_rootName === "") {
+            if (newRootName === "") {
               // @ts-expect-error i'm not typescript wizard
               appendFormData(_obj[key], key);
             } else {
               // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${_rootName}.${key}`);
+              appendFormData(_obj[key], `${newRootName}.${key}`);
             }
           }
         }
       } else {
         if (_obj !== null && _obj !== undefined) {
-          formData.append(_rootName, _obj);
+          formData.append(newRootName, _obj);
         }
       }
     }

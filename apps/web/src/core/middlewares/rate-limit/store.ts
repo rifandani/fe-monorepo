@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/no-duplicate-string */
 import { eq, sql } from "drizzle-orm";
 
 import { errorAttributesFromUnknown } from "@/core/utils/error-helper";

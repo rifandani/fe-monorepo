@@ -1,5 +1,5 @@
+/* oxlint-disable eslint/func-style react/react-compiler react-doctor/no-initialize-state */
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useEffect, useState } from "react";
 
 const MOBILE_BREAKPOINT = 768;

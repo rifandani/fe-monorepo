@@ -3,7 +3,6 @@
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import { useLocale, useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
-import * as React from "react";
 import type { Selection } from "react-stately";
 import { toast } from "sonner";
 

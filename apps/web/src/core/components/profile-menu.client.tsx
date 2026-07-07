@@ -7,7 +7,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
-import * as React from "react";
 
 import { logoutAction } from "@/auth/actions/auth";
 import {

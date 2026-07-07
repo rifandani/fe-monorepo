@@ -4,7 +4,6 @@ import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Agentation } from "agentation";
-import * as React from "react";
 
 import { queryClient } from "@/core/providers/query/client";
 // oxlint-disable-next-line import/no-cycle

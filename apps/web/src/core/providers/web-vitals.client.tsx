@@ -1,5 +1,5 @@
+/* oxlint-disable eslint/func-style sonarjs/function-name */
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
 import { log } from "evlog/next/client";
 import { useReportWebVitals } from "next/web-vitals";
 

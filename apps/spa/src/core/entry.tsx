@@ -1,6 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
-import * as React from "react";
-import { Suspense } from "react";
+import { StrictMode, Suspense } from "react";
 
 import { Loader } from "@/core/components/ui";
 import { TRACER_REACT_ENTRY } from "@/core/constants/global";
@@ -16,7 +15,7 @@ import { AppToastProvider } from "@/core/providers/toast/provider";
 
 export function Entry() {
   return (
-    <React.StrictMode>
+    <StrictMode>
       <AppHeadProvider>
         <AppQueryProvider>
           <AppTranslationProvider>
@@ -37,6 +36,6 @@ export function Entry() {
           </AppTranslationProvider>
         </AppQueryProvider>
       </AppHeadProvider>
-    </React.StrictMode>
+    </StrictMode>
   );
 }

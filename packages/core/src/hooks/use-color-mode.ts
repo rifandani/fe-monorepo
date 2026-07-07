@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/js-set-map-lookups react-doctor/no-pass-data-to-parent */
 import { useLocalStorageState } from "@workspace/core/hooks/use-local-storage-state";
 import { useMediaQuery } from "@workspace/core/hooks/use-media-query";
 import { useCallback, useEffect, useMemo } from "react";
@@ -86,6 +86,8 @@ export function useColorMode<T extends string = BasicColorMode>(
     initialValue = "auto",
     storageKey = "app-color-scheme",
     disableTransition = true,
+    modes: customModes,
+    onChanged,
   } = options;
   /**
    * Persisted color mode state in localStorage
@@ -106,25 +108,23 @@ export function useColorMode<T extends string = BasicColorMode>(
         auto: "",
         dark: "dark",
         light: "light",
-        ...options.modes,
+        ...customModes,
       }) as Record<BasicColorSchema | T, string>,
-    [options.modes]
+    [customModes]
   );
+
   /**
    * Current system color mode based on preference
    */
-  const system = useMemo(
-    () => (preferredDark ? "dark" : "light"),
-    [preferredDark]
-  );
+  const system = preferredDark ? "dark" : "light";
   /**
    * Active color mode - either from storage or system preference if set to 'auto'
    */
-  const state = useMemo(
-    () => (store[0] === "auto" ? system : store[0]) as "light" | "dark" | T,
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-    [store[0], system]
-  );
+  const state = (store[0] === "auto" ? system : store[0]) as
+    | "light"
+    | "dark"
+    | T;
+
   /**
    * Updates HTML attributes to apply the color mode
    * Handles class-based and attribute-based color modes with transition disabling
@@ -168,14 +168,14 @@ export function useColorMode<T extends string = BasicColorMode>(
   );
   useEffect(() => {
     // Apply color mode changes to DOM
-    if (options.onChanged) {
-      options.onChanged(state, (mode: T | BasicColorMode) => {
+    if (onChanged) {
+      onChanged(state, (mode: T | BasicColorMode) => {
         updateHTMLAttrs(selector, attribute, modes[mode]);
       });
     } else {
       updateHTMLAttrs(selector, attribute, modes[state]);
     }
     // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [attribute, modes, options.onChanged, selector, state]);
+  }, [attribute, modes, onChanged, selector, state]);
   return store;
 }

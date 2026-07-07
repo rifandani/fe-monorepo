@@ -1,8 +1,9 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler react-doctor/only-export-components */
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { authLoginResponseSchema } from "@workspace/core/apis/auth";
 import { isFunction } from "radashi";
-import * as React from "react";
+import { createContext, use, useRef } from "react";
+import type { ReactNode } from "react";
 import { z } from "zod";
 import { create, createStore, useStore } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
@@ -65,11 +66,11 @@ function createUserStore(initialState?: Partial<UserStoreState>) {
     }))
   );
 }
-export const UserContext = React.createContext<ReturnType<
+export const UserContext = createContext<ReturnType<
   typeof createUserStore
 > | null>(null);
 export function useUserContext<T>(selector: (_store: UserStore) => T): T {
-  const store = React.use(UserContext);
+  const store = use(UserContext);
   if (!store) {
     throw new Error("useUserContext: cannot find the UserContext");
   }
@@ -80,13 +81,11 @@ export function UserProvider({
   initialState,
 }: {
   children:
-    | React.ReactNode
-    | ((context: ReturnType<typeof createUserStore>) => React.ReactNode);
+    | ReactNode
+    | ((context: ReturnType<typeof createUserStore>) => ReactNode);
   initialState?: Parameters<typeof createUserStore>[0];
 }) {
-  const storeRef = React.useRef<ReturnType<typeof createUserStore> | null>(
-    null
-  );
+  const storeRef = useRef<ReturnType<typeof createUserStore> | null>(null);
   if (!storeRef.current) {
     storeRef.current = createUserStore(initialState);
   }

@@ -1,5 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 /**
  * A hook that helps you manage dynamic list and generate unique key for each item.
@@ -42,76 +42,69 @@ import { useCallback, useRef, useState } from "react";
 export function useDynamicList<T>(initialList: T[] = []) {
   const counterRef = useRef(-1);
   const keyListRef = useRef<number[]>([]);
-  const setKey = useCallback((index: number) => {
+  function setKey(index: number) {
     counterRef.current += 1;
     keyListRef.current.splice(index, 0, counterRef.current);
-  }, []);
+  }
   // Current list
+  // oxlint-disable-next-line react/react-compiler -- key refs initialized once in lazy state
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization
-    for (const _ of initialList) {
+    keyListRef.current = initialList.map(() => {
       counterRef.current += 1;
-      keyListRef.current.push(counterRef.current);
-    }
+      return counterRef.current;
+    });
     return initialList;
   });
   // Reset list current data
-  const resetList = useCallback(
-    (newList: T[]) => {
-      keyListRef.current = [];
-      setList(() => {
-        for (const [index] of newList.entries()) {
-          setKey(index);
-        }
-        return newList;
-      });
-    },
-    [setKey]
-  );
-  // Add item at specific position
-  const insert = useCallback(
-    (index: number, item: T) => {
-      setList((l) => {
-        const temp = [...l];
-        temp.splice(index, 0, item);
+  function resetList(newList: T[]) {
+    keyListRef.current = [];
+    setList(() => {
+      for (const [index] of newList.entries()) {
         setKey(index);
-        return temp;
-      });
-    },
-    [setKey]
-  );
+      }
+      return newList;
+    });
+  }
+  // Add item at specific position
+  function insert(index: number, item: T) {
+    setList((l) => {
+      const temp = [...l];
+      temp.splice(index, 0, item);
+      setKey(index);
+      return temp;
+    });
+  }
   // Get the uuid of specific item
-  const getKey = useCallback((index: number) => keyListRef.current[index], []);
+  function getKey(index: number) {
+    return keyListRef.current[index];
+  }
   // Retrieve index from uuid
-  const getIndex = useCallback(
-    (key: number) => keyListRef.current.indexOf(key),
-    []
-  );
+  function getIndex(key: number) {
+    return keyListRef.current.indexOf(key);
+  }
   // Merge items into specific position
-  const merge = useCallback(
-    (index: number, items: T[]) => {
-      setList((l) => {
-        const temp = [...l];
-        for (const [i] of items.entries()) {
-          setKey(index + i);
-        }
-        temp.splice(index, 0, ...items);
-        return temp;
-      });
-    },
-    [setKey]
-  );
+  function merge(index: number, items: T[]) {
+    setList((l) => {
+      const temp = [...l];
+      for (const [i] of items.entries()) {
+        setKey(index + i);
+      }
+      temp.splice(index, 0, ...items);
+      return temp;
+    });
+  }
   // Replace item at specific position
-  const replace = useCallback((index: number, item: T) => {
+  function replace(index: number, item: T) {
     setList((l) => {
       const temp = [...l];
       temp[index] = item;
       return temp;
     });
-  }, []);
+  }
   // Delete specific item
-  const remove = useCallback((index: number) => {
+  function remove(index: number) {
     setList((l) => {
       const temp = [...l];
       temp.splice(index, 1);
@@ -119,9 +112,9 @@ export function useDynamicList<T>(initialList: T[] = []) {
       keyListRef.current.splice(index, 1);
       return temp;
     });
-  }, []);
+  }
   // Move item from old index to new index
-  const move = useCallback((oldIndex: number, newIndex: number) => {
+  function move(oldIndex: number, newIndex: number) {
     if (oldIndex === newIndex) {
       return;
     }
@@ -137,39 +130,33 @@ export function useDynamicList<T>(initialList: T[] = []) {
       keyListRef.current = keyTemp;
       return temp;
     });
-  }, []);
+  }
   // Push new item at the end of list
-  const push = useCallback(
-    (item: T) => {
-      setList((l) => {
-        setKey(l.length);
-        return [...l, item];
-      });
-    },
-    [setKey]
-  );
+  function push(item: T) {
+    setList((l) => {
+      setKey(l.length);
+      return [...l, item];
+    });
+  }
   // Remove the last item from the list
-  const pop = useCallback(() => {
+  function pop() {
     // remove keys if necessary
     keyListRef.current = keyListRef.current.slice(0, -1);
     setList((l) => l.slice(0, -1));
-  }, []);
+  }
   // Add new item at the front of the list
-  const unshift = useCallback(
-    (item: T) => {
-      setList((l) => {
-        setKey(0);
-        return [item, ...l];
-      });
-    },
-    [setKey]
-  );
+  function unshift(item: T) {
+    setList((l) => {
+      setKey(0);
+      return [item, ...l];
+    });
+  }
   // Remove the first item from the list
-  const shift = useCallback(() => {
+  function shift() {
     // remove keys if necessary
     keyListRef.current = keyListRef.current.slice(1);
     setList((l) => l.slice(1));
-  }, []);
+  }
   return {
     getIndex,
     getKey,

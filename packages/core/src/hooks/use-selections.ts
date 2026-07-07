@@ -1,6 +1,6 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 /**
  * This hook is used for Checkbox group, supports multiple selection, single selection, select-all, select-none and semi-selected etc.
@@ -37,7 +37,7 @@ import { useMemo, useState } from "react";
 export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
   // Selected Items, Set selected items
   const [selected, setSelected] = useState<T[]>(defaultSelected);
-  const selectedSet = useMemo(() => new Set(selected), [selected]);
+  const selectedSet = new Set(selected);
 
   /**
    * Check if an item is selected
@@ -100,24 +100,9 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
   /**
    * Check if no item is selected
    */
-  const noneSelected = useMemo(
-    () => items.every((o) => !selectedSet.has(o)),
-    [items, selectedSet]
-  );
-  /**
-   * Check if all items are selected
-   */
-  const allSelected = useMemo(
-    () => items.every((o) => selectedSet.has(o)) && !noneSelected,
-    [items, selectedSet, noneSelected]
-  );
-  /**
-   * Check if partially items are selected
-   */
-  const partiallySelected = useMemo(
-    () => !noneSelected && !allSelected,
-    [noneSelected, allSelected]
-  );
+  const noneSelected = items.every((o) => !selectedSet.has(o));
+  const allSelected = items.every((o) => selectedSet.has(o)) && !noneSelected;
+  const partiallySelected = !noneSelected && !allSelected;
 
   /**
    * Toggle select all items

@@ -2,7 +2,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { isFunction } from "radashi";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import * as React from "react";
+import { useState } from "react";
 import { Button, Sheet } from "tamagui";
 
 import type { HeaderButtonProps } from "@/core/types/navigation";
@@ -24,7 +24,7 @@ type HeaderMoreProps = HeaderButtonProps & {
   children: ReactNode | (({ state, setState }: RenderProps) => ReactNode);
 };
 export function HeaderMore({ children }: HeaderMoreProps) {
-  const [state, setState] = React.useState<State>({ open: false, position: 0 });
+  const [state, setState] = useState<State>({ open: false, position: 0 });
   return (
     <>
       <Button

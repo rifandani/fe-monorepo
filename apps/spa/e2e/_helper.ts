@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style github/filenames-match-regex -- function declarations; Playwright helper file */
 import { faker } from "@faker-js/faker";
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 

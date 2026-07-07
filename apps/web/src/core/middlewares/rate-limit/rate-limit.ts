@@ -26,7 +26,8 @@ export const rateLimit = rateLimiter({
     }
     // get IP address from headers (most common)
     const ipAddressFromHeaders = getClientIpAddress(request.headers);
-    return `ip:${ipAddressFromHeaders || `anonymous:${randomUUID()}`}`;
+    const anonymousKey = `anonymous:${randomUUID()}`;
+    return `ip:${ipAddressFromHeaders || anonymousKey}`;
   },
   // drizzle postgres store
   store: new DbStore(),

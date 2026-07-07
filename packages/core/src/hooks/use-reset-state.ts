@@ -1,6 +1,6 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style */
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 type ResetState = () => void;
 
@@ -11,8 +11,8 @@ export function useResetState<S>(
   initialState: S | (() => S)
 ): [S, Dispatch<SetStateAction<S>>, ResetState] {
   const [state, setState] = useState(initialState);
-  const resetState = useCallback(() => {
+  const resetState = () => {
     setState(initialState);
-  }, [initialState]);
+  };
   return [state, setState, resetState];
 }

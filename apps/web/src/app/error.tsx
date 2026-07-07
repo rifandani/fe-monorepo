@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/no-globals-shadowing sonarjs/no-built-in-override -- Next.js error boundary convention */
 "use client"; // Error boundaries must be Client Components
 
 import { trace } from "@opentelemetry/api";

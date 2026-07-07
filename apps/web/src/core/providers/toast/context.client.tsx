@@ -2,12 +2,13 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
 import { useTheme } from "next-themes";
-import * as React from "react";
+import { createContext } from "react";
+import type { ComponentPropsWithoutRef, CSSProperties } from "react";
 import type { Toaster } from "sonner";
 import { twJoin } from "tailwind-merge";
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
-type ToasterProps = React.ComponentPropsWithoutRef<typeof Toaster>;
+type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
 export function useCreateToastContext() {
   const { theme } = useTheme();
   const [toastConfig, setToastConfig, resetToastConfig] =
@@ -36,7 +37,7 @@ export function useCreateToastContext() {
         "--warning-border":
           "color-mix(in oklab, var(--warning-subtle-fg) 20%, transparent)",
         "--warning-text": "var(--color-warning-subtle-fg)",
-      } as React.CSSProperties,
+      } as CSSProperties,
       theme:
         !theme || theme === "auto" ? "system" : (theme as "light" | "dark"),
       toastOptions: {
@@ -52,6 +53,6 @@ export function useCreateToastContext() {
   };
   return [toastConfig, actions] as const;
 }
-export const ToastContext = React.createContext<ToastContextInterface>(
+export const ToastContext = createContext<ToastContextInterface>(
   {} as ToastContextInterface
 );

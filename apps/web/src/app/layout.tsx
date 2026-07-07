@@ -39,10 +39,11 @@ export function generateViewport(): Viewport {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   // Opt-out of static generation for every page so the CSP nonce can be applied
-  await connection();
-
-  const locale = await getLocale();
-  const messages = await getMessages();
+  const [, locale, messages] = await Promise.all([
+    connection(),
+    getLocale(),
+    getMessages(),
+  ]);
 
   return (
     // suppressHydrationWarning for next-themes

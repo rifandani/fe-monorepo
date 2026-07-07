@@ -1,8 +1,8 @@
 "use client";
 /* oxlint-disable eslint/func-style -- function declarations */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export interface useCopyToClipboardProps {
+export interface UseCopyToClipboardProps {
   timeout?: number;
 }
 
@@ -16,7 +16,7 @@ export interface useCopyToClipboardProps {
  */
 export function useCopyToClipboard({
   timeout = 1000,
-}: useCopyToClipboardProps = {}) {
+}: UseCopyToClipboardProps = {}) {
   const [isCopied, setIsCopied] = useState(false);
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Cleanup timeout on unmount to prevent memory leaks
@@ -28,27 +28,24 @@ export function useCopyToClipboard({
     },
     []
   );
-  const copyToClipboard = useCallback(
-    (value: string) => {
-      if (typeof window === "undefined" || !navigator.clipboard?.writeText) {
-        return;
-      }
-      if (!value) {
-        return;
-      }
-      // Clear any existing timeout
-      if (timeoutIdRef.current) {
-        clearTimeout(timeoutIdRef.current);
-      }
-      // oxlint-disable-next-line promise/prefer-await-to-then
-      navigator.clipboard.writeText(value).then(() => {
-        setIsCopied(true);
-        timeoutIdRef.current = setTimeout(() => {
-          setIsCopied(false);
-        }, timeout);
-      });
-    },
-    [timeout]
-  );
+  const copyToClipboard = (value: string) => {
+    if (typeof window === "undefined" || !navigator.clipboard?.writeText) {
+      return;
+    }
+    if (!value) {
+      return;
+    }
+    // Clear any existing timeout
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+    // oxlint-disable-next-line promise/prefer-await-to-then github/no-then
+    navigator.clipboard.writeText(value).then(() => {
+      setIsCopied(true);
+      timeoutIdRef.current = setTimeout(() => {
+        setIsCopied(false);
+      }, timeout);
+    });
+  };
   return { copyToClipboard, isCopied };
 }

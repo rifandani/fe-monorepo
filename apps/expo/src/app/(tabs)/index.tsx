@@ -2,9 +2,7 @@
 import { useTranslation } from "react-i18next";
 import { H6, YStack } from "tamagui";
 
-import { BaseErrorBoundary } from "@/core/components/base-error-boundary";
-
-export const ErrorBoundary = BaseErrorBoundary;
+export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
 export default function TabsIndexScreen() {
   const { t } = useTranslation();
   return (

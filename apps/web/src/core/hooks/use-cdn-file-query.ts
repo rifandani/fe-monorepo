@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react/react-compiler */
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import type {
@@ -31,8 +31,7 @@ export function useCdnFileQuery(
           cdnRepositories().getCdnFile({ url: opt.url as string }, { signal })
       : skipToken,
     queryKey: cdnKeys[opt.key](opt.url),
-    // oxlint-disable-next-line oxc/const-comparisons
-    ...(queryOptions && queryOptions),
+    ...queryOptions,
   });
   // create file object from blob
   const file = query.data?.blob

@@ -1,6 +1,5 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
-import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ListItem, Separator, YGroup } from "tamagui";
@@ -31,7 +30,7 @@ export function ProfileThemeChanger() {
       <BaseSheet
         state={state}
         setState={setState}
-        sheetProps={{ snapPoints: undefined, snapPointsMode: "fit" }}
+        sheetProps={{ snapPointsMode: "fit" }}
         frameProps={{ p: "$5" }}
       >
         <YGroup verticalAlign="center" bordered separator={<Separator />}>

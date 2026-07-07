@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style react-doctor/no-event-handler */
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
@@ -12,11 +12,11 @@ import { userApi, userKeys } from "@/user/api/user";
 
 type Params = Parameters<typeof userKeys.detail>[0];
 type Success = Awaited<ReturnType<typeof userApi.getDetail>>;
-type Error = z.ZodError | HTTPError | TimeoutError;
+type QueryError = z.ZodError | HTTPError | TimeoutError;
 export function useGetUser(
   params?: Params,
   options?: Except<
-    UseQueryOptions<unknown, Error, Success>,
+    UseQueryOptions<unknown, QueryError, Success>,
     "queryKey" | "queryFn"
   >
 ) {

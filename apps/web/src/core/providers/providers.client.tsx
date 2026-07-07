@@ -1,6 +1,7 @@
 "use client";
 /* oxlint-disable eslint/func-style -- function declarations */
-import * as React from "react";
+import { Suspense } from "react";
+import type { ReactNode } from "react";
 
 import { Loader } from "@/core/components/ui";
 import { AppAriaProvider } from "@/core/providers/aria/provider.client";
@@ -14,7 +15,7 @@ export function AppProviders({
   children,
   locale,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   locale: string;
 }) {
   return (
@@ -23,13 +24,13 @@ export function AppProviders({
         <AppAriaProvider locale={locale}>
           <AppToastProvider>
             <AppQueryProvider>
-              <React.Suspense
+              <Suspense
                 fallback={<Loader className="size-4.5" variant="spin" />}
               >
                 {children}
 
                 <Devtools />
-              </React.Suspense>
+              </Suspense>
             </AppQueryProvider>
           </AppToastProvider>
         </AppAriaProvider>

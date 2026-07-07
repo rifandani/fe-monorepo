@@ -1,5 +1,6 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { Stack } from "expo-router";
+// oxlint-disable-next-line sonarjs/no-wildcard-import -- expo-splash-screen namespace API
 import * as SplashScreen from "expo-splash-screen";
 import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

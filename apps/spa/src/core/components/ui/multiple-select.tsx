@@ -129,7 +129,6 @@ function MultipleSelect<T extends OptionBase>({
           >
             <Autocomplete filter={contains}>
               <SearchField
-                // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
                 className="rounded-none py-0.5 outline-hidden"
                 value={searchValue}

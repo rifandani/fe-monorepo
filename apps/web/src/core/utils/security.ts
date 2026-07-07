@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style -- function declarations */
+/* oxlint-disable eslint/func-style github/no-inner-html */
 /**
  * Security utility functions for development.
  *

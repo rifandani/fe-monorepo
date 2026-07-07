@@ -1,4 +1,6 @@
 import { Button, styled } from "tamagui";
+
+const BORDER_COLOR_PRESS = "$borderColorPress";
 /**
  * includes `bg`, `color`, `pressStyle.bg`, `pressStyle.borderColor`
  */
@@ -18,7 +20,7 @@ const _baseButtonVariants = {
       color: "$red11",
       pressStyle: {
         bg: "$red6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     info: {
@@ -26,7 +28,7 @@ const _baseButtonVariants = {
       color: "$blue11",
       pressStyle: {
         bg: "$blue6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     outlined: {
@@ -43,7 +45,7 @@ const _baseButtonVariants = {
       },
       pressStyle: {
         backgroundColor: "transparent",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     primary: {
@@ -51,7 +53,7 @@ const _baseButtonVariants = {
       color: "$purple11",
       pressStyle: {
         bg: "$purple6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     secondary: {
@@ -59,7 +61,7 @@ const _baseButtonVariants = {
       color: "$pink11",
       pressStyle: {
         bg: "$pink6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     success: {
@@ -67,7 +69,7 @@ const _baseButtonVariants = {
       color: "$green11",
       pressStyle: {
         bg: "$green6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
     warning: {
@@ -75,7 +77,7 @@ const _baseButtonVariants = {
       color: "$yellow11",
       pressStyle: {
         bg: "$yellow6",
-        borderColor: "$borderColorPress",
+        borderColor: BORDER_COLOR_PRESS,
       },
     },
   },
