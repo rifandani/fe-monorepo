@@ -7,12 +7,12 @@ labels:
     color: 8be281
   - name: feature
     color: a2eeef
-  - name: wontfix
-    color: ffffff
   - name: chore
     color: fbca04
   - name: WIP
     color: 000000
+  - name: wontfix
+    color: ffffff
   - name: needs-triage
     color: d93f0b
   - name: needs-info

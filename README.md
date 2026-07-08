@@ -13,7 +13,7 @@
 - Remember to always use EXACT version for all dependencies
 - Run `bun bump:deps` to check for outdated dependencies, then run `bun install` to install it
 - To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
-- To upgrade IntentUI components (last updated at ["June 24 2026" release](https://intentui.com/docs/prologue/release-notes)), run interactively `bun bump:ui`
+- To upgrade IntentUI components (last updated at ["June 30 2026" release](https://intentui.com/docs/prologue/release-notes) or ["v3.8.4"](https://github.com/intentui/intentui/releases)), run interactively `bun bump:ui`
   - keep `'use client'` directive in components/hooks
   - copy changes in toast props into `providers/toast/context.tsx`, then remove generated `toast.tsx` file
   - use `react-stately` instead of `@react-stately/color`

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "tailwindcss-react-aria-components";
@@ -24,6 +22,9 @@
 
   --color-bg: var(--bg);
   --color-fg: var(--fg);
+
+  --color-card: var(--card);
+  --color-card-fg: var(--card-fg);
 
   --color-primary: var(--primary);
   --color-primary-fg: var(--primary-fg);
@@ -82,6 +83,9 @@
 :root {
   --bg: oklch(1 0 0);
   --fg: oklch(0.21 0.006 285.885);
+
+  --card: oklch(1 0 0);
+  --card-fg: oklch(0.21 0.006 285.885);
 
   --primary: oklch(0.546 0.245 262.881);
   --primary-fg: oklch(1 0 0);
@@ -148,6 +152,9 @@
 .dark {
   --bg: oklch(0.181 0.005 285.823);
   --fg: oklch(0.985 0 0);
+
+  --card: oklch(0.181 0.005 285.823);
+  --card-fg: oklch(0.985 0 0);
 
   --primary: oklch(0.546 0.245 262.881);
   --primary-fg: oklch(1 0 0);
@@ -276,11 +283,11 @@
 [data-chart] .recharts-cartesian-axis-tick text {
   fill: var(--muted-fg);
 }
-[data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
+[data-chart] .recharts-cartesian-grid line[stroke="\23 ccc"] {
   stroke: var(--border);
 }
 @supports (color: color-mix(in lab, red, red)) {
-  [data-chart] .recharts-cartesian-grid line[stroke="#ccc"] {
+  [data-chart] .recharts-cartesian-grid line[stroke="\23 ccc"] {
     stroke: color-mix(in oklab, var(--border) 80%, transparent);
   }
 }
@@ -291,16 +298,16 @@
 [data-chart] .recharts-layer {
   outline: none;
 }
-[data-chart] .recharts-polar-grid [stroke="#ccc"] {
+[data-chart] .recharts-polar-grid [stroke="\23 ccc"] {
   stroke: var(--border);
 }
 [data-chart] .recharts-radial-bar-background-sector {
   fill: var(--muted);
 }
-[data-chart] .recharts-reference-line [stroke="#ccc"] {
+[data-chart] .recharts-reference-line [stroke="\23 ccc"] {
   stroke: var(--border);
 }
-[data-chart] .recharts-sector[stroke="#fff"] {
+[data-chart] .recharts-sector[stroke="\23 fff"] {
   stroke: transparent;
 }
 [data-chart] .recharts-sector {
@@ -309,7 +316,7 @@
 [data-chart] .recharts-surface {
   outline: none;
 }
-[data-chart] .recharts-dot[fill="#fff"] {
+[data-chart] .recharts-dot[fill="\23 fff"] {
   fill: var(--line-color, var(--border));
 }
 [data-chart] .recharts-active-dot > .recharts-dot {

@@ -1,5 +1,4 @@
 /* oxlint-disable eslint/func-style -- function declarations */
-/* eslint-disable no-console */
 const COLOR = {
   BLUE: "\u001B[34m",
   GREEN: "\u001B[32m",

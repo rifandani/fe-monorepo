@@ -1,15 +1,135 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Bash(date:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(grep:*)",
+      "Bash(tr:*)",
+      "Bash(find *)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(wc:*)",
+      "Bash(tree:*)",
+      "Bash(wslpath:*)",
+      "Bash(echo:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker start:*)",
+      "Bash(uv init:*)",
+      "Bash(uv add:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv python:*)",
+      "Bash(uv run:*)",
+      "Bash(node:*)",
+      "Bash(playwright-cli:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git revert:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "Bash(git status:*)",
+      "Bash(git -C:*)",
+      "Bash(git remote:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git tag:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm run:*)",
+      "Bash(npm view:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm test:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm uninstall:*)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpm view:*)",
+      "Bash(pnpm config:*)",
+      "Bash(pnpm ls:*)",
+      "Bash(pnpm ci:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm tsc:*)",
+      "Read(//Users/rizeki.rifandani/.cache/**)",
+      "Read(//Users/rizeki.rifandani/Library/Caches/ms-playwright/**)",
+      "WebSearch",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:www.npmjs.com)",
+      "mcp__ide__getDiagnostics"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/secrets/*)",
+      "Read(**/*credential*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(git push*)",
+      "Bash(git reset --hard*)",
+      "Bash(git reset*--hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git branch -D*)",
+      "Bash(git checkout .*)",
+      "Bash(git restore .*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(pkill -9)",
+      "Bash(killall -9)",
+      "Bash(chmod -R 777 /)"
+    ]
+  },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-tool.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "command": "bun lint:fix",
             "type": "command"
           }
-        ],
-        "matcher": "Write|Edit"
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Code needs your attention\" with title \"Claude Code\"'"
+          }
+        ]
       }
     ]
+  },
+  "outputStyle": "default",
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bun x ccusage statusline"
   }
 }
