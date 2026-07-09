@@ -24,7 +24,7 @@
     "build-and-preview": "bun run --sequential build preview"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.1.5",
+    "@dotenvx/dotenvx": "2.3.1",
     "@heroicons/react": "2.2.0",
     "@internationalized/date": "3.12.2",
     "@opentelemetry/api": "1.9.1",
@@ -77,7 +77,7 @@
     "@tanstack/react-query-devtools": "5.101.2",
     "@tanstack/react-router-devtools": "1.167.0",
     "@tanstack/router-plugin": "1.168.19",
-    "@types/node": "26.1.0",
+    "@types/node": "26.1.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vite-pwa/assets-generator": "1.0.2",

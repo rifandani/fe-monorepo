@@ -7,6 +7,7 @@
 ## 🎯 Todo
 
 - [ ] always update `CLAUDE.md` file in root dir and subpackage inside monorepo and consider it as a living document
+- [ ] lookout for nextjs update to support `typescript@7` natively, because currently we need `@typescript/native-preview`
 
 ## 🛠️ Upgrading Dependencies
 

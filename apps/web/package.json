@@ -31,12 +31,12 @@
     "build-and-preview": "bun run build && bun run start"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "2.1.5",
+    "@dotenvx/dotenvx": "2.3.1",
     "@heroicons/react": "2.2.0",
     "@hookform/resolvers": "5.4.0",
     "@internationalized/date": "3.12.2",
     "@next-safe-action/adapter-react-hook-form": "2.0.6",
-    "@nosecone/next": "1.7.0",
+    "@nosecone/next": "1.8.0",
     "@opentelemetry/api": "1.9.1",
     "@opentelemetry/api-logs": "0.220.0",
     "@opentelemetry/exporter-logs-otlp-http": "0.220.0",
@@ -97,10 +97,11 @@
     "@tailwindcss/postcss": "4.3.2",
     "@tanstack/react-devtools": "0.10.8",
     "@tanstack/react-query-devtools": "5.101.2",
-    "@types/node": "26.1.0",
+    "@types/node": "26.1.1",
     "@types/pg": "8.20.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vite-pwa/assets-generator": "1.0.2",
     "@workspace/typescript-config": "workspace:*",
     "agentation": "3.0.2",
@@ -109,6 +110,6 @@
     "postcss": "8.5.16",
     "tailwindcss": "4.3.2",
     "tailwindcss-react-aria-components": "2.2.0",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   }
 }

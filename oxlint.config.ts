@@ -1,7 +1,7 @@
 import type { OxlintConfig } from "oxlint";
 import { defineConfig } from "oxlint";
 import core from "ultracite/oxlint/core";
-import next from "ultracite/oxlint/next";
+import jsPlugins from "ultracite/oxlint/js-plugins";
 import react from "ultracite/oxlint/react";
 import tanstack from "ultracite/oxlint/tanstack";
 
@@ -9,7 +9,14 @@ const isGithubOrSonarjsRule = (ruleName: string) =>
   ruleName.startsWith("github/") || ruleName.startsWith("sonarjs/");
 
 const stripGithubSonarjs = (config: OxlintConfig): OxlintConfig => {
-  const { jsPlugins: _jsPlugins, rules, overrides, ...rest } = config;
+  const { jsPlugins: configJsPlugins, rules, overrides, ...rest } = config;
+
+  const filteredJsPlugins = configJsPlugins?.filter(
+    (plugin) =>
+      typeof plugin === "object" &&
+      "name" in plugin &&
+      plugin.name === "react-doctor"
+  );
 
   const filteredRules = rules
     ? Object.fromEntries(
@@ -30,6 +37,7 @@ const stripGithubSonarjs = (config: OxlintConfig): OxlintConfig => {
 
   return {
     ...rest,
+    ...(filteredJsPlugins?.length ? { jsPlugins: filteredJsPlugins } : {}),
     ...(filteredRules ? { rules: filteredRules } : {}),
     ...(filteredOverrides ? { overrides: filteredOverrides } : {}),
   };
@@ -37,10 +45,10 @@ const stripGithubSonarjs = (config: OxlintConfig): OxlintConfig => {
 
 // ultracite/oxlint/core bundles eslint-plugin-github + eslint-plugin-sonarjs via
 // jsPlugins (~1-3s each). Strip plugin + rules; react-doctor stays via react presets.
-const coreWithoutGithubSonarjs = stripGithubSonarjs(core);
+const jsPluginsWithoutGithubSonarjs = stripGithubSonarjs(jsPlugins);
 
 export default defineConfig({
-  extends: [coreWithoutGithubSonarjs, react, tanstack, next],
+  extends: [core, jsPluginsWithoutGithubSonarjs, react, tanstack],
   rules: {
     "sort-keys": "off",
     "no-inline-comments": "off",
