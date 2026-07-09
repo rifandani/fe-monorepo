@@ -1,7 +1,8 @@
 /* oxlint-disable eslint/func-style sonarjs/variable-name -- function declarations; expo-router unstable_settings export */
 import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
-import { useTranslation } from "react-i18next";
+
+import { useTranslation } from "@/core/providers/i18n/context";
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
@@ -27,7 +28,7 @@ export default function TabsLayout() {
         options={{
           // use href null to hide tab bar
           // href: null,
-          title: t("home.home"),
+          title: t("title"),
           tabBarIcon: HomeTabIcon,
         }}
       />
@@ -35,7 +36,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           tabBarIcon: ProfileTabIcon,
-          title: t("user.profile"),
+          title: t("profile"),
         }}
       />
     </Tabs>

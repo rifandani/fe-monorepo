@@ -29,6 +29,11 @@ export default {
   appReady: "Aplikasi siap digunakan secara offline",
   newContentAvailable:
     "Konten baru tersedia, klik tombol muat ulang untuk memperbarui",
+  editProfile: "Ubah Profil",
+  newUpdateAvailable: "Versi baru tersedia",
+  downloadAndInstallUpdate: "Unduh dan instal pembaruan",
+  rememberMe: "Ingat saya",
+  appName: "Aplikasi Expo",
   // #endregion COMMON
   // #region AUTH
   username: "Username",

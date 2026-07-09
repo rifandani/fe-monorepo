@@ -2,12 +2,12 @@
 import { Stack } from "expo-router";
 // oxlint-disable-next-line sonarjs/no-wildcard-import -- expo-splash-screen namespace API
 import * as SplashScreen from "expo-splash-screen";
-import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { useAppStore } from "@/core/hooks/use-app-store";
 import { DevPlugins } from "@/core/providers/dev-plugins";
+import { useTranslation } from "@/core/providers/i18n/context";
 import { AppI18nProvider } from "@/core/providers/i18n/provider";
 import { AppQueryProvider } from "@/core/providers/query/provider";
 import { AppTamaguiProvider } from "@/core/providers/tamagui/provider";
@@ -39,7 +39,7 @@ function App() {
             name="login"
             options={{
               headerShown: false,
-              title: t("forms.login"),
+              title: t("login"),
             }}
           />
         </Stack.Protected>

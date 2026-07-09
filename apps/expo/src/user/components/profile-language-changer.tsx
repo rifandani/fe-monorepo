@@ -1,15 +1,16 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
+import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ListItem, Separator, YGroup } from "tamagui";
 
 import { BaseSheet } from "@/core/components/sheet/base-sheet";
 import type { BaseSheetState } from "@/core/components/sheet/types";
+import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
 export function ProfileLanguageChanger() {
-  const { t, i18n } = useTranslation();
+  const { t, locale, setLocale } = useTranslation();
   const [state, setState] = useState<BaseSheetState>({
     open: false,
     position: 0,
@@ -17,7 +18,7 @@ export function ProfileLanguageChanger() {
   return (
     <>
       <ProfileListItem
-        title={t("common.language")}
+        title={t("language")}
         icon={<Feather name="globe" />}
         onPress={() => {
           setState({ ...state, open: true });
@@ -37,7 +38,7 @@ export function ProfileLanguageChanger() {
               theme="light"
               title="English"
               iconAfter={
-                i18n.resolvedLanguage === "en" ? (
+                locale === "en-us" ? (
                   <Feather
                     testID="profile-language-english-checked"
                     name="check-circle"
@@ -45,7 +46,7 @@ export function ProfileLanguageChanger() {
                   />
                 ) : undefined
               }
-              onPress={() => i18n.changeLanguage("en-US")}
+              onPress={() => setLocale("en-us" satisfies LocaleDictLanguage)}
             />
           </YGroup.Item>
           <YGroup.Item>
@@ -53,7 +54,7 @@ export function ProfileLanguageChanger() {
               pressTheme
               title="Indonesia"
               iconAfter={
-                i18n.resolvedLanguage === "id" ? (
+                locale === "id-id" ? (
                   <Feather
                     testID="profile-language-indonesia-checked"
                     name="check-circle"
@@ -61,7 +62,7 @@ export function ProfileLanguageChanger() {
                   />
                 ) : undefined
               }
-              onPress={() => i18n.changeLanguage("id-ID")}
+              onPress={() => setLocale("id-id" satisfies LocaleDictLanguage)}
             />
           </YGroup.Item>
         </YGroup>

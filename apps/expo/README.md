@@ -12,7 +12,6 @@
 ## 🎯 Todo
 
 - [ ] consider using `@tanstack/react-form` instead of `react-hook-form`
-- [ ] Use our own i18n library from `@workspace/core` instead of `i18next`
 - [ ] Use `expo-secure-store` to store sensitive data in android keystore or ios keychain instead of encrypted `mmkv`
 - [ ] Use [Rozenite](https://www.rozenite.dev/) devtools for debugging
 - [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)

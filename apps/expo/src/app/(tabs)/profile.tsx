@@ -5,7 +5,6 @@ import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
 import * as Updates from "expo-updates";
-import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import {
   H6,
@@ -20,6 +19,7 @@ import {
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
 import { useAppStore } from "@/core/hooks/use-app-store";
+import { useTranslation } from "@/core/providers/i18n/context";
 import type { ToastCustomData } from "@/core/providers/toast/the-toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
 import { ProfileListItem } from "@/user/components/profile-list-item";
@@ -53,7 +53,7 @@ function EditProfileSection() {
         <Paragraph size="$3">{data?.email}</Paragraph>
 
         <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
-          {t("user.editProfile")}
+          {t("editProfile")}
         </BaseButton>
       </YStack>
     </XStack>
@@ -102,10 +102,8 @@ function CheckForUpdatesListItem() {
         )
       }
     >
-      <ListItem.Text>{t("user.newUpdateAvailable")}</ListItem.Text>
-      <ListItem.Subtitle>
-        {t("user.downloadAndInstallUpdate")}
-      </ListItem.Subtitle>
+      <ListItem.Text>{t("newUpdateAvailable")}</ListItem.Text>
+      <ListItem.Subtitle>{t("downloadAndInstallUpdate")}</ListItem.Subtitle>
     </ProfileListItem>
   );
 }
@@ -126,7 +124,7 @@ function LogoutListItem() {
         resetUser();
       }}
     >
-      <ListItem.Text color="$red10">{t("common.logout")}</ListItem.Text>
+      <ListItem.Text color="$red10">{t("logout")}</ListItem.Text>
     </ProfileListItem>
   );
 }

@@ -1,12 +1,12 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ListItem, Separator, YGroup } from "tamagui";
 
 import { BaseSheet } from "@/core/components/sheet/base-sheet";
 import type { BaseSheetState } from "@/core/components/sheet/types";
 import { useAppStore } from "@/core/hooks/use-app-store";
+import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
 export function ProfileThemeChanger() {
@@ -20,7 +20,7 @@ export function ProfileThemeChanger() {
   return (
     <>
       <ProfileListItem
-        title={t("common.theme")}
+        title={t("theme")}
         icon={<Feather name="moon" />}
         onPress={() => {
           setState({ ...state, open: true });
@@ -37,7 +37,7 @@ export function ProfileThemeChanger() {
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={t("common.light")}
+              title={t("light")}
               icon={<Feather name="sun" size={20} />}
               iconAfter={
                 theme === "light" ? (
@@ -54,7 +54,7 @@ export function ProfileThemeChanger() {
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={t("common.dark")}
+              title={t("dark")}
               icon={<Feather name="moon" size={20} />}
               iconAfter={
                 theme === "dark" ? (
@@ -71,7 +71,7 @@ export function ProfileThemeChanger() {
           <YGroup.Item>
             <ListItem
               pressTheme
-              title={t("common.system")}
+              title={t("system")}
               icon={<Feather name="tablet" size={20} />}
               iconAfter={
                 theme === "system" ? (

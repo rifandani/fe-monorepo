@@ -29,6 +29,11 @@ export default {
   appReady: "App is ready to use offline",
   newContentAvailable:
     "New content is available, click the reload button to update",
+  editProfile: "Edit Profile",
+  newUpdateAvailable: "A new update is available",
+  downloadAndInstallUpdate: "Download and install update",
+  rememberMe: "Remember me",
+  appName: "Expo App",
   // #endregion COMMON
   // #region AUTH
   username: "Username",
