@@ -10,6 +10,7 @@ export default defineConfig({
     "**/.agents",
     "**/.claude",
     "**/.cursor",
+    "**/.repos",
     "**/docs",
   ],
 });

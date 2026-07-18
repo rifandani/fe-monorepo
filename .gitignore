@@ -21,6 +21,7 @@ stats.html
 **/.env.*
 !**/.env.example
 !**/.env.*.example
+.repos
 node_modules
 build
 dev-dist
