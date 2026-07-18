@@ -29,7 +29,7 @@
 - Run `bun web build`, `bun spa build`, and `bun expo build:android:dev:local` to build with development env
 - Run `bun lint-typecheck` for linting and type checking
 
-After making sure all changes are checked, run `bun cs` to create a new changeset and `bun cs:v` to version the changeset.
+After changes are checked, invoke the `release` skill: **add** writes a changeset for the PR; **cut** (on clean `main`) versions all packages together, updates each `CHANGELOG.md`, commits, tags `vX.Y.Z`, and pushes (GitHub Release via `.github/workflows/release.yml`). Manual: `bun cs` / `bun cs:v`.
 
 ## 📝 Environment Variables
 

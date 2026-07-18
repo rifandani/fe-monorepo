@@ -1,7 +1,7 @@
 {
   "name": "@workspace/expo",
   "version": "1.1.0",
-  "private": false,
+  "private": true,
   "description": "Bulletproof Expo 53 Template",
   "license": "MIT",
   "author": "Tri Rizeki Rifandani",
