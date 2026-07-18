@@ -43,6 +43,48 @@ jobs:
       - name: Lint
         run: bun lint-typecheck
 
+  core-unit:
+    name: core-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run core:test:unit
+
+  spa-unit:
+    name: spa-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run spa:test:unit
+
   dev-spa-e2e:
     timeout-minutes: 30
     runs-on: ubuntu-latest
@@ -140,6 +182,27 @@ jobs:
   #         path: apps/web/playwright-report
   #         retention-days: 7
 
+  web-unit:
+    name: web-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run web:test:unit
+
   dev-spa-build:
     runs-on: ubuntu-latest
     environment: dev
@@ -194,3 +257,24 @@ jobs:
 
       - name: Build
         run: bun web:ci build
+
+  expo-unit:
+    name: expo-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run expo:test:unit

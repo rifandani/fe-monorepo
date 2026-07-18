@@ -21,6 +21,7 @@
     "test": "dotenvx run --env-file=.env.dev -- playwright test",
     "test:ui": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test --ui",
     "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only --shard=$SHARD_INDEX/$SHARD_TOTAL",
+    "test:unit": "vitest run --project web",
     "check-site-meta": "bunx check-site-meta 3002 -p 3052",
     "analyze-bundle-size": "cp .env.prod .env.local && next experimental-analyze",
     "dev": "cp .env.dev .env.local && portless web next dev",

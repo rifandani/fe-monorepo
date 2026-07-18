@@ -8,6 +8,7 @@
   "main": "index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run --project expo",
     "install:check": "expo install --check",
     "install:fix": "expo install --fix",
     "doctor": "bunx expo-doctor@latest",

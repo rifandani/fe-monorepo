@@ -26,7 +26,7 @@ export type AuthLoginResponseSchema = z.infer<typeof authLoginResponseSchema>;
 // #endregion SCHEMAS TYPES
 export const authKeys = {
   all: ["auth"] as const,
-  login: (params: AuthLoginRequestSchema | undefined) =>
+  login: (params?: AuthLoginRequestSchema) =>
     [...authKeys.all, "login", ...(params ? [params] : [])] as const,
 };
 export function authRepositories(http: InstanceType<typeof Http>) {

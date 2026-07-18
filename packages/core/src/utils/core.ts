@@ -63,7 +63,7 @@ export function indonesianPhoneNumberFormat(phoneNumber: string) {
 }
 const replaceCamelCaseRegex = /\.?(?<group>[A-Z]+)/gu;
 const replaceCamelCaseRegex2 = /^_/u;
-const replaceCamelCaseRegex3 = /(?<group>_\w)|(?<group>-\w)/gu;
+const replaceCamelCaseRegex3 = /(?:_\w)|(?:-\w)/gu;
 
 /**
  * convert deep nested object keys to camelCase.

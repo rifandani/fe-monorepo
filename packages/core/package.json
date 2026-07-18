@@ -16,6 +16,9 @@
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },
+  "scripts": {
+    "test:unit": "vitest run --project core"
+  },
   "devDependencies": {
     "@types/node": "26.1.1",
     "@types/react": "19.2.17",

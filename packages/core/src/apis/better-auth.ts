@@ -79,10 +79,10 @@ export type AuthSignOutResponseSchema = z.infer<
 // #endregion API SCHEMAS
 export const authKeys = {
   all: () => ["auth"] as const,
-  signInEmail: (params: AuthSignInEmailRequestSchema | undefined) =>
+  signInEmail: (params?: AuthSignInEmailRequestSchema) =>
     [...authKeys.all(), "signInEmail", ...(params ? [params] : [])] as const,
   signOut: () => [...authKeys.all(), "signOut"] as const,
-  signUpEmail: (params: AuthSignUpEmailRequestSchema | undefined) =>
+  signUpEmail: (params?: AuthSignUpEmailRequestSchema) =>
     [...authKeys.all(), "signUpEmail", ...(params ? [params] : [])] as const,
 };
 export function authRepositories(http: InstanceType<typeof Http>) {

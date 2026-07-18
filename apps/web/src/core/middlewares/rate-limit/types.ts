@@ -43,7 +43,7 @@ export type RateLimitExceededEventHandler<P extends string = string> = ({
   context,
   options,
   headers,
-}: EventParamsContext<P>) => void;
+}: EventParamsContext<P>) => Response | Promise<Response> | undefined;
 /**
  * The configuration options for the rate limiter.
  */
