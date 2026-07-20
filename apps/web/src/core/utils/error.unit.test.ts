@@ -43,7 +43,7 @@ describe("serverErrorMapper", () => {
     const error = makeHttpError({ message: "invalid credentials" });
     const result = serverErrorMapper(error, span as never);
 
-    expect(result).toEqual({ data: null, error: "invalid credentials" });
+    expect(result).toBe("invalid credentials");
     expect(log.error).toHaveBeenCalledWith(
       expect.objectContaining({
         area: "serverErrorMapper",
@@ -62,14 +62,14 @@ describe("serverErrorMapper", () => {
     const error = makeHttpError({ not: "schema" });
     const result = serverErrorMapper(error);
 
-    expect(result).toEqual({ data: null, error: error.message });
+    expect(result).toBe(error.message);
   });
 
   it("maps TimeoutError", () => {
     const error = new TimeoutError(new Request("https://api.example.com/x"));
     const result = serverErrorMapper(error, span as never);
 
-    expect(result).toEqual({ data: null, error: error.message });
+    expect(result).toBe(error.message);
     expect(log.error).toHaveBeenCalledWith(
       expect.objectContaining({
         area: "serverErrorMapper",
@@ -86,8 +86,7 @@ describe("serverErrorMapper", () => {
     }
 
     const result = serverErrorMapper(parsed.error, span as never);
-    expect(result.data).toBeNull();
-    expect(result.error).toContain("email");
+    expect(result).toContain("email");
     expect(log.error).toHaveBeenCalledWith(
       expect.objectContaining({
         area: "serverErrorMapper",
@@ -100,7 +99,7 @@ describe("serverErrorMapper", () => {
     const error = new Error("unexpected");
     const result = serverErrorMapper(error, span as never);
 
-    expect(result).toEqual({ data: null, error: "unexpected" });
+    expect(result).toBe("unexpected");
     expect(log.error).toHaveBeenCalledWith(
       expect.objectContaining({
         area: "serverErrorMapper",

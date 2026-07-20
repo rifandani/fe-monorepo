@@ -2,7 +2,7 @@
 /* oxlint-disable eslint/func-style -- function declarations */
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import { useLocale, useTranslations } from "next-intl";
-import { useAction } from "next-safe-action/hooks";
+import { useTransition } from "react";
 import type { Selection } from "react-stately";
 import { toast } from "sonner";
 
@@ -20,7 +20,7 @@ import type { I18NLocale } from "@/core/constants/i18n";
 export function LanguageToggle() {
   const locale = useLocale();
   const t = useTranslations();
-  const { executeAsync, isPending } = useAction(setUserLocaleAction);
+  const [isPending, startTransition] = useTransition();
   return (
     <Menu>
       <Button intent="outline" data-slot="menu-trigger">
@@ -31,14 +31,16 @@ export function LanguageToggle() {
       <MenuContent
         selectionMode="single"
         selectedKeys={new Set([locale])}
-        onSelectionChange={async (_selection) => {
+        onSelectionChange={(_selection) => {
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: I18NLocale;
           };
-          const result = await executeAsync(selection.currentKey);
-          if (result?.serverError) {
-            toast.error(result.serverError);
-          }
+          startTransition(async () => {
+            const result = await setUserLocaleAction(selection.currentKey);
+            if (result?.error) {
+              toast.error(result.error);
+            }
+          });
         }}
       >
         <MenuSection>

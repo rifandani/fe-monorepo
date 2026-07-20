@@ -56,6 +56,21 @@ vi.mock("@opentelemetry/api", async (importOriginal) => {
   };
 });
 
+const loginFormData = (email: string, password: string) => {
+  const formData = new FormData();
+  formData.set("email", email);
+  formData.set("password", password);
+  return formData;
+};
+
+const registerFormData = (email: string, name: string, password: string) => {
+  const formData = new FormData();
+  formData.set("email", email);
+  formData.set("name", name);
+  formData.set("password", password);
+  return formData;
+};
+
 describe("auth actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -65,14 +80,14 @@ describe("auth actions", () => {
     it("returns mapped error when sign-in fails", async () => {
       authApi.signInEmail.mockRejectedValue(new Error("bad credentials"));
 
-      const result = await loginAction({
-        email: "a@b.com",
-        password: "password1",
-      });
+      const result = await loginAction(
+        null,
+        loginFormData("a@b.com", "password1")
+      );
 
-      expect(result.data).toEqual({
-        data: null,
-        error: "bad credentials",
+      expect(result).toMatchObject({
+        errors: ["bad credentials"],
+        errorMap: { onServer: "bad credentials" },
       });
       expect(redirect).not.toHaveBeenCalled();
     });
@@ -85,10 +100,7 @@ describe("auth actions", () => {
         url: null,
       });
 
-      await loginAction({
-        email: "a@b.com",
-        password: "password1",
-      });
+      await loginAction(null, loginFormData("a@b.com", "password1"));
 
       expect(authApi.signInEmail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -103,12 +115,16 @@ describe("auth actions", () => {
     });
 
     it("returns validation errors for invalid input", async () => {
-      const result = await loginAction({
-        email: "not-an-email",
-        password: "short",
-      });
+      const result = await loginAction(
+        null,
+        loginFormData("not-an-email", "short")
+      );
 
-      expect(result.validationErrors).toBeDefined();
+      expect(result).toMatchObject({
+        errorMap: expect.objectContaining({
+          onServer: expect.anything(),
+        }),
+      });
       expect(authApi.signInEmail).not.toHaveBeenCalled();
     });
   });
@@ -117,15 +133,14 @@ describe("auth actions", () => {
     it("returns mapped error when sign-up fails", async () => {
       authApi.signUpEmail.mockRejectedValue(new Error("email taken"));
 
-      const result = await registerAction({
-        email: "a@b.com",
-        name: "Ada",
-        password: "password1",
-      });
+      const result = await registerAction(
+        null,
+        registerFormData("a@b.com", "Ada Lovelace", "password1")
+      );
 
-      expect(result.data).toEqual({
-        data: null,
-        error: "email taken",
+      expect(result).toMatchObject({
+        errors: ["email taken"],
+        errorMap: { onServer: "email taken" },
       });
       expect(redirect).not.toHaveBeenCalled();
     });
@@ -136,11 +151,10 @@ describe("auth actions", () => {
         user: { id: "u1", email: "a@b.com" },
       });
 
-      await registerAction({
-        email: "a@b.com",
-        name: "Ada Lovelace",
-        password: "password1",
-      });
+      await registerAction(
+        null,
+        registerFormData("a@b.com", "Ada Lovelace", "password1")
+      );
 
       expect(authApi.signUpEmail).toHaveBeenCalled();
       expect(redirect).toHaveBeenCalledWith("/");
@@ -153,10 +167,7 @@ describe("auth actions", () => {
 
       const result = await logoutAction();
 
-      expect(result.data).toEqual({
-        data: null,
-        error: "session gone",
-      });
+      expect(result).toEqual({ error: "session gone" });
       expect(redirect).not.toHaveBeenCalled();
     });
 

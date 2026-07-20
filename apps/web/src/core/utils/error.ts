@@ -7,15 +7,15 @@ import { HTTPError, TimeoutError } from "ky";
 import { match, P } from "ts-pattern";
 import { z } from "zod";
 
-import type { ActionResult } from "@/core/utils/action";
 import { simplifyErrorObject } from "@/core/utils/error-helper";
 import { log } from "@/core/utils/evlog";
 import "server-only";
 
-export function serverErrorMapper(
-  error: Error,
-  span?: Span
-): ActionResult<null> {
+/**
+ * Maps a caught server error to a client-safe message string
+ * (logs + optional span recording as a side effect).
+ */
+export function serverErrorMapper(error: Error, span?: Span): string {
   return (
     match(error)
       // oxlint-disable-next-line promise/prefer-await-to-callbacks
@@ -36,7 +36,7 @@ export function serverErrorMapper(
           code: SpanStatusCode.ERROR,
           message: err.message,
         });
-        return { data: null, error: json.message };
+        return json.message;
       })
       // oxlint-disable-next-line promise/prefer-await-to-callbacks
       .with(P.instanceOf(TimeoutError), (err) => {
@@ -51,7 +51,7 @@ export function serverErrorMapper(
           code: SpanStatusCode.ERROR,
           message: err.message,
         });
-        return { data: null, error: err.message };
+        return err.message;
       })
       // oxlint-disable-next-line promise/prefer-await-to-callbacks
       .with(P.instanceOf(z.ZodError), (err) => {
@@ -67,7 +67,7 @@ export function serverErrorMapper(
           code: SpanStatusCode.ERROR,
           message: err.message,
         });
-        return { data: null, error: z.prettifyError(err) };
+        return z.prettifyError(err);
       })
       // oxlint-disable-next-line promise/prefer-await-to-callbacks
       .otherwise((err) => {
@@ -82,7 +82,7 @@ export function serverErrorMapper(
           code: SpanStatusCode.ERROR,
           message: err.message,
         });
-        return { data: null, error: err.message };
+        return err.message;
       })
   );
 }

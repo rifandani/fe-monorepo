@@ -6,7 +6,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useAction } from "next-safe-action/hooks";
+import { useTransition } from "react";
 
 import { logoutAction } from "@/auth/actions/auth";
 import {
@@ -22,7 +22,7 @@ import { Avatar } from "@/core/components/ui/avatar";
 
 export function ProfileMenu({ username }: { username: string }) {
   const t = useTranslations();
-  const { execute, isPending } = useAction(logoutAction);
+  const [isPending, startTransition] = useTransition();
   return (
     <Menu>
       <MenuTrigger>
@@ -33,7 +33,9 @@ export function ProfileMenu({ username }: { username: string }) {
         onAction={(key) => {
           const currentKey = key as "profile" | "settings" | "logout";
           if (currentKey === "logout") {
-            execute();
+            startTransition(async () => {
+              await logoutAction();
+            });
           }
         }}
       >

@@ -1,6 +1,7 @@
 "use client";
 /* oxlint-disable eslint/func-style -- function declarations */
 import { TanStackDevtools } from "@tanstack/react-devtools";
+import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { Agentation } from "agentation";
 
@@ -19,10 +20,10 @@ export function Devtools() {
             name: "TanStack Query",
             render: <ReactQueryDevtoolsPanel client={queryClient} />,
           },
-          // {
-          //   name: 'TanStack Form',
-          //   render: <FormDevtoolsPanel />,
-          // },
+          {
+            name: "TanStack Form",
+            render: <FormDevtoolsPanel />,
+          },
         ]}
       />
       {process.env.NODE_ENV === "development" && <Agentation />}

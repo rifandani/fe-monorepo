@@ -1,12 +1,9 @@
 "use client";
 /* oxlint-disable eslint/func-style -- function declarations */
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
-import { authSignUpEmailRequestSchema } from "@workspace/core/apis/better-auth";
 import { useTranslations } from "next-intl";
-import { Controller } from "react-hook-form";
 
 import { registerAction } from "@/auth/actions/auth";
+import { registerFormOpts } from "@/auth/forms/register-form-options";
 import {
   Button,
   FieldError,
@@ -15,125 +12,127 @@ import {
   Note,
   TextField,
 } from "@/core/components/ui";
+import { useServerForm } from "@/core/hooks/use-server-form";
+import { fieldErrorMessage } from "@/core/utils/field-error-message";
 
 export function RegisterForm() {
   const t = useTranslations();
-  const { action, form, handleSubmitWithAction } = useHookFormAction(
-    registerAction,
-    zodResolver(authSignUpEmailRequestSchema),
-    {
-      formProps: { mode: "onChange" },
-    }
-  );
+  const { form, formAction, formLevelError, isPending } = useServerForm({
+    action: registerAction,
+    formOpts: registerFormOpts,
+  });
   return (
     <form
+      action={formAction}
       className="flex flex-col pt-3 md:pt-8"
-      onSubmit={handleSubmitWithAction}
+      onSubmit={() => {
+        void form.handleSubmit();
+      }}
     >
-      <Controller
-        control={form.control}
-        name="name"
-        render={({
-          field: { name, value, onChange, onBlur },
-          fieldState: { error, invalid },
-        }) => (
+      <form.Field name="name">
+        {(field) => (
           <TextField
             className="group/name pt-4"
-            // let RHF handle validation instead of the browser.
+            // Let TanStack Form handle validation instead of the browser.
             validationBehavior="aria"
             isRequired
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            isInvalid={invalid}
-            isDisabled={action.isPending}
+            name={field.name}
+            value={field.state.value}
+            onChange={field.handleChange}
+            onBlur={field.handleBlur}
+            isInvalid={!field.state.meta.isValid}
+            isDisabled={isPending}
           >
-            <Label htmlFor={name}>{t("name")}</Label>
+            <Label htmlFor={field.name}>{t("name")}</Label>
             <Input
-              id={name}
+              id={field.name}
               aria-label={t("name")}
               placeholder={t("namePlaceholder")}
               type="text"
             />
-            <FieldError>{error?.message}</FieldError>
+            <FieldError>
+              {fieldErrorMessage(field.state.meta.errorMap)}
+            </FieldError>
           </TextField>
         )}
-      />
+      </form.Field>
 
-      <Controller
-        control={form.control}
-        name="email"
-        render={({
-          field: { name, value, onChange, onBlur },
-          fieldState: { error, invalid },
-        }) => (
+      <form.Field name="email">
+        {(field) => (
           <TextField
             className="group/email pt-4"
-            // let RHF handle validation instead of the browser.
+            // Let TanStack Form handle validation instead of the browser.
             validationBehavior="aria"
             isRequired
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            isInvalid={invalid}
-            isDisabled={action.isPending}
+            name={field.name}
+            value={field.state.value}
+            onChange={field.handleChange}
+            onBlur={field.handleBlur}
+            isInvalid={!field.state.meta.isValid}
+            isDisabled={isPending}
           >
-            <Label htmlFor={name}>{t("email")}</Label>
+            <Label htmlFor={field.name}>{t("email")}</Label>
             <Input
-              id={name}
+              id={field.name}
               aria-label={t("email")}
               placeholder={t("emailPlaceholder")}
               type="email"
             />
-            <FieldError>{error?.message}</FieldError>
+            <FieldError>
+              {fieldErrorMessage(field.state.meta.errorMap)}
+            </FieldError>
           </TextField>
         )}
-      />
+      </form.Field>
 
-      <Controller
-        control={form.control}
-        name="password"
-        render={({
-          field: { name, value, onChange, onBlur },
-          fieldState: { error, invalid },
-        }) => (
+      <form.Field name="password">
+        {(field) => (
           <TextField
             className="group/password pt-4"
-            // Let React Hook Form handle validation instead of the browser.
+            // Let TanStack Form handle validation instead of the browser.
             validationBehavior="aria"
             type="password"
             isRequired
-            value={value}
-            onChange={onChange}
-            onBlur={onBlur}
-            isInvalid={invalid}
-            isDisabled={action.isPending}
+            name={field.name}
+            value={field.state.value}
+            onChange={field.handleChange}
+            onBlur={field.handleBlur}
+            isInvalid={!field.state.meta.isValid}
+            isDisabled={isPending}
           >
-            <Label htmlFor={name}>{t("password")}</Label>
+            <Label htmlFor={field.name}>{t("password")}</Label>
             <Input
-              id={name}
+              id={field.name}
               aria-label={t("password")}
               placeholder={t("passwordPlaceholder")}
               type="password"
             />
-            <FieldError>{error?.message}</FieldError>
+            <FieldError>
+              {fieldErrorMessage(field.state.meta.errorMap)}
+            </FieldError>
           </TextField>
         )}
-      />
+      </form.Field>
 
-      {action.result.data?.error && (
+      {formLevelError && (
         <Note data-testid="mutation-error" intent="danger" className="mt-4">
-          {action.result.data.error}
+          {formLevelError}
         </Note>
       )}
 
-      <Button
-        type="submit"
-        className="mt-8 w-full normal-case"
-        isDisabled={action.isPending || !form.formState.isValid}
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
       >
-        {action.isPending ? t("registerLoading") : t("register")}
-      </Button>
+        {([canSubmit, isSubmitting]) => (
+          <Button
+            type="submit"
+            className="mt-8 w-full normal-case"
+            isDisabled={isPending || isSubmitting || !canSubmit}
+          >
+            {isPending || isSubmitting ? t("registerLoading") : t("register")}
+          </Button>
+        )}
+      </form.Subscribe>
     </form>
   );
 }
