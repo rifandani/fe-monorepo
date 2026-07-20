@@ -95,7 +95,7 @@
     "zustand": "5.0.14"
   },
   "devDependencies": {
-    "@babel/core": "7.27.4",
+    "@babel/core": "8.0.1",
     "@expo/metro-config": "0.20.14",
     "@types/react": "19.2.17",
     "expo-atlas": "0.4.0",
