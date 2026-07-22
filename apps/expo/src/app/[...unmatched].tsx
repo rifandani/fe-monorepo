@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { Link, Stack } from "expo-router";
 import { H3, YStack } from "tamagui";
 
@@ -6,7 +5,7 @@ import { BaseButton } from "@/core/components/button/base-button";
 import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-export default function Unmatched() {
+const Unmatched = () => {
   const { t } = useTranslation();
   const user = useAppStore((state) => state.user);
   return (
@@ -24,4 +23,5 @@ export default function Unmatched() {
       </YStack>
     </>
   );
-}
+};
+export default Unmatched;

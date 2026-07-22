@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useColorMode } from "@workspace/core/hooks/use-color-mode";
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
 import { createContext } from "react";
@@ -8,7 +7,7 @@ import { twJoin } from "tailwind-merge";
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
-export function useCreateToastContext() {
+export const useCreateToastContext = () => {
   const [theme] = useColorMode();
   const [toastConfig, setToastConfig, resetToastConfig] =
     useResetState<ToasterProps>({
@@ -50,7 +49,7 @@ export function useCreateToastContext() {
     setToastConfig,
   };
   return [toastConfig, actions] as const;
-}
+};
 export const ToastContext = createContext<ToastContextInterface>(
   {} as ToastContextInterface
 );

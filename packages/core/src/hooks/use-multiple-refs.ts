@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useRef } from "react";
 
 interface RefObject<T> {
@@ -29,7 +28,7 @@ interface RefObject<T> {
  * }
  * ```
  */
-export function useMultipleRefs<T>(initialValue: T) {
+export const useMultipleRefs = <T>(initialValue: T) => {
   const cache = useRef<RefObject<T>[]>([]);
   const callIndex = useRef(0);
 
@@ -51,4 +50,4 @@ export function useMultipleRefs<T>(initialValue: T) {
       return this;
     },
   };
-}
+};

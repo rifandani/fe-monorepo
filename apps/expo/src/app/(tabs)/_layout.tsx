@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style sonarjs/variable-name -- function declarations; expo-router unstable_settings export */
+/* oxlint-disable sonarjs/variable-name -- expo-router unstable_settings export */
 import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
 
@@ -9,17 +9,15 @@ export const unstable_settings = {
   initialRouteName: "index",
 };
 
-function HomeTabIcon({ color }: { color: string }) {
-  return <Feather testID="home-tab-icon" name="home" size={24} color={color} />;
-}
+const HomeTabIcon = ({ color }: { color: string }) => (
+  <Feather testID="home-tab-icon" name="home" size={24} color={color} />
+);
 
-function ProfileTabIcon({ color }: { color: string }) {
-  return (
-    <Feather testID="profile-tab-icon" name="user" size={24} color={color} />
-  );
-}
+const ProfileTabIcon = ({ color }: { color: string }) => (
+  <Feather testID="profile-tab-icon" name="user" size={24} color={color} />
+);
 
-export default function TabsLayout() {
+const TabsLayout = () => {
   const { t } = useTranslation();
   return (
     <Tabs screenOptions={{ headerShown: false }}>
@@ -41,4 +39,5 @@ export default function TabsLayout() {
       />
     </Tabs>
   );
-}
+};
+export default TabsLayout;

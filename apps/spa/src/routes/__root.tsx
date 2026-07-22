@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { QueryClient } from "@tanstack/react-query";
 import type {
   NavigateOptions,
@@ -22,7 +21,7 @@ declare module "react-aria-components" {
     routerOptions: Omit<NavigateOptions, "to" | "from">;
   }
 }
-function RootRoute() {
+const RootRoute = () => {
   const router = useRouter();
   return (
     <>
@@ -45,7 +44,7 @@ function RootRoute() {
       <Devtools />
     </>
   );
-}
+};
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({

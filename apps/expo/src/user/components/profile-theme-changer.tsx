@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
 import { ListItem, Separator, YGroup } from "tamagui";
@@ -9,7 +8,7 @@ import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
-export function ProfileThemeChanger() {
+export const ProfileThemeChanger = () => {
   const { t } = useTranslation();
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
@@ -89,4 +88,4 @@ export function ProfileThemeChanger() {
       </BaseSheet>
     </>
   );
-}
+};

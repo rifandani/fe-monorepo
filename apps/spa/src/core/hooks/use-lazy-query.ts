@@ -1,21 +1,20 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-export function useLazyQuery<TData, TError>(
+export const useLazyQuery = <TData, TError>(
   options: Omit<UseQueryOptions<TData, TError>, "enabled">
-) {
+) => {
   const [enabled, setEnabled] = useState(false);
   // oxlint-disable-next-line react-doctor/query-destructure-result
   const query = useQuery<TData, TError>({
     ...options,
     enabled,
   });
-  function trigger() {
+  const trigger = () => {
     if (!enabled) {
       setEnabled(true);
     }
-  }
+  };
   return [trigger, query] as const;
-}
+};

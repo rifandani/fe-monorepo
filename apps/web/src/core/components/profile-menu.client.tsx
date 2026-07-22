@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import {
   ArrowRightStartOnRectangleIcon,
   Cog6ToothIcon,
@@ -20,7 +20,7 @@ import {
 } from "@/core/components/ui";
 import { Avatar } from "@/core/components/ui/avatar";
 
-export function ProfileMenu({ username }: { username: string }) {
+export const ProfileMenu = ({ username }: { username: string }) => {
   const t = useTranslations();
   const [isPending, startTransition] = useTransition();
   return (
@@ -63,4 +63,4 @@ export function ProfileMenu({ username }: { username: string }) {
       </MenuContent>
     </Menu>
   );
-}
+};

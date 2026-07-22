@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { Http } from "@workspace/core/services/http";
 import type { Options } from "ky";
 import { z } from "zod";
@@ -29,8 +28,8 @@ export const authKeys = {
   login: (params?: AuthLoginRequestSchema) =>
     [...authKeys.all, "login", ...(params ? [params] : [])] as const,
 };
-export function authRepositories(http: InstanceType<typeof Http>) {
-  return {
+export const authRepositories = (http: InstanceType<typeof Http>) =>
+  ({
     login: async (
       {
         json,
@@ -64,5 +63,4 @@ export function authRepositories(http: InstanceType<typeof Http>) {
         .json();
       return authLoginResponseSchema.parse(resp);
     },
-  } as const;
-}
+  }) as const;

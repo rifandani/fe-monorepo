@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -17,7 +17,7 @@ import {
 } from "@/core/components/ui";
 import type { I18NLocale } from "@/core/constants/i18n";
 
-export function LanguageToggle() {
+export const LanguageToggle = () => {
   const locale = useLocale();
   const t = useTranslations();
   const [isPending, startTransition] = useTransition();
@@ -56,4 +56,4 @@ export function LanguageToggle() {
       </MenuContent>
     </Menu>
   );
-}
+};

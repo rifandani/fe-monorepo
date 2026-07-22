@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { ComponentPropsWithoutRef } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
@@ -12,13 +11,13 @@ interface Props {
   speed?: number;
   targetOpacityValue?: number;
 }
-export function Skeleton({
+export const Skeleton = ({
   loaderStyle,
   numberOfItems = 3,
   direction = "row",
   speed = 1000,
   targetOpacityValue = 0.2,
-}: Props) {
+}: Props) => {
   const animatedStyle = useSkeletonAnimation({ speed, targetOpacityValue });
   return (
     <View style={{ flexDirection: direction }}>
@@ -30,4 +29,4 @@ export function Skeleton({
       ))}
     </View>
   );
-}
+};

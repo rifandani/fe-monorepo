@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useMount } from "@workspace/core/hooks/use-mount";
 import { toast } from "sonner";
@@ -16,7 +15,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
  * useAuthChecker()
  * ```
  */
-export function useAuthChecker() {
+export const useAuthChecker = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,4 +42,4 @@ export function useAuthChecker() {
         // do nothing
       });
   });
-}
+};

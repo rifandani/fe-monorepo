@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization */
+/* oxlint-disable react-doctor/react-compiler-no-manual-memoization */
 import { useCallback } from "react";
 import { Sheet } from "tamagui";
 
@@ -7,13 +7,13 @@ import type {
   BaseSheetState,
 } from "@/core/components/sheet/types";
 
-export function BaseSheet<T extends BaseSheetState>({
+export const BaseSheet = <T extends BaseSheetState>({
   state,
   setState,
   sheetProps,
   frameProps,
   children,
-}: BaseSheetProps<T>) {
+}: BaseSheetProps<T>) => {
   const onOpenChange = useCallback(
     (open: boolean) => {
       setState({ ...state, open });
@@ -54,4 +54,4 @@ export function BaseSheet<T extends BaseSheetState>({
       </Sheet.Frame>
     </Sheet>
   );
-}
+};

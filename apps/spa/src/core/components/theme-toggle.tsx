@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import {
   ComputerDesktopIcon,
   MoonIcon,
@@ -18,7 +17,7 @@ import {
 } from "@/core/components/ui";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const { t } = useTranslation();
   const [theme, setTheme] = useColorMode();
   return (
@@ -51,4 +50,4 @@ export function ThemeToggle() {
       </MenuContent>
     </Menu>
   );
-}
+};

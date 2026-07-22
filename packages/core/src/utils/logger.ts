@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 const COLOR = {
   BLUE: "\u001B[34m",
   GREEN: "\u001B[32m",
@@ -13,15 +12,14 @@ const LEVEL_COLORS = {
   TRACE: COLOR.WHITE,
   WARN: COLOR.YELLOW,
 };
-function formatTime(date: Date) {
-  return date.toLocaleTimeString("en-US", {
+const formatTime = (date: Date) =>
+  date.toLocaleTimeString("en-US", {
     fractionalSecondDigits: 3,
     hour: "2-digit",
     hour12: false,
     minute: "2-digit",
     second: "2-digit",
   });
-}
 export const logger = {
   // oxlint-disable-next-line typescript/no-explicit-any -- structured log attributes
   debug(message: string, ...attributes: any[]) {

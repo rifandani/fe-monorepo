@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/only-export-components react/no-danger -- function declarations; SEO helpers; JSON-LD script */
+/* oxlint-disable react-doctor/only-export-components react/no-danger -- SEO helpers; JSON-LD script */
 import type { Metadata } from "next";
 import { assign, uid } from "radashi";
 import type { Graph, Thing, WebPage, WebSite } from "schema-dts";
@@ -13,7 +13,7 @@ const author = {
 const publisher = "Rizeki Rifandani";
 const twitterHandle = "@tri_rizeki";
 const appUrl = ENV.NEXT_PUBLIC_APP_URL;
-export function createMetadata({
+export const createMetadata = ({
   title,
   description,
   image,
@@ -22,7 +22,7 @@ export function createMetadata({
   title: string;
   description: string;
   image?: string;
-}) {
+}) => {
   const parsedTitle = `${title} | ${applicationName}`;
   const ogImage = `/api/og?title=${encodeURIComponent(title)}`;
   const defaultMetadata: Metadata = {
@@ -93,12 +93,12 @@ export function createMetadata({
   }
   // Return the final merged metadata object
   return metadata as Metadata;
-}
-export function createWebSite(props: {
+};
+export const createWebSite = (props: {
   url: string;
   title?: string;
   description?: string;
-}): WebSite {
+}): WebSite => {
   const defaultWebSite: WebSite = {
     "@id": `${props.url}#${uid(16)}`,
     "@type": "WebSite",
@@ -106,12 +106,12 @@ export function createWebSite(props: {
     name: "@workspace/web",
   };
   return assign(defaultWebSite, props);
-}
-export function createWebPage(props: {
+};
+export const createWebPage = (props: {
   url: string;
   title?: string;
   description?: string;
-}): WebPage {
+}): WebPage => {
   const defaultWebPage: WebPage = {
     "@id": `${props.url}#${uid(16)}`,
     "@type": "WebPage",
@@ -119,8 +119,8 @@ export function createWebPage(props: {
     name: "@workspace/web",
   };
   return assign(defaultWebPage, props);
-}
-export function JsonLd({ graphs }: { graphs: readonly Thing[] }) {
+};
+export const JsonLd = ({ graphs }: { graphs: readonly Thing[] }) => {
   const payload: Graph = {
     "@context": "https://schema.org",
     "@graph": graphs,
@@ -134,4 +134,4 @@ export function JsonLd({ graphs }: { graphs: readonly Thing[] }) {
       }}
     />
   );
-}
+};

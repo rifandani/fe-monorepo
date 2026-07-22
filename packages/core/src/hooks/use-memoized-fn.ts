@@ -1,4 +1,4 @@
-/* oxlint-disable typescript/no-explicit-any eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization */
+/* oxlint-disable typescript/no-explicit-any react/react-compiler react-doctor/react-compiler-no-manual-memoization */
 import { isFunction } from "radashi";
 import { useMemo, useRef } from "react";
 
@@ -19,7 +19,7 @@ type PickFunction<T extends noop> = (
  * Using `useMemoizedFn`, you can omit the second parameter deps,
  * and ensure that the function reference never change.
  */
-export function useMemoizedFn<T extends noop>(fn: T) {
+export const useMemoizedFn = <T extends noop>(fn: T) => {
   if (!isFunction(fn)) {
     console.error(
       `useMemoizedFn expected parameter is a function, got ${typeof fn}`
@@ -36,4 +36,4 @@ export function useMemoizedFn<T extends noop>(fn: T) {
     };
   }
   return memoizedFnRef.current as T;
-}
+};

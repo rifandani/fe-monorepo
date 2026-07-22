@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 type ParseOptionType<
   ParamType extends string,
   ParamName extends string,
@@ -54,9 +53,10 @@ export interface ParamOptions {
   enum?: Record<string, Record<string, string>>;
   list?: Record<string, Intl.ListFormatOptions>;
 }
-export function defineTranslation<
+export const defineTranslation = <
   S extends string,
   O extends ExtractParamOptions<S>,
->(string: S, options: O): [S, O] {
-  return [string, options];
-}
+>(
+  string: S,
+  options: O
+): [S, O] => [string, options];

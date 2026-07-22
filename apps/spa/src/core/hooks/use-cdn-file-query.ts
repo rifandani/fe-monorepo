@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler */
+/* oxlint-disable react/react-compiler */
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import type {
@@ -14,13 +14,13 @@ interface Opt {
   url?: string | undefined;
   filename?: string;
 }
-export function useCdnFileQuery(
+export const useCdnFileQuery = (
   opt: Opt,
   queryOptions?: Except<
     UndefinedInitialDataOptions<unknown, HTTPError, GetCdnFileSuccessSchema>,
     "queryKey" | "queryFn"
   >
-) {
+) => {
   const query = useQuery({
     queryFn: opt.url
       ? ({ signal }) =>
@@ -37,4 +37,4 @@ export function useCdnFileQuery(
       })
     : null;
   return { ...query, file };
-}
+};

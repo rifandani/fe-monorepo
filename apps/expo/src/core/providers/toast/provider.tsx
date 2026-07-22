@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { ToastProviderProps } from "@tamagui/toast";
 import { ToastProvider } from "@tamagui/toast";
 
@@ -7,18 +6,16 @@ import { TheToast } from "@/core/providers/toast/the-toast";
 
 const SWIPE_DIRECTION = "horizontal";
 const DURATION = 3000; // 3s
-export function AppToastProvider({ children, ...rest }: ToastProviderProps) {
-  return (
-    <ToastProvider
-      swipeDirection={SWIPE_DIRECTION}
-      duration={DURATION}
-      burntOptions={{ from: "bottom" }} // only on iOS
-      {...rest}
-    >
-      {children}
+export const AppToastProvider = ({ children, ...rest }: ToastProviderProps) => (
+  <ToastProvider
+    swipeDirection={SWIPE_DIRECTION}
+    duration={DURATION}
+    burntOptions={{ from: "bottom" }} // only on iOS
+    {...rest}
+  >
+    {children}
 
-      <TheToast />
-      <SafeToastViewport />
-    </ToastProvider>
-  );
-}
+    <TheToast />
+    <SafeToastViewport />
+  </ToastProvider>
+);

@@ -1,12 +1,9 @@
-/* oxlint-disable eslint/func-style -- function declarations */
-export function simplifyErrorObject(error: Error) {
-  return {
-    message: error.message,
-    name: error.name,
-    stack: error.stack,
-  };
-}
-export function errorAttributesFromUnknown(caught: unknown) {
+export const simplifyErrorObject = (error: Error) => ({
+  message: error.message,
+  name: error.name,
+  stack: error.stack,
+});
+export const errorAttributesFromUnknown = (caught: unknown) => {
   if (caught instanceof Error) {
     return simplifyErrorObject(caught);
   }
@@ -18,4 +15,4 @@ export function errorAttributesFromUnknown(caught: unknown) {
   } catch {
     return { message: String(caught) };
   }
-}
+};

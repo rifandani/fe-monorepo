@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/rerender-lazy-state-init */
+/* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/rerender-lazy-state-init */
 import { useCallback, useEffect, useState } from "react";
 
 /**
@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
  * const matches = useMediaQuery('(min-width: 768px)')
  * ```
  */
-export function useMediaQuery(query: string): boolean {
+export const useMediaQuery = (query: string): boolean => {
   const getMatches = useCallback((_query: string): boolean => {
     // Prevents SSR issues
     if (typeof window !== "undefined") {
@@ -41,4 +41,4 @@ export function useMediaQuery(query: string): boolean {
     };
   }, [query, handleChange]);
   return matches;
-}
+};

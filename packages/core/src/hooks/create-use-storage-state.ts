@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { useUpdateEffect } from "@workspace/core/hooks/use-update-effect";
 import { isFunction } from "radashi";
@@ -17,14 +16,16 @@ export interface Options<T> {
  * @param getStorage Function that returns the storage object to use (localStorage or sessionStorage)
  * @returns A hook that manages state with the specified storage
  */
-export function createUseStorageState(getStorage: () => Storage | undefined) {
+export const createUseStorageState = (
+  getStorage: () => Storage | undefined
+) => {
   /**
    * Custom hook for managing state that persists in browser storage
    * @param key Storage key to store/retrieve the value
    * @param options Configuration options for storage behavior
    * @returns [storedValue, setValue] tuple for reading/writing storage
    */
-  function useStorageState<T>(key: string, options: Options<T> = {}) {
+  const useStorageState = <T>(key: string, options: Options<T> = {}) => {
     let storage: Storage | undefined;
     const {
       onError = (e) => {
@@ -99,6 +100,6 @@ export function createUseStorageState(getStorage: () => Storage | undefined) {
       }
     };
     return [state, useMemoizedFn(updateState)] as const;
-  }
+  };
   return useStorageState;
-}
+};

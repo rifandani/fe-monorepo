@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler react-doctor/only-export-components */
+/* oxlint-disable react/react-compiler react-doctor/only-export-components */
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { authLoginResponseSchema } from "@workspace/core/apis/auth";
 import { isFunction } from "radashi";
@@ -52,8 +52,8 @@ export const useAuthUserStore = create<UserStore>()(
     )
   )
 );
-function createUserStore(initialState?: Partial<UserStoreState>) {
-  return createStore<UserStore>()(
+const createUserStore = (initialState?: Partial<UserStoreState>) =>
+  createStore<UserStore>()(
     devtools((set) => ({
       user: null,
       ...initialState,
@@ -65,18 +65,17 @@ function createUserStore(initialState?: Partial<UserStoreState>) {
       },
     }))
   );
-}
 export const UserContext = createContext<ReturnType<
   typeof createUserStore
 > | null>(null);
-export function useUserContext<T>(selector: (_store: UserStore) => T): T {
+export const useUserContext = <T,>(selector: (_store: UserStore) => T): T => {
   const store = use(UserContext);
   if (!store) {
     throw new Error("useUserContext: cannot find the UserContext");
   }
   return useStore(store, selector);
-}
-export function UserProvider({
+};
+export const UserProvider = ({
   children,
   initialState,
 }: {
@@ -84,7 +83,7 @@ export function UserProvider({
     | ReactNode
     | ((context: ReturnType<typeof createUserStore>) => ReactNode);
   initialState?: Parameters<typeof createUserStore>[0];
-}) {
+}) => {
   const storeRef = useRef<ReturnType<typeof createUserStore> | null>(null);
   if (!storeRef.current) {
     storeRef.current = createUserStore(initialState);
@@ -94,4 +93,4 @@ export function UserProvider({
       {isFunction(children) ? children(storeRef.current) : children}
     </UserContext>
   );
-}
+};

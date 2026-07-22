@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useEffect, useRef, useState } from "react";
 
 interface UseAutoScrollOptions {
@@ -21,13 +20,13 @@ interface UseAutoScrollOptions {
  *  });
  * ```
  */
-export function useAutoScroll({
+export const useAutoScroll = ({
   isLoading,
   dependency,
   isStreaming,
   threshold = 162,
   intervalMs = 100,
-}: UseAutoScrollOptions) {
+}: UseAutoScrollOptions) => {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
   // Detect user scroll to toggle auto-scroll
@@ -78,4 +77,4 @@ export function useAutoScroll({
     };
   }, [dependency, isLoading, isAutoScroll, isStreaming, intervalMs]);
   return { anchorRef, isAutoScroll };
-}
+};

@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 
 import {
@@ -31,7 +30,7 @@ const ttfbMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_TTFB, {
   description: "Time to First Byte",
   unit: "ms",
 });
-export function reportWebVitals() {
+export const reportWebVitals = () => {
   // we could send to analytics here if the rating is not "good"
   onLCP((metric) => {
     lcpMetric.record(metric.value, {
@@ -68,4 +67,4 @@ export function reportWebVitals() {
       rating: metric.rating,
     });
   });
-}
+};

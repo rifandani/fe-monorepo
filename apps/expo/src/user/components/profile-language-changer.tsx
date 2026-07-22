@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
 import { useState } from "react";
@@ -9,7 +8,7 @@ import type { BaseSheetState } from "@/core/components/sheet/types";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
-export function ProfileLanguageChanger() {
+export const ProfileLanguageChanger = () => {
   const { t, locale, setLocale } = useTranslation();
   const [state, setState] = useState<BaseSheetState>({
     open: false,
@@ -69,4 +68,4 @@ export function ProfileLanguageChanger() {
       </BaseSheet>
     </>
   );
-}
+};

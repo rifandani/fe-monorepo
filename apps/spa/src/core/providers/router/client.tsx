@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { trace } from "@opentelemetry/api";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";
@@ -23,21 +22,19 @@ declare module "@tanstack/react-router" {
   }
 }
 const tracer = trace.getTracer(TRACER_ROUTER);
-function PendingRoute() {
-  return (
-    <div className="flex items-center justify-center">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        height="5em"
-        className="text-primary"
-      >
-        <use href="#svg-spinners--3-dots-fade" />
-      </svg>
-    </div>
-  );
-}
-function ErrorRoute({ reset, error, info }: ErrorComponentProps) {
+const PendingRoute = () => (
+  <div className="flex items-center justify-center">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      height="5em"
+      className="text-primary"
+    >
+      <use href="#svg-spinners--3-dots-fade" />
+    </svg>
+  </div>
+);
+const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
   logger.error("[ErrorRoute]: Error", { error, info });
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -65,8 +62,8 @@ function ErrorRoute({ reset, error, info }: ErrorComponentProps) {
       </div>
     </div>
   );
-}
-function NotFoundRoute() {
+};
+const NotFoundRoute = () => {
   useColorMode();
   const userStore = useAuthUserStore();
   const { t } = useTranslation();
@@ -99,7 +96,7 @@ function NotFoundRoute() {
       </div>
     </div>
   );
-}
+};
 // Create a new router instance
 export const router = createRouter({
   routeTree,

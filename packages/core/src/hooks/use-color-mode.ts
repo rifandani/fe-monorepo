@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/js-set-map-lookups react-doctor/no-pass-data-to-parent */
+/* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/js-set-map-lookups react-doctor/no-pass-data-to-parent */
 import { useLocalStorageState } from "@workspace/core/hooks/use-local-storage-state";
 import { useMediaQuery } from "@workspace/core/hooks/use-media-query";
 import { useCallback, useEffect, useMemo } from "react";
@@ -77,9 +77,9 @@ const splitRegex = /\s/gu;
  * setColorMode('dark')
  * ```
  */
-export function useColorMode<T extends string = BasicColorMode>(
+export const useColorMode = <T extends string = BasicColorMode>(
   options: UseColorModeOptions<T> = {}
-) {
+) => {
   const {
     selector = "html",
     attribute = "class",
@@ -178,4 +178,4 @@ export function useColorMode<T extends string = BasicColorMode>(
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [attribute, modes, onChanged, selector, state]);
   return store;
-}
+};

@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style sonarjs/no-built-in-override react-doctor/query-mutation-missing-invalidation */
+/* oxlint-disable react-doctor/query-mutation-missing-invalidation */
 import { useToastController } from "@tamagui/toast";
 import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
 import { useMutation, useMutationState } from "@tanstack/react-query";
@@ -18,17 +18,17 @@ type Params = Parameters<typeof authKeys.login>[0];
 type Success = Awaited<
   ReturnType<ReturnType<typeof authRepositories>["login"]>
 >;
-type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
-export function useAuthLogin(
+type MutationError = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
+export const useAuthLogin = (
   params: Params,
   mutationOptions?: Except<
-    UseMutationOptions<Success, Error, Exclude<Params, undefined>>,
+    UseMutationOptions<Success, MutationError, Exclude<Params, undefined>>,
     "mutationKey" | "mutationFn"
   >
-) {
+) => {
   const toast = useToastController();
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
-  return useMutation<Success, Error, Exclude<Params, undefined>>({
+  return useMutation<Success, MutationError, Exclude<Params, undefined>>({
     mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
@@ -46,13 +46,12 @@ export function useAuthLogin(
     },
     ..._mutationOptions,
   });
-}
-export function useAuthLoginMutationState(params: AuthLoginRequestSchema) {
-  return useMutationState<
-    MutationState<Success, Error, Exclude<Params, undefined>>
+};
+export const useAuthLoginMutationState = (params: AuthLoginRequestSchema) =>
+  useMutationState<
+    MutationState<Success, MutationError, Exclude<Params, undefined>>
   >({
     filters: {
       mutationKey: authKeys.login(params),
     },
   });
-}

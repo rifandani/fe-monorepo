@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { URLSearchParamsInit } from "@workspace/core/types/core";
 
 /**
@@ -11,7 +10,7 @@ export const isBrowser = () => typeof window !== "undefined";
  * 1. If the file source located in the same origin as the application.
  * 2. If the file source is on different location e.g s3 bucket, etc. Set the response headers `Content-Disposition: attachment`.
  */
-export function doDownload(url: string) {
+export const doDownload = (url: string) => {
   if (!url) {
     return;
   }
@@ -25,7 +24,7 @@ export function doDownload(url: string) {
   setTimeout(() => {
     link.remove();
   }, 100);
-}
+};
 
 /**
  * Creates a URLSearchParams object using the given initializer.
@@ -51,10 +50,10 @@ export function doDownload(url: string) {
  * });
  * ```
  */
-export function createSearchParams(
+export const createSearchParams = (
   init: URLSearchParamsInit = ""
-): URLSearchParams {
-  return new URLSearchParams(
+): URLSearchParams =>
+  new URLSearchParams(
     typeof init === "string" ||
       Array.isArray(init) ||
       init instanceof URLSearchParams
@@ -72,7 +71,6 @@ export function createSearchParams(
           [] as [string, string][]
         )
   );
-}
 
 /**
  * instead of using `createSearchParams`, this function will convert an object into a URLSearchParams and joins array of string value with a comma
@@ -90,7 +88,7 @@ export function createSearchParams(
  * // returns => sort=asc&filters=model,category
  * // instead of => sort=asc&filters=model&filters=category
  */
-export function createSearchParamsWithComma(init?: URLSearchParamsInit) {
+export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
   const searchParams = init ? createSearchParams(init) : new URLSearchParams();
   // replace array of string values with a comma separated value
   for (const [key, value] of Object.entries(init ?? {})) {
@@ -100,7 +98,7 @@ export function createSearchParamsWithComma(init?: URLSearchParamsInit) {
     }
   }
   return searchParams;
-}
+};
 interface ExperimentalNavigator {
   userAgentData?: {
     brands: {
@@ -125,7 +123,7 @@ interface ExperimentalNavigator {
  *
  * @returns {string} The platform name
  */
-export function getPlatform(): string {
+export const getPlatform = (): string => {
   const nav = navigator as ExperimentalNavigator;
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
@@ -136,7 +134,7 @@ export function getPlatform(): string {
     return navigator.platform;
   }
   return "";
-}
+};
 
 /**
  * Retrieves the current platform asynchronously with high entropy values
@@ -146,7 +144,7 @@ export function getPlatform(): string {
  *
  * @returns {Promise<string>} The platform name
  */
-export async function getPlatformAsync(): Promise<string> {
+export const getPlatformAsync = async (): Promise<string> => {
   const nav = navigator as ExperimentalNavigator;
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
@@ -170,16 +168,15 @@ export async function getPlatformAsync(): Promise<string> {
     return navigator.platform;
   }
   return "";
-}
+};
 
 /**
  * Checks if the current platform is macOS
  *
  * @returns {boolean} `true` if the current platform is macOS, `false` otherwise
  */
-export function isMacOS(): boolean {
-  return getPlatform().toLowerCase().includes("mac");
-}
+export const isMacOS = (): boolean =>
+  getPlatform().toLowerCase().includes("mac");
 
 /**
  * Retrieves the shortcut key for a given key
@@ -187,7 +184,7 @@ export function isMacOS(): boolean {
  * @param {string} key - The key to retrieve the shortcut for
  * @returns {string} The shortcut key for the given key
  */
-export function getShortcutKey(key: string): string {
+export const getShortcutKey = (key: string): string => {
   if (key.toLowerCase() === "mod") {
     return isMacOS() ? "⌘" : "Ctrl";
   }
@@ -198,7 +195,7 @@ export function getShortcutKey(key: string): string {
     return isMacOS() ? "⇧" : "Shift";
   }
   return key;
-}
+};
 
 /**
  * Generates a string of shortcut keys for a given array of keys.
@@ -210,16 +207,15 @@ export function getShortcutKey(key: string): string {
  * @example getShortcutKeys(['mod', 'N']) '⌘N' (on macOS)
  * @example getShortcutKeys(['mod', 'N']) 'Ctrl+N' (on non-macOS)
  */
-export function getShortcutKeys(keys: string[]): string {
-  return keys.map((key) => getShortcutKey(key)).join("+");
-}
+export const getShortcutKeys = (keys: string[]): string =>
+  keys.map((key) => getShortcutKey(key)).join("+");
 
 /**
  * Save a file to the user's device.
  * @param data - The data to save.
  * @param fileName - The name of the file to save.
  */
-export function saveFile(data: Blob | MediaSource, fileName: string): void {
+export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
   const url = window.URL.createObjectURL(data);
   const a = document.createElement("a");
   a.href = url;
@@ -227,4 +223,4 @@ export function saveFile(data: Blob | MediaSource, fileName: string): void {
   a.click();
   window.URL.revokeObjectURL(url);
   a.remove();
-}
+};

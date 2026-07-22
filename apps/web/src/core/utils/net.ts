@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 export const ipAddressHeaders = {
   cfConnectingIp: "cf-connecting-ip",
   forwarded: "forwarded",
@@ -8,7 +7,7 @@ export const ipAddressHeaders = {
 } as const;
 const forwardedRegex = /for=(?<ip>[^;,\s]+)/u;
 
-export function getClientIpAddress(headers: Headers): string | null {
+export const getClientIpAddress = (headers: Headers): string | null => {
   // 1. Cloudflare
   const cfConnectingIp = headers.get(ipAddressHeaders.cfConnectingIp);
   if (cfConnectingIp) {
@@ -39,4 +38,4 @@ export function getClientIpAddress(headers: Headers): string | null {
   }
   // 6. Fallback to null
   return null;
-}
+};

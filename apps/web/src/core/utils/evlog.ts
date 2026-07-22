@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { DrainContext } from "evlog";
 import type { BetterAuthInstance } from "evlog/better-auth";
 import { createAuthMiddleware } from "evlog/better-auth";
@@ -82,15 +81,13 @@ export const { register: evlogRegister, onRequestError: evlogOnRequestError } =
     drain,
     service: SERVICE_NAME,
   });
-export function flushEvlog() {
-  return drain.flush();
-}
-export async function register() {
+export const flushEvlog = () => drain.flush();
+export const register = async () => {
   await evlogRegister();
   // e.g. OpenTelemetry, feature flags, custom one-off init
   await registerOtelTracerAndMeter();
-}
-export async function onRequestError(
+};
+export const onRequestError = async (
   error: {
     digest?: string;
   } & Error,
@@ -105,7 +102,7 @@ export async function onRequestError(
     routeType: string;
     renderSource: string;
   }
-) {
+) => {
   await evlogOnRequestError(error, request, context);
   // optional: your own side effects (metrics, etc.)
-}
+};

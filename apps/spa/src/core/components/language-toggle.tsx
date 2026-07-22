@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
 import type { Selection } from "react-stately";
@@ -13,7 +12,7 @@ import {
 } from "@/core/components/ui";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-export function LanguageToggle() {
+export const LanguageToggle = () => {
   const { t, setLocale, locale } = useTranslation();
   return (
     <Menu>
@@ -41,4 +40,4 @@ export function LanguageToggle() {
       </MenuContent>
     </Menu>
   );
-}
+};

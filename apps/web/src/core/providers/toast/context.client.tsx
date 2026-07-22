@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
 import { useTheme } from "next-themes";
 import { createContext } from "react";
@@ -9,7 +9,7 @@ import { twJoin } from "tailwind-merge";
 
 export type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
-export function useCreateToastContext() {
+export const useCreateToastContext = () => {
   const { theme } = useTheme();
   const [toastConfig, setToastConfig, resetToastConfig] =
     useResetState<ToasterProps>({
@@ -52,7 +52,7 @@ export function useCreateToastContext() {
     setToastConfig,
   };
   return [toastConfig, actions] as const;
-}
+};
 export const ToastContext = createContext<ToastContextInterface>(
   {} as ToastContextInterface
 );

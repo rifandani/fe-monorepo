@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useSeoMeta } from "@unhead/react";
 import {
   defineWebPage,
@@ -24,10 +23,9 @@ const ldParams = {
   name: appName,
   url: appBaseUrl,
 };
-function resolveOgImage(image?: string) {
-  return new URL(image ?? "/og.png", appBaseUrl).href;
-}
-export function useSeo(params: UseSeoMetaParams) {
+const resolveOgImage = (image?: string) =>
+  new URL(image ?? "/og.png", appBaseUrl).href;
+export const useSeo = (params: UseSeoMetaParams) => {
   const title = `${params?.title ?? "Layout"} | ${appName}`;
   const description = `${params?.description ?? appDescription}`;
   const defaultMetadata: typeof params = {
@@ -61,4 +59,4 @@ export function useSeo(params: UseSeoMetaParams) {
     defineWebSite({ ...ldParams, description, title }),
     defineWebPage({ ...ldParams, description, title }),
   ]);
-}
+};

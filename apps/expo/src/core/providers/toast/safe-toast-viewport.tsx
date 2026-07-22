@@ -1,10 +1,9 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { ToastViewport } from "@tamagui/toast";
 import type { ComponentPropsWithoutRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = ComponentPropsWithoutRef<typeof ToastViewport>;
-export function SafeToastViewport(props: Props) {
+export const SafeToastViewport = (props: Props) => {
   const { left, bottom, right } = useSafeAreaInsets();
   return (
     <ToastViewport
@@ -16,4 +15,4 @@ export function SafeToastViewport(props: Props) {
       {...props}
     />
   );
-}
+};

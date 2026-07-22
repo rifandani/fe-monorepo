@@ -1,11 +1,14 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { clearIdentity, EvlogProvider, setIdentity } from "evlog/next/client";
 import { useEffect } from "react";
 
 import { authClient } from "@/auth/utils/auth.client";
 import { SERVICE_NAME } from "@/core/constants/global";
 
-export function AppEvlogProvider({ children }: { children: React.ReactNode }) {
+export const AppEvlogProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { data } = authClient.useSession();
   useEffect(() => {
     if (data?.user) {
@@ -24,4 +27,4 @@ export function AppEvlogProvider({ children }: { children: React.ReactNode }) {
       {children}
     </EvlogProvider>
   );
-}
+};

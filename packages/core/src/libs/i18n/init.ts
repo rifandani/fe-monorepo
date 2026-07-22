@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/js-hoist-intl sonarjs/no-duplicate-string */
+/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string */
 import type {
   defineTranslation,
   ParamOptions,
@@ -90,7 +90,7 @@ type PathsWithNoParams = {
 }[DotPathsFor];
 const replaceKeyRegex = /-?[^-]+$/u;
 
-function getOrderedLocaleAndParentLocales(locale: string) {
+const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
   let parentLocale = locale;
   while (parentLocale !== "") {
@@ -98,9 +98,9 @@ function getOrderedLocaleAndParentLocales(locale: string) {
     parentLocale = parentLocale.replace(replaceKeyRegex, "");
   }
   return locales;
-}
+};
 
-function getTranslationByKey(obj: LanguageMessages, key: string) {
+const getTranslationByKey = (obj: LanguageMessages, key: string) => {
   const keys = key.split(".");
   let currentObj = obj;
   for (let i = 0; i <= keys.length - 1; i += 1) {
@@ -120,15 +120,15 @@ function getTranslationByKey(obj: LanguageMessages, key: string) {
     }
     currentObj = newObj;
   }
-}
+};
 
-function performSubstitution(
+const performSubstitution = (
   locale: string,
   str: string,
   args: Record<string, unknown>,
   translationParams: ParamOptions
-): string {
-  return Object.entries(args).reduce((result, [argKey, argValue]) => {
+): string =>
+  Object.entries(args).reduce((result, [argKey, argValue]) => {
     const match = result.match(`{${argKey}:?([^}]*)?}`);
     const [replaceKey, argType] = match || [`{${argKey}}`, undefined];
     switch (argType) {
@@ -200,14 +200,13 @@ function performSubstitution(
       }
     }
   }, str);
-}
 
-function getTranslation<S extends DotPathsFor, A extends Params<S>>(
+const getTranslation = <S extends DotPathsFor, A extends Params<S>>(
   locale: string,
   translations: LanguageMessages,
   key: S,
   args?: A
-) {
+) => {
   const translation = getTranslationByKey(translations, key);
   const argObj = args || {};
 
@@ -223,9 +222,9 @@ function getTranslation<S extends DotPathsFor, A extends Params<S>>(
       translationParams as ParamOptions
     );
   }
-}
+};
 
-export function initI18n({
+export const initI18n = ({
   locale,
   fallbackLocale,
   translations,
@@ -233,7 +232,7 @@ export function initI18n({
   locale: string;
   fallbackLocale: string | string[];
   translations: Record<Lowercase<string>, LanguageMessages>;
-}) {
+}) => {
   const fallbackLocales = Array.isArray(fallbackLocale)
     ? fallbackLocale
     : [fallbackLocale];
@@ -241,11 +240,14 @@ export function initI18n({
     ...getOrderedLocaleAndParentLocales(locale),
     ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
   ]);
+  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends PathsWithNoParams>(key: S): string;
+  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends PathsWithParams, A extends Params<S>>(
     key: S,
     args: A
   ): string;
+  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends DotPathsFor, A extends Params<S>>(key: S, args?: A) {
     for (const _locale of orderedLocales) {
       const translationFile =
@@ -263,4 +265,4 @@ export function initI18n({
   return {
     t,
   };
-}
+};

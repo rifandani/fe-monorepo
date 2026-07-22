@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { ConfigContext, ExpoConfig } from "expo/config";
 
 import { version } from "./package.json";
@@ -8,9 +7,9 @@ import { version } from "./package.json";
 const EAS_PROJECT_ID = "28f2412b-baec-4843-b0d3-c51706061d29";
 const PROJECT_SLUG = "expoapp";
 const OWNER = "rifandani";
-function getDynamicAppConfig(
+const getDynamicAppConfig = (
   environment: "development" | "preview" | "production"
-) {
+) => {
   const APP_NAME = "Expo App";
   const BUNDLE_IDENTIFIER = "com.rifandani.expoapp";
   const BASE_ICON_SRC = "./src/core/assets/icons";
@@ -40,8 +39,8 @@ function getDynamicAppConfig(
     name: `${APP_NAME} (Development)`,
     scheme: `${SCHEME}-development`,
   };
-}
-export default function appConfig({ config }: ConfigContext): ExpoConfig {
+};
+const appConfig = ({ config }: ConfigContext): ExpoConfig => {
   console.log(
     `🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT ->`,
     process.env.APP_VARIANT
@@ -149,4 +148,5 @@ export default function appConfig({ config }: ConfigContext): ExpoConfig {
       // ],
     ],
   };
-}
+};
+export default appConfig;

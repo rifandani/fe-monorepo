@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { KyResponse, Options } from "ky";
 import ky from "ky";
 
@@ -20,8 +19,8 @@ export const cdnKeys = {
   getArticleCoverImage: (url: string | undefined) =>
     [...cdnKeys.article(), url] as const,
 };
-export function cdnRepositories() {
-  return {
+export const cdnRepositories = () =>
+  ({
     async getCdnFile(
       {
         url,
@@ -39,5 +38,4 @@ export function cdnRepositories() {
         response,
       };
     },
-  } as const;
-}
+  }) as const;

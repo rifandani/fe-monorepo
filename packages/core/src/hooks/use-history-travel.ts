@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
 import { useRef, useState } from "react";
@@ -19,7 +18,7 @@ interface IData<T> {
  * @param arr Target array
  * @returns Clamped index within array bounds
  */
-function dumpIndex<T>(step: number, arr: T[]) {
+const dumpIndex = <T>(step: number, arr: T[]) => {
   let index =
     step > 0
       ? step - 1 // move forward
@@ -31,7 +30,7 @@ function dumpIndex<T>(step: number, arr: T[]) {
     index = 0;
   }
   return index;
-}
+};
 
 /**
  * Splits an array into three parts based on a target index
@@ -40,14 +39,14 @@ function dumpIndex<T>(step: number, arr: T[]) {
  * @param targetArr Array to split
  * @returns Object containing current element and arrays before/after it
  */
-function split<T>(step: number, targetArr: T[]) {
+const split = <T>(step: number, targetArr: T[]) => {
   const index = dumpIndex(step, targetArr);
   return {
     _after: targetArr.slice(index + 1),
     _before: targetArr.slice(0, index),
     _current: targetArr[index],
   };
-}
+};
 
 /**
  * A hook to manage state change history. It provides encapsulation methods to travel through the history.
@@ -65,7 +64,7 @@ function split<T>(step: number, targetArr: T[]) {
  * back()
  * ```
  */
-export default function useHistoryTravel<T>(initialValue?: T, maxLength = 0) {
+const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
   /**
    * Main history state containing past, present and future values
    */
@@ -174,4 +173,5 @@ export default function useHistoryTravel<T>(initialValue?: T, maxLength = 0) {
     setValue: useMemoizedFn(updateValue),
     value: present,
   };
-}
+};
+export default useHistoryTravel;

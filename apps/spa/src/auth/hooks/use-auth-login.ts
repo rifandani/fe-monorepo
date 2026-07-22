@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style sonarjs/no-built-in-override react-doctor/query-mutation-missing-invalidation */
+/* oxlint-disable sonarjs/no-built-in-override react-doctor/query-mutation-missing-invalidation */
 import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
 import { useMutation, useMutationState } from "@tanstack/react-query";
 import type { AuthLoginRequestSchema } from "@workspace/core/apis/auth";
@@ -18,13 +18,13 @@ type Success = Awaited<
   ReturnType<ReturnType<typeof authRepositories>["login"]>
 >;
 type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
-export function useAuthLogin(
+export const useAuthLogin = (
   params: Params,
   mutationOptions?: Except<
     UseMutationOptions<Success, Error, Exclude<Params, undefined>>,
     "mutationKey" | "mutationFn"
   >
-) {
+) => {
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
   return useMutation<Success, Error, Exclude<Params, undefined>>({
     mutationFn: (json) => authRepositories(http).login({ json }),
@@ -40,13 +40,10 @@ export function useAuthLogin(
     },
     ..._mutationOptions,
   });
-}
-export function useAuthLoginMutationState(params: AuthLoginRequestSchema) {
-  return useMutationState<
-    MutationState<Success, Error, Exclude<Params, undefined>>
-  >({
+};
+export const useAuthLoginMutationState = (params: AuthLoginRequestSchema) =>
+  useMutationState<MutationState<Success, Error, Exclude<Params, undefined>>>({
     filters: {
       mutationKey: authKeys.login(params),
     },
   });
-}

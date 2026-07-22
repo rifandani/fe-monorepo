@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -27,17 +26,15 @@ export const metadata = createMetadata({
   description: "Bulletproof Next.js 15 Template",
 });
 
-export function generateViewport(): Viewport {
-  return {
-    colorScheme: "light dark",
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-      { media: "(prefers-color-scheme: dark)", color: "#020203" },
-    ],
-  };
-}
+export const generateViewport = (): Viewport => ({
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#020203" },
+  ],
+});
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+const RootLayout = async ({ children }: LayoutProps<"/">) => {
   // Opt-out of static generation for every page so the CSP nonce can be applied
   const [, locale, messages] = await Promise.all([
     connection(),
@@ -114,4 +111,5 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       </body>
     </html>
   );
-}
+};
+export default RootLayout;

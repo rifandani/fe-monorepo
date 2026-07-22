@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/react-compiler-no-manual-memoization sonarjs/no-duplicate-string */
+/* oxlint-disable react-doctor/react-compiler-no-manual-memoization sonarjs/no-duplicate-string */
 import type { Theme } from "@react-navigation/native";
 import { ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -11,7 +11,11 @@ import { useAppStore } from "@/core/hooks/use-app-store";
 
 import config from "../../../../tamagui.config";
 
-function NavigationThemeProvider({ children }: { children: React.ReactNode }) {
+const NavigationThemeProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const tamaguiTheme = useTheme();
   const scheme = useColorScheme();
   const theme = useAppStore((state) => state.theme);
@@ -129,11 +133,11 @@ function NavigationThemeProvider({ children }: { children: React.ReactNode }) {
       {children}
     </ThemeProvider>
   );
-}
-export function AppTamaguiProvider({
+};
+export const AppTamaguiProvider = ({
   children,
   ...rest
-}: Omit<TamaguiProviderProps, "config">) {
+}: Omit<TamaguiProviderProps, "config">) => {
   const scheme = useColorScheme();
   const theme = useAppStore((state) => state.theme);
   return (
@@ -146,4 +150,4 @@ export function AppTamaguiProvider({
       <NavigationThemeProvider>{children}</NavigationThemeProvider>
     </TamaguiProvider>
   );
-}
+};

@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler */
+/* oxlint-disable react/react-compiler */
 import { useEffect } from "react";
 import {
   interpolate,
@@ -12,10 +12,10 @@ interface IUseSkeletonAnimationProps {
   speed?: number;
   targetOpacityValue?: number;
 }
-export function useSkeletonAnimation({
+export const useSkeletonAnimation = ({
   speed = 1000,
   targetOpacityValue = 0.2,
-}: IUseSkeletonAnimationProps) {
+}: IUseSkeletonAnimationProps) => {
   const shared = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(shared.value, [0, 1], [targetOpacityValue, 1]),
@@ -29,4 +29,4 @@ export function useSkeletonAnimation({
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return animatedStyle;
-}
+};

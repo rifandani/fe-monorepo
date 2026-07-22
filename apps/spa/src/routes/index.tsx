@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { toast } from "sonner";
 
@@ -10,7 +9,7 @@ import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { reportWebVitals } from "@/core/utils/web-vitals";
 
-function HomeRoute() {
+const HomeRoute = () => {
   useSeo({
     description:
       "Welcome to our React.js application. Explore our modern, feature-rich web platform with theme customization, multi-language support, and user profiles.",
@@ -47,7 +46,7 @@ function HomeRoute() {
       </div>
     </div>
   );
-}
+};
 export const Route = createFileRoute("/")({
   beforeLoad: ({ location }) => {
     const authed = validateAuthUser();

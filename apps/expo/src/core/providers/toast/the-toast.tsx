@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style sonarjs/max-union-size */
+/* oxlint-disable sonarjs/max-union-size */
 import Feather from "@expo/vector-icons/Feather";
 import { Toast, useToastState } from "@tamagui/toast";
 import type { ThemeName } from "tamagui";
@@ -23,7 +23,7 @@ const iconMapper: Record<ToastCustomData["preset"], React.ReactNode> = {
   success: <Feather name="check-circle" size={16} color="white" />,
   warning: <Feather name="alert-octagon" size={16} color="white" />,
 };
-export function TheToast() {
+export const TheToast = () => {
   const currentToast = useToastState();
   if (!currentToast || currentToast.isHandledNatively) {
     return null;
@@ -55,4 +55,4 @@ export function TheToast() {
       </YStack>
     </Toast>
   );
-}
+};

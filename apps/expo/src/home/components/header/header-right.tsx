@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -10,7 +9,7 @@ import type { BaseSheetState } from "@/core/components/sheet/types";
 import { useAppStore } from "@/core/hooks/use-app-store";
 import type { HeaderButtonProps } from "@/core/types/navigation";
 
-export function HeaderRight(_: HeaderButtonProps) {
+export const HeaderRight = (_: HeaderButtonProps) => {
   const router = useRouter();
   const resetUser = useAppStore((state) => state.resetUser);
   const [state, setState] = useState<BaseSheetState>({
@@ -66,4 +65,4 @@ export function HeaderRight(_: HeaderButtonProps) {
       </BaseSheet>
     </>
   );
-}
+};

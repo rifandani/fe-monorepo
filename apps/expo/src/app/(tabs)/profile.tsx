@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style sonarjs/no-wildcard-import -- function declarations; expo-updates namespace API */
+/* oxlint-disable sonarjs/no-wildcard-import -- expo-updates namespace API */
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
@@ -26,7 +26,7 @@ import { ProfileListItem } from "@/user/components/profile-list-item";
 import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
 import { useGetUser } from "@/user/hooks/use-get-user";
 
-function EditProfileSection() {
+const EditProfileSection = () => {
   const { t } = useTranslation();
   const user = useAppStore((state) => state.user);
   const { data } = useGetUser(
@@ -58,8 +58,8 @@ function EditProfileSection() {
       </YStack>
     </XStack>
   );
-}
-function CheckForUpdatesListItem() {
+};
+const CheckForUpdatesListItem = () => {
   const { show } = useToastController();
   const { t } = useTranslation();
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
@@ -106,8 +106,8 @@ function CheckForUpdatesListItem() {
       <ListItem.Subtitle>{t("downloadAndInstallUpdate")}</ListItem.Subtitle>
     </ProfileListItem>
   );
-}
-function LogoutListItem() {
+};
+const LogoutListItem = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const resetUser = useAppStore((state) => state.resetUser);
@@ -127,25 +127,24 @@ function LogoutListItem() {
       <ListItem.Text color="$red10">{t("logout")}</ListItem.Text>
     </ProfileListItem>
   );
-}
+};
 export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
-export default function TabsProfileScreen() {
-  return (
-    <YStack flex={1} p="$3" pt={Platform.select({ android: "$6", ios: "$9" })}>
-      <EditProfileSection />
-      <ProfileThemeChanger />
-      <ProfileLanguageChanger />
+const TabsProfileScreen = () => (
+  <YStack flex={1} p="$3" pt={Platform.select({ android: "$6", ios: "$9" })}>
+    <EditProfileSection />
+    <ProfileThemeChanger />
+    <ProfileLanguageChanger />
 
-      <Separator my="$2" />
+    <Separator my="$2" />
 
-      <CheckForUpdatesListItem />
-      <LogoutListItem />
-      <Paragraph mt="auto" size="$2" text="center">
-        {"Version "}
-        {nativeApplicationVersion}
-        {" Build "}
-        {nativeBuildVersion}
-      </Paragraph>
-    </YStack>
-  );
-}
+    <CheckForUpdatesListItem />
+    <LogoutListItem />
+    <Paragraph mt="auto" size="$2" text="center">
+      {"Version "}
+      {nativeApplicationVersion}
+      {" Build "}
+      {nativeBuildVersion}
+    </Paragraph>
+  </YStack>
+);
+export default TabsProfileScreen;

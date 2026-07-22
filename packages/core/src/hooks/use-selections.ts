@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { useState } from "react";
 
@@ -34,7 +33,7 @@ import { useState } from "react";
  * );
  * ```
  */
-export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
+export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
   // Selected Items, Set selected items
   const [selected, setSelected] = useState<T[]>(defaultSelected);
   const selectedSet = new Set(selected);
@@ -123,4 +122,4 @@ export function useSelections<T>(items: T[], defaultSelected: T[] = []) {
     unSelect: useMemoizedFn(unSelect),
     unSelectAll: useMemoizedFn(unSelectAll),
   } as const;
-}
+};

@@ -1,11 +1,11 @@
-/* oxlint-disable eslint/func-style sonarjs/function-name */
+/* oxlint-disable sonarjs/function-name */
 import { useHead } from "@unhead/react";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 
 import { ENV } from "@/core/constants/env";
 
 const head = createHead();
-function SchemaOrgHostParams() {
+const SchemaOrgHostParams = () => {
   useHead({
     templateParams: {
       schemaOrg: {
@@ -14,12 +14,14 @@ function SchemaOrgHostParams() {
     },
   });
   return null;
-}
-export function AppHeadProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <UnheadProvider head={head}>
-      <SchemaOrgHostParams />
-      {children}
-    </UnheadProvider>
-  );
-}
+};
+export const AppHeadProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <UnheadProvider head={head}>
+    <SchemaOrgHostParams />
+    {children}
+  </UnheadProvider>
+);

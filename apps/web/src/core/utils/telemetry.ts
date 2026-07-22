@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { Attributes, Span, SpanContext, Tracer } from "@opentelemetry/api";
 import { context, SpanStatusCode, trace } from "@opentelemetry/api";
 
@@ -69,13 +68,13 @@ export const noopTracer: Tracer = {
     return noopSpan;
   },
 };
-export function getTracer({
+export const getTracer = ({
   isEnabled = false,
   tracer,
 }: {
   isEnabled?: boolean;
   tracer?: Tracer;
-} = {}): Tracer {
+} = {}): Tracer => {
   if (!isEnabled) {
     return noopTracer;
   }
@@ -83,8 +82,8 @@ export function getTracer({
     return tracer;
   }
   return trace.getTracer(SERVICE_NAME);
-}
-export function recordSpan<T>({
+};
+export const recordSpan = <T>({
   name,
   tracer,
   attributes = {},
@@ -113,8 +112,8 @@ export function recordSpan<T>({
    * @default true
    */
   endWhenDone?: boolean;
-}) {
-  return tracer.startActiveSpan(name, { attributes }, async (span) => {
+}) =>
+  tracer.startActiveSpan(name, { attributes }, async (span) => {
     try {
       const result = await fn(span);
       if (endWhenDone) {
@@ -144,8 +143,7 @@ export function recordSpan<T>({
       throw error;
     }
   });
-}
-export function recordException({
+export const recordException = ({
   name,
   error,
   tracer,
@@ -168,7 +166,7 @@ export function recordException({
    * the tracer
    */
   tracer: Tracer;
-}) {
+}) => {
   const span = tracer.startSpan(name);
   context.with(trace.setSpan(context.active(), span), () => {
     span.setAttributes(
@@ -183,4 +181,4 @@ export function recordException({
     span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
     span.end();
   });
-}
+};

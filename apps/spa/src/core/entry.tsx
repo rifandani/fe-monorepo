@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { StrictMode, Suspense } from "react";
 
 import { Loader } from "@/core/components/ui";
@@ -13,29 +12,27 @@ import { ReloadPromptSw } from "@/core/providers/reload-prompt-sw";
 import { AppRouterProvider } from "@/core/providers/router/provider";
 import { AppToastProvider } from "@/core/providers/toast/provider";
 
-export function Entry() {
-  return (
-    <StrictMode>
-      <AppHeadProvider>
-        <AppQueryProvider>
-          <AppTranslationProvider>
-            <AppI18nProvider>
-              <AppToastProvider>
-                <Suspense
-                  name={TRACER_REACT_ENTRY}
-                  fallback={<Loader className="size-4.5" variant="spin" />}
-                >
-                  {/* Router entry point */}
-                  <AppRouterProvider />
+export const Entry = () => (
+  <StrictMode>
+    <AppHeadProvider>
+      <AppQueryProvider>
+        <AppTranslationProvider>
+          <AppI18nProvider>
+            <AppToastProvider>
+              <Suspense
+                name={TRACER_REACT_ENTRY}
+                fallback={<Loader className="size-4.5" variant="spin" />}
+              >
+                {/* Router entry point */}
+                <AppRouterProvider />
 
-                  {/* PWA */}
-                  <ReloadPromptSw />
-                </Suspense>
-              </AppToastProvider>
-            </AppI18nProvider>
-          </AppTranslationProvider>
-        </AppQueryProvider>
-      </AppHeadProvider>
-    </StrictMode>
-  );
-}
+                {/* PWA */}
+                <ReloadPromptSw />
+              </Suspense>
+            </AppToastProvider>
+          </AppI18nProvider>
+        </AppTranslationProvider>
+      </AppQueryProvider>
+    </AppHeadProvider>
+  </StrictMode>
+);

@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { createMiddleware, defaults } from "@nosecone/next";
 import type { NextRequest } from "next/server";
 /**
@@ -30,7 +29,7 @@ const REQUEST_ID_HEADER = "x-request-id";
  * - Complex business logic
  * - Third-party integrations
  */
-export default async function proxy(request: NextRequest) {
+const proxy = async (request: NextRequest) => {
   // Generate or reuse request ID
   const existingId = request.headers.get(REQUEST_ID_HEADER);
   const requestId = existingId || crypto.randomUUID();
@@ -45,7 +44,8 @@ export default async function proxy(request: NextRequest) {
   // Also set on response for downstream consumers
   response.headers.set(REQUEST_ID_HEADER, requestId);
   return securityMiddleware();
-}
+};
+export default proxy;
 export const config = {
   /*
    * Match all request paths except for the ones starting with:

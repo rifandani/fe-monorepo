@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { Http } from "@workspace/core/services/http";
 import type { Options } from "ky";
 import { z } from "zod";
@@ -85,8 +84,8 @@ export const authKeys = {
   signUpEmail: (params?: AuthSignUpEmailRequestSchema) =>
     [...authKeys.all(), "signUpEmail", ...(params ? [params] : [])] as const,
 };
-export function authRepositories(http: InstanceType<typeof Http>) {
-  return {
+export const authRepositories = (http: InstanceType<typeof Http>) =>
+  ({
     getSession: async (options?: Options) => {
       const resp = await http.instance.get("api/auth/get-session", {
         ...options,
@@ -127,5 +126,4 @@ export function authRepositories(http: InstanceType<typeof Http>) {
       const parsed = authSignUpEmailResponseSchema.parse(json);
       return { headers: resp.headers, json: parsed };
     },
-  } as const;
-}
+  }) as const;

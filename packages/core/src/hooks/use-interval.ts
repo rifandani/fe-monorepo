@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -26,13 +25,13 @@ import { useEffect, useRef } from "react";
  * }, 1000, { immediate: true })
  * ```
  */
-export function useInterval(
+export const useInterval = (
   fn: () => void,
   delay?: number,
   options: {
     immediate?: boolean;
   } = {}
-) {
+) => {
   /**
    * Memoized version of the callback to maintain referential equality
    */
@@ -70,4 +69,4 @@ export function useInterval(
     // timerCallback is memoized via useMemoizedFn but included for completeness
   }, [delay, options.immediate, timerCallback]);
   return clear;
-}
+};

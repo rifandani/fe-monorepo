@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style github/no-inner-html */
+/* oxlint-disable github/no-inner-html */
 /**
  * Security utility functions for development.
  *
@@ -16,10 +16,9 @@ const botPatterns = [
   /mediapartners/iu,
 ];
 const reg = /[&<>"'/`]/gu;
-export function isBot(userAgent: string): boolean {
-  return botPatterns.some((pattern) => pattern.test(userAgent));
-}
-export function sanitizeInput(input: string): string {
+export const isBot = (userAgent: string): boolean =>
+  botPatterns.some((pattern) => pattern.test(userAgent));
+export const sanitizeInput = (input: string): string => {
   // If running in a browser, use a temporary DOM element to safely escape input.
   if (typeof document !== "undefined") {
     const div = document.createElement("div");
@@ -37,4 +36,4 @@ export function sanitizeInput(input: string): string {
     "`": "&#x60;",
   };
   return input.replace(reg, (match) => map[match] as string);
-}
+};

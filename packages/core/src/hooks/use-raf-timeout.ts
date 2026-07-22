@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -6,7 +5,7 @@ import { useEffect, useRef } from "react";
 interface Handle {
   id: number;
 }
-function setRafTimeout(callback: () => void, delay = 0): Handle {
+const setRafTimeout = (callback: () => void, delay = 0): Handle => {
   if (typeof requestAnimationFrame === typeof undefined) {
     return {
       id: setTimeout(callback, delay) as unknown as number,
@@ -16,7 +15,7 @@ function setRafTimeout(callback: () => void, delay = 0): Handle {
     id: 0,
   };
   const startTime = Date.now();
-  function loop() {
+  const loop = () => {
     const current = Date.now();
     if (current - startTime >= delay) {
       // oxlint-disable-next-line node/callback-return promise/prefer-await-to-callbacks
@@ -24,27 +23,26 @@ function setRafTimeout(callback: () => void, delay = 0): Handle {
     } else {
       handle.id = requestAnimationFrame(loop);
     }
-  }
+  };
   handle.id = requestAnimationFrame(loop);
   return handle;
-}
+};
 // oxlint-disable-next-line typescript/no-explicit-any
-function cancelAnimationFrameIsNotDefined(_t: any): _t is number {
-  return typeof cancelAnimationFrame === typeof undefined;
-}
-function clearRafTimeout(handle: Handle) {
+const cancelAnimationFrameIsNotDefined = (_t: any): _t is number =>
+  typeof cancelAnimationFrame === typeof undefined;
+const clearRafTimeout = (handle: Handle) => {
   if (cancelAnimationFrameIsNotDefined(handle.id)) {
     return clearTimeout(handle.id);
   }
   cancelAnimationFrame(handle.id);
-}
+};
 
 /**
  * A hook implements with requestAnimationFrame for better performance.
  * The API is consistent with useTimeout.
  * The advantage is that will not trigger function when the page is not rendering, such as page hiding or minimization.
  */
-export function useRafTimeout(fn: () => void, delay: number | undefined) {
+export const useRafTimeout = (fn: () => void, delay: number | undefined) => {
   const fnRef = useLatest(fn);
   const timerRef = useRef<Handle>(null);
   useEffect(() => {
@@ -67,4 +65,4 @@ export function useRafTimeout(fn: () => void, delay: number | undefined) {
     }
   };
   return clear;
-}
+};

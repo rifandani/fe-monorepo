@@ -1,6 +1,5 @@
-/* oxlint-disable eslint/func-style -- function declarations */
-import { Stack } from "expo-router";
 // oxlint-disable-next-line sonarjs/no-wildcard-import -- expo-splash-screen namespace API
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -19,7 +18,7 @@ SplashScreen.setOptions({
   duration: 1000,
   fade: true,
 });
-function App() {
+const App = () => {
   const { t } = useTranslation();
   const user = useAppStore((state) => state.user);
   return (
@@ -46,20 +45,19 @@ function App() {
       </Stack>
     </GestureHandlerRootView>
   );
-}
-export default function RootLayout() {
-  return (
-    <KeyboardProvider>
-      <AppI18nProvider>
-        <AppQueryProvider>
-          <AppTamaguiProvider>
-            <AppToastProvider>
-              <App />
-              <DevPlugins />
-            </AppToastProvider>
-          </AppTamaguiProvider>
-        </AppQueryProvider>
-      </AppI18nProvider>
-    </KeyboardProvider>
-  );
-}
+};
+const RootLayout = () => (
+  <KeyboardProvider>
+    <AppI18nProvider>
+      <AppQueryProvider>
+        <AppTamaguiProvider>
+          <AppToastProvider>
+            <App />
+            <DevPlugins />
+          </AppToastProvider>
+        </AppTamaguiProvider>
+      </AppQueryProvider>
+    </AppI18nProvider>
+  </KeyboardProvider>
+);
+export default RootLayout;

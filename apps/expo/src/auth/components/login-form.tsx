@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
@@ -19,7 +18,7 @@ import { BaseButton } from "@/core/components/button/base-button";
 import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-function RememberMeCheckbox() {
+const RememberMeCheckbox = () => {
   const { t } = useTranslation();
   const [state, setState] = useState({ rememberMe: false });
   return (
@@ -39,8 +38,8 @@ function RememberMeCheckbox() {
       <Label htmlFor="rememberMe">{t("rememberMe")}</Label>
     </XStack>
   );
-}
-export function LoginForm() {
+};
+export const LoginForm = () => {
   const { t } = useTranslation();
   const setUser = useAppStore((state) => state.setUser);
   const form = useForm({
@@ -137,4 +136,4 @@ export function LoginForm() {
       </Form.Trigger>
     </Form>
   );
-}
+};

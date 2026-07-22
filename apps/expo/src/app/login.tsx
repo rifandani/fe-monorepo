@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { Link } from "expo-router";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { H3, Paragraph, YStack } from "tamagui";
@@ -7,7 +6,7 @@ import { LoginForm } from "@/auth/components/login-form";
 import { useTranslation } from "@/core/providers/i18n/context";
 
 export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
-export default function LoginScreen() {
+const LoginScreen = () => {
   const { t } = useTranslation();
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
@@ -31,4 +30,5 @@ export default function LoginScreen() {
       </YStack>
     </KeyboardAvoidingView>
   );
-}
+};
+export default LoginScreen;

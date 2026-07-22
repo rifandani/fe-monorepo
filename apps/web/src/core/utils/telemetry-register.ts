@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/async-parallel react-doctor/server-sequential-independent-await */
+/* oxlint-disable react-doctor/async-parallel react-doctor/server-sequential-independent-await */
 import { ENV } from "@/core/constants/env";
 import { SERVICE_NAME } from "@/core/constants/global";
 import "server-only";
@@ -10,7 +10,7 @@ import "server-only";
 // const wellKnownRegex = /^\/\.well-known\/.*/
 // const imageRegex = /\.(?:png|jpg|jpeg|gif|svg|ico|webp)$/i
 
-export async function registerOtelTracerAndMeter() {
+export const registerOtelTracerAndMeter = async () => {
   // we import dynamically because this function could run on edge runtime, and running on edge runtime will not work
   // const { OTLPLogExporter } = await import('@opentelemetry/exporter-logs-otlp-http')
   const { OTLPMetricExporter } =
@@ -130,4 +130,4 @@ export async function registerOtelTracerAndMeter() {
   //   ],
   // })
   // metrics.setGlobalMeterProvider(meterProvider)
-}
+};

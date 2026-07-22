@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import {
   ComputerDesktopIcon,
   MoonIcon,
@@ -19,7 +19,7 @@ import {
   MenuSection,
 } from "@/core/components/ui";
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
   const activeTheme = theme ?? "system"; // avoid hydration mismatch
@@ -53,4 +53,4 @@ export function ThemeToggle() {
       </MenuContent>
     </Menu>
   );
-}
+};

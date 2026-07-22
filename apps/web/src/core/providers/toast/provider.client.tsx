@@ -1,11 +1,11 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import type { PropsWithChildren } from "react";
 import { Toaster } from "sonner";
 
 import { ToastContext, useCreateToastContext } from "./context.client";
 
-export function AppToastProvider({ children }: PropsWithChildren) {
+export const AppToastProvider = ({ children }: PropsWithChildren) => {
   const value = useCreateToastContext();
   return (
     <ToastContext value={value}>
@@ -13,4 +13,4 @@ export function AppToastProvider({ children }: PropsWithChildren) {
       <Toaster {...value[0]} />
     </ToastContext>
   );
-}
+};

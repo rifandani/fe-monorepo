@@ -1,9 +1,9 @@
-/* oxlint-disable eslint/func-style sonarjs/function-name */
+/* oxlint-disable sonarjs/function-name */
 "use client";
 import { log } from "evlog/next/client";
 import { useReportWebVitals } from "next/web-vitals";
 
-export function WebVitals() {
+export const WebVitals = () => {
   useReportWebVitals((metric) => {
     if (process.env.NODE_ENV !== "development") {
       return;
@@ -16,4 +16,4 @@ export function WebVitals() {
     });
   });
   return null;
-}
+};

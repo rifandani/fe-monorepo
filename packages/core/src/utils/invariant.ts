@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 // @ts-expect-error -- process is not defined in the browser
 const isProduction = process.env.NODE_ENV === "production";
 const prefix = "Invariant failed";
@@ -18,16 +17,11 @@ const prefix = "Invariant failed";
  * // type of `value`` has been narrowed to `Person`
  * ```
  */
-export function invariant(
-  // oxlint-disable-next-line typescript/no-explicit-any -- accepts any truthy check
+export const invariant = (
+  // oxlint-disable-next-line typescript/no-explicit-any -- assertion predicate accepts any condition
   condition: any,
-  // Not providing an inline default argument for message as the result is smaller
-  /**
-   * Can provide a string, or a function that returns a string for cases where
-   * the message takes a fair amount of effort to compute
-   */
   message?: string | (() => string)
-): asserts condition {
+): asserts condition => {
   if (condition) {
     return;
   }
@@ -45,4 +39,4 @@ export function invariant(
   // 2. message not provided: prefix
   const value: string = provided ? `${prefix}: ${provided}` : prefix;
   throw new Error(value);
-}
+};

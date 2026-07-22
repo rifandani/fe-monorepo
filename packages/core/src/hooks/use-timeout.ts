@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -12,7 +11,7 @@ import { useEffect, useRef } from "react";
  *   setCount(count + 1);
  * }, delay);
  */
-export function useTimeout(fn: () => void, delay?: number) {
+export const useTimeout = (fn: () => void, delay?: number) => {
   const timerCallback = useMemoizedFn(fn);
   const timerRef = useRef<number | null>(null);
   const clear = () => {
@@ -33,4 +32,4 @@ export function useTimeout(fn: () => void, delay?: number) {
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [delay]);
   return clear;
-}
+};

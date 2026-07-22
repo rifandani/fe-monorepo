@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import {
   ArrowRightStartOnRectangleIcon,
   Cog6ToothIcon,
@@ -19,7 +18,7 @@ import {
 } from "@/core/components/ui/menu";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-export function ProfileMenu() {
+export const ProfileMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, clearUser } = useAuthUserStore();
@@ -64,4 +63,4 @@ export function ProfileMenu() {
       </MenuContent>
     </Menu>
   );
-}
+};

@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import { useEffect, useRef, useState } from "react";
 
 export interface UseCopyToClipboardProps {
@@ -14,9 +14,9 @@ export interface UseCopyToClipboardProps {
  * const { isCopied, copyToClipboard } = useCopyToClipboard();
  * ```
  */
-export function useCopyToClipboard({
+export const useCopyToClipboard = ({
   timeout = 1000,
-}: UseCopyToClipboardProps = {}) {
+}: UseCopyToClipboardProps = {}) => {
   const [isCopied, setIsCopied] = useState(false);
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Cleanup timeout on unmount to prevent memory leaks
@@ -48,4 +48,4 @@ export function useCopyToClipboard({
     });
   };
   return { copyToClipboard, isCopied };
-}
+};

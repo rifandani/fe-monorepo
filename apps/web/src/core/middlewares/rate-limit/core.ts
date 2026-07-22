@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -12,9 +11,9 @@ import type { ConfigType, GeneralConfigType, RateLimitInfo } from "./types";
 
 const RATE_LIMIT_WINDOW_MS = 60_000; // 60 seconds
 const RATE_LIMIT_LIMIT = 5; // Limit each IP to 5 requests per 60 seconds (1 req/s average)
-export function rateLimiter<P extends string = string>(
+export const rateLimiter = <P extends string = string>(
   config: GeneralConfigType<ConfigType<P>>
-) {
+) => {
   const {
     windowMs = RATE_LIMIT_WINDOW_MS,
     limit = RATE_LIMIT_LIMIT,
@@ -95,12 +94,12 @@ export function rateLimiter<P extends string = string>(
     // If we are to skip failed/successfull requests, decrement the
     // counter accordingly once we know the status code of the request
     let decremented = false;
-    async function decrementKey() {
+    const decrementKey = async () => {
       if (!decremented) {
         await store.decrement(key);
         decremented = true;
       }
-    }
+    };
     // If the client has exceeded their rate limit, set the Retry-After header
     // and call the `handler` function.
     if (totalHits > _limit) {
@@ -111,4 +110,4 @@ export function rateLimiter<P extends string = string>(
     }
     await decrementKey();
   };
-}
+};

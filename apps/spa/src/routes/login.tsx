@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/no-prevent-default */
+/* oxlint-disable react-doctor/no-prevent-default */
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
@@ -21,7 +21,7 @@ import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { reportWebVitals } from "@/core/utils/web-vitals";
 
-function LoginForm() {
+const LoginForm = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setUser } = useAuthUserStore();
@@ -132,8 +132,8 @@ function LoginForm() {
       </form.Subscribe>
     </form>
   );
-}
-function LoginRoute() {
+};
+const LoginRoute = () => {
   useSeo({
     description:
       "Sign in to your account to access personalized features, manage your profile, and enjoy a seamless experience across our platform.",
@@ -190,7 +190,7 @@ function LoginRoute() {
       </section>
     </div>
   );
-}
+};
 export const Route = createFileRoute("/login")({
   beforeLoad: ({ location }) => {
     const authed = validateAuthUser();

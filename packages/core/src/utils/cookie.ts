@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 interface CookieAttributes {
   value: string;
   "max-age"?: number;
@@ -12,9 +11,9 @@ interface CookieAttributes {
   [key: string]: any;
 }
 
-export function parseSetCookieHeader(
+export const parseSetCookieHeader = (
   setCookie: string
-): Map<string, CookieAttributes> {
+): Map<string, CookieAttributes> => {
   const cookies = new Map<string, CookieAttributes>();
   const cookieArray = setCookie.split(", ");
   for (const cookieString of cookieArray) {
@@ -75,4 +74,4 @@ export function parseSetCookieHeader(
     cookies.set(name, attrObj);
   }
   return cookies;
-}
+};

@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import {
   initialFormState,
   mergeForm,
@@ -24,10 +24,10 @@ interface UseServerFormOptions<TDefaultValues extends Record<string, unknown>> {
  * Wires TanStack Form to a Next.js FormData server action via `useActionState`,
  * `mergeForm`, and `useTransform` (see TanStack next-server-actions example).
  */
-export function useServerForm<TDefaultValues extends Record<string, unknown>>({
+export const useServerForm = <TDefaultValues extends Record<string, unknown>>({
   formOpts,
   action,
-}: UseServerFormOptions<TDefaultValues>) {
+}: UseServerFormOptions<TDefaultValues>) => {
   const [state, formAction, isPending] = useActionState(
     action,
     initialFormState
@@ -54,4 +54,4 @@ export function useServerForm<TDefaultValues extends Record<string, unknown>>({
   });
 
   return { form, formAction, formLevelError, isPending };
-}
+};

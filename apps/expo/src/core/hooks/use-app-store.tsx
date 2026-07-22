@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react/react-compiler react-doctor/only-export-components */
+/* oxlint-disable react/react-compiler react-doctor/only-export-components */
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { authLoginResponseSchema } from "@workspace/core/apis/auth";
 import { isFunction } from "radashi";
@@ -63,8 +63,8 @@ export const useAppStore = create<AppStore>()(
     }
   )
 );
-function createAppStore(initialState?: Partial<AppStoreState>) {
-  return createStore<AppStore>()(
+const createAppStore = (initialState?: Partial<AppStoreState>) =>
+  createStore<AppStore>()(
     persist(
       (set) => ({
         user: null,
@@ -89,18 +89,17 @@ function createAppStore(initialState?: Partial<AppStoreState>) {
       }
     )
   );
-}
 export const AppContext = createContext<ReturnType<
   typeof createAppStore
 > | null>(null);
-export function useAppContext<T>(selector: (_store: AppStore) => T): T {
+export const useAppContext = <T,>(selector: (_store: AppStore) => T): T => {
   const store = use(AppContext);
   if (!store) {
     throw new Error("useAppContext: cannot find the AppContext");
   }
   return useStore(store, selector);
-}
-export function AppProvider({
+};
+export const AppProvider = ({
   children,
   initialState,
 }: {
@@ -108,7 +107,7 @@ export function AppProvider({
     | ReactNode
     | ((context: ReturnType<typeof createAppStore>) => ReactNode);
   initialState?: Parameters<typeof createAppStore>[0];
-}) {
+}) => {
   const storeRef = useRef<ReturnType<typeof createAppStore> | null>(null);
   if (!storeRef.current) {
     storeRef.current = createAppStore(initialState);
@@ -118,4 +117,4 @@ export function AppProvider({
       {isFunction(children) ? children(storeRef.current) : children}
     </AppContext>
   );
-}
+};

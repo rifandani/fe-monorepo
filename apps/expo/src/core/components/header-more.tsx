@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import Feather from "@expo/vector-icons/Feather";
 import { isFunction } from "radashi";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
@@ -23,7 +22,7 @@ interface RenderProps {
 type HeaderMoreProps = HeaderButtonProps & {
   children: ReactNode | (({ state, setState }: RenderProps) => ReactNode);
 };
-export function HeaderMore({ children }: HeaderMoreProps) {
+export const HeaderMore = ({ children }: HeaderMoreProps) => {
   const [state, setState] = useState<State>({ open: false, position: 0 });
   return (
     <>
@@ -67,4 +66,4 @@ export function HeaderMore({ children }: HeaderMoreProps) {
       </Sheet>
     </>
   );
-}
+};

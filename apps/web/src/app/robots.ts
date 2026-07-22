@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { MetadataRoute } from "next";
 // change production url when you know
 const url = new URL(
@@ -6,13 +5,12 @@ const url = new URL(
     ? "https://web.com"
     : "https://web.localhost"
 );
-export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      // disallow: '/private-page',
-    },
-    sitemap: `${url}sitemap.xml`,
-  };
-}
+const robots = (): MetadataRoute.Robots => ({
+  rules: {
+    userAgent: "*",
+    allow: "/",
+    // disallow: '/private-page',
+  },
+  sitemap: `${url}sitemap.xml`,
+});
+export default robots;

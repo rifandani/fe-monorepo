@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import { useTranslations } from "next-intl";
 
 import { loginAction } from "@/auth/actions/auth";
@@ -15,7 +15,7 @@ import {
 import { useServerForm } from "@/core/hooks/use-server-form";
 import { fieldErrorMessage } from "@/core/utils/field-error-message";
 
-export function LoginForm() {
+export const LoginForm = () => {
   const t = useTranslations();
   const { form, formAction, formLevelError, isPending } = useServerForm({
     action: loginAction,
@@ -110,4 +110,4 @@ export function LoginForm() {
       </form.Subscribe>
     </form>
   );
-}
+};

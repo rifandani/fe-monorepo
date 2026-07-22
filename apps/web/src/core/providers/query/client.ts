@@ -1,12 +1,11 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import {
   defaultShouldDehydrateQuery,
   isServer,
   QueryClient,
 } from "@tanstack/react-query";
 
-function makeQueryClient() {
-  return new QueryClient({
+const makeQueryClient = () =>
+  new QueryClient({
     defaultOptions: {
       dehydrate: {
         // include pending queries in dehydration
@@ -20,9 +19,8 @@ function makeQueryClient() {
       },
     },
   });
-}
 let browserQueryClient: QueryClient | undefined;
-export function getQueryClient() {
+export const getQueryClient = () => {
   if (isServer) {
     // Server: always make a new query client
     return makeQueryClient();
@@ -35,4 +33,4 @@ export function getQueryClient() {
     browserQueryClient = makeQueryClient();
   }
   return browserQueryClient;
-}
+};

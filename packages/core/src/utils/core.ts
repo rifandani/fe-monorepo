@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
 
 /**
@@ -14,7 +13,7 @@ import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
  * @param {number} options.max - maximum value
  * @returns {number} clamped value
  */
-export function clamp({
+export const clamp = ({
   value,
   min,
   max,
@@ -22,9 +21,7 @@ export function clamp({
   value: number;
   min: number;
   max: number;
-}): number {
-  return Math.min(Math.max(value, min), max);
-}
+}): number => Math.min(Math.max(value, min), max);
 const indonesianPhoneNumberFormatRegex =
   /(?<firstGroup>\d{3})(?<secondGroup>\d+)/u;
 const indonesianPhoneNumberFormatRegex2 =
@@ -40,7 +37,7 @@ const indonesianPhoneNumberFormatRegex4 =
  *
  * @param phoneNumber - input should include "+62"
  */
-export function indonesianPhoneNumberFormat(phoneNumber: string) {
+export const indonesianPhoneNumberFormat = (phoneNumber: string) => {
   // e.g: +62
   const code = phoneNumber.slice(0, 3);
   const numbers = phoneNumber.slice(3);
@@ -60,7 +57,7 @@ export function indonesianPhoneNumberFormat(phoneNumber: string) {
   }
   const matches = uniqNumber.replace(regexp, "$1-$2");
   return [code, ndc, matches].join("-");
-}
+};
 const replaceCamelCaseRegex = /\.?(?<group>[A-Z]+)/gu;
 const replaceCamelCaseRegex2 = /^_/u;
 const replaceCamelCaseRegex3 = /(?:_\w)|(?:-\w)/gu;
@@ -68,7 +65,7 @@ const replaceCamelCaseRegex3 = /(?:_\w)|(?:-\w)/gu;
 /**
  * convert deep nested object keys to camelCase.
  */
-export function toCamelCase<T>(object: unknown): T {
+export const toCamelCase = <T>(object: unknown): T => {
   let transformedObject = object as Record<string, unknown>;
   if (typeof object === "object" && object !== null) {
     if (Array.isArray(object)) {
@@ -92,8 +89,8 @@ export function toCamelCase<T>(object: unknown): T {
     }
   }
   return transformedObject as T;
-}
-export function toSnakeCase<T>(object: unknown): T {
+};
+export const toSnakeCase = <T>(object: unknown): T => {
   let transformedObject = object as Record<string, unknown>;
   if (typeof object === "object" && object !== null) {
     if (Array.isArray(object)) {
@@ -119,7 +116,7 @@ export function toSnakeCase<T>(object: unknown): T {
     }
   }
   return transformedObject as T;
-}
+};
 const removeLeadingZerosRegex = /^0+[1-9]+/u;
 const removeLeadingZeroRegex = /^(?<group>0)/u;
 const removeLeadingZeros2Regex = /^0{2,}/u;
@@ -127,19 +124,19 @@ const removeLeadingZeros2Regex = /^0{2,}/u;
 /**
  * Remove leading zero
  */
-export function removeLeadingZeros(value: string) {
+export const removeLeadingZeros = (value: string) => {
   if (removeLeadingZerosRegex.test(value)) {
     return value.replace(removeLeadingZeroRegex, "");
   }
   return value.replace(removeLeadingZeros2Regex, "0");
-}
+};
 const removeLeadingWhitespaceRegex = /^\s*$/u;
 const removeLeadingWhitespace2Regex = /^\s*/u;
 
 /**
  * Remove leading whitespaces
  */
-export function removeLeadingWhitespace(value?: string) {
+export const removeLeadingWhitespace = (value?: string) => {
   if (!value) {
     return "";
   }
@@ -147,7 +144,7 @@ export function removeLeadingWhitespace(value?: string) {
     return value.replace(removeLeadingWhitespace2Regex, "");
   }
   return value;
-}
+};
 
 /**
  * Convert deep object to FormData.
@@ -191,21 +188,18 @@ export function removeLeadingWhitespace(value?: string) {
  * (2) ['another_object.value', 'whatever']
  * (2) ['array[0].nested_key1.name', 'key1']
  */
-export function objectToFormData<T extends UnknownRecord>(
+export const objectToFormData = <T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
     rootName?: string;
     ignoreList: (keyof T)[];
   }>
-) {
+) => {
   const formData = new FormData();
-  function ignore(_key?: string) {
-    return (
-      Array.isArray(options?.ignoreList) &&
-      options?.ignoreList.includes(_key as keyof T)
-    );
-  }
-  function appendFormData(_obj: T, _rootName?: string) {
+  const ignore = (_key?: string) =>
+    Array.isArray(options?.ignoreList) &&
+    options?.ignoreList.includes(_key as keyof T);
+  const appendFormData = (_obj: T, _rootName?: string) => {
     let newRootName = _rootName;
     if (!ignore(newRootName)) {
       newRootName ||= "";
@@ -233,10 +227,10 @@ export function objectToFormData<T extends UnknownRecord>(
         }
       }
     }
-  }
+  };
   appendFormData(obj, options?.rootName);
   return formData;
-}
+};
 
 /**
  * Convert deep object to FormData.
@@ -277,22 +271,19 @@ export function objectToFormData<T extends UnknownRecord>(
  * (2) ['another_object.value', 'whatever']
  * (2) ['array', 'value1,value2']
  */
-export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
+export const objectToFormDataArrayWithComma = <T extends UnknownRecord>(
   obj: T,
   options?: RequireAtLeastOne<{
     rootName?: string;
     ignoreList: (keyof T)[];
   }>
-) {
+) => {
   const formData = new FormData();
   // oxlint-disable-next-line sonarjs/no-identical-functions -- shared ignore helper per FormData converter
-  function ignore(_key?: string) {
-    return (
-      Array.isArray(options?.ignoreList) &&
-      options?.ignoreList.includes(_key as keyof T)
-    );
-  }
-  function appendFormData(_obj: T, _rootName?: string) {
+  const ignore = (_key?: string) =>
+    Array.isArray(options?.ignoreList) &&
+    options?.ignoreList.includes(_key as keyof T);
+  const appendFormData = (_obj: T, _rootName?: string) => {
     let newRootName = _rootName;
     if (!ignore(newRootName)) {
       newRootName ||= "";
@@ -318,10 +309,10 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
         }
       }
     }
-  }
+  };
   appendFormData(obj, options?.rootName);
   return formData;
-}
+};
 
 /**
  * Safely access deep values in an object via a string path seperated by `.`
@@ -347,27 +338,27 @@ export function objectToFormDataArrayWithComma<T extends UnknownRecord>(
  * ```
  */
 // oxlint-disable-next-line typescript/no-explicit-any
-export function deepReadObject<T = any>(
+export const deepReadObject = <T = any>(
   obj: Record<string, unknown>,
   path: string,
   defaultValue?: unknown
-): T {
+): T => {
   const value = path
     .trim()
     .split(".")
     // oxlint-disable-next-line typescript/no-explicit-any -- dynamic path traversal
     .reduce<any>((a, b) => (a ? a[b] : undefined), obj);
   return value === undefined ? (defaultValue as T) : value;
-}
+};
 
 /**
  * Converts a File object to a base64 encoded string
  * @param file - The File object to convert
  * @returns Promise that resolves with the base64 string representation of the file
  */
-export function toBase64(file: File) {
+export const toBase64 = (file: File) =>
   // oxlint-disable-next-line promise/avoid-new -- FileReader has no promise API
-  return new Promise((resolve, reject) => {
+  new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
@@ -375,4 +366,3 @@ export function toBase64(file: File) {
     // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
     reader.onerror = reject;
   });
-}

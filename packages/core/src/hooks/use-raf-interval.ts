@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -6,7 +5,7 @@ import { useEffect, useRef } from "react";
 interface Handle {
   id: number;
 }
-function setRafInterval(callback: () => void, delay = 0) {
+const setRafInterval = (callback: () => void, delay = 0) => {
   if (typeof requestAnimationFrame === typeof undefined) {
     return {
       id: setInterval(callback, delay),
@@ -16,7 +15,7 @@ function setRafInterval(callback: () => void, delay = 0) {
   const handle: Handle = {
     id: 0,
   };
-  function loop() {
+  const loop = () => {
     const current = Date.now();
     if (current - start >= delay) {
       // oxlint-disable-next-line promise/prefer-await-to-callbacks node/callback-return
@@ -24,20 +23,19 @@ function setRafInterval(callback: () => void, delay = 0) {
       start = Date.now();
     }
     handle.id = requestAnimationFrame(loop);
-  }
+  };
   handle.id = requestAnimationFrame(loop);
   return handle;
-}
+};
 // oxlint-disable-next-line typescript/no-explicit-any
-function cancelAnimationFrameIsNotDefined(_t: any): _t is number {
-  return typeof cancelAnimationFrame === typeof undefined;
-}
-function clearRafInterval(handle: Handle) {
+const cancelAnimationFrameIsNotDefined = (_t: any): _t is number =>
+  typeof cancelAnimationFrame === typeof undefined;
+const clearRafInterval = (handle: Handle) => {
   if (cancelAnimationFrameIsNotDefined(handle.id)) {
     return clearInterval(handle.id);
   }
   cancelAnimationFrame(handle.id);
-}
+};
 
 /**
  * A hook implements with `requestAnimationFrame` for better performance. The API is consistent with `useInterval`,
@@ -49,13 +47,13 @@ function clearRafInterval(handle: Handle) {
  * - the time interval is less than 16ms
  * - want to execute the timer when page is not rendering;
  */
-export function useRafInterval(
+export const useRafInterval = (
   fn: () => void,
   delay: number | undefined,
   options?: {
     immediate?: boolean;
   }
-) {
+) => {
   const immediate = options?.immediate;
   const fnRef = useLatest(fn);
   const timerRef = useRef<Handle>(null);
@@ -82,4 +80,4 @@ export function useRafInterval(
     }
   };
   return clear;
-}
+};

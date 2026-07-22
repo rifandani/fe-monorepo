@@ -1,5 +1,5 @@
 "use client";
-/* oxlint-disable eslint/func-style -- function declarations */
+
 import { useRouter } from "next/navigation";
 import type { PropsWithChildren } from "react";
 import { I18nProvider, RouterProvider } from "react-aria-components";
@@ -11,12 +11,12 @@ declare module "react-aria-components" {
     >;
   }
 }
-export function AppAriaProvider({
+export const AppAriaProvider = ({
   locale,
   children,
 }: PropsWithChildren<{
   locale: string;
-}>) {
+}>) => {
   const router = useRouter();
   return (
     <I18nProvider locale={locale}>
@@ -32,4 +32,4 @@ export function AppAriaProvider({
       </RouterProvider>
     </I18nProvider>
   );
-}
+};

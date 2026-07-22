@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { NextRequest } from "next/server";
 
 import { ENV } from "@/core/constants/env";
@@ -6,7 +5,7 @@ import { SERVICE_NAME } from "@/core/constants/global";
 import { createError } from "@/core/utils/evlog";
 
 const VALID_LEVELS = ["info", "error", "warn", "debug"] as const;
-function getAllowedHosts(request: NextRequest): Set<string> {
+const getAllowedHosts = (request: NextRequest): Set<string> => {
   const hosts = new Set<string>();
   for (const header of ["host", "x-forwarded-host"] as const) {
     const value = request.headers.get(header);
@@ -19,8 +18,8 @@ function getAllowedHosts(request: NextRequest): Set<string> {
   }
   hosts.add(new URL(ENV.NEXT_PUBLIC_APP_URL).host);
   return hosts;
-}
-function isAllowedOrigin(request: NextRequest, origin: string): boolean {
+};
+const isAllowedOrigin = (request: NextRequest, origin: string): boolean => {
   const originHost = new URL(origin).host;
   if (getAllowedHosts(request).has(originHost)) {
     return true;
@@ -33,8 +32,8 @@ function isAllowedOrigin(request: NextRequest, origin: string): boolean {
     return true;
   }
   return false;
-}
-export async function POST(request: NextRequest) {
+};
+export const POST = async (request: NextRequest) => {
   const origin = request.headers.get("origin");
   if (origin && !isAllowedOrigin(request, origin)) {
     const originHost = new URL(origin).host;
@@ -80,4 +79,4 @@ export async function POST(request: NextRequest) {
   };
   console.log("[CLIENT_LOG]", wideEvent);
   return new Response(null, { status: 204 });
-}
+};

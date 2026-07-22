@@ -1,10 +1,9 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import type { RateLimitInfo } from "./types";
 
-function getResetSeconds(
+const getResetSeconds = (
   resetTime?: Date,
   windowMs?: number
-): number | undefined {
+): number | undefined => {
   let resetSeconds: number | undefined;
   if (resetTime) {
     const deltaSeconds = Math.ceil((resetTime.getTime() - Date.now()) / 1000);
@@ -16,12 +15,12 @@ function getResetSeconds(
     resetSeconds = Math.ceil(windowMs / 1000);
   }
   return resetSeconds;
-}
-export function setDraft6Headers(
+};
+export const setDraft6Headers = (
   headers: Headers,
   info: RateLimitInfo,
   windowMs: number
-): void {
+): void => {
   const windowSeconds = Math.ceil(windowMs / 1000);
   const resetSeconds = getResetSeconds(info.resetTime);
   headers.set("RateLimit-Policy", `${info.limit};w=${windowSeconds}`);
@@ -31,12 +30,12 @@ export function setDraft6Headers(
   if (resetSeconds) {
     headers.set("RateLimit-Reset", resetSeconds.toString());
   }
-}
-export function setDraft7Headers(
+};
+export const setDraft7Headers = (
   headers: Headers,
   info: RateLimitInfo,
   windowMs: number
-): void {
+): void => {
   const windowSeconds = Math.ceil(windowMs / 1000);
   const resetSeconds = getResetSeconds(info.resetTime, windowMs);
   headers.set("RateLimit-Policy", `${info.limit};w=${windowSeconds}`);
@@ -44,14 +43,14 @@ export function setDraft7Headers(
     "RateLimit",
     `limit=${info.limit}, remaining=${info.remaining}, reset=${resetSeconds}`
   );
-}
-export function setRetryAfterHeader(
+};
+export const setRetryAfterHeader = (
   headers: Headers,
   info: RateLimitInfo,
   windowMs: number
-): void {
+): void => {
   const resetSeconds = getResetSeconds(info.resetTime, windowMs);
   if (resetSeconds) {
     headers.set("Retry-After", resetSeconds.toString());
   }
-}
+};

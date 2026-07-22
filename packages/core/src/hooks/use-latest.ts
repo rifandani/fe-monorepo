@@ -1,11 +1,11 @@
-/* oxlint-disable eslint/func-style react/react-compiler */
+/* oxlint-disable react/react-compiler */
 import { useRef } from "react";
 
 /**
  * A Hook that returns the latest value, effectively avoiding the closure problem.
  */
-export function useLatest<T>(value: T) {
+export const useLatest = <T>(value: T) => {
   const ref = useRef(value);
   ref.current = value;
   return ref;
-}
+};

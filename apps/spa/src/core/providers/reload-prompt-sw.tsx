@@ -1,15 +1,14 @@
-/* oxlint-disable eslint/func-style -- function declarations */
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { useTranslation } from "@/core/providers/i18n/context";
 
-function registerPeriodicSync(
+const registerPeriodicSync = (
   period: number,
   swUrl: string,
   r: ServiceWorkerRegistration
-) {
+) => {
   console.log("✅ SW activated", r);
   if (period <= 0) {
     return;
@@ -35,11 +34,11 @@ function registerPeriodicSync(
       console.warn("SW update check failed:", error);
     }
   }, period);
-}
-function onRegisterError(error: unknown) {
+};
+const onRegisterError = (error: unknown) => {
   console.error("🛑 Service Worker registration error", error);
-}
-export function ReloadPromptSw() {
+};
+export const ReloadPromptSw = () => {
   // check for updates every hour
   const period = 60 * 60 * 1000;
   const onRegisteredSW = (
@@ -91,4 +90,4 @@ export function ReloadPromptSw() {
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [offlineReady, needRefresh]);
   return <aside id="ReloadPromptSW" className="hidden" />;
-}
+};

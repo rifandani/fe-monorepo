@@ -1,4 +1,4 @@
-/* oxlint-disable eslint/func-style react-doctor/no-event-handler */
+/* oxlint-disable react-doctor/no-event-handler */
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
@@ -13,13 +13,13 @@ import { userApi, userKeys } from "@/user/api/user";
 type Params = Parameters<typeof userKeys.detail>[0];
 type Success = Awaited<ReturnType<typeof userApi.getDetail>>;
 type QueryError = z.ZodError | HTTPError | TimeoutError;
-export function useGetUser(
+export const useGetUser = (
   params?: Params,
   options?: Except<
     UseQueryOptions<unknown, QueryError, Success>,
     "queryKey" | "queryFn"
   >
-) {
+) => {
   const toast = useToastController();
   const enabled = !!params;
   const query = useQuery({
@@ -43,4 +43,4 @@ export function useGetUser(
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [query.error]);
   return query;
-}
+};
