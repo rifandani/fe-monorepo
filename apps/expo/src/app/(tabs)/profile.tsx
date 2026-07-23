@@ -1,4 +1,4 @@
-/* oxlint-disable sonarjs/no-wildcard-import -- expo-updates namespace API */
+/* oxlint-disable sonarjs/no-wildcard-import promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then -- expo-updates namespace API */
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
@@ -64,7 +64,6 @@ const CheckForUpdatesListItem = () => {
   const { t } = useTranslation();
   const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   useFocusEffect(() => {
-    // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
     Updates.checkForUpdateAsync().catch((error) =>
       show(error.message, {
         customData: {
@@ -75,7 +74,6 @@ const CheckForUpdatesListItem = () => {
   });
   useFocusEffect(() => {
     if (isUpdatePending) {
-      // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
       Updates.reloadAsync().catch((error) =>
         show(error.message, {
           customData: {
@@ -92,7 +90,6 @@ const CheckForUpdatesListItem = () => {
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
       onPress={() =>
-        // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
         Updates.fetchUpdateAsync().catch((error) =>
           show(error.message, {
             customData: {

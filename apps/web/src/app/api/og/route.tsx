@@ -1,3 +1,4 @@
+/* oxlint-disable react-doctor/no-giant-component */
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
@@ -7,7 +8,6 @@ import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
 
-// oxlint-disable-next-line react-doctor/no-giant-component -- OG image SVG markup
 const LightNextSvg = (): ReactElement => (
   <svg
     aria-hidden="true"

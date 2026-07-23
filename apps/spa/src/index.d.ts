@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-empty-interface typescript/no-empty-object-type */
 import "react";
 
 declare module "react" {
@@ -5,6 +6,5 @@ declare module "react" {
 }
 
 declare global {
-  // oxlint-disable-next-line typescript/no-empty-interface typescript/no-empty-object-type
   interface Window {}
 }

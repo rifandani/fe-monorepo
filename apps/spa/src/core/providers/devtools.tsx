@@ -1,3 +1,4 @@
+/* oxlint-disable import/no-cycle */
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
@@ -5,7 +6,6 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Agentation } from "agentation";
 
 import { queryClient } from "@/core/providers/query/client";
-// oxlint-disable-next-line import/no-cycle
 import { router } from "@/core/providers/router/client";
 
 export const Devtools = () => (

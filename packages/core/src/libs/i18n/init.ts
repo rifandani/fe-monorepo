@@ -1,4 +1,4 @@
-/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string */
+/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string eslint/func-style */
 import type {
   defineTranslation,
   ParamOptions,
@@ -240,14 +240,11 @@ export const initI18n = ({
     ...getOrderedLocaleAndParentLocales(locale),
     ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
   ]);
-  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends PathsWithNoParams>(key: S): string;
-  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends PathsWithParams, A extends Params<S>>(
     key: S,
     args: A
   ): string;
-  // oxlint-disable-next-line eslint/func-style -- TS overloads
   function t<S extends DotPathsFor, A extends Params<S>>(key: S, args?: A) {
     for (const _locale of orderedLocales) {
       const translationFile =

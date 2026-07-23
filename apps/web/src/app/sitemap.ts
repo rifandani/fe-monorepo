@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/too-many-break-or-continue-in-loop */
 import fs from "node:fs";
 import path from "node:path";
 
@@ -8,7 +9,6 @@ const url = new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://web.localhost");
 const SKIP_DIRS = new Set(["api"]);
 const collectPageRoutes = (dir: string, segment = ""): string[] => {
   const routes: string[] = [];
-  // oxlint-disable-next-line sonarjs/too-many-break-or-continue-in-loop -- directory walk with skip rules
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.name.startsWith("_") || entry.name.startsWith("(")) {
       continue;

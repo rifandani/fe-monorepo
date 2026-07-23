@@ -1,3 +1,4 @@
+/* oxlint-disable promise/prefer-await-to-callbacks */
 import type { Span } from "@opentelemetry/api";
 import { SpanStatusCode } from "@opentelemetry/api";
 import type { ErrorResponseSchema } from "@workspace/core/apis/core";
@@ -16,7 +17,6 @@ import "server-only";
  */
 export const serverErrorMapper = (error: Error, span?: Span): string =>
   match(error)
-    // oxlint-disable-next-line promise/prefer-await-to-callbacks
     .with(P.instanceOf(HTTPError), (err) => {
       const errorObject = simplifyErrorObject(err);
       const parsed = errorResponseSchema.safeParse(err.data);
@@ -36,7 +36,6 @@ export const serverErrorMapper = (error: Error, span?: Span): string =>
       });
       return json.message;
     })
-    // oxlint-disable-next-line promise/prefer-await-to-callbacks
     .with(P.instanceOf(TimeoutError), (err) => {
       const errorObject = simplifyErrorObject(err);
       log.error({
@@ -51,7 +50,6 @@ export const serverErrorMapper = (error: Error, span?: Span): string =>
       });
       return err.message;
     })
-    // oxlint-disable-next-line promise/prefer-await-to-callbacks
     .with(P.instanceOf(z.ZodError), (err) => {
       const errorObject = simplifyErrorObject(err);
       log.error({
@@ -67,7 +65,6 @@ export const serverErrorMapper = (error: Error, span?: Span): string =>
       });
       return z.prettifyError(err);
     })
-    // oxlint-disable-next-line promise/prefer-await-to-callbacks
     .otherwise((err) => {
       const errorObject = simplifyErrorObject(err);
       log.error({

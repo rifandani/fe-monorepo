@@ -1,4 +1,4 @@
-/* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization */
+/* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization eslint/func-style */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { useUpdate } from "@workspace/core/hooks/use-update";
 import { isFunction } from "radashi";
@@ -36,17 +36,17 @@ interface StandardProps<T> {
  *   }
  * })
  */
-// oxlint-disable-next-line typescript/no-explicit-any eslint/func-style -- TS overloads
+// oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: StandardProps<T>
 ): [T, (v: SetStateAction<T>) => void];
-// oxlint-disable-next-line typescript/no-explicit-any eslint/func-style -- TS overloads
+// oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props?: Props,
   options?: Options<T>
   // oxlint-disable-next-line typescript/no-explicit-any
 ): [T, (v: SetStateAction<T>, ...args: any[]) => void];
-// oxlint-disable-next-line typescript/no-explicit-any eslint/func-style -- TS overloads
+// oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: Props = {},
   options: Options<T> = {}

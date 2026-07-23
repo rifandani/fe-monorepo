@@ -1,3 +1,4 @@
+/* oxlint-disable promise/prefer-await-to-then github/no-then promise/prefer-await-to-callbacks */
 import fs from "node:fs";
 
 import { simpleSitemapAndIndex } from "sitemap";
@@ -18,7 +19,6 @@ simpleSitemapAndIndex({
     { lastmod: new Date().toISOString(), url: "/login" },
   ],
 })
-  // oxlint-disable-next-line promise/prefer-await-to-then github/no-then
   .then(() => {
     console.log(`✅ Sitemap generated successfully at: ${OUTPUT_PATH}`);
     console.log(`🌐 Domain: ${DOMAIN}`);
@@ -27,7 +27,6 @@ simpleSitemapAndIndex({
     // delete the file "sitemap-index.xml"
     fs.unlinkSync("public/sitemap-index.xml");
   })
-  // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then
   .catch((error) => {
     console.error("❌ Error generating sitemap:", error);
     process.exit(1);

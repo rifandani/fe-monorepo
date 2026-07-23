@@ -1,4 +1,4 @@
-// oxlint-disable-next-line sonarjs/no-wildcard-import -- expo-splash-screen namespace API
+/* oxlint-disable sonarjs/no-wildcard-import */
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

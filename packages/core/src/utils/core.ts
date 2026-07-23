@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/no-identical-functions promise/avoid-new unicorn/prefer-add-event-listener */
 import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
 
 /**
@@ -279,7 +280,6 @@ export const objectToFormDataArrayWithComma = <T extends UnknownRecord>(
   }>
 ) => {
   const formData = new FormData();
-  // oxlint-disable-next-line sonarjs/no-identical-functions -- shared ignore helper per FormData converter
   const ignore = (_key?: string) =>
     Array.isArray(options?.ignoreList) &&
     options?.ignoreList.includes(_key as keyof T);
@@ -357,12 +357,9 @@ export const deepReadObject = <T = any>(
  * @returns Promise that resolves with the base64 string representation of the file
  */
 export const toBase64 = (file: File) =>
-  // oxlint-disable-next-line promise/avoid-new -- FileReader has no promise API
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
     reader.onload = () => resolve(reader.result);
-    // oxlint-disable-next-line unicorn/prefer-add-event-listener -- FileReader API
     reader.onerror = reject;
   });

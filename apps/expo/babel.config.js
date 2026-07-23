@@ -1,6 +1,6 @@
+/* oxlint-disable unicorn/prefer-module */
 // run `dev:clean` everytime babel config changes, to clear bundler cache
 /** @type {import('@babel/core').ConfigFunction} */
-// oxlint-disable-next-line unicorn/prefer-module
 module.exports = function exports(api) {
   api.cache(true);
 

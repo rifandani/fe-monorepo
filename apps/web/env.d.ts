@@ -1,3 +1,4 @@
+/* oxlint-disable typescript/no-empty-interface typescript/no-empty-object-type */
 import type en from "./messages/en.json";
 import type { formats } from "./src/core/utils/i18n";
 
@@ -15,7 +16,6 @@ declare module "next-intl" {
 }
 
 declare global {
-  // oxlint-disable-next-line typescript/no-empty-interface typescript/no-empty-object-type
   interface Window {}
 }
 

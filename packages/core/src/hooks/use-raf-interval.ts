@@ -1,3 +1,4 @@
+/* oxlint-disable promise/prefer-await-to-callbacks node/callback-return */
 import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -18,7 +19,6 @@ const setRafInterval = (callback: () => void, delay = 0) => {
   const loop = () => {
     const current = Date.now();
     if (current - start >= delay) {
-      // oxlint-disable-next-line promise/prefer-await-to-callbacks node/callback-return
       callback();
       start = Date.now();
     }

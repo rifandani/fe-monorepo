@@ -1,3 +1,4 @@
+/* oxlint-disable sonarjs/no-unused-vars */
 import type { NextRequest } from "next/server";
 
 import { ENV } from "@/core/constants/env";
@@ -69,7 +70,6 @@ export const POST = async (request: NextRequest) => {
       why: `Level is required and must be one of the following: ${VALID_LEVELS.join(", ")}`,
     });
   }
-  // oxlint-disable-next-line sonarjs/no-unused-vars -- omit client-provided service field
   const { service: _clientService, ...sanitizedPayload } = body;
   const wideEvent = {
     ...sanitizedPayload,

@@ -1,3 +1,4 @@
+/* oxlint-disable node/callback-return promise/prefer-await-to-callbacks */
 import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
@@ -18,7 +19,6 @@ const setRafTimeout = (callback: () => void, delay = 0): Handle => {
   const loop = () => {
     const current = Date.now();
     if (current - startTime >= delay) {
-      // oxlint-disable-next-line node/callback-return promise/prefer-await-to-callbacks
       callback();
     } else {
       handle.id = requestAnimationFrame(loop);

@@ -1,3 +1,4 @@
+/* oxlint-disable import/no-cycle typescript/ban-types */
 import type { QueryClient } from "@tanstack/react-query";
 import type {
   NavigateOptions,
@@ -11,12 +12,10 @@ import {
 } from "@tanstack/react-router";
 import { RouterProvider as RACRouterProvider } from "react-aria-components";
 
-// oxlint-disable-next-line import/no-cycle
 import { Devtools } from "@/core/providers/devtools";
 
 declare module "react-aria-components" {
   interface RouterConfig {
-    // oxlint-disable-next-line typescript/ban-types
     href: ToPathOption<RegisteredRouter, "/", "/"> | ({} & string);
     routerOptions: Omit<NavigateOptions, "to" | "from">;
   }

@@ -1,3 +1,4 @@
+/* oxlint-disable react/react-compiler */
 import { useRef, useState } from "react";
 
 /**
@@ -46,7 +47,6 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
     keyListRef.current.splice(index, 0, counterRef.current);
   };
   // Current list
-  // oxlint-disable-next-line react/react-compiler -- key refs initialized once in lazy state
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization

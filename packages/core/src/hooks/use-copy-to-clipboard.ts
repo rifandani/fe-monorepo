@@ -28,7 +28,7 @@ export const useCopyToClipboard = ({
     },
     []
   );
-  const copyToClipboard = (value: string) => {
+  const copyToClipboard = async (value: string) => {
     if (typeof window === "undefined" || !navigator.clipboard?.writeText) {
       return;
     }
@@ -39,13 +39,13 @@ export const useCopyToClipboard = ({
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
     }
-    // oxlint-disable-next-line promise/prefer-await-to-then github/no-then
-    navigator.clipboard.writeText(value).then(() => {
-      setIsCopied(true);
-      timeoutIdRef.current = setTimeout(() => {
-        setIsCopied(false);
-      }, timeout);
-    });
+
+    await navigator.clipboard.writeText(value);
+
+    setIsCopied(true);
+    timeoutIdRef.current = setTimeout(() => {
+      setIsCopied(false);
+    }, timeout);
   };
   return { copyToClipboard, isCopied };
 };

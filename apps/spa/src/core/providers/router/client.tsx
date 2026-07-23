@@ -1,3 +1,4 @@
+/* oxlint-disable import/no-cycle */
 import { trace } from "@opentelemetry/api";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";
@@ -12,7 +13,6 @@ import { useTranslation } from "@/core/providers/i18n/context";
 import { queryClient } from "@/core/providers/query/client";
 import { recordException } from "@/core/utils/telemetry";
 
-// oxlint-disable-next-line import/no-cycle
 import { routeTree } from "../../../routeTree.gen";
 
 // Register the router instance for type safety
