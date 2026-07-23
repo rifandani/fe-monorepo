@@ -33,12 +33,14 @@ export default defineConfig({
   plugins: [
     tanstackDevtools(),
     tailwindcss(),
+    tanstackRouter({
+      autoCodeSplitting: true,
+    }),
     react(),
     Unhead(),
     babel({
       presets: [reactCompilerPreset()],
     }),
-    tanstackRouter(),
     visualizer({
       filename: "html/visualizer-stats.html",
     }) as unknown as PluginOption,
