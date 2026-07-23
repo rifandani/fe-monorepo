@@ -2,12 +2,12 @@
 
 Loaded by [`SKILL.md`](../SKILL.md) Step 6 when emitting the design system as portable tokens. Defines the four canonical formats Hallmark always writes:
 
-1. **`tokens.css`** — the source of truth. Always emitted alongside the page CSS.
-2. **Tailwind v4 `@theme`** — for projects on Tailwind. Emitted into `design.md`'s Exports section on multi-page projects.
-3. **DTCG `tokens.json`** — for projects using a token pipeline (Style Dictionary, Token Studio, Cobalt). Emitted into `design.md`.
-4. **shadcn/ui CSS variables** — for projects using shadcn/ui's component library. Emitted into `design.md`.
+1. **`.hallmark/tokens.css`** — the source of truth. Always emitted under `.hallmark/`.
+2. **Tailwind v4 `@theme`** — for projects on Tailwind. Emitted into `.hallmark/design.md`'s Exports section on multi-page projects.
+3. **DTCG `tokens.json`** — for projects using a token pipeline (Style Dictionary, Token Studio, Cobalt). Emitted into `.hallmark/design.md`.
+4. **shadcn/ui CSS variables** — for projects using shadcn/ui's component library. Emitted into `.hallmark/design.md`.
 
-The output rule: `tokens.css` is always written. The other three live inline in `design.md` so the user copies whichever they need into a new project. **No new verb.** This is a side effect of every build.
+The output rule: `.hallmark/tokens.css` is always written. The other three live inline in `.hallmark/design.md` so the user copies whichever they need into a new project. **No new verb.** This is a side effect of every build. All Hallmark artifacts live under `.hallmark/` — see SKILL.md § Artifact location.
 
 ---
 
@@ -40,20 +40,20 @@ Every Hallmark output writes these tokens (or a subset, if the page doesn't use 
 | `--radius-card` / `--radius-pill` / `--radius-input` | length | varies per theme |
 | `--shadow-card` | shadow | varies per theme |
 
-If the page introduces *additional* tokens, name them by role and add to `tokens.css`. Don't make up token names downstream that aren't in `tokens.css` — the source of truth is the source of truth.
+If the page introduces *additional* tokens, name them by role and add to `.hallmark/tokens.css`. Don't make up token names downstream that aren't in `.hallmark/tokens.css` — the source of truth is the source of truth.
 
 ---
 
-## Format 1 — `tokens.css`
+## Format 1 — `.hallmark/tokens.css`
 
-The source. Plain CSS custom properties at `:root`. Every Hallmark page CSS imports this file at the top:
+The source. Plain CSS custom properties at `:root`. Always write to `.hallmark/tokens.css`. Every Hallmark page CSS / entry stylesheet imports this file at the top:
 
 ```css
-@import "tokens.css";
+@import ".hallmark/tokens.css";
 /* page CSS continues — uses var(--color-paper), never raw values */
 ```
 
-Or, if the project uses a CSS bundler / framework that doesn't honour bare `@import`, the project's existing entry-point imports `tokens.css` before the page CSS that consumes it (keep it among the other top-of-file `@import`s, never above or in place of `@import "tailwindcss"`). The page CSS still references tokens by name, never by raw value.
+Or, if the project uses a CSS bundler / framework that doesn't honour bare `@import`, the project's existing entry-point imports `.hallmark/tokens.css` before the page CSS that consumes it (keep it among the other top-of-file `@import`s, never above or in place of `@import "tailwindcss"`). Adjust the relative path from the entry stylesheet as needed. The page CSS still references tokens by name, never by raw value.
 
 **Worked example — editorial theme (Specimen-like):**
 
@@ -321,9 +321,9 @@ If the user wants a dark variant, mirror with the dark theme tokens under a `.da
 
 When SKILL.md Step 6 emits exports:
 
-1. **Always** write `tokens.css` next to the page CSS (or in the project root for multi-file projects). Format 1.
-2. **On `design.md`-managed projects** (multi-page), embed all four formats inline in `design.md`'s Exports section. The user copies whichever they need.
+1. **Always** write `.hallmark/tokens.css`. Format 1. Never write `tokens.css` at the project root or beside page CSS.
+2. **On `.hallmark/design.md`-managed projects** (multi-page), embed all four formats inline in `.hallmark/design.md`'s Exports section. The user copies whichever they need.
 3. **On Tailwind projects** (detected at pre-flight), additionally surface the Tailwind `@theme` block in the build output so the user knows where to paste it (typically into `app/globals.css` or the equivalent).
-4. **Merge into an existing entry stylesheet; never overwrite it.** When the target project already has `app/globals.css` (or `src/index.css`, `src/styles/global.css`): keep its existing `@import "tailwindcss"` / `@tailwind base|components|utilities` directives exactly as they are, append Hallmark's `:root` tokens and base rules *after* them, and keep any `@import "tokens.css"` at the very top of the file (CSS parses `@import` only before other rules, so a misplaced one is silently dropped and your tokens vanish). If the project already defines brand tokens (`--background`, `--foreground`, a Tailwind `@theme`), map Hallmark's roles onto those names rather than adding a parallel set, or scope Hallmark's tokens under a wrapper class. Replace the file outright only when the user has asked for a full takeover.
+4. **Merge into an existing entry stylesheet; never overwrite it.** When the target project already has `app/globals.css` (or `src/index.css`, `src/styles/global.css`): keep its existing `@import "tailwindcss"` / `@tailwind base|components|utilities` directives exactly as they are, append Hallmark's `:root` tokens and base rules *after* them, and keep any `@import` of `.hallmark/tokens.css` at the very top of the file (CSS parses `@import` only before other rules, so a misplaced one is silently dropped and your tokens vanish). If the project already defines brand tokens (`--background`, `--foreground`, a Tailwind `@theme`), map Hallmark's roles onto those names rather than adding a parallel set, or scope Hallmark's tokens under a wrapper class. Replace the file outright only when the user has asked for a full takeover.
 
-Don't blanket-emit tokens.json or shadcn variables on single-page projects — the user can copy them out of `design.md` if they upgrade to a multi-page system.
+Don't blanket-emit tokens.json or shadcn variables on single-page projects — the user can copy them out of `.hallmark/design.md` if they upgrade to a multi-page system.

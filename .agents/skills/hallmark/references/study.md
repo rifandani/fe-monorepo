@@ -478,7 +478,7 @@ The image-mode refusal table at the top of this file still applies in both modes
 
 ### What gets written
 
-Use the format defined in [`design-md.md`](design-md.md) § Format, with these `study`-mode adjustments:
+Write to `.hallmark/design.md` (never the project root). Use the format defined in [`design-md.md`](design-md.md) § Format, with these `study`-mode adjustments:
 
 1. **Source mode informs token values.** URL mode populates the `## Tokens` block with exact OKLCH / hex values from the source's CSS, and the `## System` block with the exact fonts named in `@font-face` / Google Fonts / `next/font`. Image mode populates the same blocks with the schema's bands rendered into best-guess OKLCH (centre of band) and 1–2 candidate font names from the canon — flag these as estimated.
 2. **Add a `## Provenance` block.** Inserted between `## System` and `## Tokens`. Carries: the source mode, the URL (URL mode only) or "image (user-attached)" (image mode), the date of extraction, the attestation answer if any, and a one-line note about confidence:
@@ -491,9 +491,9 @@ Use the format defined in [`design-md.md`](design-md.md) § Format, with these `
 
 Same post-emission behaviour as the default verb's lock-the-system flow (per [`design-md.md`](design-md.md) § After the file is written):
 
-- Subsequent Hallmark runs read `design.md` first; diversification inverts to consistency.
-- If the user genuinely needs a different system for a future page, amend `design.md` with a `## Variants` section.
-- One-line confirmation back to the user: *"design.md written. The system is now locked to the extracted DNA. Future runs will defer to it."*
+- Subsequent Hallmark runs read `.hallmark/design.md` first; diversification inverts to consistency.
+- If the user genuinely needs a different system for a future page, amend `.hallmark/design.md` with a `## Variants` section.
+- One-line confirmation back to the user: *"`.hallmark/design.md` written. The system is now locked to the extracted DNA. Future runs will defer to it."*
 
 ---
 
