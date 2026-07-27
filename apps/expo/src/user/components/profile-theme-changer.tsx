@@ -1,10 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
-import { useState } from "react";
-import { ListItem, Separator, YGroup } from "tamagui";
+import { ListItem } from "tamagui";
 
-import { BaseSheet } from "@/core/components/sheet/base-sheet";
-import type { BaseSheetState } from "@/core/components/sheet/types";
+import { FitSheet } from "@/core/components/sheet/fit-sheet";
 import { useAppStore } from "@/core/hooks/use-app-store";
+import { useBaseSheet } from "@/core/hooks/use-base-sheet";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
@@ -12,80 +11,69 @@ export const ProfileThemeChanger = () => {
   const { t } = useTranslation();
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
-  const [state, setState] = useState<BaseSheetState>({
-    open: false,
-    position: 0,
-  });
+  const { state, setState, open } = useBaseSheet();
+
   return (
     <>
       <ProfileListItem
         title={t("theme")}
         icon={<Feather name="moon" />}
-        onPress={() => {
-          setState({ ...state, open: true });
-        }}
+        onPress={open}
       />
 
-      <BaseSheet
-        state={state}
-        setState={setState}
-        sheetProps={{ snapPointsMode: "fit" }}
-        frameProps={{ p: "$5" }}
-      >
-        <YGroup verticalAlign="center" bordered separator={<Separator />}>
-          <YGroup.Item>
-            <ListItem
-              pressTheme
-              title={t("light")}
-              icon={<Feather name="sun" size={20} />}
-              iconAfter={
-                theme === "light" ? (
-                  <Feather
-                    testID="profile-theme-light-checked"
-                    name="check-circle"
-                    size={20}
-                  />
-                ) : undefined
-              }
-              onPress={() => setTheme("light")}
-            />
-          </YGroup.Item>
-          <YGroup.Item>
-            <ListItem
-              pressTheme
-              title={t("dark")}
-              icon={<Feather name="moon" size={20} />}
-              iconAfter={
-                theme === "dark" ? (
-                  <Feather
-                    testID="profile-theme-dark-checked"
-                    name="check-circle"
-                    size={20}
-                  />
-                ) : undefined
-              }
-              onPress={() => setTheme("dark")}
-            />
-          </YGroup.Item>
-          <YGroup.Item>
-            <ListItem
-              pressTheme
-              title={t("system")}
-              icon={<Feather name="tablet" size={20} />}
-              iconAfter={
-                theme === "system" ? (
-                  <Feather
-                    testID="profile-theme-system-checked"
-                    name="check-circle"
-                    size={20}
-                  />
-                ) : undefined
-              }
-              onPress={() => setTheme("system")}
-            />
-          </YGroup.Item>
-        </YGroup>
-      </BaseSheet>
+      <FitSheet state={state} setState={setState}>
+        <FitSheet.Item>
+          <ListItem
+            pressTheme
+            title={t("light")}
+            icon={<Feather name="sun" size={20} />}
+            iconAfter={
+              theme === "light" ? (
+                <Feather
+                  testID="profile-theme-light-checked"
+                  name="check-circle"
+                  size={20}
+                />
+              ) : undefined
+            }
+            onPress={() => setTheme("light")}
+          />
+        </FitSheet.Item>
+        <FitSheet.Item>
+          <ListItem
+            pressTheme
+            title={t("dark")}
+            icon={<Feather name="moon" size={20} />}
+            iconAfter={
+              theme === "dark" ? (
+                <Feather
+                  testID="profile-theme-dark-checked"
+                  name="check-circle"
+                  size={20}
+                />
+              ) : undefined
+            }
+            onPress={() => setTheme("dark")}
+          />
+        </FitSheet.Item>
+        <FitSheet.Item>
+          <ListItem
+            pressTheme
+            title={t("system")}
+            icon={<Feather name="tablet" size={20} />}
+            iconAfter={
+              theme === "system" ? (
+                <Feather
+                  testID="profile-theme-system-checked"
+                  name="check-circle"
+                  size={20}
+                />
+              ) : undefined
+            }
+            onPress={() => setTheme("system")}
+          />
+        </FitSheet.Item>
+      </FitSheet>
     </>
   );
 };

@@ -8,6 +8,76 @@ import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
 
+const LIGHT_GRID_PATHS = [
+  "M421 0V307",
+  "M469 0V307",
+  "M516 0V307",
+  "M564 0V307",
+  "M374 0V307",
+  "M326 0V307",
+  "M135 0V307",
+  "M183 0V307",
+  "M231 0V307",
+  "M278 0V307",
+  "M88 0V307",
+  "M40 0V307",
+  "M707 0V307",
+  "M755 0V307",
+  "M802 0V307",
+  "M659 0V307",
+  "M612 0V307",
+  "M841 105L0 105",
+  "M841 57L0 57",
+  "M841 153L0 153",
+  "M841 201L0 201",
+  "M841 9L0 9",
+] as const;
+
+const DARK_GRID_PATHS = [
+  "M421.2 4.2V306.8",
+  "M468.8 4.2V306.8",
+  "M516.5 4.2V306.8",
+  "M564.1 4.2V306.8",
+  "M373.5 4.2V306.8",
+  "M325.9 4.2V306.8",
+  "M841 105L0 105",
+  "M841 57L0 57",
+  "M841 153L0 153",
+  "M841 201L0 201",
+  "M841 9L0 9",
+  "M135.3 4.2V306.8",
+  "M182.9 4.2V306.8",
+  "M230.6 4.2V306.8",
+  "M278.2 4.2V306.8",
+  "M87.6 4.2V306.8",
+  "M40 4.2V306.8",
+  "M707.1 4.2V306.8",
+  "M754.7 4.2V306.8",
+  "M802.4 4.2V306.8",
+  "M659.4 4.2V306.8",
+  "M611.8 4.2V306.8",
+] as const;
+
+const OgGridPaths = ({
+  paths,
+  stroke,
+}: {
+  paths: readonly string[];
+  stroke: string;
+}): ReactElement => (
+  <>
+    {paths.map((d) => (
+      <path
+        d={d}
+        key={d}
+        stroke={stroke}
+        strokeDasharray="3.18 3.18"
+        strokeWidth="0.794118"
+      />
+    ))}
+  </>
+);
+
 const LightNextSvg = (): ReactElement => (
   <svg
     aria-hidden="true"
@@ -19,138 +89,7 @@ const LightNextSvg = (): ReactElement => (
   >
     <g clipPath="url(#clip0_5_3)">
       <rect fill="white" height="441" width="843" />
-      <path
-        d="M421 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M469 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M516 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M564 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M374 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M326 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M135 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M183 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M231 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M278 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M88 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M40 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M707 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M755 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M802 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M659 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M612 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 105L0 105"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 57L0 57"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 153L0 153"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 201L0 201"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 9L0 9"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
+      <OgGridPaths paths={LIGHT_GRID_PATHS} stroke="#999999" />
       <rect fill="url(#paint0_radial_5_3)" height="441" width="841" x="2" />
       <g filter="url(#filter0_f_5_3)" opacity="0.3">
         <path
@@ -319,138 +258,7 @@ const DarkNextSvg = (): ReactElement => (
   >
     <g clipPath="url(#clip0_1_4)">
       <rect fill="black" height="441" width="843" />
-      <path
-        d="M421.2 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M468.8 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M516.5 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M564.1 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M373.5 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M325.9 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 105L0 105"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 57L0 57"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 153L0 153"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 201L0 201"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 9L0 9"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M135.3 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M182.9 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M230.6 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M278.2 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M87.6 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M40 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M707.1 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M754.7 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M802.4 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M659.4 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M611.8 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
+      <OgGridPaths paths={DARK_GRID_PATHS} stroke="#333333" />
       <rect fill="url(#paint0_radial_1_4)" height="441" width="841" />
       <g filter="url(#filter0_f_1_4)" opacity="0.3">
         <path
@@ -561,6 +369,44 @@ const DarkNextSvg = (): ReactElement => (
     </defs>
   </svg>
 );
+const ReactLogo = (): ReactElement => (
+  <g transform="translate(421.5, 153.5)">
+    <circle cx="0" cy="0" r="8" fill="#61DAFB" />
+    <ellipse
+      cx="0"
+      cy="0"
+      fill="none"
+      rx="60"
+      ry="20"
+      stroke="#61DAFB"
+      strokeWidth="2"
+    />
+    <ellipse
+      cx="0"
+      cy="0"
+      fill="none"
+      rx="60"
+      ry="20"
+      stroke="#61DAFB"
+      strokeWidth="2"
+      transform="rotate(60)"
+    />
+    <ellipse
+      cx="0"
+      cy="0"
+      fill="none"
+      rx="60"
+      ry="20"
+      stroke="#61DAFB"
+      strokeWidth="2"
+      transform="rotate(-60)"
+    />
+    <circle cx="50" cy="0" fill="#61DAFB" r="3" />
+    <circle cx="-25" cy="43" fill="#61DAFB" r="3" />
+    <circle cx="-25" cy="-43" fill="#61DAFB" r="3" />
+  </g>
+);
+
 const LightReactSvg = (): ReactElement => (
   <svg
     aria-hidden="true"
@@ -572,138 +418,7 @@ const LightReactSvg = (): ReactElement => (
   >
     <g clipPath="url(#clip0_5_3)">
       <rect fill="white" height="441" width="843" />
-      <path
-        d="M421 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M469 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M516 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M564 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M374 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M326 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M135 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M183 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M231 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M278 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M88 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M40 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M707 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M755 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M802 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M659 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M612 0V307"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 105L0 105"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 57L0 57"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 153L0 153"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 201L0 201"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 9L0 9"
-        stroke="#999999"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
+      <OgGridPaths paths={LIGHT_GRID_PATHS} stroke="#999999" />
       <rect fill="url(#paint0_radial_5_3)" height="441" width="841" x="2" />
       <g filter="url(#filter0_f_5_3)" opacity="0.3">
         <path
@@ -712,51 +427,7 @@ const LightReactSvg = (): ReactElement => (
         />
       </g>
 
-      {/* React Logo */}
-      <g transform="translate(421.5, 153.5)">
-        {/* Center nucleus */}
-        <circle cx="0" cy="0" r="8" fill="#61DAFB" />
-
-        {/* Electron orbit 1 - horizontal */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-        />
-
-        {/* Electron orbit 2 - rotated 60 degrees */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-          transform="rotate(60)"
-        />
-
-        {/* Electron orbit 3 - rotated -60 degrees */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-          transform="rotate(-60)"
-        />
-
-        {/* Electrons */}
-        <circle cx="50" cy="0" r="3" fill="#61DAFB" />
-        <circle cx="-25" cy="43" r="3" fill="#61DAFB" />
-        <circle cx="-25" cy="-43" r="3" fill="#61DAFB" />
-      </g>
+      <ReactLogo />
     </g>
     <defs>
       <radialGradient
@@ -787,138 +458,7 @@ const DarkReactSvg = (): ReactElement => (
   >
     <g clipPath="url(#clip0_1_4)">
       <rect fill="black" height="441" width="843" />
-      <path
-        d="M421.2 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M468.8 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M516.5 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M564.1 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M373.5 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M325.9 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 105L0 105"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 57L0 57"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 153L0 153"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 201L0 201"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M841 9L0 9"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M135.3 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M182.9 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M230.6 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M278.2 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M87.6 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M40 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M707.1 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M754.7 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M802.4 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M659.4 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
-      <path
-        d="M611.8 4.2V306.8"
-        stroke="#333333"
-        strokeDasharray="3.18 3.18"
-        strokeWidth="0.794118"
-      />
+      <OgGridPaths paths={DARK_GRID_PATHS} stroke="#333333" />
       <rect fill="url(#paint0_radial_1_4)" height="441" width="841" />
       <g filter="url(#filter0_f_1_4)" opacity="0.3">
         <path
@@ -927,51 +467,7 @@ const DarkReactSvg = (): ReactElement => (
         />
       </g>
 
-      {/* React Logo */}
-      <g transform="translate(421.5, 153.5)">
-        {/* Center nucleus */}
-        <circle cx="0" cy="0" r="8" fill="#61DAFB" />
-
-        {/* Electron orbit 1 - horizontal */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-        />
-
-        {/* Electron orbit 2 - rotated 60 degrees */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-          transform="rotate(60)"
-        />
-
-        {/* Electron orbit 3 - rotated -60 degrees */}
-        <ellipse
-          cx="0"
-          cy="0"
-          rx="60"
-          ry="20"
-          stroke="#61DAFB"
-          strokeWidth="2"
-          fill="none"
-          transform="rotate(-60)"
-        />
-
-        {/* Electrons */}
-        <circle cx="50" cy="0" r="3" fill="#61DAFB" />
-        <circle cx="-25" cy="43" r="3" fill="#61DAFB" />
-        <circle cx="-25" cy="-43" r="3" fill="#61DAFB" />
-      </g>
+      <ReactLogo />
     </g>
     <defs>
       <radialGradient

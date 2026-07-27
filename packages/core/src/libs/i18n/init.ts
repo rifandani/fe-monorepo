@@ -170,6 +170,21 @@ const substituteEnum = (
   return result.replace(replaceKey, replacement);
 };
 
+type Formatable = number | string[] | Date;
+
+const substituteWithFormatter = <T extends Formatable>(
+  result: string,
+  replaceKey: string,
+  argValue: unknown,
+  isValid: (value: unknown) => value is T,
+  format: (value: T) => string
+): string => {
+  if (!isValid(argValue)) {
+    throw new TypeError("Invalid argument");
+  }
+  return result.replace(replaceKey, format(argValue));
+};
+
 const substituteNumber = (
   locale: string,
   result: string,
@@ -177,16 +192,17 @@ const substituteNumber = (
   argValue: unknown,
   replaceKey: string,
   translationParams: ParamOptions
-): string => {
-  if (typeof argValue !== "number") {
-    throw new TypeError("Invalid argument");
-  }
-  const numberFormat = new Intl.NumberFormat(
-    locale,
-    translationParams.number?.[argKey]
+): string =>
+  substituteWithFormatter(
+    result,
+    replaceKey,
+    argValue,
+    (value): value is number => typeof value === "number",
+    (value) =>
+      new Intl.NumberFormat(locale, translationParams.number?.[argKey]).format(
+        value
+      )
   );
-  return result.replace(replaceKey, numberFormat.format(argValue));
-};
 
 const substituteList = (
   locale: string,
@@ -195,16 +211,17 @@ const substituteList = (
   argValue: unknown,
   replaceKey: string,
   translationParams: ParamOptions
-): string => {
-  if (!Array.isArray(argValue)) {
-    throw new TypeError("Invalid argument");
-  }
-  const formatter = new Intl.ListFormat(
-    locale,
-    translationParams.list?.[argKey]
+): string =>
+  substituteWithFormatter(
+    result,
+    replaceKey,
+    argValue,
+    (value): value is string[] => Array.isArray(value),
+    (value) =>
+      new Intl.ListFormat(locale, translationParams.list?.[argKey]).format(
+        value
+      )
   );
-  return result.replace(replaceKey, formatter.format(argValue));
-};
 
 const substituteDate = (
   locale: string,
@@ -213,16 +230,17 @@ const substituteDate = (
   argValue: unknown,
   replaceKey: string,
   translationParams: ParamOptions
-): string => {
-  if (!(argValue instanceof Date)) {
-    throw new Error("Invalid argument");
-  }
-  const dateFormat = new Intl.DateTimeFormat(
-    locale,
-    translationParams.date?.[argKey]
+): string =>
+  substituteWithFormatter(
+    result,
+    replaceKey,
+    argValue,
+    (value): value is Date => value instanceof Date,
+    (value) =>
+      new Intl.DateTimeFormat(locale, translationParams.date?.[argKey]).format(
+        value
+      )
   );
-  return result.replace(replaceKey, dateFormat.format(argValue));
-};
 
 const performSubstitution = (
   locale: string,
