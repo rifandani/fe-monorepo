@@ -1,4 +1,3 @@
-/* oxlint-disable react-doctor/no-event-handler */
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";

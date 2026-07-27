@@ -1,4 +1,4 @@
-/* oxlint-disable sonarjs/no-duplicate-string react-doctor/server-auth-actions -- login/register/logout are intentionally public or session-clearing */
+/* oxlint-disable react-doctor/server-auth-actions -- login/register/logout are intentionally public or session-clearing */
 "use server";
 import { metrics, trace } from "@opentelemetry/api";
 import {

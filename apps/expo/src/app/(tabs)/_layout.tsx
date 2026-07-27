@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/variable-name -- expo-router unstable_settings export */
 import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
 

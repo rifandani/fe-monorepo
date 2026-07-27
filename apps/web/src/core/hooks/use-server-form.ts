@@ -16,7 +16,7 @@ interface UseServerFormOptions<TDefaultValues extends Record<string, unknown>> {
       onChange?: unknown;
     };
   };
-  // oxlint-disable-next-line typescript/no-explicit-any -- Next server action + useActionState
+  // oxlint-disable-next-line typescript/no-explicit-any
   action: (prev: unknown, formData: FormData) => Promise<any>;
 }
 

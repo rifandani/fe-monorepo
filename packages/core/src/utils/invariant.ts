@@ -1,4 +1,3 @@
-// @ts-expect-error -- process is not defined in the browser
 const isProduction = process.env.NODE_ENV === "production";
 const prefix = "Invariant failed";
 

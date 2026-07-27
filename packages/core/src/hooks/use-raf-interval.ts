@@ -27,8 +27,7 @@ const setRafInterval = (callback: () => void, delay = 0) => {
   handle.id = requestAnimationFrame(loop);
   return handle;
 };
-// oxlint-disable-next-line typescript/no-explicit-any
-const cancelAnimationFrameIsNotDefined = (_t: any): _t is number =>
+const cancelAnimationFrameIsNotDefined = (_t: unknown): _t is number =>
   typeof cancelAnimationFrame === typeof undefined;
 const clearRafInterval = (handle: Handle) => {
   if (cancelAnimationFrameIsNotDefined(handle.id)) {

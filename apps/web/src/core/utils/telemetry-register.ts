@@ -1,4 +1,3 @@
-/* oxlint-disable react-doctor/async-parallel react-doctor/server-sequential-independent-await */
 import { ENV } from "@/core/constants/env";
 import { SERVICE_NAME } from "@/core/constants/global";
 import "server-only";
@@ -12,28 +11,34 @@ import "server-only";
 
 export const registerOtelTracerAndMeter = async () => {
   // we import dynamically because this function could run on edge runtime, and running on edge runtime will not work
+  const [
+    { OTLPMetricExporter },
+    { OTLPTraceExporter },
+    {
+      envDetector,
+      hostDetector,
+      osDetector,
+      processDetector,
+      serviceInstanceIdDetector,
+    },
+    { PeriodicExportingMetricReader },
+    { BatchSpanProcessor },
+    { registerOTel },
+    { PgInstrumentation },
+  ] = await Promise.all([
+    import("@opentelemetry/exporter-metrics-otlp-http"),
+    import("@opentelemetry/exporter-trace-otlp-http"),
+    import("@opentelemetry/resources"),
+    import("@opentelemetry/sdk-metrics"),
+    import("@opentelemetry/sdk-trace-base"),
+    import("@vercel/otel"),
+    import("@opentelemetry/instrumentation-pg"),
+  ]);
   // const { OTLPLogExporter } = await import('@opentelemetry/exporter-logs-otlp-http')
-  const { OTLPMetricExporter } =
-    await import("@opentelemetry/exporter-metrics-otlp-http");
-  const { OTLPTraceExporter } =
-    await import("@opentelemetry/exporter-trace-otlp-http");
-  const {
-    envDetector,
-    hostDetector,
-    osDetector,
-    processDetector,
-    serviceInstanceIdDetector,
-  } = await import("@opentelemetry/resources");
   // const { BatchLogRecordProcessor } = await import('@opentelemetry/sdk-logs')
-  const { PeriodicExportingMetricReader } =
-    await import("@opentelemetry/sdk-metrics");
-  const { BatchSpanProcessor } = await import("@opentelemetry/sdk-trace-base");
-  const { registerOTel } = await import("@vercel/otel");
   // const { DnsInstrumentation } = await import('@opentelemetry/instrumentation-dns')
   // const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
   // const { NetInstrumentation } = await import('@opentelemetry/instrumentation-net')
-  const { PgInstrumentation } =
-    await import("@opentelemetry/instrumentation-pg");
   // const { RuntimeNodeInstrumentation } = await import('@opentelemetry/instrumentation-runtime-node')
   // const { UndiciInstrumentation } = await import('@opentelemetry/instrumentation-undici')
   // NodeSDK will automatically configure the logger based on this env var

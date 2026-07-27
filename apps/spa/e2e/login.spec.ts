@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/no-hardcoded-passwords */
 import { expect, test } from "./_base";
 
 const validUsername = "emilys";

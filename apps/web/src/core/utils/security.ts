@@ -1,4 +1,3 @@
-/* oxlint-disable github/no-inner-html */
 /**
  * Security utility functions for development.
  *

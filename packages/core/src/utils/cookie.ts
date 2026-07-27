@@ -11,6 +11,54 @@ interface CookieAttributes {
   [key: string]: any;
 }
 
+const applyCookieAttribute = (
+  attrObj: CookieAttributes,
+  attribute: string
+): void => {
+  const [attrName, ...attrValueParts] = attribute.split("=");
+  const attrValue = attrValueParts.join("=");
+  const normalizedAttrName = attrName?.trim().toLowerCase();
+
+  switch (normalizedAttrName) {
+    case "max-age": {
+      attrObj["max-age"] = attrValue
+        ? Math.trunc(Number(attrValue.trim()))
+        : undefined;
+      break;
+    }
+    case "expires": {
+      attrObj.expires = attrValue ? new Date(attrValue.trim()) : undefined;
+      break;
+    }
+    case "domain": {
+      attrObj.domain = attrValue ? attrValue.trim() : undefined;
+      break;
+    }
+    case "path": {
+      attrObj.path = attrValue ? attrValue.trim() : undefined;
+      break;
+    }
+    case "secure": {
+      attrObj.secure = true;
+      break;
+    }
+    case "httponly": {
+      attrObj.httponly = true;
+      break;
+    }
+    case "samesite": {
+      attrObj.samesite = attrValue
+        ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
+        : undefined;
+      break;
+    }
+    default: {
+      attrObj[normalizedAttrName ?? ""] = attrValue ? attrValue.trim() : true;
+      break;
+    }
+  }
+};
+
 export const parseSetCookieHeader = (
   setCookie: string
 ): Map<string, CookieAttributes> => {
@@ -26,50 +74,7 @@ export const parseSetCookieHeader = (
     }
     const attrObj: CookieAttributes = { value };
     for (const attribute of attributes) {
-      const [attrName, ...attrValueParts] = attribute.split("=");
-      const attrValue = attrValueParts.join("=");
-      const normalizedAttrName = attrName?.trim().toLowerCase();
-      switch (normalizedAttrName) {
-        case "max-age": {
-          attrObj["max-age"] = attrValue
-            ? Math.trunc(Number(attrValue.trim()))
-            : undefined;
-          break;
-        }
-        case "expires": {
-          attrObj.expires = attrValue ? new Date(attrValue.trim()) : undefined;
-          break;
-        }
-        case "domain": {
-          attrObj.domain = attrValue ? attrValue.trim() : undefined;
-          break;
-        }
-        case "path": {
-          attrObj.path = attrValue ? attrValue.trim() : undefined;
-          break;
-        }
-        case "secure": {
-          attrObj.secure = true;
-          break;
-        }
-        case "httponly": {
-          attrObj.httponly = true;
-          break;
-        }
-        case "samesite": {
-          attrObj.samesite = attrValue
-            ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
-            : undefined;
-          break;
-        }
-        default: {
-          // Handle any other attributes
-          attrObj[normalizedAttrName ?? ""] = attrValue
-            ? attrValue.trim()
-            : true;
-          break;
-        }
-      }
+      applyCookieAttribute(attrObj, attribute);
     }
     cookies.set(name, attrObj);
   }

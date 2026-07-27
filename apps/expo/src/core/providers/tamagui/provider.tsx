@@ -1,8 +1,6 @@
-/* oxlint-disable react-doctor/react-compiler-no-manual-memoization sonarjs/no-duplicate-string */
 import type { Theme } from "@react-navigation/native";
 import { ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { useMemo } from "react";
 import { Platform, useColorScheme } from "react-native";
 import type { TamaguiProviderProps } from "tamagui";
 import { TamaguiProvider, useTheme } from "tamagui";
@@ -19,114 +17,106 @@ const NavigationThemeProvider = ({
   const tamaguiTheme = useTheme();
   const scheme = useColorScheme();
   const theme = useAppStore((state) => state.theme);
-  const defaultTheme = useMemo<Theme>(
-    () => ({
-      colors: {
-        background: tamaguiTheme.background.get(),
-        border: tamaguiTheme.accent10.get(),
-        card: tamaguiTheme.background.get(),
-        notification: tamaguiTheme.blue10.get(),
-        primary: tamaguiTheme.blue10.get(),
-        text: tamaguiTheme.color.get(),
+  const defaultTheme: Theme = {
+    colors: {
+      background: tamaguiTheme.background.get(),
+      border: tamaguiTheme.accent10.get(),
+      card: tamaguiTheme.background.get(),
+      notification: tamaguiTheme.blue10.get(),
+      primary: tamaguiTheme.blue10.get(),
+      text: tamaguiTheme.color.get(),
+    },
+    dark: false,
+    fonts: Platform.select({
+      default: {
+        bold: {
+          fontFamily: "sans-serif",
+          fontWeight: "600",
+        },
+        heavy: {
+          fontFamily: "sans-serif",
+          fontWeight: "700",
+        },
+        medium: {
+          fontFamily: "sans-serif-medium",
+          fontWeight: "normal",
+        },
+        regular: {
+          fontFamily: "sans-serif",
+          fontWeight: "normal",
+        },
       },
-      dark: false,
-      fonts: Platform.select({
-        default: {
-          bold: {
-            fontFamily: "sans-serif",
-            fontWeight: "600",
-          },
-          heavy: {
-            fontFamily: "sans-serif",
-            fontWeight: "700",
-          },
-          medium: {
-            fontFamily: "sans-serif-medium",
-            fontWeight: "normal",
-          },
-          regular: {
-            fontFamily: "sans-serif",
-            fontWeight: "normal",
-          },
+      ios: {
+        bold: {
+          fontFamily: "System",
+          fontWeight: "600",
         },
-        ios: {
-          bold: {
-            fontFamily: "System",
-            fontWeight: "600",
-          },
-          heavy: {
-            fontFamily: "System",
-            fontWeight: "700",
-          },
-          medium: {
-            fontFamily: "System",
-            fontWeight: "500",
-          },
-          regular: {
-            fontFamily: "System",
-            fontWeight: "400",
-          },
+        heavy: {
+          fontFamily: "System",
+          fontWeight: "700",
         },
-      }),
-    }),
-    [tamaguiTheme]
-  );
-  const darkTheme = useMemo<Theme>(
-    () => ({
-      colors: {
-        background: tamaguiTheme.background.get(),
-        border: tamaguiTheme.accent10.get(),
-        card: tamaguiTheme.background.get(),
-        notification: tamaguiTheme.blue10.get(),
-        primary: tamaguiTheme.blue10.get(),
-        text: tamaguiTheme.color.get(),
+        medium: {
+          fontFamily: "System",
+          fontWeight: "500",
+        },
+        regular: {
+          fontFamily: "System",
+          fontWeight: "400",
+        },
       },
-      dark: true,
-      fonts: Platform.select({
-        default: {
-          bold: {
-            fontFamily: "sans-serif",
-            fontWeight: "600",
-          },
-          heavy: {
-            fontFamily: "sans-serif",
-            fontWeight: "700",
-          },
-          medium: {
-            fontFamily: "sans-serif-medium",
-            fontWeight: "normal",
-          },
-          regular: {
-            fontFamily: "sans-serif",
-            fontWeight: "normal",
-          },
-        },
-        ios: {
-          bold: {
-            fontFamily: "System",
-            fontWeight: "600",
-          },
-          heavy: {
-            fontFamily: "System",
-            fontWeight: "700",
-          },
-          medium: {
-            fontFamily: "System",
-            fontWeight: "500",
-          },
-          regular: {
-            fontFamily: "System",
-            fontWeight: "400",
-          },
-        },
-      }),
     }),
-    [tamaguiTheme]
-  );
-  const value = useMemo(() => {
-    const isDark = theme === "system" ? scheme === "dark" : theme === "dark";
-    return isDark ? darkTheme : defaultTheme;
-  }, [scheme, theme, defaultTheme, darkTheme]);
+  };
+  const darkTheme: Theme = {
+    colors: {
+      background: tamaguiTheme.background.get(),
+      border: tamaguiTheme.accent10.get(),
+      card: tamaguiTheme.background.get(),
+      notification: tamaguiTheme.blue10.get(),
+      primary: tamaguiTheme.blue10.get(),
+      text: tamaguiTheme.color.get(),
+    },
+    dark: true,
+    fonts: Platform.select({
+      default: {
+        bold: {
+          fontFamily: "sans-serif",
+          fontWeight: "600",
+        },
+        heavy: {
+          fontFamily: "sans-serif",
+          fontWeight: "700",
+        },
+        medium: {
+          fontFamily: "sans-serif-medium",
+          fontWeight: "normal",
+        },
+        regular: {
+          fontFamily: "sans-serif",
+          fontWeight: "normal",
+        },
+      },
+      ios: {
+        bold: {
+          fontFamily: "System",
+          fontWeight: "600",
+        },
+        heavy: {
+          fontFamily: "System",
+          fontWeight: "700",
+        },
+        medium: {
+          fontFamily: "System",
+          fontWeight: "500",
+        },
+        regular: {
+          fontFamily: "System",
+          fontWeight: "400",
+        },
+      },
+    }),
+  };
+  const isDark = theme === "system" ? scheme === "dark" : theme === "dark";
+  const value = isDark ? darkTheme : defaultTheme;
   return (
     <ThemeProvider value={value}>
       <StatusBar animated style={value.dark ? "light" : "dark"} />

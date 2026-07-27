@@ -1,4 +1,3 @@
-/* oxlint-disable react-doctor/no-prevent-default */
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";

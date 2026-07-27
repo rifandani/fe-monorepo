@@ -1,22 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { resolveDeviceLocale } from "./provider";
-
-vi.mock("expo-localization", () => ({
-  getLocales: () => [{ languageTag: "en-US" }],
-}));
-
-vi.mock("@/core/providers/i18n/context", () => ({
-  TranslationProvider: ({ children }: { children: unknown }) => children,
-}));
-
-vi.mock("@workspace/core/libs/i18n/locales/en-US", () => ({
-  default: {},
-}));
-
-vi.mock("@workspace/core/libs/i18n/locales/id-ID", () => ({
-  default: {},
-}));
+import { resolveDeviceLocale } from "./i18n";
 
 describe("resolveDeviceLocale", () => {
   it("falls back to en-us when tag is missing", () => {

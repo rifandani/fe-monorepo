@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/no-wildcard-import */
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

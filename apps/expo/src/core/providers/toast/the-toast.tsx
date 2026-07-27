@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/max-union-size */
 import Feather from "@expo/vector-icons/Feather";
 import { Toast, useToastState } from "@tamagui/toast";
 import type { ThemeName } from "tamagui";

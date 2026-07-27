@@ -1,4 +1,3 @@
-/* oxlint-disable unicorn/prefer-spread */
 import type { URLSearchParamsInit } from "@workspace/core/types/core";
 
 /**
@@ -59,17 +58,12 @@ export const createSearchParams = (
       Array.isArray(init) ||
       init instanceof URLSearchParams
       ? init
-      : Object.keys(init).reduce(
-          (memo, key) => {
-            const value = init[key];
-            return memo.concat(
-              Array.isArray(value)
-                ? value.map((v) => [key, v])
-                : [[key, value as string]]
-            );
-          },
-          [] as [string, string][]
-        )
+      : Object.keys(init).flatMap((key) => {
+          const value = init[key];
+          return Array.isArray(value)
+            ? value.map((v): [string, string] => [key, v])
+            : [[key, value as string]];
+        })
   );
 
 /**

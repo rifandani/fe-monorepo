@@ -1,10 +1,14 @@
-/* oxlint-disable sonarjs/no-wildcard-import promise/prefer-await-to-then promise/prefer-await-to-callbacks github/no-then -- expo-updates namespace API */
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
-import * as Updates from "expo-updates";
+import {
+  checkForUpdateAsync,
+  reloadAsync,
+  fetchUpdateAsync,
+  useUpdates,
+} from "expo-updates";
 import { Platform } from "react-native";
 import {
   H6,
@@ -62,25 +66,33 @@ const EditProfileSection = () => {
 const CheckForUpdatesListItem = () => {
   const { show } = useToastController();
   const { t } = useTranslation();
-  const { isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  const { isUpdateAvailable, isUpdatePending } = useUpdates();
   useFocusEffect(() => {
-    Updates.checkForUpdateAsync().catch((error) =>
-      show(error.message, {
-        customData: {
-          preset: "error",
-        } as ToastCustomData,
-      })
-    );
-  });
-  useFocusEffect(() => {
-    if (isUpdatePending) {
-      Updates.reloadAsync().catch((error) =>
-        show(error.message, {
+    (async () => {
+      try {
+        await checkForUpdateAsync();
+      } catch (error) {
+        show((error as Error).message, {
           customData: {
             preset: "error",
           } as ToastCustomData,
-        })
-      );
+        });
+      }
+    })();
+  });
+  useFocusEffect(() => {
+    if (isUpdatePending) {
+      (async () => {
+        try {
+          await reloadAsync();
+        } catch (error) {
+          show((error as Error).message, {
+            customData: {
+              preset: "error",
+            } as ToastCustomData,
+          });
+        }
+      })();
     }
   });
   if (!isUpdateAvailable) {
@@ -89,15 +101,19 @@ const CheckForUpdatesListItem = () => {
   return (
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
-      onPress={() =>
-        Updates.fetchUpdateAsync().catch((error) =>
-          show(error.message, {
-            customData: {
-              preset: "error",
-            } as ToastCustomData,
-          })
-        )
-      }
+      onPress={() => {
+        (async () => {
+          try {
+            await fetchUpdateAsync();
+          } catch (error) {
+            show((error as Error).message, {
+              customData: {
+                preset: "error",
+              } as ToastCustomData,
+            });
+          }
+        })();
+      }}
     >
       <ListItem.Text>{t("newUpdateAvailable")}</ListItem.Text>
       <ListItem.Subtitle>{t("downloadAndInstallUpdate")}</ListItem.Subtitle>

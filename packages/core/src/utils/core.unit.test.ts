@@ -6,11 +6,10 @@ import {
   objectToFormDataArrayWithComma,
   removeLeadingWhitespace,
   removeLeadingZeros,
-  toBase64,
   toCamelCase,
   toSnakeCase,
 } from "@workspace/core/utils/core";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("clamp", () => {
   it("clamps above max", () => {
@@ -125,41 +124,5 @@ describe("deepReadObject", () => {
 
   it("returns default when missing", () => {
     expect(deepReadObject(obj, "a.b.d", "not found")).toBe("not found");
-  });
-});
-
-const createFileReaderMock = (mode: "ok" | "error") =>
-  function FileReaderMock(this: {
-    result: string | null;
-    onload: ((ev: ProgressEvent<FileReader>) => void) | null;
-    onerror: ((ev: ProgressEvent<FileReader>) => void) | null;
-    readAsDataURL: () => void;
-  }) {
-    this.result = null;
-    this.readAsDataURL = () => {
-      if (mode === "ok") {
-        this.result = "data:text/plain;base64,Zm9v";
-        queueMicrotask(() => {
-          this.onload?.(new Event("load") as ProgressEvent<FileReader>);
-        });
-        return;
-      }
-      queueMicrotask(() => {
-        this.onerror?.(new Event("error") as ProgressEvent<FileReader>);
-      });
-    };
-  };
-
-describe("toBase64", () => {
-  it("reads a File as a data URL", async () => {
-    vi.stubGlobal("FileReader", createFileReaderMock("ok"));
-    const file = new File(["foo"], "foo.txt", { type: "text/plain" });
-    await expect(toBase64(file)).resolves.toBe("data:text/plain;base64,Zm9v");
-  });
-
-  it("rejects when FileReader errors", async () => {
-    vi.stubGlobal("FileReader", createFileReaderMock("error"));
-    const file = new File(["foo"], "foo.txt", { type: "text/plain" });
-    await expect(toBase64(file)).rejects.toBeTruthy();
   });
 });

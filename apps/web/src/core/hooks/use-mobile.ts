@@ -1,4 +1,4 @@
-/* oxlint-disable react/react-compiler react-doctor/no-initialize-state */
+/* oxlint-disable react/react-compiler */
 "use client";
 
 import { useEffect, useState } from "react";

@@ -59,7 +59,7 @@ export const rateLimiter = <P extends string = string>(
     store.init(options);
   }
   return async (request: NextRequest) => {
-    // oxlint-disable-next-line typescript/no-explicit-any -- rate-limit context bag
+    // oxlint-disable-next-line typescript/no-explicit-any
     const context = new Map<string, any>();
     // Get a unique key for the client
     const key = await keyGenerator({ context, request });

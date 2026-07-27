@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/no-identical-functions promise/avoid-new unicorn/prefer-add-event-listener */
 import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
 
 /**
@@ -350,16 +349,3 @@ export const deepReadObject = <T = any>(
     .reduce<any>((a, b) => (a ? a[b] : undefined), obj);
   return value === undefined ? (defaultValue as T) : value;
 };
-
-/**
- * Converts a File object to a base64 encoded string
- * @param file - The File object to convert
- * @returns Promise that resolves with the base64 string representation of the file
- */
-export const toBase64 = (file: File) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });

@@ -1,4 +1,4 @@
-/* oxlint-disable promise/prefer-await-to-then github/no-then promise/prefer-await-to-callbacks */
+/* oxlint-disable promise/prefer-await-to-then promise/prefer-await-to-callbacks */
 import fs from "node:fs";
 
 import { simpleSitemapAndIndex } from "sitemap";

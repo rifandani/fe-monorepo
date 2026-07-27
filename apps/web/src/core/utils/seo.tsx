@@ -1,4 +1,4 @@
-/* oxlint-disable react-doctor/only-export-components react/no-danger -- SEO helpers; JSON-LD script */
+/* oxlint-disable react-doctor/only-export-components react/no-danger */
 import type { Metadata } from "next";
 import { assign, uid } from "radashi";
 import type { Graph, Thing, WebPage, WebSite } from "schema-dts";

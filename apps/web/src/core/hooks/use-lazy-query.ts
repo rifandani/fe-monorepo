@@ -1,4 +1,3 @@
-/* oxlint-disable react-doctor/query-destructure-result */
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-/* oxlint-disable react-doctor/server-auth-actions -- locale cookie helpers are intentionally public */
+/* oxlint-disable react-doctor/server-auth-actions */
 "use server";
 import { cookies } from "next/headers";
 import { z } from "zod";

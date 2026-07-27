@@ -122,6 +122,108 @@ const getTranslationByKey = (obj: LanguageMessages, key: string) => {
   }
 };
 
+const substitutePlural = (
+  locale: string,
+  result: string,
+  argKey: string,
+  argValue: unknown,
+  replaceKey: string,
+  translationParams: ParamOptions
+): string => {
+  if (typeof argValue !== "number") {
+    throw new TypeError("Invalid argument");
+  }
+  const pluralMap = translationParams.plural?.[argKey];
+  const pluralRules = new Intl.PluralRules(locale, {
+    type: pluralMap?.type,
+  });
+  const replacement =
+    pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other;
+  if (!replacement) {
+    throw new Error("Missing replacement value");
+  }
+  const numberFormatter = new Intl.NumberFormat(
+    locale,
+    translationParams.plural?.[argKey]?.formatter
+  );
+  return result.replace(
+    replaceKey,
+    replacement.replace(`{?}`, numberFormatter.format(argValue))
+  );
+};
+
+const substituteEnum = (
+  result: string,
+  argKey: string,
+  argValue: unknown,
+  replaceKey: string,
+  translationParams: ParamOptions
+): string => {
+  if (typeof argValue !== "string") {
+    throw new TypeError("Invalid argument");
+  }
+  const enumMap = translationParams.enum?.[argKey];
+  const replacement = enumMap?.[argValue];
+  if (!replacement) {
+    throw new Error("Missing replacement value");
+  }
+  return result.replace(replaceKey, replacement);
+};
+
+const substituteNumber = (
+  locale: string,
+  result: string,
+  argKey: string,
+  argValue: unknown,
+  replaceKey: string,
+  translationParams: ParamOptions
+): string => {
+  if (typeof argValue !== "number") {
+    throw new TypeError("Invalid argument");
+  }
+  const numberFormat = new Intl.NumberFormat(
+    locale,
+    translationParams.number?.[argKey]
+  );
+  return result.replace(replaceKey, numberFormat.format(argValue));
+};
+
+const substituteList = (
+  locale: string,
+  result: string,
+  argKey: string,
+  argValue: unknown,
+  replaceKey: string,
+  translationParams: ParamOptions
+): string => {
+  if (!Array.isArray(argValue)) {
+    throw new TypeError("Invalid argument");
+  }
+  const formatter = new Intl.ListFormat(
+    locale,
+    translationParams.list?.[argKey]
+  );
+  return result.replace(replaceKey, formatter.format(argValue));
+};
+
+const substituteDate = (
+  locale: string,
+  result: string,
+  argKey: string,
+  argValue: unknown,
+  replaceKey: string,
+  translationParams: ParamOptions
+): string => {
+  if (!(argValue instanceof Date)) {
+    throw new Error("Invalid argument");
+  }
+  const dateFormat = new Intl.DateTimeFormat(
+    locale,
+    translationParams.date?.[argKey]
+  );
+  return result.replace(replaceKey, dateFormat.format(argValue));
+};
+
 const performSubstitution = (
   locale: string,
   str: string,
@@ -133,67 +235,53 @@ const performSubstitution = (
     const [replaceKey, argType] = match || [`{${argKey}}`, undefined];
     switch (argType) {
       case "plural": {
-        if (typeof argValue !== "number") {
-          throw new TypeError("Invalid argument");
-        }
-        const pluralMap = translationParams.plural?.[argKey];
-        const pluralRules = new Intl.PluralRules(locale, {
-          type: pluralMap?.type,
-        });
-        const replacement =
-          pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other;
-        if (!replacement) {
-          throw new Error("Missing replacement value");
-        }
-        const numberFormatter = new Intl.NumberFormat(
+        return substitutePlural(
           locale,
-          translationParams.plural?.[argKey]?.formatter
-        );
-        return result.replace(
+          result,
+          argKey,
+          argValue,
           replaceKey,
-          replacement.replace(`{?}`, numberFormatter.format(argValue))
+          translationParams
         );
       }
       case "enum": {
-        if (typeof argValue !== "string") {
-          throw new TypeError("Invalid argument");
-        }
-        const enumMap = translationParams.enum?.[argKey];
-        const replacement = enumMap?.[argValue];
-        if (!replacement) {
-          throw new Error("Missing replacement value");
-        }
-        return result.replace(replaceKey, replacement);
+        return substituteEnum(
+          result,
+          argKey,
+          argValue,
+          replaceKey,
+          translationParams
+        );
       }
       case "number": {
-        if (typeof argValue !== "number") {
-          throw new TypeError("Invalid argument");
-        }
-        const numberFormat = new Intl.NumberFormat(
+        return substituteNumber(
           locale,
-          translationParams.number?.[argKey]
+          result,
+          argKey,
+          argValue,
+          replaceKey,
+          translationParams
         );
-        return result.replace(replaceKey, numberFormat.format(argValue));
       }
       case "list": {
-        if (!Array.isArray(argValue)) {
-          throw new TypeError("Invalid argument");
-        }
-        const formatter = new Intl.ListFormat(
+        return substituteList(
           locale,
-          translationParams.list?.[argKey]
+          result,
+          argKey,
+          argValue,
+          replaceKey,
+          translationParams
         );
-        return result.replace(replaceKey, formatter.format(argValue));
       }
       case "date": {
-        if (!(argValue instanceof Date)) {
-          throw new Error("Invalid argument");
-        }
-        const dateFormat = new Intl.DateTimeFormat(
+        return substituteDate(
           locale,
-          translationParams.date?.[argKey]
+          result,
+          argKey,
+          argValue,
+          replaceKey,
+          translationParams
         );
-        return result.replace(replaceKey, dateFormat.format(argValue));
       }
       default: {
         return result.replace(replaceKey, String(argValue));

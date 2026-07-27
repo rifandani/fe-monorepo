@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/function-name -- Next.js route handler convention */
 import type { NextRequest } from "next/server";
 
 import { rateLimit } from "@/core/middlewares/rate-limit/rate-limit";

@@ -1,8 +1,7 @@
-/* oxlint-disable react-doctor/react-compiler-no-manual-memoization */
 import type { LanguageMessages } from "@workspace/core/libs/i18n/init";
 import { initI18n } from "@workspace/core/libs/i18n/init";
 import type { ReactNode } from "react";
-import { createContext, use, useMemo, useState } from "react";
+import { createContext, use, useState } from "react";
 
 const TranslationContext = createContext<
   | (ReturnType<typeof initI18n> & {
@@ -29,19 +28,17 @@ export const TranslationProvider = ({
     }
     return defaultLocale;
   });
-  const value = useMemo(() => {
-    const initValue = initI18n({
-      fallbackLocale,
-      locale,
-      translations,
-    });
-    return {
-      ...initValue,
-      locale,
-      setLocale,
-      userLocale: navigator.language.toLowerCase(),
-    } as const;
-  }, [locale, fallbackLocale, translations]);
+  const initValue = initI18n({
+    fallbackLocale,
+    locale,
+    translations,
+  });
+  const value = {
+    ...initValue,
+    locale,
+    setLocale,
+    userLocale: navigator.language.toLowerCase(),
+  } as const;
   return <TranslationContext value={value}>{children}</TranslationContext>;
 };
 export const useTranslation = (): ReturnType<typeof initI18n> & {

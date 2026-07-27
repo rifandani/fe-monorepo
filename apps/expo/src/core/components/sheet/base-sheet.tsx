@@ -1,5 +1,3 @@
-/* oxlint-disable react-doctor/react-compiler-no-manual-memoization */
-import { useCallback } from "react";
 import { Sheet } from "tamagui";
 
 import type {
@@ -14,18 +12,12 @@ export const BaseSheet = <T extends BaseSheetState>({
   frameProps,
   children,
 }: BaseSheetProps<T>) => {
-  const onOpenChange = useCallback(
-    (open: boolean) => {
-      setState({ ...state, open });
-    },
-    [setState, state]
-  );
-  const onPositionChange = useCallback(
-    (position: number) => {
-      setState({ ...state, position });
-    },
-    [setState, state]
-  );
+  const onOpenChange = (open: boolean) => {
+    setState({ ...state, open });
+  };
+  const onPositionChange = (position: number) => {
+    setState({ ...state, position });
+  };
   return (
     <Sheet
       modal

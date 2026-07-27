@@ -52,7 +52,7 @@ export const noopTracer: Tracer = {
     arg1: unknown,
     arg2?: unknown,
     arg3?: F
-    // oxlint-disable-next-line typescript/no-explicit-any -- noop span overload return
+    // oxlint-disable-next-line typescript/no-explicit-any
   ): ReturnType<any> {
     if (typeof arg1 === "function") {
       return arg1(noopSpan);

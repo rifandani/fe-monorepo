@@ -1,4 +1,3 @@
-/* oxlint-disable github/filenames-match-regex -- Playwright helper file */
 import { faker } from "@faker-js/faker";
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 

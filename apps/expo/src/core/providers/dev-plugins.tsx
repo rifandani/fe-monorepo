@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/function-name */
 import { useMMKVDevTools } from "@dev-plugins/react-native-mmkv";
 import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
@@ -9,7 +8,7 @@ import { appStorage } from "@/core/services/mmkv";
 
 export const DevPlugins = () => {
   const navigationRef = useNavigationContainerRef();
-  // oxlint-disable-next-line typescript/no-explicit-any -- devtools ref type mismatch
+  // oxlint-disable-next-line typescript/no-explicit-any
   useReactNavigationDevTools(navigationRef as any);
   useMMKVDevTools({ storage: appStorage });
   useReactQueryDevTools(queryClient);

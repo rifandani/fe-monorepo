@@ -53,8 +53,8 @@ export default defineConfig({
     "sort-keys": "off",
     "no-inline-comments": "off",
     "no-nested-ternary": "off",
-    complexity: "off",
     "unicorn/no-array-reduce": "off",
+    "react/jsx-no-constructed-context-values": "off",
     "react-doctor/nextjs-no-side-effect-in-get-handler": "off",
   },
   overrides: [

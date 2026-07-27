@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/function-name */
 import { useHead } from "@unhead/react";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 

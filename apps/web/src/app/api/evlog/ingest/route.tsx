@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/no-unused-vars */
 import type { NextRequest } from "next/server";
 
 import { ENV } from "@/core/constants/env";

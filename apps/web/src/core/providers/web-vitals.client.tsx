@@ -1,4 +1,3 @@
-/* oxlint-disable sonarjs/function-name */
 "use client";
 import { log } from "evlog/next/client";
 import { useReportWebVitals } from "next/web-vitals";
