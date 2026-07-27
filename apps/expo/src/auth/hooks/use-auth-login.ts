@@ -1,13 +1,14 @@
+// oxlint-disable promise/prefer-await-to-callbacks
 /* oxlint-disable react-doctor/query-mutation-missing-invalidation */
 import { useToastController } from "@tamagui/toast";
-import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
-import { useMutation, useMutationState } from "@tanstack/react-query";
-import type { AuthLoginRequestSchema } from "@workspace/core/apis/auth";
+import type { UseMutationOptions } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { authKeys, authRepositories } from "@workspace/core/apis/auth";
 import type { ErrorResponseSchema } from "@workspace/core/apis/core";
 import { errorResponseSchema } from "@workspace/core/apis/core";
 import type { TimeoutError } from "ky";
 import { HTTPError } from "ky";
+import { match, P } from "ts-pattern";
 import type { Except } from "type-fest";
 import type { z } from "zod";
 
@@ -19,6 +20,7 @@ type Success = Awaited<
   ReturnType<ReturnType<typeof authRepositories>["login"]>
 >;
 type MutationError = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
+
 export const useAuthLogin = (
   params: Params,
   mutationOptions?: Except<
@@ -32,11 +34,12 @@ export const useAuthLogin = (
     mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
-      let { message } = error;
-      if (error instanceof HTTPError) {
-        const parsed = errorResponseSchema.safeParse(error.data);
-        message = parsed.success ? parsed.data.message : error.message;
-      }
+      const message = match(error)
+        .with(P.instanceOf(HTTPError), (err) => {
+          const parsed = errorResponseSchema.safeParse(err.data);
+          return parsed.success ? parsed.data.message : err.message;
+        })
+        .otherwise((err) => err.message);
       toast.show(message, {
         customData: {
           preset: "error",
@@ -47,11 +50,3 @@ export const useAuthLogin = (
     ..._mutationOptions,
   });
 };
-export const useAuthLoginMutationState = (params: AuthLoginRequestSchema) =>
-  useMutationState<
-    MutationState<Success, MutationError, Exclude<Params, undefined>>
-  >({
-    filters: {
-      mutationKey: authKeys.login(params),
-    },
-  });

@@ -6,7 +6,7 @@ import type {
 import type { Register } from "@workspace/core/libs/i18n/my-translations.d";
 
 export type LocaleDictLanguage = "en-us" | "id-id";
-export type RegisteredTranslations = Register extends {
+type RegisteredTranslations = Register extends {
   translations: infer T;
 }
   ? T extends infer Translations

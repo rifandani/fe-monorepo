@@ -1,5 +1,7 @@
+// oxlint-disable promise/prefer-await-to-callbacks
 import type { Attributes, Span, SpanContext, Tracer } from "@opentelemetry/api";
 import { context, SpanStatusCode, trace } from "@opentelemetry/api";
+import { match, P } from "ts-pattern";
 
 import { SERVICE_NAME } from "@/core/constants/global";
 
@@ -123,19 +125,21 @@ export const recordSpan = <T>({
       return result;
     } catch (error) {
       try {
-        if (error instanceof Error) {
-          span.recordException({
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
+        match(error)
+          .with(P.instanceOf(Error), (err) => {
+            span.recordException({
+              message: err.message,
+              name: err.name,
+              stack: err.stack,
+            });
+            span.setStatus({
+              code: SpanStatusCode.ERROR,
+              message: err.message,
+            });
+          })
+          .otherwise(() => {
+            span.setStatus({ code: SpanStatusCode.ERROR });
           });
-          span.setStatus({
-            code: SpanStatusCode.ERROR,
-            message: error.message,
-          });
-        } else {
-          span.setStatus({ code: SpanStatusCode.ERROR });
-        }
       } finally {
         // always stop the span when there is an error:
         span.end();

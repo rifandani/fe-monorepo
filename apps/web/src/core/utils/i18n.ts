@@ -25,6 +25,8 @@ export const formats = {
     },
   },
 } satisfies Formats;
+
+// fallow-ignore-next-line unused-export -- next-intl plugin entry (`createNextIntlPlugin("./src/core/utils/i18n.ts")`)
 export default getRequestConfig(async () => {
   const cookie = await cookies();
   const locale = (cookie.get(I18N_COOKIE_NAME)?.value ||

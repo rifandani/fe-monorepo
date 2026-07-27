@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 /* oxlint-disable react/react-compiler */
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";

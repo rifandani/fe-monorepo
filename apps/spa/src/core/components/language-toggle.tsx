@@ -1,6 +1,7 @@
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
 import type { Selection } from "react-stately";
+import { match } from "ts-pattern";
 
 import {
   Button,
@@ -18,7 +19,10 @@ export const LanguageToggle = () => {
     <Menu>
       <Button intent="plain">
         <GlobeAltIcon className="size-6" />
-        {locale === "en-us" ? "English" : "Indonesia"}
+        {match(locale)
+          .with("en-us", () => "English")
+          .with("id-id", () => "Indonesia")
+          .otherwise(() => "Indonesia")}
       </Button>
 
       <MenuContent

@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": ["src/index.{ts,tsx,js,jsx}", "src/main.{ts,tsx,js,jsx}"],
+  "workspaces": {
+    "patterns": ["apps/*", "packages/*"]
+  },
+  "ignoreExports": [
+    { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
+    { "file": "apps/web/**/components/ui/**", "exports": ["*"] },
+    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] }
+  ],
+  "overrides": [
+    {
+      "files": ["apps/spa/**/components/ui/**", "apps/web/**/components/ui/**"],
+      "rules": {
+        "unused-files": "off",
+        "unused-types": "off"
+      }
+    },
+    {
+      "files": [
+        "apps/spa/pwa-assets.config.ts",
+        "apps/spa/src/sw.ts",
+        "apps/web/pwa-assets.config.ts",
+        "oxfmt.config.ts"
+      ],
+      "rules": {
+        "unused-files": "off"
+      }
+    }
+  ],
+  "duplicates": {
+    "minOccurrences": 3
+  },
+  "ignoreDependencies": [
+    "@opentelemetry/semantic-conventions",
+    "postcss-load-config",
+    "workbox-core",
+    "@expo-google-fonts/space-grotesk",
+    "@expo/metro-config",
+    "@tamagui/animations-moti",
+    "burnt",
+    "expo-atlas",
+    "expo-dev-client",
+    "expo-system-ui"
+  ],
+  "rules": {
+    "unused-dependencies": "warn"
+  }
+}

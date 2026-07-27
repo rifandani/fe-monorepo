@@ -1,3 +1,5 @@
+// fallow-ignore-file unused-file
+// fallow-ignore-file unused-type
 export interface HeaderButtonProps {
   /**
    * Tint color for the header.

@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 import type { ComponentPropsWithoutRef } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";

@@ -1,13 +1,15 @@
+// oxlint-disable promise/prefer-await-to-callbacks
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import type { HTTPError, TimeoutError } from "ky";
 import { useEffect } from "react";
+import { match, P } from "ts-pattern";
 import type { Except } from "type-fest";
 import { z } from "zod";
 
 import type { ToastCustomData } from "@/core/providers/toast/the-toast";
-import { userApi, userKeys } from "@/user/api/user";
+import { userApi, userKeys } from "@/user/apis/user";
 
 type Params = Parameters<typeof userKeys.detail>[0];
 type Success = Awaited<ReturnType<typeof userApi.getDetail>>;
@@ -30,10 +32,9 @@ export const useGetUser = (
     if (!query.error) {
       return;
     }
-    let { message } = query.error;
-    if (query.error instanceof z.ZodError) {
-      message = z.prettifyError(query.error);
-    }
+    const message = match(query.error)
+      .with(P.instanceOf(z.ZodError), (err) => z.prettifyError(err))
+      .otherwise((err) => err.message);
     toast.show(message, {
       customData: {
         preset: "error",

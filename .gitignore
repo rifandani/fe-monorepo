@@ -137,3 +137,4 @@ prisma/_sqlite/migrations
 
 # docker
 otel-lgtm
+.fallow/

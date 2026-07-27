@@ -1,7 +1,8 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { appStoreStateDefaultValues, useAppStore } from "./use-app-store";
+import { appStoreStateDefaultValues } from "./app-store-state-defaults";
+import { useAppStore } from "./use-app-store";
 
 vi.mock("../services/mmkv", () => {
   const store = new Map<string, string>();

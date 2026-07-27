@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 import Feather from "@expo/vector-icons/Feather";
 import { isFunction } from "radashi";
 import type { Dispatch, ReactNode, SetStateAction } from "react";

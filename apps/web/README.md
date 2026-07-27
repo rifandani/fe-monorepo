@@ -7,7 +7,6 @@
 ## 🎯 Todo
 
 - [ ] drizzle beta
-- [ ] database seeding script with `drizzle-seed`
 
 ## Testing
 
@@ -30,6 +29,11 @@ bun web db:gen
 
 # run drizzle migrations
 bun web db:migrate
+
+# reset auth tables + seed demo + random users (drizzle-seed)
+bun web db:seed
 ```
+
+Demo login: `vaandani@email.com` / `vaandani` (see `src/db/seed-user.ts`).
 
 OpenAPI reference: `http://web.localhost/api/auth/reference`

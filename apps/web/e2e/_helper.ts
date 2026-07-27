@@ -5,13 +5,15 @@ import type {
 } from "@workspace/core/apis/better-auth";
 import type { FetchHandlerResult } from "next/experimental/testmode/playwright.js";
 
+import { SEED_USER } from "@/db/seed-user";
+
 export type FetchHandler = (
   request: Request
 ) => FetchHandlerResult | Promise<FetchHandlerResult>;
 export const validUser = {
-  email: "vaandani@email.com",
-  password: "vaandani",
-  username: "vaandani",
+  email: SEED_USER.email,
+  password: SEED_USER.password,
+  username: SEED_USER.name,
 };
 export const mockUser = (): AuthUserSchema => ({
   createdAt: faker.date.past().toISOString(),

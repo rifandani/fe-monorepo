@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 import type { NextRequest } from "next/server";
 
 import { rateLimit } from "@/core/middlewares/rate-limit/rate-limit";

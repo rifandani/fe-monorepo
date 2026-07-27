@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";

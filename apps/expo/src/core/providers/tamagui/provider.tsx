@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme } from "react-native";
 import type { TamaguiProviderProps } from "tamagui";
 import { TamaguiProvider, useTheme } from "tamagui";
+import { match } from "ts-pattern";
 
 import { useAppStore } from "@/core/hooks/use-app-store";
 
@@ -115,7 +116,10 @@ const NavigationThemeProvider = ({
       },
     }),
   };
-  const isDark = theme === "system" ? scheme === "dark" : theme === "dark";
+  const isDark = match(theme)
+    .with("system", () => scheme === "dark")
+    .with("dark", () => true)
+    .otherwise(() => false);
   const value = isDark ? darkTheme : defaultTheme;
   return (
     <ThemeProvider value={value}>
@@ -134,7 +138,9 @@ export const AppTamaguiProvider = ({
     <TamaguiProvider
       disableInjectCSS
       config={config}
-      defaultTheme={theme === "system" ? (scheme as string) : theme}
+      defaultTheme={match(theme)
+        .with("system", () => scheme as string)
+        .otherwise((t) => t)}
       {...rest}
     >
       <NavigationThemeProvider>{children}</NavigationThemeProvider>

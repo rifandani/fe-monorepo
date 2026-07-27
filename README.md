@@ -8,6 +8,8 @@
 
 - [ ] always update `CLAUDE.md` file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] lookout for nextjs update to support `typescript@7` natively, because currently we need `@typescript/native-preview`
+- [ ] consider moving `web` app into another repository `fs-monorepo` (fullstack monorepo) as i don't really like next.js and it's fullstack not pure client side
+- [ ] integrate fallow.tools with all strict checks
 
 ## 🛠️ Upgrading Dependencies
 

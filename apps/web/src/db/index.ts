@@ -5,7 +5,7 @@ import { ENV } from "@/core/constants/env";
 
 import * as schema from "./schema";
 
-export const dbPool = new Pool({
+const dbPool = new Pool({
   connectionString: ENV.DATABASE_URL,
 });
 export const db = drizzle({

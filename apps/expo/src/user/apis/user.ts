@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { http } from "@/core/services/http";
 
-export const userSchema = z.object({
+const userSchema = z.object({
   id: z.number(),
   firstName: z.string(),
   lastName: z.string(),
@@ -22,12 +22,11 @@ export const userSchema = z.object({
   eyeColor: z.string(),
   // ... and a lot more
 });
-export type UserSchema = z.infer<typeof userSchema>;
-export const getUserApiRequestSchema = z.object({
+const getUserApiRequestSchema = z.object({
   id: z.number(),
 });
-export type GetUserApiRequestSchema = z.infer<typeof getUserApiRequestSchema>;
-export const getUserApiResponseSchema = userSchema;
+type GetUserApiRequestSchema = z.infer<typeof getUserApiRequestSchema>;
+const getUserApiResponseSchema = userSchema;
 export type GetUserApiResponseSchema = z.infer<typeof getUserApiResponseSchema>;
 export const userKeys = {
   all: ["users"] as const,

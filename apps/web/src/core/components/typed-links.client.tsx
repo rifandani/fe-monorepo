@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 import type { Route } from "next";
 import type { CreateSerializerOptions, ParserMap } from "nuqs/server";
 import { createSerializer } from "nuqs/server";

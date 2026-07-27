@@ -1,3 +1,4 @@
+// fallow-ignore-file unused-file
 /* oxlint-disable react-doctor/query-mutation-missing-invalidation */
 import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
 import { useMutation, useMutationState } from "@tanstack/react-query";

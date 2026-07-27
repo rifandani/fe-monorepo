@@ -5,7 +5,7 @@ import type { ComponentPropsWithoutRef, CSSProperties } from "react";
 import type { Toaster } from "sonner";
 import { twJoin } from "tailwind-merge";
 
-export type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
+type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
 export const useCreateToastContext = () => {
   const [theme] = useColorMode();

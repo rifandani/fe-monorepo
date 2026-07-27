@@ -25,13 +25,14 @@ import { BLURHASH } from "@/core/constants/global";
 import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
 import type { ToastCustomData } from "@/core/providers/toast/the-toast";
+import { formatDisplayDate } from "@/core/utils/date";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
 import { useGetUser } from "@/user/hooks/use-get-user";
 
 const EditProfileSection = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const user = useAppStore((state) => state.user);
   const { data } = useGetUser(
     user
@@ -55,6 +56,11 @@ const EditProfileSection = () => {
       <YStack flex={1}>
         <H6 size="$4">{data?.username}</H6>
         <Paragraph size="$3">{data?.email}</Paragraph>
+        {!!data?.birthDate && (
+          <Paragraph size="$2" opacity={0.7}>
+            {formatDisplayDate(data.birthDate, locale)}
+          </Paragraph>
+        )}
 
         <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
           {t("editProfile")}

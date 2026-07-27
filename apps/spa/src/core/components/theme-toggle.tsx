@@ -6,6 +6,7 @@ import {
 import type { BasicColorMode } from "@workspace/core/hooks/use-color-mode";
 import { useColorMode } from "@workspace/core/hooks/use-color-mode";
 import type { Selection } from "react-stately";
+import { match } from "ts-pattern";
 
 import {
   Button,
@@ -23,9 +24,13 @@ export const ThemeToggle = () => {
   return (
     <Menu>
       <Button intent="outline">
-        {theme === "auto" ? <ComputerDesktopIcon className="size-6" /> : null}
-        {theme === "light" ? <SunIcon className="size-6" /> : null}
-        {theme === "dark" ? <MoonIcon className="size-6" /> : null}
+        {match(theme)
+          .with("auto", () => <ComputerDesktopIcon className="size-6" />)
+          .with("light", () => <SunIcon className="size-6" />)
+          .with("dark", () => <MoonIcon className="size-6" />)
+          .otherwise(() => (
+            <ComputerDesktopIcon className="size-6" />
+          ))}
       </Button>
 
       <MenuContent
