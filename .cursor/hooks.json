@@ -4,6 +4,9 @@
     "afterFileEdit": [
       {
         "command": "bun lint:fix"
+      },
+      {
+        "command": "bun check:fix"
       }
     ]
   }

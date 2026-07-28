@@ -108,6 +108,10 @@
           {
             "command": "bun lint:fix",
             "type": "command"
+          },
+          {
+            "command": "bun check:fix",
+            "type": "command"
           }
         ]
       }
