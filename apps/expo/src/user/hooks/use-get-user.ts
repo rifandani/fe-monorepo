@@ -8,7 +8,7 @@ import { match, P } from "ts-pattern";
 import type { Except } from "type-fest";
 import { z } from "zod";
 
-import type { ToastCustomData } from "@/core/providers/toast/the-toast";
+import type { ToastCustomData } from "@/core/utils/toast";
 import { userApi, userKeys } from "@/user/apis/user";
 
 type Params = Parameters<typeof userKeys.detail>[0];

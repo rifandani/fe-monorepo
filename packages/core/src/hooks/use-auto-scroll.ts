@@ -67,7 +67,8 @@ export const useAutoScroll = ({
     };
     scrollToBottom();
     let intervalId: ReturnType<typeof setInterval> | undefined;
-    if (isAutoScroll && isStreaming() && isLoading) {
+    // `isAutoScroll` is already guaranteed by the early return above.
+    if (isStreaming() && isLoading) {
       intervalId = setInterval(scrollToBottom, intervalMs);
     }
     return () => {

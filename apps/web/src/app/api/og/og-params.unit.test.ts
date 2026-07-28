@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
 
-import { parseOgRequest } from "./og-params";
+import { parseOgRequest, resolveOgLogoKey, rethrowNonError } from "./og-params";
 
 const mockReq = (url: string, colorScheme?: string): NextRequest =>
   ({
@@ -31,5 +31,34 @@ describe("parseOgRequest", () => {
       title: "Hi",
       logo: "react",
     });
+  });
+});
+
+describe("resolveOgLogoKey", () => {
+  it("pairs a known brand with the requested color scheme", () => {
+    expect(resolveOgLogoKey("next", false)).toBe("next-dark");
+    expect(resolveOgLogoKey("next", true)).toBe("next-light");
+    expect(resolveOgLogoKey("react", false)).toBe("react-dark");
+    expect(resolveOgLogoKey("react", true)).toBe("react-light");
+  });
+
+  it("falls back to the null-object key for an unknown or missing brand", () => {
+    expect(resolveOgLogoKey("svelte", true)).toBe("none");
+    expect(resolveOgLogoKey(null, false)).toBe("none");
+  });
+});
+
+describe("rethrowNonError", () => {
+  it("passes through an Error so the caller can wrap it", () => {
+    expect(() => {
+      rethrowNonError(new Error("boom"));
+    }).not.toThrow();
+  });
+
+  it("re-throws a non-Error value untouched", () => {
+    const signal = { digest: "NEXT_REDIRECT" };
+    expect(() => {
+      rethrowNonError(signal);
+    }).toThrow(signal);
   });
 });

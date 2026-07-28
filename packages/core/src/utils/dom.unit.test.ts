@@ -6,9 +6,11 @@ import {
   getPlatformAsync,
   getShortcutKey,
   getShortcutKeys,
+  canWriteToClipboard,
   isBrowser,
   isMacOS,
   saveFile,
+  toCdnFile,
 } from "@workspace/core/utils/dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -24,6 +26,28 @@ describe("isBrowser", () => {
   it("is true when window exists", () => {
     vi.stubGlobal("window", {});
     expect(isBrowser()).toBe(true);
+  });
+});
+
+describe("canWriteToClipboard", () => {
+  it("is false on the server", () => {
+    const original = globalThis.window;
+    // @ts-expect-error -- intentional delete for node env
+    delete globalThis.window;
+    expect(canWriteToClipboard()).toBe(false);
+    globalThis.window = original;
+  });
+
+  it("is false when the Clipboard API is missing", () => {
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("navigator", {});
+    expect(canWriteToClipboard()).toBe(false);
+  });
+
+  it("is true when navigator.clipboard.writeText exists", () => {
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("navigator", { clipboard: { writeText: () => {} } });
+    expect(canWriteToClipboard()).toBe(true);
   });
 });
 
@@ -206,5 +230,24 @@ describe("doDownload / saveFile", () => {
     expect(a.click).toHaveBeenCalledOnce();
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:1");
     expect(a.remove).toHaveBeenCalledOnce();
+  });
+});
+
+describe("toCdnFile", () => {
+  it("returns null while the blob is undefined", () => {
+    expect(toCdnFile()).toBeNull();
+    expect(toCdnFile(undefined, "a.png")).toBeNull();
+  });
+
+  it("wraps the blob in a named File carrying its mime type", () => {
+    const file = toCdnFile(new Blob(["img"], { type: "image/png" }), "a.png");
+
+    expect(file).toBeInstanceOf(File);
+    expect(file?.name).toBe("a.png");
+    expect(file?.type).toBe("image/png");
+  });
+
+  it("falls back to a placeholder name", () => {
+    expect(toCdnFile(new Blob(["img"]))?.name).toBe("unknown-filename");
   });
 });

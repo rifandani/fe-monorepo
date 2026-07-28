@@ -36,14 +36,17 @@ export const AuthSubmitButton = ({
   loadingLabel: string;
 }) => (
   <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
-    {([canSubmit, isSubmitting]) => (
-      <Button
-        type="submit"
-        className="mt-8 w-full normal-case"
-        isDisabled={isPending || isSubmitting || !canSubmit}
-      >
-        {isPending || isSubmitting ? loadingLabel : label}
-      </Button>
-    )}
+    {([canSubmit, isSubmitting]) => {
+      const isBusy = isPending || isSubmitting;
+      return (
+        <Button
+          type="submit"
+          className="mt-8 w-full normal-case"
+          isDisabled={isBusy || !canSubmit}
+        >
+          {isBusy ? loadingLabel : label}
+        </Button>
+      );
+    }}
   </form.Subscribe>
 );

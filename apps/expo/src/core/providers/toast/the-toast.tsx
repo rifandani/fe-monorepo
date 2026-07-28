@@ -2,20 +2,18 @@ import Feather from "@expo/vector-icons/Feather";
 import { Toast, useToastState } from "@tamagui/toast";
 import type { ThemeName } from "tamagui";
 import { YStack } from "tamagui";
-/**
- * this will affect the toast theme and icon
- */
-export interface ToastCustomData {
-  preset: "default" | "success" | "error" | "warning" | "info";
-}
-const themeMapper: Record<ToastCustomData["preset"], ThemeName> = {
+
+import type { ToastPreset } from "@/core/utils/toast";
+import { resolveToastPreset } from "@/core/utils/toast";
+
+const themeMapper: Record<ToastPreset, ThemeName> = {
   default: "light",
   error: "red",
   info: "blue",
   success: "green",
   warning: "yellow",
 };
-const iconMapper: Record<ToastCustomData["preset"], React.ReactNode> = {
+const iconMapper: Record<ToastPreset, React.ReactNode> = {
   default: null,
   error: <Feather name="alert-circle" size={16} color="white" />,
   info: <Feather name="info" size={16} color="white" />,
@@ -27,10 +25,10 @@ export const TheToast = () => {
   if (!currentToast || currentToast.isHandledNatively) {
     return null;
   }
-  const customData = currentToast.customData as ToastCustomData;
+  const preset = resolveToastPreset(currentToast.customData);
   return (
     <Toast
-      theme={themeMapper[customData?.preset ?? "default"]}
+      theme={themeMapper[preset]}
       key={currentToast.id}
       duration={currentToast.duration}
       viewportName={currentToast.viewportName}
@@ -44,7 +42,7 @@ export const TheToast = () => {
       items="center"
       gap="$2"
     >
-      {iconMapper[customData?.preset ?? "default"]}
+      {iconMapper[preset]}
 
       <YStack gap="$1">
         <Toast.Title>{currentToast.title}</Toast.Title>

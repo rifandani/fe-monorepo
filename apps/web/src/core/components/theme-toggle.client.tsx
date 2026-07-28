@@ -19,18 +19,24 @@ import {
   MenuSection,
 } from "@/core/components/ui";
 
+const THEME_ICONS = {
+  dark: MoonIcon,
+  light: SunIcon,
+  system: ComputerDesktopIcon,
+};
+
 export const ThemeToggle = () => {
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
   const activeTheme = theme ?? "system"; // avoid hydration mismatch
+  // `theme` is a free-form string in next-themes, so fall back to the
+  // system icon for anything outside the three we render a menu item for.
+  const ActiveThemeIcon =
+    THEME_ICONS[activeTheme as keyof typeof THEME_ICONS] ?? ComputerDesktopIcon;
   return (
     <Menu>
       <Button intent="outline" data-slot="menu-trigger">
-        {activeTheme === "system" ? (
-          <ComputerDesktopIcon className="size-6" />
-        ) : null}
-        {activeTheme === "light" ? <SunIcon className="size-6" /> : null}
-        {activeTheme === "dark" ? <MoonIcon className="size-6" /> : null}
+        <ActiveThemeIcon className="size-6" />
       </Button>
 
       <MenuContent

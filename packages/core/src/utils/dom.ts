@@ -6,6 +6,13 @@ import type { URLSearchParamsInit } from "@workspace/core/types/core";
 export const isBrowser = () => typeof window !== "undefined";
 
 /**
+ * Whether the async Clipboard API is usable here. It is absent on the server,
+ * and browsers only expose `navigator.clipboard` in secure contexts.
+ */
+export const canWriteToClipboard = () =>
+  isBrowser() && typeof navigator.clipboard?.writeText === "function";
+
+/**
  * This will works with below rules, otherwise it only view on new tab
  * 1. If the file source located in the same origin as the application.
  * 2. If the file source is on different location e.g s3 bucket, etc. Set the response headers `Content-Disposition: attachment`.
@@ -218,3 +225,15 @@ export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
   window.URL.revokeObjectURL(url);
   a.remove();
 };
+
+/**
+ * Wrap a downloaded CDN blob in a `File` so callers get a name and a mtime,
+ * or `null` while the download has not resolved.
+ */
+export const toCdnFile = (blob?: Blob, filename?: string) =>
+  blob
+    ? new File([blob], filename ?? "unknown-filename", {
+        lastModified: Date.now(),
+        type: blob.type,
+      })
+    : null;

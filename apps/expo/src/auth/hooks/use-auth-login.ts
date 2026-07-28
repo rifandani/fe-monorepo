@@ -12,8 +12,8 @@ import { match, P } from "ts-pattern";
 import type { Except } from "type-fest";
 import type { z } from "zod";
 
-import type { ToastCustomData } from "@/core/providers/toast/the-toast";
 import { http } from "@/core/services/http";
+import type { ToastCustomData } from "@/core/utils/toast";
 
 type Params = Parameters<typeof authKeys.login>[0];
 type Success = Awaited<

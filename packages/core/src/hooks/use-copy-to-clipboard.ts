@@ -1,5 +1,6 @@
 "use client";
 
+import { canWriteToClipboard } from "@workspace/core/utils/dom";
 import { useEffect, useRef, useState } from "react";
 
 export interface UseCopyToClipboardProps {
@@ -29,10 +30,7 @@ export const useCopyToClipboard = ({
     []
   );
   const copyToClipboard = async (value: string) => {
-    if (typeof window === "undefined" || !navigator.clipboard?.writeText) {
-      return;
-    }
-    if (!value) {
+    if (!(value && canWriteToClipboard())) {
       return;
     }
     // Clear any existing timeout

@@ -24,8 +24,8 @@ import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
 import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
-import type { ToastCustomData } from "@/core/providers/toast/the-toast";
 import { formatDisplayDate } from "@/core/utils/date";
+import type { ToastCustomData } from "@/core/utils/toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
@@ -41,12 +41,13 @@ const EditProfileSection = () => {
         }
       : undefined
   );
+  const { birthDate, email, image, username } = data ?? {};
 
   return (
     <XStack mb="$3" height="$10" gap="$5">
       <Image
         testID="profile-image"
-        source={data?.image}
+        source={image}
         placeholder={{ blurhash: BLURHASH }}
         transition={1000}
         contentFit="fill"
@@ -54,11 +55,11 @@ const EditProfileSection = () => {
       />
 
       <YStack flex={1}>
-        <H6 size="$4">{data?.username}</H6>
-        <Paragraph size="$3">{data?.email}</Paragraph>
-        {!!data?.birthDate && (
+        <H6 size="$4">{username}</H6>
+        <Paragraph size="$3">{email}</Paragraph>
+        {!!birthDate && (
           <Paragraph size="$2" opacity={0.7}>
-            {formatDisplayDate(data.birthDate, locale)}
+            {formatDisplayDate(birthDate, locale)}
           </Paragraph>
         )}
 

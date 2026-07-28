@@ -5,7 +5,8 @@ import type { ReactElement } from "react";
 
 import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
 
-import { parseOgRequest } from "./og-params";
+import type { OgLogoKey } from "./og-params";
+import { parseOgRequest, resolveOgLogoKey, rethrowNonError } from "./og-params";
 // const interSemiBold = fetch(
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
@@ -490,20 +491,20 @@ const DarkReactSvg = (): ReactElement => (
   </svg>
 );
 
-const OG_LOGOS = {
-  next: { dark: DarkNextSvg, light: LightNextSvg },
-  react: { dark: DarkReactSvg, light: LightReactSvg },
-} as const;
+const OG_LOGOS: Record<OgLogoKey, () => ReactElement | null> = {
+  "next-dark": DarkNextSvg,
+  "next-light": LightNextSvg,
+  none: () => null,
+  "react-dark": DarkReactSvg,
+  "react-light": LightReactSvg,
+};
 
 export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
   const log = useLogger();
   try {
     const { isLight, logo, title } = parseOgRequest(req);
     log.set({ og: { isLight, logo, title } });
-    const Logo =
-      logo && logo in OG_LOGOS
-        ? OG_LOGOS[logo as keyof typeof OG_LOGOS][isLight ? "light" : "dark"]
-        : null;
+    const Logo = OG_LOGOS[resolveOgLogoKey(logo, isLight)];
     return new ImageResponse(
       <div
         style={{
@@ -513,7 +514,7 @@ export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
           position: "relative",
         }}
       >
-        {Logo ? <Logo /> : null}
+        <Logo />
         <div
           style={{
             color: isLight ? "black" : "white",
@@ -541,9 +542,7 @@ export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
       }
     );
   } catch (error) {
-    if (!(error instanceof Error)) {
-      throw error;
-    }
+    rethrowNonError(error);
     throw createError({
       fix: "Please try again later",
       message: "Failed to generate the image",

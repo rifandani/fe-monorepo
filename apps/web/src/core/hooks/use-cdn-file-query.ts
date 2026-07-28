@@ -7,6 +7,7 @@ import type {
   GetCdnFileSuccessSchema,
 } from "@workspace/core/apis/cdn";
 import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
+import { toCdnFile } from "@workspace/core/utils/dom";
 import type { HTTPError } from "ky";
 import type { Except } from "type-fest";
 
@@ -35,11 +36,6 @@ export const useCdnFileQuery = (
     ...queryOptions,
   });
   // create file object from blob
-  const file = query.data?.blob
-    ? new File([query.data.blob], opt.filename ?? "unknown-filename", {
-        lastModified: Date.now(),
-        type: query.data.blob.type,
-      })
-    : null;
+  const file = toCdnFile(query.data?.blob, opt.filename);
   return { ...query, file };
 };
