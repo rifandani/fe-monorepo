@@ -28,6 +28,7 @@
     "check:coverage": "fallow coverage analyze --runtime-coverage ./coverage --quiet",
     "check:audit": "fallow audit --quiet",
     "check:review": "fallow review --quiet",
+    "check:fix": "fallow fix --yes --no-create-config",
     "typecheck": "bun run --parallel core:typecheck web:typecheck spa:typecheck expo:typecheck",
     "lint-typecheck": "bun run --parallel lint core:typecheck web:typecheck spa:typecheck expo:typecheck",
     "core": "bun --elide-lines=0 --filter @workspace/core",
