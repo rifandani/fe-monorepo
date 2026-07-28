@@ -4,6 +4,8 @@ import type { NextRequest } from "next/server";
 import type { ReactElement } from "react";
 
 import { createError, useLogger, withEvlog } from "@/core/utils/evlog";
+
+import { parseOgRequest } from "./og-params";
 // const interSemiBold = fetch(
 //   new URL('./Inter-SemiBold.ttf', import.meta.url),
 // ).then(res => res.arrayBuffer())
@@ -488,16 +490,20 @@ const DarkReactSvg = (): ReactElement => (
   </svg>
 );
 
+const OG_LOGOS = {
+  next: { dark: DarkNextSvg, light: LightNextSvg },
+  react: { dark: DarkReactSvg, light: LightReactSvg },
+} as const;
+
 export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
   const log = useLogger();
   try {
-    const { searchParams } = new URL(req.url);
-    const isLight = req.headers.get("Sec-CH-Prefers-Color-Scheme") === "light";
-    const title = searchParams.has("title")
-      ? searchParams.get("title")
-      : "@workspace/web";
-    const logo = searchParams.has("logo") ? searchParams.get("logo") : "next";
+    const { isLight, logo, title } = parseOgRequest(req);
     log.set({ og: { isLight, logo, title } });
+    const Logo =
+      logo && logo in OG_LOGOS
+        ? OG_LOGOS[logo as keyof typeof OG_LOGOS][isLight ? "light" : "dark"]
+        : null;
     return new ImageResponse(
       <div
         style={{
@@ -507,8 +513,7 @@ export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
           position: "relative",
         }}
       >
-        {logo === "next" && (isLight ? <LightNextSvg /> : <DarkNextSvg />)}
-        {logo === "react" && (isLight ? <LightReactSvg /> : <DarkReactSvg />)}
+        {Logo ? <Logo /> : null}
         <div
           style={{
             color: isLight ? "black" : "white",
@@ -533,14 +538,6 @@ export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
       {
         width: 843,
         height: 441,
-        // fonts: [
-        //   {
-        //     name: 'Inter',
-        //     data: await interSemiBold,
-        //     style: 'normal',
-        //     weight: 400,
-        //   },
-        // ],
       }
     );
   } catch (error) {

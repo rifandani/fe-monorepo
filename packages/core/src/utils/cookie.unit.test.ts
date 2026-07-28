@@ -22,10 +22,9 @@ describe("parseSetCookieHeader", () => {
     expect(cookies.get("token")?.expires).toBeInstanceOf(Date);
   });
 
-  it("parses multiple cookies separated by comma+space", () => {
-    const cookies = parseSetCookieHeader("a=1; Path=/, b=2; Path=/app");
-    expect(cookies.get("a")?.value).toBe("1");
-    expect(cookies.get("b")?.value).toBe("2");
-    expect(cookies.get("b")?.path).toBe("/app");
+  it("parses Domain and empty SameSite", () => {
+    const cookies = parseSetCookieHeader("id=1; Domain=example.com; SameSite=");
+    expect(cookies.get("id")?.domain).toBe("example.com");
+    expect(cookies.get("id")?.samesite).toBeUndefined();
   });
 });

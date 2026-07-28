@@ -6,7 +6,9 @@ import type { MetadataRoute } from "next";
 const APP_DIR = path.join(process.cwd(), "src/app");
 const url = new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://web.localhost");
 const SKIP_DIRS = new Set(["api"]);
-const collectPageRoutes = (dir: string, segment = ""): string[] => {
+
+/** Collect `page.ts(x)` routes under `dir`, skipping `_` / `(` segments and `api`. */
+export const collectPageRoutes = (dir: string, segment = ""): string[] => {
   const routes: string[] = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.name.startsWith("_") || entry.name.startsWith("(")) {
@@ -26,6 +28,7 @@ const collectPageRoutes = (dir: string, segment = ""): string[] => {
   }
   return routes;
 };
+
 const sitemap = (): MetadataRoute.Sitemap => {
   const routes = collectPageRoutes(APP_DIR);
   return routes.map((route) => ({

@@ -2,19 +2,20 @@ const firstIssueMessage = (value: unknown): string | undefined => {
   if (typeof value === "string") {
     return value;
   }
-  if (Array.isArray(value)) {
-    const [first] = value;
-    if (typeof first === "string") {
-      return first;
-    }
-    if (
-      typeof first === "object" &&
-      first !== null &&
-      "message" in first &&
-      typeof first.message === "string"
-    ) {
-      return first.message;
-    }
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  const [first] = value;
+  if (typeof first === "string") {
+    return first;
+  }
+  if (
+    typeof first === "object" &&
+    first !== null &&
+    "message" in first &&
+    typeof first.message === "string"
+  ) {
+    return first.message;
   }
   return undefined;
 };

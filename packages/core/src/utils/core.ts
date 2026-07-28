@@ -146,6 +146,82 @@ export const removeLeadingWhitespace = (value?: string) => {
   return value;
 };
 
+type FormDataAppend = (value: unknown, rootName?: string) => void;
+
+const appendObjectEntries = (
+  obj: object,
+  rootName: string,
+  append: FormDataAppend
+) => {
+  for (const key in obj) {
+    if (!Object.hasOwn(obj, key)) {
+      continue;
+    }
+    const nextRoot = rootName === "" ? key : `${rootName}.${key}`;
+    // @ts-expect-error index access on unknown object shape
+    append(obj[key], nextRoot);
+  }
+};
+
+const appendFormDataValue = (
+  formData: FormData,
+  value: unknown,
+  rootName: string,
+  append: FormDataAppend,
+  arrayMode: "index" | "comma"
+) => {
+  if (value instanceof File) {
+    formData.append(rootName, value);
+    return;
+  }
+  if (Array.isArray(value)) {
+    if (arrayMode === "comma") {
+      formData.append(rootName, value.join(","));
+      return;
+    }
+    for (let i = 0; i < value.length; i += 1) {
+      append(value[i], `${rootName}[${i}]`);
+    }
+    return;
+  }
+  if (typeof value === "object" && value) {
+    appendObjectEntries(value, rootName, append);
+    return;
+  }
+  if (value !== null && value !== undefined) {
+    formData.append(rootName, value as Blob | string);
+  }
+};
+
+const createObjectToFormData =
+  (arrayMode: "index" | "comma") =>
+  <T extends UnknownRecord>(
+    obj: T,
+    options?: RequireAtLeastOne<{
+      rootName?: string;
+      ignoreList: (keyof T)[];
+    }>
+  ) => {
+    const formData = new FormData();
+    const ignore = (_key?: string) =>
+      Array.isArray(options?.ignoreList) &&
+      options.ignoreList.includes(_key as keyof T);
+    const appendFormData: FormDataAppend = (_obj, _rootName) => {
+      if (ignore(_rootName)) {
+        return;
+      }
+      appendFormDataValue(
+        formData,
+        _obj,
+        _rootName || "",
+        appendFormData,
+        arrayMode
+      );
+    };
+    appendFormData(obj, options?.rootName);
+    return formData;
+  };
+
 /**
  * Convert deep object to FormData.
  * Supports File, array, and options to add object rootName and ignore object keys.
@@ -188,49 +264,7 @@ export const removeLeadingWhitespace = (value?: string) => {
  * (2) ['another_object.value', 'whatever']
  * (2) ['array[0].nested_key1.name', 'key1']
  */
-export const objectToFormData = <T extends UnknownRecord>(
-  obj: T,
-  options?: RequireAtLeastOne<{
-    rootName?: string;
-    ignoreList: (keyof T)[];
-  }>
-) => {
-  const formData = new FormData();
-  const ignore = (_key?: string) =>
-    Array.isArray(options?.ignoreList) &&
-    options?.ignoreList.includes(_key as keyof T);
-  const appendFormData = (_obj: T, _rootName?: string) => {
-    let newRootName = _rootName;
-    if (!ignore(newRootName)) {
-      newRootName ||= "";
-      if (_obj instanceof File) {
-        formData.append(newRootName, _obj);
-      } else if (Array.isArray(_obj)) {
-        for (let i = 0; i < _obj.length; i += 1) {
-          appendFormData(_obj[i], `${newRootName}[${i}]`);
-        }
-      } else if (typeof _obj === "object" && _obj) {
-        for (const key in _obj) {
-          if (Object.hasOwn(_obj, key)) {
-            if (newRootName === "") {
-              // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key);
-            } else {
-              // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${newRootName}.${key}`);
-            }
-          }
-        }
-      } else {
-        if (_obj !== null && _obj !== undefined) {
-          formData.append(newRootName, _obj);
-        }
-      }
-    }
-  };
-  appendFormData(obj, options?.rootName);
-  return formData;
-};
+export const objectToFormData = createObjectToFormData("index");
 
 /**
  * Convert deep object to FormData.
@@ -271,47 +305,7 @@ export const objectToFormData = <T extends UnknownRecord>(
  * (2) ['another_object.value', 'whatever']
  * (2) ['array', 'value1,value2']
  */
-export const objectToFormDataArrayWithComma = <T extends UnknownRecord>(
-  obj: T,
-  options?: RequireAtLeastOne<{
-    rootName?: string;
-    ignoreList: (keyof T)[];
-  }>
-) => {
-  const formData = new FormData();
-  const ignore = (_key?: string) =>
-    Array.isArray(options?.ignoreList) &&
-    options?.ignoreList.includes(_key as keyof T);
-  const appendFormData = (_obj: T, _rootName?: string) => {
-    let newRootName = _rootName;
-    if (!ignore(newRootName)) {
-      newRootName ||= "";
-      if (_obj instanceof File) {
-        formData.append(newRootName, _obj);
-      } else if (Array.isArray(_obj)) {
-        formData.append(newRootName, _obj.join(","));
-      } else if (typeof _obj === "object" && _obj) {
-        for (const key in _obj) {
-          if (Object.hasOwn(_obj, key)) {
-            if (newRootName === "") {
-              // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], key);
-            } else {
-              // @ts-expect-error i'm not typescript wizard
-              appendFormData(_obj[key], `${newRootName}.${key}`);
-            }
-          }
-        }
-      } else {
-        if (_obj !== null && _obj !== undefined) {
-          formData.append(newRootName, _obj);
-        }
-      }
-    }
-  };
-  appendFormData(obj, options?.rootName);
-  return formData;
-};
+export const objectToFormDataArrayWithComma = createObjectToFormData("comma");
 
 /**
  * Safely access deep values in an object via a string path seperated by `.`

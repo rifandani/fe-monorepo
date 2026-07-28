@@ -11,52 +11,52 @@ interface CookieAttributes {
   [key: string]: any;
 }
 
+type CookieAttrHandler = (attrObj: CookieAttributes, attrValue: string) => void;
+
+const trimOrUndefined = (value: string): string | undefined =>
+  value ? value.trim() : undefined;
+
+const COOKIE_ATTR_HANDLERS: Record<string, CookieAttrHandler> = {
+  "max-age": (attrObj, attrValue) => {
+    attrObj["max-age"] = attrValue
+      ? Math.trunc(Number(attrValue.trim()))
+      : undefined;
+  },
+  expires: (attrObj, attrValue) => {
+    attrObj.expires = attrValue ? new Date(attrValue.trim()) : undefined;
+  },
+  domain: (attrObj, attrValue) => {
+    attrObj.domain = trimOrUndefined(attrValue);
+  },
+  path: (attrObj, attrValue) => {
+    attrObj.path = trimOrUndefined(attrValue);
+  },
+  secure: (attrObj) => {
+    attrObj.secure = true;
+  },
+  httponly: (attrObj) => {
+    attrObj.httponly = true;
+  },
+  samesite: (attrObj, attrValue) => {
+    attrObj.samesite = attrValue
+      ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
+      : undefined;
+  },
+};
+
 const applyCookieAttribute = (
   attrObj: CookieAttributes,
   attribute: string
 ): void => {
   const [attrName, ...attrValueParts] = attribute.split("=");
   const attrValue = attrValueParts.join("=");
-  const normalizedAttrName = attrName?.trim().toLowerCase();
-
-  switch (normalizedAttrName) {
-    case "max-age": {
-      attrObj["max-age"] = attrValue
-        ? Math.trunc(Number(attrValue.trim()))
-        : undefined;
-      break;
-    }
-    case "expires": {
-      attrObj.expires = attrValue ? new Date(attrValue.trim()) : undefined;
-      break;
-    }
-    case "domain": {
-      attrObj.domain = attrValue ? attrValue.trim() : undefined;
-      break;
-    }
-    case "path": {
-      attrObj.path = attrValue ? attrValue.trim() : undefined;
-      break;
-    }
-    case "secure": {
-      attrObj.secure = true;
-      break;
-    }
-    case "httponly": {
-      attrObj.httponly = true;
-      break;
-    }
-    case "samesite": {
-      attrObj.samesite = attrValue
-        ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
-        : undefined;
-      break;
-    }
-    default: {
-      attrObj[normalizedAttrName ?? ""] = attrValue ? attrValue.trim() : true;
-      break;
-    }
+  const normalizedAttrName = attrName?.trim().toLowerCase() ?? "";
+  const handler = COOKIE_ATTR_HANDLERS[normalizedAttrName];
+  if (handler) {
+    handler(attrObj, attrValue);
+    return;
   }
+  attrObj[normalizedAttrName] = attrValue ? attrValue.trim() : true;
 };
 
 export const parseSetCookieHeader = (

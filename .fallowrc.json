@@ -30,7 +30,41 @@
     }
   ],
   "duplicates": {
-    "minOccurrences": 3
+    "minOccurrences": 3,
+    "$comment": "spa and web are deliberate mirrors for browser-only code that cannot move into @workspace/core (core must stay browser + expo/native safe). Ignoring one side of each mirrored pair drops the whole clone group from duplication analysis while leaving complexity, coupling and hotspot analysis intact.",
+    "ignore": [
+      "apps/web/playwright.config.ts",
+      "apps/web/vitest.config.ts",
+      "apps/web/src/core/styles/globals.css",
+      "apps/web/src/core/utils/telemetry.ts",
+      "apps/web/src/core/hooks/use-cdn-file-mutation.ts",
+      "apps/web/src/core/hooks/use-cdn-file-query.ts",
+      "apps/web/src/core/hooks/use-clipboard.ts",
+      "apps/web/src/core/hooks/use-lazy-query.ts",
+      "apps/web/src/core/hooks/use-mobile.ts",
+      "apps/web/src/core/providers/toast/context.client.tsx",
+      "apps/spa/src/auth/hooks/use-auth-login.ts",
+      "apps/spa/src/core/providers/i18n/context.tsx"
+    ]
+  },
+  "health": {
+    "ignore": [
+      "oxlint.config.ts",
+      "**/pwa-assets.config.ts",
+      "**/routeTree.gen.ts",
+      "**/*.gen.ts",
+      "**/components/ui/**",
+      "**/*.{test,spec}.{ts,tsx}",
+      "**/e2e/**"
+    ],
+    "thresholdOverrides": [
+      {
+        "files": ["apps/web/src/app/api/og/route.tsx"],
+        "functions": ["LightNextSvg", "DarkNextSvg"],
+        "maxUnitSize": 200,
+        "reason": "Inline OG SVG markup is declarative length, not control-flow complexity"
+      }
+    ]
   },
   "ignoreDependencies": [
     "@opentelemetry/semantic-conventions",
@@ -43,8 +77,5 @@
     "expo-atlas",
     "expo-dev-client",
     "expo-system-ui"
-  ],
-  "rules": {
-    "unused-dependencies": "warn"
-  }
+  ]
 }

@@ -87,50 +87,41 @@ export class DbStore<P extends string = string> implements Store<P> {
   async increment(key: string): Promise<ClientRateLimitInfo> {
     const now = Date.now();
     const windowStart = now - this.#windowMs;
+    const resetTime = new Date(now + this.#windowMs);
     try {
-      // First, try to get existing record
       const existing = await db
         .select()
         .from(rateLimitTable)
         .where(eq(rateLimitTable.key, key))
         .limit(1);
-      if (existing.length > 0) {
-        const [record] = existing;
-        if (!record) {
-          return {
-            resetTime: new Date(now + this.#windowMs),
-            totalHits: 1,
-          };
-        }
-        // Check if window expired
-        const isExpired = record.lastRequest < windowStart;
-        const newCount = isExpired ? 1 : (record.count || 0) + 1;
-        // Update existing record
-        const updated = await db
-          .update(rateLimitTable)
-          .set({
-            count: newCount,
+      const [record] = existing;
+      if (!record) {
+        const inserted = await db
+          .insert(rateLimitTable)
+          .values({
+            count: 1,
+            key,
             lastRequest: now,
           })
-          .where(eq(rateLimitTable.key, key))
           .returning();
         return {
-          resetTime: new Date(now + this.#windowMs),
-          totalHits: updated[0]?.count || 1,
+          resetTime,
+          totalHits: inserted[0]?.count ?? 1,
         };
       }
-      // Create new record (UUID will be auto-generated)
-      const inserted = await db
-        .insert(rateLimitTable)
-        .values({
-          count: 1,
-          key,
+      const newCount =
+        record.lastRequest < windowStart ? 1 : (record.count ?? 0) + 1;
+      const updated = await db
+        .update(rateLimitTable)
+        .set({
+          count: newCount,
           lastRequest: now,
         })
+        .where(eq(rateLimitTable.key, key))
         .returning();
       return {
-        resetTime: new Date(now + this.#windowMs),
-        totalHits: inserted[0]?.count || 1,
+        resetTime,
+        totalHits: updated[0]?.count ?? 1,
       };
     } catch (error) {
       log.error({
@@ -140,11 +131,7 @@ export class DbStore<P extends string = string> implements Store<P> {
         ...errorAttributesFromUnknown(error),
         failOpen: true,
       });
-      // Fallback: return a conservative estimate
-      return {
-        resetTime: new Date(now + this.#windowMs),
-        totalHits: 1,
-      };
+      return { resetTime, totalHits: 1 };
     }
   }
   /**

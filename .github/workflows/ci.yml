@@ -14,7 +14,6 @@ env:
 
 jobs:
   sherif:
-    name: Lint monorepos
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -84,6 +83,86 @@ jobs:
 
       - name: Run unit tests
         run: bun run spa:test:unit
+
+  web-unit:
+    name: web-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run web:test:unit
+
+  expo-unit:
+    name: expo-unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests
+        run: bun run expo:test:unit
+
+  unit-coverage:
+    name: unit-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Run unit tests with coverage
+        run: bun run test:unit:cov
+
+      - name: Publish coverage summary
+        if: always()
+        run: |
+          {
+            echo '```'
+            cat coverage/summary.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save coverage report as artifact
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: unit-coverage-report
+          path: coverage
+          retention-days: 3
 
   dev-spa-e2e:
     timeout-minutes: 30
@@ -182,27 +261,6 @@ jobs:
   #         path: apps/web/playwright-report
   #         retention-days: 7
 
-  web-unit:
-    name: web-unit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 26
-
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install deps and disallow changes to lockfile
-        run: bun ci
-
-      - name: Run unit tests
-        run: bun run web:test:unit
-
   dev-spa-build:
     runs-on: ubuntu-latest
     environment: dev
@@ -257,24 +315,3 @@ jobs:
 
       - name: Build
         run: bun web:ci build
-
-  expo-unit:
-    name: expo-unit
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 26
-
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install deps and disallow changes to lockfile
-        run: bun ci
-
-      - name: Run unit tests
-        run: bun run expo:test:unit
