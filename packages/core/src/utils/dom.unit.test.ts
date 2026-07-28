@@ -47,6 +47,10 @@ describe("createSearchParamsWithComma", () => {
     expect(params.get("sort")).toBe("asc");
     expect(params.get("filters")).toBe("model,category");
   });
+
+  it("returns empty params without init", () => {
+    expect([...createSearchParamsWithComma()]).toEqual([]);
+  });
 });
 
 describe("platform helpers", () => {
@@ -69,6 +73,12 @@ describe("platform helpers", () => {
     expect(isMacOS()).toBe(false);
   });
 
+  it("getPlatform returns an empty string when nothing is available", () => {
+    vi.stubGlobal("navigator", {});
+    expect(getPlatform()).toBe("");
+    expect(isMacOS()).toBe(false);
+  });
+
   it("getPlatformAsync uses high entropy values", async () => {
     vi.stubGlobal("navigator", {
       userAgentData: {
@@ -77,6 +87,40 @@ describe("platform helpers", () => {
       platform: "Linux x86_64",
     });
     await expect(getPlatformAsync()).resolves.toBe("Linux");
+  });
+
+  it("getPlatformAsync prefers the synchronous userAgentData.platform", async () => {
+    const getHighEntropyValues = vi.fn();
+    vi.stubGlobal("navigator", {
+      userAgentData: { platform: "macOS", getHighEntropyValues },
+    });
+    await expect(getPlatformAsync()).resolves.toBe("macOS");
+    expect(getHighEntropyValues).not.toHaveBeenCalled();
+  });
+
+  it("getPlatformAsync falls back to navigator.platform on empty entropy", async () => {
+    vi.stubGlobal("navigator", {
+      userAgentData: {
+        getHighEntropyValues: vi.fn(() => ({ platform: "" })),
+      },
+      platform: "Win32",
+    });
+    await expect(getPlatformAsync()).resolves.toBe("Win32");
+  });
+
+  it("getPlatformAsync falls back when getHighEntropyValues rejects", async () => {
+    vi.stubGlobal("navigator", {
+      userAgentData: {
+        getHighEntropyValues: vi.fn(() => Promise.reject(new Error("denied"))),
+      },
+      platform: "Win32",
+    });
+    await expect(getPlatformAsync()).resolves.toBe("Win32");
+  });
+
+  it("getPlatformAsync returns an empty string when nothing is available", async () => {
+    vi.stubGlobal("navigator", {});
+    await expect(getPlatformAsync()).resolves.toBe("");
   });
 });
 
@@ -96,10 +140,16 @@ describe("shortcut keys", () => {
     expect(getShortcutKeys(["mod", "N"])).toBe("⌘+N");
   });
 
-  it("maps mod on non-macOS", () => {
+  it("maps mod/alt/shift on non-macOS", () => {
     vi.stubGlobal("navigator", { platform: "Win32" });
     expect(getShortcutKey("mod")).toBe("Ctrl");
+    expect(getShortcutKey("alt")).toBe("Alt");
+    expect(getShortcutKey("shift")).toBe("Shift");
     expect(getShortcutKeys(["mod", "N"])).toBe("Ctrl+N");
+  });
+
+  it("returns unmapped keys unchanged", () => {
+    expect(getShortcutKey("N")).toBe("N");
   });
 });
 

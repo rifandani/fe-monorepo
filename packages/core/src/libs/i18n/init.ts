@@ -242,6 +242,63 @@ const substituteDate = (
       )
   );
 
+interface SubstitutionContext {
+  locale: string;
+  result: string;
+  argKey: string;
+  argValue: unknown;
+  replaceKey: string;
+  translationParams: ParamOptions;
+}
+
+/** Maps the `{arg:type}` annotation to the substituter handling it. */
+const substituters: Record<string, (ctx: SubstitutionContext) => string> = {
+  date: (c) =>
+    substituteDate(
+      c.locale,
+      c.result,
+      c.argKey,
+      c.argValue,
+      c.replaceKey,
+      c.translationParams
+    ),
+  enum: (c) =>
+    substituteEnum(
+      c.result,
+      c.argKey,
+      c.argValue,
+      c.replaceKey,
+      c.translationParams
+    ),
+  list: (c) =>
+    substituteList(
+      c.locale,
+      c.result,
+      c.argKey,
+      c.argValue,
+      c.replaceKey,
+      c.translationParams
+    ),
+  number: (c) =>
+    substituteNumber(
+      c.locale,
+      c.result,
+      c.argKey,
+      c.argValue,
+      c.replaceKey,
+      c.translationParams
+    ),
+  plural: (c) =>
+    substitutePlural(
+      c.locale,
+      c.result,
+      c.argKey,
+      c.argValue,
+      c.replaceKey,
+      c.translationParams
+    ),
+};
+
 const performSubstitution = (
   locale: string,
   str: string,
@@ -251,60 +308,18 @@ const performSubstitution = (
   Object.entries(args).reduce((result, [argKey, argValue]) => {
     const match = result.match(`{${argKey}:?([^}]*)?}`);
     const [replaceKey, argType] = match || [`{${argKey}}`, undefined];
-    switch (argType) {
-      case "plural": {
-        return substitutePlural(
-          locale,
-          result,
-          argKey,
-          argValue,
-          replaceKey,
-          translationParams
-        );
-      }
-      case "enum": {
-        return substituteEnum(
-          result,
-          argKey,
-          argValue,
-          replaceKey,
-          translationParams
-        );
-      }
-      case "number": {
-        return substituteNumber(
-          locale,
-          result,
-          argKey,
-          argValue,
-          replaceKey,
-          translationParams
-        );
-      }
-      case "list": {
-        return substituteList(
-          locale,
-          result,
-          argKey,
-          argValue,
-          replaceKey,
-          translationParams
-        );
-      }
-      case "date": {
-        return substituteDate(
-          locale,
-          result,
-          argKey,
-          argValue,
-          replaceKey,
-          translationParams
-        );
-      }
-      default: {
-        return result.replace(replaceKey, String(argValue));
-      }
+    const substitute = argType ? substituters[argType] : undefined;
+    if (!substitute) {
+      return result.replace(replaceKey, String(argValue));
     }
+    return substitute({
+      argKey,
+      argValue,
+      locale,
+      replaceKey,
+      result,
+      translationParams,
+    });
   }, str);
 
 const getTranslation = <S extends DotPathsFor, A extends Params<S>>(

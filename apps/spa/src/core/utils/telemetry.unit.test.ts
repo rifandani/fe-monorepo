@@ -75,6 +75,31 @@ describe("noopTracer", () => {
     );
     expect(fn).toHaveBeenCalledTimes(3);
   });
+
+  it("returns undefined when no callback is supplied", () => {
+    expect(
+      noopTracer.startActiveSpan(
+        "a",
+        {},
+        undefined as never,
+        undefined as never
+      )
+    ).toBeUndefined();
+  });
+
+  it("every noop span method is chainable and side-effect free", () => {
+    const span = noopTracer.startSpan("noop");
+
+    expect(span.addEvent("e")).toBe(span);
+    expect(span.addLink({ context: span.spanContext() })).toBe(span);
+    expect(span.addLinks([{ context: span.spanContext() }])).toBe(span);
+    expect(span.setAttribute("k", "v")).toBe(span);
+    expect(span.setAttributes({ k: "v" })).toBe(span);
+    expect(span.setStatus({ code: SpanStatusCode.OK })).toBe(span);
+    expect(span.recordException(new Error("x"))).toBe(span);
+    expect(span.updateName("renamed")).toBe(span);
+    expect(span.end()).toBe(span);
+  });
 });
 
 describe("getTracer", () => {

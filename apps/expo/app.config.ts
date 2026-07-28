@@ -40,6 +40,83 @@ const getDynamicAppConfig = (
     scheme: `${SCHEME}-development`,
   };
 };
+const PLUGINS = [
+  "expo-localization",
+  "expo-router",
+  [
+    "expo-splash-screen",
+    {
+      image: "./src/core/assets/icons/splash.png",
+      // dark: {
+      //   image: './src/core/assets/splash-dark.png',
+      //   backgroundColor: '#000000',
+      // },
+      imageWidth: 200,
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
+    },
+  ],
+  [
+    "expo-font",
+    {
+      /**
+       * <Text style={{ fontFamily: 'SpaceGrotesk_300Light' }}>Space Grotesk 300 Light</Text>
+       * <Text style={{ fontFamily: 'SpaceGrotesk_400Regular' }}>Space Grotesk 400 Regular</Text>
+       * <Text style={{ fontFamily: 'SpaceGrotesk_500Medium' }}>Space Grotesk 500 Medium</Text>
+       * <Text style={{ fontFamily: 'SpaceGrotesk_600SemiBold' }}>Space Grotesk 600 Semi Bold</Text>
+       * <Text style={{ fontFamily: 'SpaceGrotesk_700Bold' }}>Space Grotesk 700 Bold</Text>
+       */
+      fonts: [
+        "../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf",
+        "../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf",
+        "../../node_modules/@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf",
+        "../../node_modules/@expo-google-fonts/space-grotesk/600SemiBold/SpaceGrotesk_600SemiBold.ttf",
+        "../../node_modules/@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf",
+      ],
+    },
+  ],
+  // [
+  //   "react-native-edge-to-edge",
+  //   {
+  //     "android": {
+  //       "parentTheme": "Default",
+  //       "enforceNavigationBarContrast": true
+  //     }
+  //   }
+  // ],
+] satisfies ExpoConfig["plugins"];
+
+/** Everything that does not depend on the build variant. */
+const STATIC_CONFIG = {
+  owner: OWNER,
+  slug: PROJECT_SLUG, // must be consistent across all env
+  version, // automatically bump project version with `npm version patch`, `npm version minor` or `npm version major`.
+  orientation: "portrait",
+  userInterfaceStyle: "automatic", // to support dark mode
+  platforms: ["android", "ios"],
+  assetBundlePatterns: ["**/*"],
+  updates: {
+    fallbackToCacheTimeout: 0,
+    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
+  extra: {
+    eas: {
+      projectId: EAS_PROJECT_ID,
+    },
+    router: {
+      origin: false,
+    },
+  },
+  experiments: {
+    typedRoutes: true,
+    // reactCanary: true, // improved errors using react 19.1.0. link: https://expo.dev/changelog/sdk-53
+  },
+  plugins: PLUGINS,
+} satisfies Omit<ExpoConfig, "name">;
+
 const appConfig = ({ config }: ConfigContext): ExpoConfig => {
   console.log(
     `🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT ->`,
@@ -52,22 +129,9 @@ const appConfig = ({ config }: ConfigContext): ExpoConfig => {
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,
-    owner: OWNER,
-    slug: PROJECT_SLUG, // must be consistent across all env
+    ...STATIC_CONFIG,
     name,
     scheme,
-    version, // automatically bump project version with `npm version patch`, `npm version minor` or `npm version major`.
-    orientation: "portrait",
-    userInterfaceStyle: "automatic", // to support dark mode
-    platforms: ["android", "ios"],
-    assetBundlePatterns: ["**/*"],
-    updates: {
-      fallbackToCacheTimeout: 0,
-      url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
-    },
-    runtimeVersion: {
-      policy: "appVersion",
-    },
     icon,
     android: {
       adaptiveIcon: {
@@ -90,63 +154,6 @@ const appConfig = ({ config }: ConfigContext): ExpoConfig => {
       //   ],
       // },
     },
-    extra: {
-      eas: {
-        projectId: EAS_PROJECT_ID,
-      },
-      router: {
-        origin: false,
-      },
-    },
-    experiments: {
-      typedRoutes: true,
-      // reactCanary: true, // improved errors using react 19.1.0. link: https://expo.dev/changelog/sdk-53
-    },
-    plugins: [
-      "expo-localization",
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          image: "./src/core/assets/icons/splash.png",
-          // dark: {
-          //   image: './src/core/assets/splash-dark.png',
-          //   backgroundColor: '#000000',
-          // },
-          imageWidth: 200,
-          resizeMode: "contain",
-          backgroundColor: "#ffffff",
-        },
-      ],
-      [
-        "expo-font",
-        {
-          /**
-           * <Text style={{ fontFamily: 'SpaceGrotesk_300Light' }}>Space Grotesk 300 Light</Text>
-           * <Text style={{ fontFamily: 'SpaceGrotesk_400Regular' }}>Space Grotesk 400 Regular</Text>
-           * <Text style={{ fontFamily: 'SpaceGrotesk_500Medium' }}>Space Grotesk 500 Medium</Text>
-           * <Text style={{ fontFamily: 'SpaceGrotesk_600SemiBold' }}>Space Grotesk 600 Semi Bold</Text>
-           * <Text style={{ fontFamily: 'SpaceGrotesk_700Bold' }}>Space Grotesk 700 Bold</Text>
-           */
-          fonts: [
-            "../../node_modules/@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf",
-            "../../node_modules/@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf",
-            "../../node_modules/@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf",
-            "../../node_modules/@expo-google-fonts/space-grotesk/600SemiBold/SpaceGrotesk_600SemiBold.ttf",
-            "../../node_modules/@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf",
-          ],
-        },
-      ],
-      // [
-      //   "react-native-edge-to-edge",
-      //   {
-      //     "android": {
-      //       "parentTheme": "Default",
-      //       "enforceNavigationBarContrast": true
-      //     }
-      //   }
-      // ],
-    ],
   };
 };
 export default appConfig;

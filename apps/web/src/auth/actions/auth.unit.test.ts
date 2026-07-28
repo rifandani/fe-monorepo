@@ -127,6 +127,11 @@ describe("auth actions", () => {
       });
       expect(authApi.signInEmail).not.toHaveBeenCalled();
     });
+
+    it("rethrows non-validation errors", async () => {
+      await expect(loginAction(null, null as never)).rejects.toThrow();
+      expect(authApi.signInEmail).not.toHaveBeenCalled();
+    });
   });
 
   describe("registerAction", () => {
@@ -158,6 +163,25 @@ describe("auth actions", () => {
 
       expect(authApi.signUpEmail).toHaveBeenCalled();
       expect(redirect).toHaveBeenCalledWith("/");
+    });
+
+    it("returns validation errors for invalid input", async () => {
+      const result = await registerAction(
+        null,
+        registerFormData("not-an-email", "A", "short")
+      );
+
+      expect(result).toMatchObject({
+        errorMap: expect.objectContaining({
+          onServer: expect.anything(),
+        }),
+      });
+      expect(authApi.signUpEmail).not.toHaveBeenCalled();
+    });
+
+    it("rethrows non-validation errors", async () => {
+      await expect(registerAction(null, null as never)).rejects.toThrow();
+      expect(authApi.signUpEmail).not.toHaveBeenCalled();
     });
   });
 

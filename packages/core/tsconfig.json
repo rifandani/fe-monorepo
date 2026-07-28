@@ -1,7 +1,9 @@
 {
   "extends": "@workspace/typescript-config/react-library.json",
   "compilerOptions": {
-    "rootDir": "./src",
+    // No `rootDir`: this package never emits (the `exports` map points straight at `src/*.ts`), and pinning it to `./src` made `include: ["."]` a TS6059 error
+    // on `vitest.config.ts` — which is precisely a file worth checking.
+    "noEmit": true,
     "module": "NodeNext",
     "paths": {
       "*": ["./*"],

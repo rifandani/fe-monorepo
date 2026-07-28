@@ -49,6 +49,55 @@ const split = <T>(step: number, targetArr: T[]) => {
 };
 
 /**
+ * Records `val` as the new present, dropping the oldest entry once `maxLength` is exceeded
+ * @template T Type of value to track history for
+ */
+const pushValue = <T>(
+  history: IData<T>,
+  val: T,
+  maxLength: number
+): IData<T> => {
+  const _past = [...history.past, history.present as T];
+  const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
+  // maximum number of records exceeded
+  if (maxLengthNum > 0 && _past.length > maxLengthNum) {
+    // delete first
+    _past.splice(0, 1);
+  }
+  return {
+    future: [],
+    past: _past,
+    present: val,
+  };
+};
+
+/**
+ * Moves `step` entries out of the future and into the past
+ * @template T Type of value to track history for
+ */
+const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
+  const { _before, _current, _after } = split(step, history.future);
+  return {
+    future: _after,
+    past: [...history.past, history.present as T, ..._before],
+    present: _current,
+  };
+};
+
+/**
+ * Moves `step` entries out of the past and into the future
+ * @template T Type of value to track history for
+ */
+const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
+  const { _before, _current, _after } = split(step, history.past);
+  return {
+    future: [..._after, history.present as T, ...history.future],
+    past: _before,
+    present: _current,
+  };
+};
+
+/**
  * A hook to manage state change history. It provides encapsulation methods to travel through the history.
  * @template T Type of value to track history for
  * @param initialValue Initial value to start with
@@ -99,18 +148,7 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
    * @param val New value to set as present
    */
   const updateValue = (val: T) => {
-    const _past = [...past, present];
-    const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
-    // maximum number of records exceeded
-    if (maxLengthNum > 0 && _past.length > maxLengthNum) {
-      // delete first
-      _past.splice(0, 1);
-    }
-    setHistory({
-      future: [],
-      past: _past,
-      present: val,
-    });
+    setHistory(pushValue(history, val, maxLength));
   };
 
   /**
@@ -121,12 +159,7 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     if (future.length === 0) {
       return;
     }
-    const { _before, _current, _after } = split(step, future);
-    setHistory({
-      future: _after,
-      past: [...past, present, ..._before],
-      present: _current,
-    });
+    setHistory(travelForward(history, step));
   };
 
   /**
@@ -137,12 +170,7 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     if (past.length === 0) {
       return;
     }
-    const { _before, _current, _after } = split(step, past);
-    setHistory({
-      future: [..._after, present, ...future],
-      past: _before,
-      present: _current,
-    });
+    setHistory(travelBackward(history, step));
   };
 
   /**

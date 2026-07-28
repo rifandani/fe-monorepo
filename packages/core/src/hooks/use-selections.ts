@@ -33,40 +33,48 @@ import { useState } from "react";
  * );
  * ```
  */
+/** Returns the selection with `item` added. */
+const withItem = <T>(selectedSet: Set<T>, item: T) => [
+  ...new Set([...selectedSet, item]),
+];
+
+/** Returns the selection with `item` removed. */
+const withoutItem = <T>(selectedSet: Set<T>, item: T) => {
+  const newSet = new Set(selectedSet);
+  newSet.delete(item);
+  return [...newSet];
+};
+
+/** Returns the selection with every item of `items` added. */
+const withItems = <T>(selectedSet: Set<T>, items: T[]) => {
+  const newSet = new Set(selectedSet);
+  for (const o of items) {
+    newSet.add(o);
+  }
+  return [...newSet];
+};
+
+/** Returns the selection with every item of `items` removed. */
+const withoutItems = <T>(selectedSet: Set<T>, items: T[]) => {
+  const newSet = new Set(selectedSet);
+  for (const o of items) {
+    newSet.delete(o);
+  }
+  return [...newSet];
+};
+
 export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
   // Selected Items, Set selected items
   const [selected, setSelected] = useState<T[]>(defaultSelected);
   const selectedSet = new Set(selected);
 
-  /**
-   * Check if an item is selected
-   * @param item The item to check
-   * @returns True if the item is selected, false otherwise
-   */
+  /** Check if an item is selected */
   const isSelected = (item: T) => selectedSet.has(item);
-
-  /**
-   * Select an item
-   * @param item The item to select
-   * @returns The updated selected items
-   */
-  const select = (item: T) => setSelected([...new Set([...selectedSet, item])]);
-
-  /**
-   * UnSelect an item
-   * @param item The item to unselect
-   * @returns The updated selected items
-   */
-  const unSelect = (item: T) => {
-    const newSet = new Set(selectedSet);
-    newSet.delete(item);
-    return setSelected([...newSet]);
-  };
-
-  /**
-   * Toggle the select status of an item
-   * @param item The item to toggle
-   */
+  /** Select an item */
+  const select = (item: T) => setSelected(withItem(selectedSet, item));
+  /** UnSelect an item */
+  const unSelect = (item: T) => setSelected(withoutItem(selectedSet, item));
+  /** Toggle the select status of an item */
   const toggle = (item: T) => {
     if (isSelected(item)) {
       unSelect(item);
@@ -74,28 +82,10 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
       select(item);
     }
   };
-
-  /**
-   * Select all items in the list
-   */
-  const selectAll = () => {
-    const newSet = new Set(selectedSet);
-    for (const o of items) {
-      newSet.add(o);
-    }
-    setSelected([...newSet]);
-  };
-
-  /**
-   * UnSelect all items in the list
-   */
-  const unSelectAll = () => {
-    const newSet = new Set(selectedSet);
-    for (const o of items) {
-      newSet.delete(o);
-    }
-    setSelected([...newSet]);
-  };
+  /** Select all items in the list */
+  const selectAll = () => setSelected(withItems(selectedSet, items));
+  /** UnSelect all items in the list */
+  const unSelectAll = () => setSelected(withoutItems(selectedSet, items));
   /**
    * Check if no item is selected
    */

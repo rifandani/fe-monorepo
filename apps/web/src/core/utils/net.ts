@@ -16,6 +16,7 @@ export const getClientIpAddress = (headers: Headers): string | null => {
   // 2. X-Forwarded-For (most common)
   const xForwardedFor = headers.get(ipAddressHeaders.xForwardedFor);
   if (xForwardedFor) {
+    /* v8 ignore next -- @preserve split always yields a first element for a non-empty header */
     return xForwardedFor.split(",")[0]?.trim() ?? null;
   }
   // 3. X-Real-IP (Nginx)

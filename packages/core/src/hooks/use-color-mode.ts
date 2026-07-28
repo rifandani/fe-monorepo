@@ -61,6 +61,47 @@ export interface UseColorModeOptions<T extends string = BasicColorMode> {
  */
 const COLOR_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 const splitRegex = /\s/gu;
+const NO_TRANSITION_STYLE =
+  "*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}";
+
+/**
+ * Suppresses CSS transitions while the color mode swaps.
+ *
+ * @returns a function restoring transitions once the swap is applied
+ */
+const suppressTransitions = () => {
+  const style = window.document.createElement("style");
+  style.append(document.createTextNode(NO_TRANSITION_STYLE));
+  window.document.head.append(style);
+  return () => {
+    // Calling getComputedStyle forces the browser to redraw
+    (() => window.getComputedStyle(style).opacity)();
+    style.remove();
+  };
+};
+
+/**
+ * Applies the color mode to the element, either by toggling the mode classes
+ * or by writing the mode into a custom attribute.
+ */
+const applyModeToElement = (
+  el: Element,
+  attribute: string,
+  mode: string,
+  modes: Record<string, string>
+) => {
+  if (attribute !== "class") {
+    el.setAttribute(attribute, mode);
+    return;
+  }
+  const current = mode.split(splitRegex);
+  const truthyModes = Object.values(modes)
+    .flatMap((i) => (i || "").split(splitRegex))
+    .filter(Boolean);
+  for (const v of truthyModes) {
+    el.classList.toggle(v, current.includes(v));
+  }
+};
 
 /**
  * Reactive color mode with auto data persistence.
@@ -139,30 +180,11 @@ export const useColorMode = <T extends string = BasicColorMode>(
       if (!el) {
         return;
       }
-      let style: HTMLStyleElement | undefined;
-      if (disableTransition) {
-        style = window.document.createElement("style");
-        const styleString =
-          "*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}";
-        style.append(document.createTextNode(styleString));
-        window.document.head.append(style);
-      }
-      if (_attribute === "class") {
-        const current = _mode.split(splitRegex);
-        const truthyModes = Object.values(modes)
-          .flatMap((i) => (i || "").split(splitRegex))
-          .filter(Boolean);
-        for (const v of truthyModes) {
-          el.classList.toggle(v, current.includes(v));
-        }
-      } else {
-        el.setAttribute(_attribute, _mode);
-      }
-      if (disableTransition) {
-        // Calling getComputedStyle forces the browser to redraw
-        (() => window.getComputedStyle(style as HTMLStyleElement).opacity)();
-        (style as HTMLStyleElement).remove();
-      }
+      const restoreTransitions = disableTransition
+        ? suppressTransitions()
+        : undefined;
+      applyModeToElement(el, _attribute, _mode, modes);
+      restoreTransitions?.();
     },
     [disableTransition, modes]
   );

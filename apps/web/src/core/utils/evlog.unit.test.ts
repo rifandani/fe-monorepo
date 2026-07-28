@@ -30,6 +30,9 @@ const mocks = vi.hoisted(() => {
     evlogRegister,
     evlogOnRequestError,
     registerOtelTracerAndMeter,
+    userAgentEnricher: vi.fn(),
+    requestSizeEnricher: vi.fn(),
+    traceContextEnricher: vi.fn(),
   };
 });
 
@@ -52,9 +55,9 @@ vi.mock("@/core/utils/telemetry-register", () => ({
 }));
 
 vi.mock("evlog/enrichers", () => ({
-  createUserAgentEnricher: () => vi.fn(),
-  createRequestSizeEnricher: () => vi.fn(),
-  createTraceContextEnricher: () => vi.fn(),
+  createUserAgentEnricher: () => mocks.userAgentEnricher,
+  createRequestSizeEnricher: () => mocks.requestSizeEnricher,
+  createTraceContextEnricher: () => mocks.traceContextEnricher,
 }));
 
 vi.mock("evlog/pipeline", () => ({
@@ -102,6 +105,24 @@ describe("evlog wiring", () => {
     );
     expect(sut.createError).toBe(mocks.createError);
     expect(sut.log).toBe(mocks.log);
+  });
+
+  it("enrich runs every enricher and stamps deployment metadata", async () => {
+    vi.stubEnv("VERCEL_DEPLOYMENT_ID", "dpl_1");
+    vi.stubEnv("VERCEL_REGION", "sfo1");
+    await loadSut();
+
+    const [config] = mocks.createEvlog.mock.calls[0] as unknown as [
+      { enrich: (ctx: { event: Record<string, unknown> }) => void },
+    ];
+    const ctx = { event: {} as Record<string, unknown> };
+    config.enrich(ctx);
+
+    expect(mocks.userAgentEnricher).toHaveBeenCalledWith(ctx);
+    expect(mocks.requestSizeEnricher).toHaveBeenCalledWith(ctx);
+    expect(mocks.traceContextEnricher).toHaveBeenCalledWith(ctx);
+    expect(ctx.event.deploymentId).toBe("dpl_1");
+    expect(ctx.event.region).toBe("sfo1");
   });
 
   it("wires identify via createAuthMiddleware", async () => {

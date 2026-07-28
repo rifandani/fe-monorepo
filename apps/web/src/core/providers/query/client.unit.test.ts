@@ -15,6 +15,12 @@ vi.mock("@tanstack/react-query", async (importOriginal) => {
   };
 });
 
+const query = (status: string, dataUpdatedAt = 1) =>
+  ({
+    state: { status, data: undefined, dataUpdatedAt, fetchStatus: "idle" },
+    meta: undefined,
+  }) as never;
+
 describe("getQueryClient", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -36,5 +42,16 @@ describe("getQueryClient", () => {
     const a = getQueryClient();
     const b = getQueryClient();
     expect(a).toBe(b);
+  });
+
+  it("dehydrates pending queries on top of the default predicate", async () => {
+    const { getQueryClient } = await import("./client");
+    const shouldDehydrateQuery =
+      getQueryClient().getDefaultOptions().dehydrate?.shouldDehydrateQuery;
+
+    // success passes the default predicate; pending only passes via the override
+    expect(shouldDehydrateQuery?.(query("success"))).toBe(true);
+    expect(shouldDehydrateQuery?.(query("pending"))).toBe(true);
+    expect(shouldDehydrateQuery?.(query("error"))).toBe(false);
   });
 });

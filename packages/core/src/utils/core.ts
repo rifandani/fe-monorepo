@@ -105,6 +105,7 @@ export const toSnakeCase = <T>(object: unknown): T => {
           const newKey = key
             .replace(
               replaceCamelCaseRegex,
+              /* v8 ignore next -- @preserve the capture group requires [A-Z]+, so it is never empty on a match */
               (_, y) => `_${y ? (y as string).toLowerCase() : ""}`
             )
             .replace(replaceCamelCaseRegex2, "");

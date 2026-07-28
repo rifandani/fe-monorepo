@@ -39,26 +39,78 @@ import { useRef, useState } from "react";
  * );
  * ```
  */
-export const useDynamicList = <T>(initialList: T[] = []) => {
+/**
+ * Tracks one unique, stable key per list item, mirroring every list mutation.
+ */
+const useKeyList = () => {
   const counterRef = useRef(-1);
   const keyListRef = useRef<number[]>([]);
-  const setKey = (index: number) => {
-    counterRef.current += 1;
-    keyListRef.current.splice(index, 0, counterRef.current);
+  return {
+    // Get the uuid of specific item
+    getKey: (index: number) => keyListRef.current[index],
+    // Retrieve index from uuid
+    getIndex: (key: number) => keyListRef.current.indexOf(key),
+    // Generate a key for a newly inserted item at `index`
+    setKey: (index: number) => {
+      counterRef.current += 1;
+      keyListRef.current.splice(index, 0, counterRef.current);
+    },
+    // Generate the initial keys, one per item of `initialList`
+    initKeys: <T>(initialList: T[]) => {
+      keyListRef.current = initialList.map(() => {
+        counterRef.current += 1;
+        return counterRef.current;
+      });
+    },
+    // Drop the key at `index`
+    removeKey: (index: number) => {
+      keyListRef.current.splice(index, 1);
+    },
+    // Move the key at `oldIndex` to `newIndex`
+    moveKey: (oldIndex: number, newIndex: number) => {
+      const keyTemp = keyListRef.current.filter(
+        (_, index: number) => index !== oldIndex
+      );
+      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
+      keyListRef.current = keyTemp;
+    },
+    // Reset the keys back to empty
+    clearKeys: () => {
+      keyListRef.current = [];
+    },
+    // Drop the last key
+    popKey: () => {
+      keyListRef.current = keyListRef.current.slice(0, -1);
+    },
+    // Drop the first key
+    shiftKey: () => {
+      keyListRef.current = keyListRef.current.slice(1);
+    },
   };
+};
+
+export const useDynamicList = <T>(initialList: T[] = []) => {
+  const {
+    getKey,
+    getIndex,
+    setKey,
+    initKeys,
+    removeKey,
+    moveKey,
+    clearKeys,
+    popKey,
+    shiftKey,
+  } = useKeyList();
   // Current list
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization
-    keyListRef.current = initialList.map(() => {
-      counterRef.current += 1;
-      return counterRef.current;
-    });
+    initKeys(initialList);
     return initialList;
   });
   // Reset list current data
   const resetList = (newList: T[]) => {
-    keyListRef.current = [];
+    clearKeys();
     setList(() => {
       for (const [index] of newList.entries()) {
         setKey(index);
@@ -75,10 +127,6 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
       return temp;
     });
   };
-  // Get the uuid of specific item
-  const getKey = (index: number) => keyListRef.current[index];
-  // Retrieve index from uuid
-  const getIndex = (key: number) => keyListRef.current.indexOf(key);
   // Merge items into specific position
   const merge = (index: number, items: T[]) => {
     setList((l) => {
@@ -104,7 +152,7 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
       const temp = [...l];
       temp.splice(index, 1);
       // remove keys if necessary
-      keyListRef.current.splice(index, 1);
+      removeKey(index);
       return temp;
     });
   };
@@ -118,11 +166,7 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
       const temp = newList.filter((_, index: number) => index !== oldIndex);
       temp.splice(newIndex, 0, newList[oldIndex] as T);
       // move keys if necessary
-      const keyTemp = keyListRef.current.filter(
-        (_, index: number) => index !== oldIndex
-      );
-      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
-      keyListRef.current = keyTemp;
+      moveKey(oldIndex, newIndex);
       return temp;
     });
   };
@@ -136,7 +180,7 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
   // Remove the last item from the list
   const pop = () => {
     // remove keys if necessary
-    keyListRef.current = keyListRef.current.slice(0, -1);
+    popKey();
     setList((l) => l.slice(0, -1));
   };
   // Add new item at the front of the list
@@ -149,7 +193,7 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
   // Remove the first item from the list
   const shift = () => {
     // remove keys if necessary
-    keyListRef.current = keyListRef.current.slice(1);
+    shiftKey();
     setList((l) => l.slice(1));
   };
   return {

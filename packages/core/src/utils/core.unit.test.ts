@@ -31,6 +31,19 @@ describe("indonesianPhoneNumberFormat", () => {
       "+62-812-7363-6365"
     );
   });
+
+  it("picks a grouping per subscriber-number length", () => {
+    // 6 digits or fewer
+    expect(indonesianPhoneNumberFormat("+62812363636")).toBe("+62-812-363-636");
+    // 7 digits
+    expect(indonesianPhoneNumberFormat("+628123636365")).toBe(
+      "+62-812-363-6365"
+    );
+    // 9 digits and up
+    expect(indonesianPhoneNumberFormat("+62812736363651")).toBe(
+      "+62-812-7363-63651"
+    );
+  });
 });
 
 describe("toCamelCase / toSnakeCase", () => {
@@ -55,6 +68,22 @@ describe("toCamelCase / toSnakeCase", () => {
   it("maps arrays", () => {
     expect(toCamelCase([{ user_id: 1 }])).toEqual([{ userId: 1 }]);
     expect(toSnakeCase([{ userId: 1 }])).toEqual([{ user_id: 1 }]);
+  });
+
+  it("drops keys whose value is undefined", () => {
+    expect(toCamelCase({ first_name: "Ada", middle_name: undefined })).toEqual({
+      firstName: "Ada",
+    });
+    expect(toSnakeCase({ firstName: "Ada", middleName: undefined })).toEqual({
+      first_name: "Ada",
+    });
+  });
+
+  it("passes primitives and null through untouched", () => {
+    expect(toCamelCase("a_b")).toBe("a_b");
+    expect(toCamelCase(null)).toBeNull();
+    expect(toSnakeCase(42)).toBe(42);
+    expect(toSnakeCase(null)).toBeNull();
   });
 });
 
@@ -104,6 +133,32 @@ describe("objectToFormData", () => {
     expect(formData.get("keep")).toBe("a");
     expect(formData.get("drop")).toBeNull();
   });
+
+  it("appends File values as-is", () => {
+    const file = new File(["hi"], "hi.txt", { type: "text/plain" });
+    const formData = objectToFormData({ avatar: file });
+    expect(formData.get("avatar")).toBeInstanceOf(File);
+    expect((formData.get("avatar") as File).name).toBe("hi.txt");
+  });
+
+  it("skips null and undefined leaves", () => {
+    const formData = objectToFormData({
+      empty: null,
+      missing: undefined,
+      kept: "yes",
+    });
+    expect(formData.get("empty")).toBeNull();
+    expect(formData.get("missing")).toBeNull();
+    expect(formData.get("kept")).toBe("yes");
+  });
+
+  it("skips inherited enumerable properties", () => {
+    const obj = Object.create({ inherited: "no" }) as Record<string, unknown>;
+    obj.own = "yes";
+    const formData = objectToFormData({ nested: obj });
+    expect(formData.get("nested.own")).toBe("yes");
+    expect(formData.get("nested.inherited")).toBeNull();
+  });
 });
 
 describe("objectToFormDataArrayWithComma", () => {
@@ -124,5 +179,10 @@ describe("deepReadObject", () => {
 
   it("returns default when missing", () => {
     expect(deepReadObject(obj, "a.b.d", "not found")).toBe("not found");
+  });
+
+  it("stops traversing once a segment is missing", () => {
+    expect(deepReadObject(obj, "x.y.z", "fallback")).toBe("fallback");
+    expect(deepReadObject(obj, "a.b.c.d.e")).toBeUndefined();
   });
 });

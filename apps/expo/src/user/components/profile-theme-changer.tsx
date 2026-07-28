@@ -7,6 +7,12 @@ import { useBaseSheet } from "@/core/hooks/use-base-sheet";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
+const THEME_OPTIONS = [
+  { icon: "sun", value: "light" },
+  { icon: "moon", value: "dark" },
+  { icon: "tablet", value: "system" },
+] as const;
+
 export const ProfileThemeChanger = () => {
   const { t } = useTranslation();
   const theme = useAppStore((state) => state.theme);
@@ -22,57 +28,25 @@ export const ProfileThemeChanger = () => {
       />
 
       <FitSheet state={state} setState={setState}>
-        <FitSheet.Item>
-          <ListItem
-            pressTheme
-            title={t("light")}
-            icon={<Feather name="sun" size={20} />}
-            iconAfter={
-              theme === "light" ? (
-                <Feather
-                  testID="profile-theme-light-checked"
-                  name="check-circle"
-                  size={20}
-                />
-              ) : undefined
-            }
-            onPress={() => setTheme("light")}
-          />
-        </FitSheet.Item>
-        <FitSheet.Item>
-          <ListItem
-            pressTheme
-            title={t("dark")}
-            icon={<Feather name="moon" size={20} />}
-            iconAfter={
-              theme === "dark" ? (
-                <Feather
-                  testID="profile-theme-dark-checked"
-                  name="check-circle"
-                  size={20}
-                />
-              ) : undefined
-            }
-            onPress={() => setTheme("dark")}
-          />
-        </FitSheet.Item>
-        <FitSheet.Item>
-          <ListItem
-            pressTheme
-            title={t("system")}
-            icon={<Feather name="tablet" size={20} />}
-            iconAfter={
-              theme === "system" ? (
-                <Feather
-                  testID="profile-theme-system-checked"
-                  name="check-circle"
-                  size={20}
-                />
-              ) : undefined
-            }
-            onPress={() => setTheme("system")}
-          />
-        </FitSheet.Item>
+        {THEME_OPTIONS.map((option) => (
+          <FitSheet.Item key={option.value}>
+            <ListItem
+              pressTheme
+              title={t(option.value)}
+              icon={<Feather name={option.icon} size={20} />}
+              iconAfter={
+                theme === option.value ? (
+                  <Feather
+                    testID={`profile-theme-${option.value}-checked`}
+                    name="check-circle"
+                    size={20}
+                  />
+                ) : undefined
+              }
+              onPress={() => setTheme(option.value)}
+            />
+          </FitSheet.Item>
+        ))}
       </FitSheet>
     </>
   );

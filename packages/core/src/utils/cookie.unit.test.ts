@@ -27,4 +27,40 @@ describe("parseSetCookieHeader", () => {
     expect(cookies.get("id")?.domain).toBe("example.com");
     expect(cookies.get("id")?.samesite).toBeUndefined();
   });
+
+  it("treats valueless attributes as undefined", () => {
+    const cookies = parseSetCookieHeader(
+      "id=1; Max-Age=; Expires=; Domain=; Path="
+    );
+    const cookie = cookies.get("id");
+    expect(cookie?.["max-age"]).toBeUndefined();
+    expect(cookie?.expires).toBeUndefined();
+    expect(cookie?.domain).toBeUndefined();
+    expect(cookie?.path).toBeUndefined();
+  });
+
+  it("keeps unknown attributes, flagging valueless ones as true", () => {
+    const cookies = parseSetCookieHeader("id=1; Priority=High; Partitioned");
+    expect(cookies.get("id")?.priority).toBe("High");
+    expect(cookies.get("id")?.partitioned).toBe(true);
+  });
+
+  it("keeps '=' inside values", () => {
+    const cookies = parseSetCookieHeader("data=a=b; Priority=a=b");
+    expect(cookies.get("data")?.value).toBe("a=b");
+    expect(cookies.get("data")?.priority).toBe("a=b");
+  });
+
+  it("skips entries with no name and keeps valueless ones", () => {
+    const cookies = parseSetCookieHeader("=orphan, novalue, ok=1");
+    expect(cookies.size).toBe(2);
+    expect(cookies.get("novalue")?.value).toBe("");
+    expect(cookies.get("ok")?.value).toBe("1");
+  });
+
+  it("parses multiple comma-separated cookies", () => {
+    const cookies = parseSetCookieHeader("a=1; Path=/, b=2; Secure");
+    expect(cookies.get("a")?.path).toBe("/");
+    expect(cookies.get("b")?.secure).toBe(true);
+  });
 });

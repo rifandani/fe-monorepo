@@ -46,6 +46,7 @@ describe("userKeys", () => {
     expect(userKeys.details()).toEqual(["users", "detail"]);
     expect(userKeys.detail({ id: 1 })).toEqual(["users", "detail", { id: 1 }]);
     expect(userKeys.detail()).toEqual(["users", "detail"]);
+    expect(userKeys.list()).toEqual(["users", "list"]);
   });
 });
 

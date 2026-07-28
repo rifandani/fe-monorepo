@@ -1,7 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import type { ComponentProps } from "react";
 import { useState } from "react";
+import type { Control, RegisterOptions } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
 import {
   Checkbox,
@@ -39,6 +41,60 @@ const RememberMeCheckbox = () => {
     </XStack>
   );
 };
+interface LoginFormValues {
+  password: string;
+  username: string;
+}
+
+/** One labelled text input of the login form, wired to react-hook-form. */
+const LoginTextField = ({
+  control,
+  name,
+  label,
+  placeholder,
+  labelProps,
+  secureTextEntry,
+  rules,
+}: {
+  control: Control<LoginFormValues>;
+  name: keyof LoginFormValues;
+  label: string;
+  placeholder: string;
+  labelProps: ComponentProps<typeof Label>;
+  secureTextEntry?: boolean;
+  rules?: RegisterOptions<LoginFormValues>;
+}) => (
+  <>
+    <Label htmlFor={name} {...labelProps}>
+      {label}
+    </Label>
+    <Controller
+      name={name}
+      control={control}
+      rules={rules}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => (
+        <>
+          <Input
+            secureTextEntry={secureTextEntry}
+            placeholder={placeholder}
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          />
+          {error?.message ? (
+            <Paragraph testID={`login-form-${name}-error`} color="$red10">
+              {error.message}
+            </Paragraph>
+          ) : null}
+        </>
+      )}
+    />
+  </>
+);
+
 export const LoginForm = () => {
   const { t } = useTranslation();
   const setUser = useAppStore((state) => state.setUser);
@@ -61,61 +117,25 @@ export const LoginForm = () => {
         loginMutation.mutate(values);
       })}
     >
-      <Label htmlFor="username" mb="$1">
-        {t("username")}
-      </Label>
-      <Controller
-        name="username"
+      <LoginTextField
         control={form.control}
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <>
-            <Input
-              placeholder={t("usernamePlaceholder")}
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-            />
-            {error?.message ? (
-              <Paragraph testID="login-form-username-error" color="$red10">
-                {error.message}
-              </Paragraph>
-            ) : null}
-          </>
-        )}
+        label={t("username")}
+        labelProps={{ mb: "$1" }}
+        name="username"
+        placeholder={t("usernamePlaceholder")}
       />
 
-      <Label htmlFor="password" my="$2">
-        {t("password")}
-      </Label>
-      <Controller
-        name="password"
+      <LoginTextField
         control={form.control}
+        label={t("password")}
+        labelProps={{ my: "$2" }}
+        name="password"
+        placeholder={t("passwordPlaceholder")}
         rules={{
           minLength: 6,
           required: true,
         }}
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <>
-            <Input
-              secureTextEntry
-              placeholder={t("passwordPlaceholder")}
-              value={value}
-              onBlur={onBlur}
-              onChangeText={onChange}
-            />
-            {error?.message ? (
-              <Paragraph testID="login-form-password-error" color="$red10">
-                {error.message}
-              </Paragraph>
-            ) : null}
-          </>
-        )}
+        secureTextEntry
       />
 
       <RememberMeCheckbox />

@@ -12,6 +12,57 @@ export interface Options<T> {
 }
 
 /**
+ * Serializes a value before storing in storage
+ * Uses custom serializer if provided, otherwise JSON.stringify
+ */
+const serialize = <T>(value: T, options: Options<T>) => {
+  if (options.serializer) {
+    return options.serializer(value);
+  }
+  return JSON.stringify(value);
+};
+
+/**
+ * Deserializes a value retrieved from storage
+ * Uses custom deserializer if provided, otherwise JSON.parse
+ */
+const deserialize = <T>(value: string, options: Options<T>): T => {
+  if (options.deserializer) {
+    return options.deserializer(value);
+  }
+  return JSON.parse(value);
+};
+
+/** Resolves `defaultValue`, calling it when it is a factory */
+const resolveDefaultValue = <T>(options: Options<T>) => {
+  if (isFunction(options.defaultValue)) {
+    return options.defaultValue();
+  }
+  return options.defaultValue;
+};
+
+/**
+ * Retrieves and deserializes the stored value from storage
+ * Falls back to defaultValue if storage access fails or value doesn't exist
+ */
+const readStoredValue = <T>(
+  storage: Storage | undefined,
+  key: string,
+  options: Options<T>,
+  onError: (error: unknown) => void
+) => {
+  try {
+    const raw = storage?.getItem(key);
+    if (raw) {
+      return deserialize(raw, options);
+    }
+  } catch (error) {
+    onError(error);
+  }
+  return resolveDefaultValue(options);
+};
+
+/**
  * Creates a custom hook for managing state in browser storage (localStorage/sessionStorage)
  * @param getStorage Function that returns the storage object to use (localStorage or sessionStorage)
  * @returns A hook that manages state with the specified storage
@@ -39,44 +90,8 @@ export const createUseStorageState = (
     } catch (error) {
       onError(error);
     }
-    /**
-     * Serializes a value before storing in storage
-     * Uses custom serializer if provided, otherwise JSON.stringify
-     */
-    const serializer = (value: T) => {
-      if (options.serializer) {
-        return options.serializer(value);
-      }
-      return JSON.stringify(value);
-    };
-    /**
-     * Deserializes a value retrieved from storage
-     * Uses custom deserializer if provided, otherwise JSON.parse
-     */
-    const deserializer = (value: string): T => {
-      if (options.deserializer) {
-        return options.deserializer(value);
-      }
-      return JSON.parse(value);
-    };
-    /**
-     * Retrieves and deserializes the stored value from storage
-     * Falls back to defaultValue if storage access fails or value doesn't exist
-     */
-    const getStoredValue = () => {
-      try {
-        const raw = storage?.getItem(key);
-        if (raw) {
-          return deserializer(raw);
-        }
-      } catch (error) {
-        onError(error);
-      }
-      if (isFunction(options.defaultValue)) {
-        return options.defaultValue();
-      }
-      return options.defaultValue;
-    };
+    const getStoredValue = () =>
+      readStoredValue(storage, key, options, onError);
     const [state, setState] = useState(getStoredValue);
     // Update state when key changes
     useUpdateEffect(() => {
@@ -93,7 +108,7 @@ export const createUseStorageState = (
         storage?.removeItem(key);
       } else {
         try {
-          storage?.setItem(key, serializer(currentState));
+          storage?.setItem(key, serialize(currentState, options));
         } catch (error) {
           console.error(error);
         }

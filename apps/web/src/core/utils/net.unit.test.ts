@@ -45,4 +45,10 @@ describe("getClientIpAddress", () => {
   it("returns null when no IP headers are present", () => {
     expect(getClientIpAddress(new Headers())).toBeNull();
   });
+
+  it("returns null when Forwarded carries no for= directive", () => {
+    expect(
+      getClientIpAddress(new Headers({ forwarded: "proto=https;host=x" }))
+    ).toBeNull();
+  });
 });

@@ -18,6 +18,7 @@ vi.mock("@/core/utils/evlog", () => ({
 const mockRequest = (init: {
   origin?: string | null;
   host?: string;
+  forwardedHost?: string;
 }): NextRequest => {
   const headers = new Headers();
   if (init.origin) {
@@ -25,6 +26,9 @@ const mockRequest = (init: {
   }
   if (init.host) {
     headers.set("host", init.host);
+  }
+  if (init.forwardedHost) {
+    headers.set("x-forwarded-host", init.forwardedHost);
   }
   return { headers } as NextRequest;
 };
@@ -35,9 +39,36 @@ describe("ingest", () => {
     expect(hosts.has("web.localhost")).toBe(true);
   });
 
+  it("getAllowedHosts collects every forwarded host and skips absent headers", () => {
+    const hosts = getAllowedHosts(
+      mockRequest({ forwardedHost: "a.test, b.test" })
+    );
+    expect([...hosts].toSorted()).toEqual([
+      "a.test",
+      "b.test",
+      "web.localhost",
+    ]);
+  });
+
   it("isAllowedOrigin accepts matching hosts", () => {
     const req = mockRequest({ host: "web.localhost" });
     expect(isAllowedOrigin(req, "https://web.localhost")).toBe(true);
+  });
+
+  it("isAllowedOrigin allows *.localhost proxies in development only", () => {
+    const req = mockRequest({ host: "localhost:3000" });
+
+    vi.stubEnv("NODE_ENV", "development");
+    expect(isAllowedOrigin(req, "https://spa.localhost")).toBe(true);
+
+    vi.stubEnv("NODE_ENV", "production");
+    expect(isAllowedOrigin(req, "https://spa.localhost")).toBe(false);
+  });
+
+  it("isAllowedOrigin rejects unknown hosts", () => {
+    const req = mockRequest({ host: "localhost:3000" });
+    vi.stubEnv("NODE_ENV", "development");
+    expect(isAllowedOrigin(req, "https://evil.example.com")).toBe(false);
   });
 
   it("parseIngestBody accepts valid payloads", () => {

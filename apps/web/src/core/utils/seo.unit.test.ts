@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createMetadata, createWebPage, createWebSite } from "./seo";
+import { createMetadata, createWebPage, createWebSite, JsonLd } from "./seo";
 
 vi.mock("@/core/constants/env", () => ({
   ENV: {
@@ -98,5 +98,21 @@ describe("createWebPage", () => {
       name: "@workspace/web",
     });
     expect(String(page["@id"])).toContain("https://web.test/about#");
+  });
+});
+
+describe("JsonLd", () => {
+  it("serializes the graph into a ld+json script element", () => {
+    const graphs = [createWebPage({ url: "https://web.test/about" })];
+    const element = JsonLd({ graphs });
+
+    expect(element.type).toBe("script");
+    expect(element.props.type).toBe("application/ld+json");
+    expect(
+      JSON.parse(element.props.dangerouslySetInnerHTML.__html as string)
+    ).toMatchObject({
+      "@context": "https://schema.org",
+      "@graph": [{ "@type": "WebPage", url: "https://web.test/about" }],
+    });
   });
 });

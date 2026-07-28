@@ -85,13 +85,7 @@ export const getTracer = ({
   }
   return trace.getTracer(SERVICE_NAME);
 };
-export const recordSpan = <T>({
-  name,
-  tracer,
-  attributes,
-  fn,
-  endWhenDone = true,
-}: {
+interface RecordSpanOptions<T> {
   /**
    * The name of the span.
    */
@@ -114,7 +108,39 @@ export const recordSpan = <T>({
    * @default true
    */
   endWhenDone?: boolean;
-}) =>
+}
+
+/** Marks the span as failed and always ends it. */
+const failSpan = (span: Span, error: unknown) => {
+  try {
+    match(error)
+      .with(P.instanceOf(Error), (err) => {
+        span.recordException({
+          message: err.message,
+          name: err.name,
+          stack: err.stack,
+        });
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: err.message,
+        });
+      })
+      .otherwise(() => {
+        span.setStatus({ code: SpanStatusCode.ERROR });
+      });
+  } finally {
+    // always stop the span when there is an error:
+    span.end();
+  }
+};
+
+export const recordSpan = <T>({
+  name,
+  tracer,
+  attributes,
+  fn,
+  endWhenDone = true,
+}: RecordSpanOptions<T>) =>
   tracer.startActiveSpan(name, { attributes }, async (span) => {
     try {
       const result = await fn(span);
@@ -124,26 +150,7 @@ export const recordSpan = <T>({
       }
       return result;
     } catch (error) {
-      try {
-        match(error)
-          .with(P.instanceOf(Error), (err) => {
-            span.recordException({
-              message: err.message,
-              name: err.name,
-              stack: err.stack,
-            });
-            span.setStatus({
-              code: SpanStatusCode.ERROR,
-              message: err.message,
-            });
-          })
-          .otherwise(() => {
-            span.setStatus({ code: SpanStatusCode.ERROR });
-          });
-      } finally {
-        // always stop the span when there is an error:
-        span.end();
-      }
+      failSpan(span, error);
       throw error;
     }
   });

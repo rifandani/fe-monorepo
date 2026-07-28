@@ -13,19 +13,52 @@ const author = {
 const publisher = "Rizeki Rifandani";
 const twitterHandle = "@tri_rizeki";
 const appUrl = ENV.NEXT_PUBLIC_APP_URL;
-export const createMetadata = ({
-  title,
-  description,
-  image,
-  ...properties
-}: Omit<Metadata, "description" | "title"> & {
-  title: string;
+interface MetadataParts {
+  parsedTitle: string;
   description: string;
-  image?: string;
-}) => {
-  const parsedTitle = `${title} | ${applicationName}`;
-  const ogImage = `/api/og?title=${encodeURIComponent(title)}`;
-  const defaultMetadata: Metadata = {
+  ogImage: string;
+}
+
+const buildOpenGraph = ({
+  parsedTitle,
+  description,
+  ogImage,
+}: MetadataParts): Metadata["openGraph"] => ({
+  countryName: "Indonesia",
+  description,
+  images: [
+    {
+      alt: parsedTitle,
+      height: 441,
+      url: ogImage,
+      width: 843,
+    },
+  ],
+  locale: "en_US",
+  siteName: applicationName,
+  title: parsedTitle,
+  type: "website",
+  url: appUrl,
+});
+
+const buildTwitter = ({
+  parsedTitle,
+  description,
+  ogImage,
+}: MetadataParts): Metadata["twitter"] => ({
+  card: "summary_large_image",
+  creator: publisher,
+  creatorId: twitterHandle,
+  description,
+  images: [ogImage],
+  site: `@${appUrl}`,
+  siteId: twitterHandle, // should be the id for the app itself
+  title: parsedTitle,
+});
+
+const buildDefaultMetadata = (parts: MetadataParts): Metadata => {
+  const { parsedTitle, description, ogImage } = parts;
+  return {
     title: parsedTitle,
     description,
     applicationName,
@@ -49,36 +82,28 @@ export const createMetadata = ({
       statusBarStyle: "default",
       title: parsedTitle,
     },
-    openGraph: {
-      countryName: "Indonesia",
-      description,
-      images: [
-        {
-          alt: parsedTitle,
-          height: 441,
-          url: ogImage,
-          width: 843,
-        },
-      ],
-      locale: "en_US",
-      siteName: applicationName,
-      title: parsedTitle,
-      type: "website",
-      url: appUrl,
-    },
-    twitter: {
-      card: "summary_large_image",
-      creator: publisher,
-      creatorId: twitterHandle,
-      description,
-      images: [ogImage],
-      site: `@${appUrl}`,
-      siteId: twitterHandle, // should be the id for the app itself
-      title: parsedTitle,
-    },
+    openGraph: buildOpenGraph(parts),
+    twitter: buildTwitter(parts),
   };
+};
+
+export const createMetadata = ({
+  title,
+  description,
+  image,
+  ...properties
+}: Omit<Metadata, "description" | "title"> & {
+  title: string;
+  description: string;
+  image?: string;
+}) => {
+  const parsedTitle = `${title} | ${applicationName}`;
+  const ogImage = `/api/og?title=${encodeURIComponent(title)}`;
   // Merge the default metadata with any additional properties passed in
-  const metadata = assign(defaultMetadata, properties);
+  const metadata = assign(
+    buildDefaultMetadata({ description, ogImage, parsedTitle }),
+    properties
+  );
   // If an image URL was provided and OpenGraph metadata exists,
   // override the default OG image with the provided image details
   if (image && metadata.openGraph) {

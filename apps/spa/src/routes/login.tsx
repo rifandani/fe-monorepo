@@ -1,19 +1,11 @@
-import { useForm } from "@tanstack/react-form";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { ErrorResponseSchema } from "@workspace/core/apis/core";
 import { toast } from "sonner";
 
-import { useAuthLogin } from "@/auth/hooks/use-auth-login";
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { LoginTextField } from "@/auth/components/login-text-field";
+import { useLoginForm } from "@/auth/hooks/use-login-form";
 import { validateAuthUser } from "@/auth/utils/storage";
-import {
-  FieldError,
-  Input,
-  Label,
-  Note,
-  TextField,
-} from "@/core/components/ui";
+import { Note } from "@/core/components/ui";
 import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { useSeo } from "@/core/hooks/use-seo";
@@ -22,27 +14,7 @@ import { reportWebVitals } from "@/core/utils/web-vitals";
 
 const LoginForm = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { setUser } = useAuthUserStore();
-  const loginMutation = useAuthLogin(undefined, {
-    onSuccess: async (user) => {
-      // set user to local storage and navigate to home
-      setUser(user);
-      await navigate({ to: "/" });
-    },
-  });
-  const form = useForm({
-    defaultValues: {
-      password: "",
-      username: "",
-    },
-    onSubmit: ({ value }) => {
-      loginMutation.mutate(value);
-    },
-    validators: {
-      onChange: authLoginRequestSchema,
-    },
-  });
+  const { form, loginMutation } = useLoginForm();
   return (
     <form
       className={`
@@ -56,52 +28,27 @@ const LoginForm = () => {
     >
       <form.Field name="username">
         {(field) => (
-          <TextField
+          <LoginTextField
             className="group/username pt-4"
-            // let RHF handle validation instead of the browser.
-            validationBehavior="aria"
-            isRequired
-            value={field.state.value}
-            onChange={field.handleChange}
-            isInvalid={!field.state.meta.isValid}
-          >
-            <Label htmlFor="username">{t("username")}</Label>
-            <Input
-              id="username"
-              aria-label={t("username")}
-              placeholder={t("usernamePlaceholder")}
-            />
-            <FieldError>
-              {field.state.meta.errorMap.onChange?.[0]?.message}
-            </FieldError>
-          </TextField>
+            field={field}
+            id="username"
+            label={t("username")}
+            placeholder={t("usernamePlaceholder")}
+          />
         )}
       </form.Field>
 
       {/* password */}
       <form.Field name="password">
         {(field) => (
-          <TextField
+          <LoginTextField
             className="group/password pt-4"
-            // Let React Hook Form handle validation instead of the browser.
-            validationBehavior="aria"
+            field={field}
+            id="password"
+            label={t("password")}
+            placeholder={t("passwordPlaceholder")}
             type="password"
-            isRequired
-            value={field.state.value}
-            onChange={field.handleChange}
-            isInvalid={!field.state.meta.isValid}
-          >
-            <Label htmlFor="password">{t("password")}</Label>
-            <Input
-              id="password"
-              aria-label={t("password")}
-              placeholder={t("passwordPlaceholder")}
-              type="password"
-            />
-            <FieldError>
-              {field.state.meta.errorMap.onChange?.[0]?.message}
-            </FieldError>
-          </TextField>
+          />
         )}
       </form.Field>
 

@@ -3,17 +3,11 @@
 import { useTranslations } from "next-intl";
 
 import { registerAction } from "@/auth/actions/auth";
+import { AuthSubmitButton } from "@/auth/components/auth-submit-button.client";
+import { AuthTextField } from "@/auth/components/auth-text-field.client";
 import { registerFormOpts } from "@/auth/forms/register-form-options";
-import {
-  Button,
-  FieldError,
-  Input,
-  Label,
-  Note,
-  TextField,
-} from "@/core/components/ui";
+import { Note } from "@/core/components/ui";
 import { useServerForm } from "@/core/hooks/use-server-form";
-import { fieldErrorMessage } from "@/core/utils/field-error-message";
 
 export const RegisterForm = () => {
   const t = useTranslations();
@@ -31,86 +25,40 @@ export const RegisterForm = () => {
     >
       <form.Field name="name">
         {(field) => (
-          <TextField
+          <AuthTextField
             className="group/name pt-4"
-            // Let TanStack Form handle validation instead of the browser.
-            validationBehavior="aria"
-            isRequired
-            name={field.name}
-            value={field.state.value}
-            onChange={field.handleChange}
-            onBlur={field.handleBlur}
-            isInvalid={!field.state.meta.isValid}
+            field={field}
             isDisabled={isPending}
-          >
-            <Label htmlFor={field.name}>{t("name")}</Label>
-            <Input
-              id={field.name}
-              aria-label={t("name")}
-              placeholder={t("namePlaceholder")}
-              type="text"
-            />
-            <FieldError>
-              {fieldErrorMessage(field.state.meta.errorMap)}
-            </FieldError>
-          </TextField>
+            label={t("name")}
+            placeholder={t("namePlaceholder")}
+            type="text"
+          />
         )}
       </form.Field>
 
       <form.Field name="email">
         {(field) => (
-          <TextField
+          <AuthTextField
             className="group/email pt-4"
-            // Let TanStack Form handle validation instead of the browser.
-            validationBehavior="aria"
-            isRequired
-            name={field.name}
-            value={field.state.value}
-            onChange={field.handleChange}
-            onBlur={field.handleBlur}
-            isInvalid={!field.state.meta.isValid}
+            field={field}
             isDisabled={isPending}
-          >
-            <Label htmlFor={field.name}>{t("email")}</Label>
-            <Input
-              id={field.name}
-              aria-label={t("email")}
-              placeholder={t("emailPlaceholder")}
-              type="email"
-            />
-            <FieldError>
-              {fieldErrorMessage(field.state.meta.errorMap)}
-            </FieldError>
-          </TextField>
+            label={t("email")}
+            placeholder={t("emailPlaceholder")}
+            type="email"
+          />
         )}
       </form.Field>
 
       <form.Field name="password">
         {(field) => (
-          <TextField
+          <AuthTextField
             className="group/password pt-4"
-            // Let TanStack Form handle validation instead of the browser.
-            validationBehavior="aria"
-            type="password"
-            isRequired
-            name={field.name}
-            value={field.state.value}
-            onChange={field.handleChange}
-            onBlur={field.handleBlur}
-            isInvalid={!field.state.meta.isValid}
+            field={field}
             isDisabled={isPending}
-          >
-            <Label htmlFor={field.name}>{t("password")}</Label>
-            <Input
-              id={field.name}
-              aria-label={t("password")}
-              placeholder={t("passwordPlaceholder")}
-              type="password"
-            />
-            <FieldError>
-              {fieldErrorMessage(field.state.meta.errorMap)}
-            </FieldError>
-          </TextField>
+            label={t("password")}
+            placeholder={t("passwordPlaceholder")}
+            type="password"
+          />
         )}
       </form.Field>
 
@@ -120,19 +68,12 @@ export const RegisterForm = () => {
         </Note>
       )}
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
-          <Button
-            type="submit"
-            className="mt-8 w-full normal-case"
-            isDisabled={isPending || isSubmitting || !canSubmit}
-          >
-            {isPending || isSubmitting ? t("registerLoading") : t("register")}
-          </Button>
-        )}
-      </form.Subscribe>
+      <AuthSubmitButton
+        form={form}
+        isPending={isPending}
+        label={t("register")}
+        loadingLabel={t("registerLoading")}
+      />
     </form>
   );
 };

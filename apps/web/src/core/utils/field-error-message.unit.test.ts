@@ -25,4 +25,14 @@ describe("fieldErrorMessage", () => {
   it("returns undefined when empty", () => {
     expect(fieldErrorMessage({})).toBeUndefined();
   });
+
+  it("returns undefined for unrecognised issue shapes", () => {
+    expect(fieldErrorMessage({ onChange: 42 })).toBeUndefined();
+    expect(fieldErrorMessage({ onChange: [] })).toBeUndefined();
+    expect(fieldErrorMessage({ onChange: [null] })).toBeUndefined();
+    expect(
+      fieldErrorMessage({ onChange: [{ code: "too_small" }] })
+    ).toBeUndefined();
+    expect(fieldErrorMessage({ onChange: [{ message: 1 }] })).toBeUndefined();
+  });
 });

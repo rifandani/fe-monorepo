@@ -12,70 +12,52 @@ import { log } from "@/core/utils/evlog";
 import "server-only";
 
 /**
+ * Logs the error and records it on the span, if any.
+ */
+const report = (
+  kind: string,
+  err: Error,
+  span: Span | undefined,
+  response?: unknown
+) => {
+  const errorObject = simplifyErrorObject(err);
+  log.error({
+    area: "serverErrorMapper",
+    kind,
+    ...errorObject,
+    ...(response === undefined ? {} : { response }),
+  });
+  span?.recordException(errorObject);
+  span?.setStatus({
+    code: SpanStatusCode.ERROR,
+    message: err.message,
+  });
+};
+
+/**
  * Maps a caught server error to a client-safe message string
  * (logs + optional span recording as a side effect).
  */
 export const serverErrorMapper = (error: Error, span?: Span): string =>
   match(error)
     .with(P.instanceOf(HTTPError), (err) => {
-      const errorObject = simplifyErrorObject(err);
       const parsed = errorResponseSchema.safeParse(err.data);
       const json: ErrorResponseSchema = parsed.success
         ? parsed.data
         : { message: err.message };
-      log.error({
-        area: "serverErrorMapper",
-        kind: "HTTPError",
-        ...errorObject,
-        response: json,
-      });
-      span?.recordException(errorObject);
-      span?.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: err.message,
-      });
+      report("HTTPError", err, span, json);
       return json.message;
     })
     .with(P.instanceOf(TimeoutError), (err) => {
-      const errorObject = simplifyErrorObject(err);
-      log.error({
-        area: "serverErrorMapper",
-        kind: "TimeoutError",
-        ...errorObject,
-      });
-      span?.recordException(errorObject);
-      span?.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: err.message,
-      });
+      report("TimeoutError", err, span);
       return err.message;
     })
     .with(P.instanceOf(z.ZodError), (err) => {
-      const errorObject = simplifyErrorObject(err);
-      log.error({
-        area: "serverErrorMapper",
-        kind: "ZodError",
-        ...errorObject,
-        response: z.prettifyError(err),
-      });
-      span?.recordException(errorObject);
-      span?.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: err.message,
-      });
-      return z.prettifyError(err);
+      const prettified = z.prettifyError(err);
+      report("ZodError", err, span, prettified);
+      return prettified;
     })
     .otherwise((err) => {
-      const errorObject = simplifyErrorObject(err);
-      log.error({
-        area: "serverErrorMapper",
-        kind: "UnknownError",
-        ...errorObject,
-      });
-      span?.recordException(errorObject);
-      span?.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: err.message,
-      });
+      report("UnknownError", err, span);
       return err.message;
     });

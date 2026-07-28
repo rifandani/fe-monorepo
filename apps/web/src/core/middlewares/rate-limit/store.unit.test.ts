@@ -101,6 +101,23 @@ describe("DbStore", () => {
       expect(db.delete).toHaveBeenCalled();
     });
 
+    it("returns undefined when the row is empty", async () => {
+      db.select.mockReturnValue(db.makeChain([undefined]));
+      expect(await store.get("k")).toBeUndefined();
+    });
+
+    it("treats a null lastRequest and count as an active zero-hit window", async () => {
+      const now = Date.now();
+      vi.spyOn(Date, "now").mockReturnValue(now);
+      db.select.mockReturnValue(
+        db.makeChain([{ key: "k", count: null, lastRequest: null }])
+      );
+
+      const result = await store.get("k");
+      expect(result?.totalHits).toBe(0);
+      expect(result?.resetTime?.getTime()).toBe(now + 60_000);
+    });
+
     it("logs and fails open on db errors", async () => {
       db.select.mockImplementation(() => {
         throw new Error("db down");
@@ -150,6 +167,26 @@ describe("DbStore", () => {
       expect(result.totalHits).toBe(1);
     });
 
+    it("falls back to one hit when the insert returns no row", async () => {
+      db.select.mockReturnValue(db.makeChain([]));
+      db.insert.mockReturnValue(db.makeChain([]));
+
+      const inserted = await store.increment("new");
+      expect(inserted.totalHits).toBe(1);
+    });
+
+    it("falls back to one hit when the update returns no row", async () => {
+      const now = Date.now();
+      vi.spyOn(Date, "now").mockReturnValue(now);
+      db.select.mockReturnValue(
+        db.makeChain([{ key: "k", count: null, lastRequest: now - 100 }])
+      );
+      db.update.mockReturnValue(db.makeChain([]));
+
+      const updated = await store.increment("k");
+      expect(updated.totalHits).toBe(1);
+    });
+
     it("returns fail-open estimate on error", async () => {
       db.select.mockImplementation(() => {
         throw new Error("write fail");
@@ -195,6 +232,26 @@ describe("DbStore", () => {
       await store.decrement("k");
       expect(log.error).toHaveBeenCalledWith(
         expect.objectContaining({ operation: "decrement" })
+      );
+    });
+
+    it("logs resetKey errors", async () => {
+      db.delete.mockImplementation(() => {
+        throw new Error("reset fail");
+      });
+      await store.resetKey("k");
+      expect(log.error).toHaveBeenCalledWith(
+        expect.objectContaining({ operation: "resetKey" })
+      );
+    });
+
+    it("logs resetAll errors", async () => {
+      db.delete.mockImplementation(() => {
+        throw new Error("reset all fail");
+      });
+      await store.resetAll();
+      expect(log.error).toHaveBeenCalledWith(
+        expect.objectContaining({ operation: "resetAll" })
       );
     });
   });

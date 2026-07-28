@@ -17,7 +17,8 @@
     "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
-    "test:unit": "vitest run --project core"
+    "test:unit": "vitest run --project core",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "26.1.1",

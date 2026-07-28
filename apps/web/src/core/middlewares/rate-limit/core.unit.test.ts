@@ -99,6 +99,46 @@ describe("rateLimiter", () => {
     expect(request.headers.get("RateLimit")).toContain("limit=5");
   });
 
+  it("accepts a store without an init method", async () => {
+    const initless = {
+      increment: vi.fn().mockResolvedValue({
+        totalHits: 1,
+        resetTime: new Date(),
+      }),
+      decrement: vi.fn(),
+      resetKey: vi.fn(),
+    } as unknown as Store;
+
+    const middleware = rateLimiter({
+      keyGenerator: () => "client-5",
+      store: initless,
+    });
+
+    await expect(middleware(mockRequest())).resolves.toBeUndefined();
+  });
+
+  it("skips RateLimit headers when standardHeaders is disabled", async () => {
+    vi.mocked(store.increment).mockResolvedValue({
+      totalHits: 9,
+      resetTime: new Date(Date.now() + 5000),
+    });
+
+    const middleware = rateLimiter({
+      keyGenerator: () => "client-6",
+      limit: 5,
+      message: "Too many",
+      standardHeaders: false,
+      store,
+    });
+
+    const request = mockRequest();
+    const response = await middleware(request);
+
+    expect(response?.status).toBe(429);
+    expect(request.headers.has("RateLimit-Limit")).toBe(false);
+    expect(request.headers.has("Retry-After")).toBe(false);
+  });
+
   it("supports function limits and JSON error messages", async () => {
     vi.mocked(store.increment).mockResolvedValue({
       totalHits: 3,

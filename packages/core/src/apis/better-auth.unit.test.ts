@@ -42,6 +42,14 @@ describe("better-auth authKeys", () => {
       "signUpEmail",
       { email: "a@b.c", name: "Ada", password: "password1" },
     ]);
+    expect(authKeys.signUpEmail()).toEqual(["auth", "signUpEmail"]);
+    expect(
+      authKeys.signInEmail({ email: "a@b.c", password: "password1" })
+    ).toEqual([
+      "auth",
+      "signInEmail",
+      { email: "a@b.c", password: "password1" },
+    ]);
   });
 });
 
