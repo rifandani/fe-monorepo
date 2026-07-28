@@ -19,6 +19,7 @@ const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
     }
     try {
       console.log("🔵 Checking for SW updates...");
+      // fallow-ignore-next-line security-sink -- swUrl comes from vite-plugin-pwa's onRegisteredSW; SW scripts are same-origin by spec
       const resp = await fetch(swUrl, {
         cache: "no-store",
         headers: {

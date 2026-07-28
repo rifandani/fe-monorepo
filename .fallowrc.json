@@ -11,6 +11,7 @@
   ],
   "overrides": [
     {
+      "$comment": "`fallow security` ignores rule severities from `rules`/`overrides` entirely (verified: setting security-sink/security-client-server-leak to off changes nothing). Its findings are suppressed only by in-source tokens — `// fallow-ignore-file security-client-server-leak` and `// fallow-ignore-next-line security-sink`. See apps/web/src/**/*.client.tsx and components/ui/chart.tsx.",
       "files": ["apps/spa/**/components/ui/**", "apps/web/**/components/ui/**"],
       "rules": {
         "unused-files": "off",

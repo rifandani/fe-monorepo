@@ -145,6 +145,26 @@ export const createWebPage = (props: {
   };
   return assign(defaultWebPage, props);
 };
+/**
+ * `JSON.stringify` leaves `<`, `>` and the U+2028/U+2029 line separators raw,
+ * so a graph value containing `</script>` would break out of the tag. Escaping
+ * them as JSON string escapes keeps the payload byte-identical after parsing.
+ */
+const JSON_LD_UNSAFE = /[<>\u2028\u2029]/gu;
+const JSON_LD_ESCAPES: Record<string, string> = {
+  "<": "\\u003c",
+  ">": "\\u003e",
+  "\u2028": "\\u2028",
+  "\u2029": "\\u2029",
+};
+
+/** Serialize a JSON-LD payload safely for embedding in an inline `<script>`. */
+const serializeJsonLd = (payload: Graph): string =>
+  JSON.stringify(payload).replace(
+    JSON_LD_UNSAFE,
+    (char) => JSON_LD_ESCAPES[char] ?? char
+  );
+
 export const JsonLd = ({ graphs }: { graphs: readonly Thing[] }) => {
   const payload: Graph = {
     "@context": "https://schema.org",
@@ -154,8 +174,9 @@ export const JsonLd = ({ graphs }: { graphs: readonly Thing[] }) => {
     <script
       data-testid="schema-org-graph"
       type="application/ld+json"
+      // fallow-ignore-next-line security-sink -- serializeJsonLd escapes <, > and U+2028/U+2029; covered by seo.unit.test.ts
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(payload),
+        __html: serializeJsonLd(payload),
       }}
     />
   );

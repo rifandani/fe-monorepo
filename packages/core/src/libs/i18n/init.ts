@@ -122,14 +122,23 @@ const getTranslationByKey = (obj: LanguageMessages, key: string) => {
   }
 };
 
-const substitutePlural = (
-  locale: string,
-  result: string,
-  argKey: string,
-  argValue: unknown,
-  replaceKey: string,
-  translationParams: ParamOptions
-): string => {
+interface SubstitutionContext {
+  locale: string;
+  result: string;
+  argKey: string;
+  argValue: unknown;
+  replaceKey: string;
+  translationParams: ParamOptions;
+}
+
+const substitutePlural = ({
+  locale,
+  result,
+  argKey,
+  argValue,
+  replaceKey,
+  translationParams,
+}: SubstitutionContext): string => {
   if (typeof argValue !== "number") {
     throw new TypeError("Invalid argument");
   }
@@ -142,28 +151,24 @@ const substitutePlural = (
   if (!replacement) {
     throw new Error("Missing replacement value");
   }
-  const numberFormatter = new Intl.NumberFormat(
-    locale,
-    translationParams.plural?.[argKey]?.formatter
-  );
+  const numberFormatter = new Intl.NumberFormat(locale, pluralMap?.formatter);
   return result.replace(
     replaceKey,
     replacement.replace(`{?}`, numberFormatter.format(argValue))
   );
 };
 
-const substituteEnum = (
-  result: string,
-  argKey: string,
-  argValue: unknown,
-  replaceKey: string,
-  translationParams: ParamOptions
-): string => {
+const substituteEnum = ({
+  result,
+  argKey,
+  argValue,
+  replaceKey,
+  translationParams,
+}: SubstitutionContext): string => {
   if (typeof argValue !== "string") {
     throw new TypeError("Invalid argument");
   }
-  const enumMap = translationParams.enum?.[argKey];
-  const replacement = enumMap?.[argValue];
+  const replacement = translationParams.enum?.[argKey]?.[argValue];
   if (!replacement) {
     throw new Error("Missing replacement value");
   }
@@ -172,131 +177,51 @@ const substituteEnum = (
 
 type Formatable = number | string[] | Date;
 
-const substituteWithFormatter = <T extends Formatable>(
-  result: string,
-  replaceKey: string,
-  argValue: unknown,
-  isValid: (value: unknown) => value is T,
-  format: (value: T) => string
-): string => {
-  if (!isValid(argValue)) {
-    throw new TypeError("Invalid argument");
-  }
-  return result.replace(replaceKey, format(argValue));
-};
-
-const substituteNumber = (
-  locale: string,
-  result: string,
-  argKey: string,
-  argValue: unknown,
-  replaceKey: string,
-  translationParams: ParamOptions
-): string =>
-  substituteWithFormatter(
-    result,
-    replaceKey,
-    argValue,
-    (value): value is number => typeof value === "number",
-    (value) =>
-      new Intl.NumberFormat(locale, translationParams.number?.[argKey]).format(
-        value
-      )
-  );
-
-const substituteList = (
-  locale: string,
-  result: string,
-  argKey: string,
-  argValue: unknown,
-  replaceKey: string,
-  translationParams: ParamOptions
-): string =>
-  substituteWithFormatter(
-    result,
-    replaceKey,
-    argValue,
-    (value): value is string[] => Array.isArray(value),
-    (value) =>
-      new Intl.ListFormat(locale, translationParams.list?.[argKey]).format(
-        value
-      )
-  );
-
-const substituteDate = (
-  locale: string,
-  result: string,
-  argKey: string,
-  argValue: unknown,
-  replaceKey: string,
-  translationParams: ParamOptions
-): string =>
-  substituteWithFormatter(
-    result,
-    replaceKey,
-    argValue,
-    (value): value is Date => value instanceof Date,
-    (value) =>
-      new Intl.DateTimeFormat(locale, translationParams.date?.[argKey]).format(
-        value
-      )
-  );
-
-interface SubstitutionContext {
-  locale: string;
-  result: string;
-  argKey: string;
-  argValue: unknown;
-  replaceKey: string;
-  translationParams: ParamOptions;
-}
+/**
+ * Narrows `argValue` with `isValid`, then substitutes the `Intl`-formatted
+ * value into `result`. Shared by the `number`, `list` and `date` annotations,
+ * which differ only in their guard and formatter.
+ */
+const substituteWithFormatter =
+  <T extends Formatable>(
+    isValid: (value: unknown) => value is T,
+    format: (ctx: SubstitutionContext, value: T) => string
+  ) =>
+  (ctx: SubstitutionContext): string => {
+    if (!isValid(ctx.argValue)) {
+      throw new TypeError("Invalid argument");
+    }
+    return ctx.result.replace(ctx.replaceKey, format(ctx, ctx.argValue));
+  };
 
 /** Maps the `{arg:type}` annotation to the substituter handling it. */
 const substituters: Record<string, (ctx: SubstitutionContext) => string> = {
-  date: (c) =>
-    substituteDate(
-      c.locale,
-      c.result,
-      c.argKey,
-      c.argValue,
-      c.replaceKey,
-      c.translationParams
-    ),
-  enum: (c) =>
-    substituteEnum(
-      c.result,
-      c.argKey,
-      c.argValue,
-      c.replaceKey,
-      c.translationParams
-    ),
-  list: (c) =>
-    substituteList(
-      c.locale,
-      c.result,
-      c.argKey,
-      c.argValue,
-      c.replaceKey,
-      c.translationParams
-    ),
-  number: (c) =>
-    substituteNumber(
-      c.locale,
-      c.result,
-      c.argKey,
-      c.argValue,
-      c.replaceKey,
-      c.translationParams
-    ),
-  plural: (c) =>
-    substitutePlural(
-      c.locale,
-      c.result,
-      c.argKey,
-      c.argValue,
-      c.replaceKey,
-      c.translationParams
-    ),
+  date: substituteWithFormatter(
+    (value): value is Date => value instanceof Date,
+    (c, value) =>
+      new Intl.DateTimeFormat(
+        c.locale,
+        c.translationParams.date?.[c.argKey]
+      ).format(value)
+  ),
+  enum: substituteEnum,
+  list: substituteWithFormatter(
+    (value): value is string[] => Array.isArray(value),
+    (c, value) =>
+      new Intl.ListFormat(
+        c.locale,
+        c.translationParams.list?.[c.argKey]
+      ).format(value)
+  ),
+  number: substituteWithFormatter(
+    (value): value is number => typeof value === "number",
+    (c, value) =>
+      new Intl.NumberFormat(
+        c.locale,
+        c.translationParams.number?.[c.argKey]
+      ).format(value)
+  ),
+  plural: substitutePlural,
 };
 
 const performSubstitution = (

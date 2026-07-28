@@ -1,6 +1,7 @@
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
 import { useRef, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 /**
  * Interface representing the history data structure
  * @template T Type of the value being tracked
@@ -98,6 +99,44 @@ const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
 };
 
 /**
+ * Builds the history actions over the current `history` snapshot.
+ *
+ * Kept outside the hook so its body stays a thin `useMemoizedFn` wiring layer.
+ */
+const createHistoryActions = <T>(
+  history: IData<T | undefined>,
+  setHistory: Dispatch<SetStateAction<IData<T | undefined>>>,
+  maxLength: number
+) => ({
+  /**
+   * Moves through history by specified number of steps
+   * @param step Positive for forward, negative for backward movement
+   */
+  go: (step: number) => {
+    // `Number` is identity for numbers and coerces stray string callers, so it
+    // subsumes the `isNumber` guard this used to branch on.
+    const stepNum = Number(step);
+    // Travelling forward consumes `future`, backward consumes `past`; a zero
+    // step, or an empty source stack, is a no-op.
+    const [source, travel] =
+      stepNum > 0
+        ? ([history.future, travelForward] as const)
+        : ([history.past, travelBackward] as const);
+    if (stepNum === 0 || source.length === 0) {
+      return;
+    }
+    setHistory(travel(history, stepNum));
+  },
+  /**
+   * Updates current value and manages history state
+   * @param val New value to set as present
+   */
+  updateValue: (val: T) => {
+    setHistory(pushValue(history, val, maxLength));
+  },
+});
+
+/**
  * A hook to manage state change history. It provides encapsulation methods to travel through the history.
  * @template T Type of value to track history for
  * @param initialValue Initial value to start with
@@ -123,15 +162,15 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     present: initialValue,
   });
   const { present, past, future } = history;
-  /**
-   * Reference to track initial value for reset functionality
-   */
+  // Reference to track initial value for reset functionality
   const initialValueRef = useRef(initialValue);
-
-  /**
-   * Resets history state back to initial or specified value
-   * @param params Optional new initial value
-   */
+  const { go, updateValue } = createHistoryActions<T>(
+    history,
+    setHistory,
+    maxLength
+  );
+  // Stays in the hook body: the react-compiler rule forbids handing a ref
+  // across a function boundary during render.
   // oxlint-disable-next-line typescript/no-explicit-any
   const reset = (...params: any[]) => {
     const _initial = params.length > 0 ? params[0] : initialValueRef.current;
@@ -141,51 +180,6 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
       past: [],
       present: _initial,
     });
-  };
-
-  /**
-   * Updates current value and manages history state
-   * @param val New value to set as present
-   */
-  const updateValue = (val: T) => {
-    setHistory(pushValue(history, val, maxLength));
-  };
-
-  /**
-   * Moves forward in history by specified number of steps
-   * @param step Number of steps to move forward (default: 1)
-   */
-  const _forward = (step = 1) => {
-    if (future.length === 0) {
-      return;
-    }
-    setHistory(travelForward(history, step));
-  };
-
-  /**
-   * Moves backward in history by specified number of steps
-   * @param step Number of steps to move backward (default: -1)
-   */
-  const _backward = (step = -1) => {
-    if (past.length === 0) {
-      return;
-    }
-    setHistory(travelBackward(history, step));
-  };
-
-  /**
-   * Moves through history by specified number of steps
-   * @param step Positive for forward, negative for backward movement
-   */
-  const go = (step: number) => {
-    const stepNum = isNumber(step) ? step : Number(step);
-    if (stepNum === 0) {
-      return;
-    }
-    if (stepNum > 0) {
-      return _forward(stepNum);
-    }
-    _backward(stepNum);
   };
   return {
     back: useMemoizedFn(() => {

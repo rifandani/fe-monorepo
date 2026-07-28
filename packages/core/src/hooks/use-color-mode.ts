@@ -1,7 +1,7 @@
 /* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization react-doctor/js-set-map-lookups react-doctor/no-pass-data-to-parent */
 import { useLocalStorageState } from "@workspace/core/hooks/use-local-storage-state";
 import { useMediaQuery } from "@workspace/core/hooks/use-media-query";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 /**
  * Basic color schema types - either a direct mode or 'auto' for system preference
  */
@@ -104,6 +104,46 @@ const applyModeToElement = (
 };
 
 /**
+ * Applies `mode` to the element matched by `selector`, suppressing CSS
+ * transitions for the duration of the swap when `disableTransition` is set.
+ *
+ * @param selector DOM selector for target element
+ * @param attribute Attribute to modify ('class' or custom)
+ * @param mode Color mode value to apply
+ */
+const updateHTMLAttrs = (
+  selector: string,
+  attribute: string,
+  mode: string,
+  modes: Record<string, string>,
+  disableTransition: boolean
+) => {
+  const el = window.document.querySelector(selector);
+  if (!el) {
+    return;
+  }
+  const restoreTransitions = disableTransition
+    ? suppressTransitions()
+    : undefined;
+  applyModeToElement(el, attribute, mode, modes);
+  restoreTransitions?.();
+};
+
+/**
+ * Resolves the mode to render, mapping the `auto` schema onto the system
+ * preference. Anything else is already a concrete mode.
+ */
+const resolveActiveMode = <T extends string>(
+  stored: T | BasicColorSchema,
+  preferredDark: boolean
+): BasicColorMode | T => {
+  if (stored === "auto") {
+    return preferredDark ? "dark" : "light";
+  }
+  return stored;
+};
+
+/**
  * Reactive color mode with auto data persistence.
  * Manages color scheme switching with DOM updates and storage persistence.
  *
@@ -130,19 +170,13 @@ export const useColorMode = <T extends string = BasicColorMode>(
     modes: customModes,
     onChanged,
   } = options;
-  /**
-   * Persisted color mode state in localStorage
-   */
+  // Persisted color mode state in localStorage
   const store = useLocalStorageState(storageKey, {
     defaultValue: initialValue,
   });
-  /**
-   * System dark mode preference from media query
-   */
+  // System dark mode preference from media query
   const preferredDark = useMediaQuery(COLOR_SCHEME_QUERY);
-  /**
-   * Combined color modes including custom modes from options
-   */
+  // Combined color modes including custom modes from options
   const modes = useMemo(
     () =>
       ({
@@ -153,49 +187,27 @@ export const useColorMode = <T extends string = BasicColorMode>(
       }) as Record<BasicColorSchema | T, string>,
     [customModes]
   );
-
-  /**
-   * Current system color mode based on preference
-   */
-  const system = preferredDark ? "dark" : "light";
-  /**
-   * Active color mode - either from storage or system preference if set to 'auto'
-   */
-  const state = (store[0] === "auto" ? system : store[0]) as
-    | "light"
-    | "dark"
-    | T;
-
-  /**
-   * Updates HTML attributes to apply the color mode
-   * Handles class-based and attribute-based color modes with transition disabling
-   *
-   * @param _selector DOM selector for target element
-   * @param _attribute Attribute to modify ('class' or custom)
-   * @param _mode Color mode value to apply
-   */
-  const updateHTMLAttrs = useCallback(
-    (_selector: string, _attribute: string, _mode = "") => {
-      const el = window.document.querySelector(_selector);
-      if (!el) {
-        return;
-      }
-      const restoreTransitions = disableTransition
-        ? suppressTransitions()
-        : undefined;
-      applyModeToElement(el, _attribute, _mode, modes);
-      restoreTransitions?.();
-    },
-    [disableTransition, modes]
+  // Active color mode, with `auto` resolved against the system preference
+  const state = resolveActiveMode<T>(
+    store[0] as T | BasicColorSchema,
+    preferredDark
   );
+
   useEffect(() => {
+    const applyMode = (mode: T | BasicColorMode) => {
+      updateHTMLAttrs(
+        selector,
+        attribute,
+        modes[mode],
+        modes,
+        disableTransition
+      );
+    };
     // Apply color mode changes to DOM
     if (onChanged) {
-      onChanged(state, (mode: T | BasicColorMode) => {
-        updateHTMLAttrs(selector, attribute, modes[mode]);
-      });
+      onChanged(state, applyMode);
     } else {
-      updateHTMLAttrs(selector, attribute, modes[state]);
+      applyMode(state);
     }
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [attribute, modes, onChanged, selector, state]);

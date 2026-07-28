@@ -115,4 +115,45 @@ describe("JsonLd", () => {
       "@graph": [{ "@type": "WebPage", url: "https://web.test/about" }],
     });
   });
+
+  it("escapes characters that would break out of the script tag", () => {
+    const graphs = [
+      createWebPage({
+        url: "https://web.test/about",
+        title: "</script><script>alert(1)</script>",
+      }),
+    ];
+    const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
+      .__html as string;
+
+    // No literal tag delimiters survive, so the payload cannot escape the tag.
+    expect(html).not.toContain("</script");
+    expect(html).not.toContain("<");
+    expect(html).not.toContain(">");
+    expect(html).toContain("\\u003c");
+
+    // Escaping is transparent: the parsed value is still the original string.
+    const parsed = JSON.parse(html) as {
+      "@graph": [{ title: string }];
+    };
+    expect(parsed["@graph"][0].title).toBe(
+      "</script><script>alert(1)</script>"
+    );
+  });
+
+  it("escapes U+2028/U+2029 line separators", () => {
+    const graphs = [
+      createWebPage({
+        url: "https://web.test/about",
+        title: `line\u2028sep\u2029arator`,
+      }),
+    ];
+    const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
+      .__html as string;
+
+    expect(html).not.toContain("\u2028");
+    expect(html).not.toContain("\u2029");
+    const parsed = JSON.parse(html) as { "@graph": [{ title: string }] };
+    expect(parsed["@graph"][0].title).toBe("line\u2028sep\u2029arator");
+  });
 });

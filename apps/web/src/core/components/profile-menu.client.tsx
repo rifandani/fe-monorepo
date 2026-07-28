@@ -1,4 +1,5 @@
 "use client";
+// fallow-ignore-file security-client-server-leak -- a `use server` import is an RPC boundary: the bundler emits a server reference, never the action's code or its env reads
 
 import {
   ArrowRightStartOnRectangleIcon,

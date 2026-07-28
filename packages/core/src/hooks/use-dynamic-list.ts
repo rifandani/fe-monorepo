@@ -1,5 +1,6 @@
 /* oxlint-disable react/react-compiler */
 import { useRef, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 /**
  * A hook that helps you manage dynamic list and generate unique key for each item.
@@ -89,75 +90,40 @@ const useKeyList = () => {
   };
 };
 
-export const useDynamicList = <T>(initialList: T[] = []) => {
-  const {
-    getKey,
-    getIndex,
-    setKey,
-    initKeys,
-    removeKey,
-    moveKey,
-    clearKeys,
-    popKey,
-    shiftKey,
-  } = useKeyList();
-  // Current list
-  const [list, setList] = useState(() => {
-    // Initialize keyList directly without using setKey callback
-    // to avoid fragile behavior during state initialization
-    initKeys(initialList);
-    return initialList;
-  });
-  // Reset list current data
-  const resetList = (newList: T[]) => {
-    clearKeys();
-    setList(() => {
-      for (const [index] of newList.entries()) {
-        setKey(index);
-      }
-      return newList;
-    });
-  };
+type KeyList = ReturnType<typeof useKeyList>;
+
+/**
+ * Builds the list mutators, each of which mirrors its change into `keys`.
+ *
+ * Kept outside the hook so the hook body stays a thin wiring layer. The
+ * closures are recreated per render either way, so identity is unchanged.
+ */
+const createListMutators = <T>(
+  setList: Dispatch<SetStateAction<T[]>>,
+  keys: KeyList
+) => ({
   // Add item at specific position
-  const insert = (index: number, item: T) => {
+  insert: (index: number, item: T) => {
     setList((l) => {
       const temp = [...l];
       temp.splice(index, 0, item);
-      setKey(index);
+      keys.setKey(index);
       return temp;
     });
-  };
+  },
   // Merge items into specific position
-  const merge = (index: number, items: T[]) => {
+  merge: (index: number, items: T[]) => {
     setList((l) => {
       const temp = [...l];
       for (const [i] of items.entries()) {
-        setKey(index + i);
+        keys.setKey(index + i);
       }
       temp.splice(index, 0, ...items);
       return temp;
     });
-  };
-  // Replace item at specific position
-  const replace = (index: number, item: T) => {
-    setList((l) => {
-      const temp = [...l];
-      temp[index] = item;
-      return temp;
-    });
-  };
-  // Delete specific item
-  const remove = (index: number) => {
-    setList((l) => {
-      const temp = [...l];
-      temp.splice(index, 1);
-      // remove keys if necessary
-      removeKey(index);
-      return temp;
-    });
-  };
+  },
   // Move item from old index to new index
-  const move = (oldIndex: number, newIndex: number) => {
+  move: (oldIndex: number, newIndex: number) => {
     if (oldIndex === newIndex) {
       return;
     }
@@ -166,49 +132,79 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
       const temp = newList.filter((_, index: number) => index !== oldIndex);
       temp.splice(newIndex, 0, newList[oldIndex] as T);
       // move keys if necessary
-      moveKey(oldIndex, newIndex);
+      keys.moveKey(oldIndex, newIndex);
       return temp;
     });
-  };
+  },
+  // Remove the last item from the list
+  pop: () => {
+    // remove keys if necessary
+    keys.popKey();
+    setList((l) => l.slice(0, -1));
+  },
   // Push new item at the end of list
-  const push = (item: T) => {
+  push: (item: T) => {
     setList((l) => {
-      setKey(l.length);
+      keys.setKey(l.length);
       return [...l, item];
     });
-  };
-  // Remove the last item from the list
-  const pop = () => {
-    // remove keys if necessary
-    popKey();
-    setList((l) => l.slice(0, -1));
-  };
-  // Add new item at the front of the list
-  const unshift = (item: T) => {
+  },
+  // Delete specific item
+  remove: (index: number) => {
     setList((l) => {
-      setKey(0);
+      const temp = [...l];
+      temp.splice(index, 1);
+      // remove keys if necessary
+      keys.removeKey(index);
+      return temp;
+    });
+  },
+  // Replace item at specific position
+  replace: (index: number, item: T) => {
+    setList((l) => {
+      const temp = [...l];
+      temp[index] = item;
+      return temp;
+    });
+  },
+  // Reset list current data
+  resetList: (newList: T[]) => {
+    keys.clearKeys();
+    setList(() => {
+      for (const [index] of newList.entries()) {
+        keys.setKey(index);
+      }
+      return newList;
+    });
+  },
+  // Remove the first item from the list
+  shift: () => {
+    // remove keys if necessary
+    keys.shiftKey();
+    setList((l) => l.slice(1));
+  },
+  // Add new item at the front of the list
+  unshift: (item: T) => {
+    setList((l) => {
+      keys.setKey(0);
       return [item, ...l];
     });
-  };
-  // Remove the first item from the list
-  const shift = () => {
-    // remove keys if necessary
-    shiftKey();
-    setList((l) => l.slice(1));
-  };
+  },
+});
+
+export const useDynamicList = <T>(initialList: T[] = []) => {
+  const keys = useKeyList();
+  // Current list
+  const [list, setList] = useState(() => {
+    // Initialize keyList directly without using setKey callback
+    // to avoid fragile behavior during state initialization
+    keys.initKeys(initialList);
+    return initialList;
+  });
   return {
-    getIndex,
-    getKey,
-    insert,
+    ...createListMutators<T>(setList, keys),
+    getIndex: keys.getIndex,
+    getKey: keys.getKey,
     list,
-    merge,
-    move,
-    pop,
-    push,
-    remove,
-    replace,
-    resetList,
-    shift,
-    unshift,
   } as const;
 };

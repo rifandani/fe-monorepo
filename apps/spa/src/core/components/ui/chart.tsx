@@ -245,6 +245,7 @@ function ChartStyle({ id, config }: { id: string, config: ChartConfig }) {
 
   return (
     <style
+      // fallow-ignore-next-line security-sink -- `config` and `id` are developer-authored (chart props, useId), never request data
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
