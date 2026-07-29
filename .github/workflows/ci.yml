@@ -34,8 +34,6 @@ jobs:
       - name: Fallow audit
         uses: fallow-rs/fallow@v3
         with:
-          command: audit
-          gate: new-only
           dupes-mode: semantic
 
   lint-typecheck:
@@ -56,7 +54,7 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
-      - name: Lint
+      - name: Lint and typecheck
         run: bun lint-typecheck
 
   # Single gate for all four Vitest projects (core, spa, web, expo)
