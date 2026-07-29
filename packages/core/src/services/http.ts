@@ -18,7 +18,7 @@ export class Http {
    * @param {Options} newConfig New configuration options
    */
   updateConfig(newConfig: Options): void {
-    this.instance = ky.extend(newConfig);
+    this.instance = this.instance.extend(newConfig);
   }
   /**
    * @description Reset or create new configuration of the Http instance
