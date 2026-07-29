@@ -36,6 +36,7 @@ jobs:
         with:
           command: audit
           gate: new-only
+          dupes-mode: semantic
 
   lint-typecheck:
     runs-on: ubuntu-latest
