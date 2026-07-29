@@ -1,8 +1,9 @@
 # Unit tests are pure module logic only
 
-We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Zustand stores via `.getState()`. React components/hooks (RTL, hook harnesses), plain Zod shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; CI jobs are `core-unit`, `spa-unit`, `web-unit`, `expo-unit`.
+We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Zustand stores via `.getState()`. React components/hooks (RTL, hook harnesses), plain Zod shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; all four projects run in a single CI job, `unit`.
 
 > Coverage was originally out of scope too. That clause was reversed on 2026-07-28 — see [Amendments](#amendments).
+> The four per-project CI jobs were collapsed into one on 2026-07-29 — same section.
 
 ## Considered Options
 
@@ -12,7 +13,7 @@ We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, lib
 
 ## Amendments
 
-**2026-07-28 — coverage is in scope as a reporting tool.** Coverage *measurement* is in scope; coverage *targets* are not. The original rejection conflated them: an aspirational gate ("must hit 80%") invites padding tests and pressures contributors toward unit-testing UI, but a floor pinned to the measured baseline only detects regression. Cost is +1.4s (~29%) on the warm suite — `v8` needs no pre-instrumentation pass, `coverage.enabled` stays `false` so watch runs and the four unit jobs are untouched, and `unit-coverage` runs concurrently with them, adding no pipeline wall-clock.
+**2026-07-28 — coverage is in scope as a reporting tool.** Coverage *measurement* is in scope; coverage *targets* are not. The original rejection conflated them: an aspirational gate ("must hit 80%") invites padding tests and pressures contributors toward unit-testing UI, but a floor pinned to the measured baseline only detects regression. Cost is +1.4s (~29%) on the warm suite — `v8` needs no pre-instrumentation pass, and `coverage.enabled` stays `false` so watch runs and focused `--project` runs are untouched.
 
 Coverage measures business logic, defined by the `coverage.include` allowlist in `vitest.config.ts`. That list is a specification: a file appears in the report, covered or not, only if matched there. It holds together on one convention, named here because the codebase already practises it:
 
@@ -26,4 +27,8 @@ The floor is **90 on all four**, deliberately below that measurement, which revi
 
 To skip unreachable defensive code instead of testing it, use `/* v8 ignore next -- @preserve */` — `@preserve` is required or the oxc transform strips the comment.
 
-`coverage` is root-only (Vitest's `NonProjectOptions`), so `--project <name> --coverage` measures the global include list against a partial run and reports the other projects at 0%. There is deliberately no `web:test:unit:cov`-style script despite the symmetry with the per-project ones: coverage is whole-suite only, via `bun test:unit:cov`. The job is advisory rather than a required check until there is evidence of how often the ratchet trips on legitimate refactors.
+`coverage` is root-only (Vitest's `NonProjectOptions`), so `--project <name> --coverage` measures the global include list against a partial run and reports the other projects at 0%. There is deliberately no `web:test:unit:cov`-style script despite the symmetry with the per-project ones: coverage is whole-suite only, via `bun test:unit:cov`.
+
+**2026-07-29 — one `unit` job replaces the four per-project ones.** `test:unit` is `vitest run`, which already runs every project, so `unit-coverage` was a superset of `core-unit` and its three siblings — four extra cold setups re-running the same suite. It is renamed `unit`; CI drops from 14 runners to 10. Wall-clock is unchanged, since the deleted jobs ran in parallel, so the win is runner-minutes.
+
+This promotes the ratchet from advisory, which a since-deleted clause deferred pending evidence of how often it trips on legitimate refactors. Deliberate: `main` is unprotected, so a breach is a red X to read rather than a merge block — which is how that evidence accumulates. If it proves noisy, drop `thresholds` and coverage reverts to reporting. The per-project scripts stay; CI no longer calls them, but focused runs are what Vitest projects are for.
