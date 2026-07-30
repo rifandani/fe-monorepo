@@ -81,6 +81,7 @@
   },
   "ignoreDependencies": [
     "@opentelemetry/semantic-conventions",
+    "msw",
     "postcss-load-config",
     "workbox-core",
     "@expo-google-fonts/space-grotesk",
