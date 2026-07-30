@@ -40,23 +40,6 @@ export const authRepositories = (http: InstanceType<typeof Http>) =>
     ) => {
       const resp = await http.instance
         .post("auth/login", {
-          hooks: {
-            afterResponse: [
-              async ({ request, response }) => {
-                if (response.status === 200) {
-                  const data =
-                    (await response.json()) as AuthLoginResponseSchema;
-                  if ("accessToken" in data) {
-                    // set 'Authorization' headers
-                    request.headers.set(
-                      "Authorization",
-                      `Bearer ${data.accessToken}`
-                    );
-                  }
-                }
-              },
-            ],
-          },
           json,
           ...options,
         })

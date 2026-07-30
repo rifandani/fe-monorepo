@@ -42,7 +42,7 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
-      - name: Fallow audit
+      - name: Fallow all checks
         uses: fallow-rs/fallow@v3
         with:
           # command: audit

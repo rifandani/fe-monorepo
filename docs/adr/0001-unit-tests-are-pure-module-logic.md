@@ -4,6 +4,7 @@ We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, lib
 
 > Coverage was originally out of scope too. That clause was reversed on 2026-07-28 — see [Amendments](#amendments).
 > The four per-project CI jobs were collapsed into one on 2026-07-29 — same section.
+> "Targeted mocks" was narrowed on 2026-07-30: API-layer tests now fake at the network boundary via MSW, not at the module boundary. Scope above is unchanged — see [ADR-0002](./0002-network-boundary-mocking-with-msw.md).
 
 ## Considered Options
 

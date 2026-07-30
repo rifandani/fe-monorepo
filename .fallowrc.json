@@ -7,7 +7,12 @@
   "ignoreExports": [
     { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
     { "file": "apps/web/**/components/ui/**", "exports": ["*"] },
-    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] }
+    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] },
+    {
+      "$comment": "Root-level vitest infrastructure is outside fallow's `entry` graph, so `server` and `MOCK_API_BASE_URL` read as unused and `fallow fix` strips the `export` keyword. They are consumed by vitest.setup.ts, apps/expo/vitest.config.ts, and the *.unit.test.ts files that call `server.use()`.",
+      "file": "vitest.msw.ts",
+      "exports": ["*"]
+    }
   ],
   "overrides": [
     {
@@ -25,6 +30,13 @@
         "apps/web/pwa-assets.config.ts",
         "oxfmt.config.ts"
       ],
+      "rules": {
+        "unused-files": "off"
+      }
+    },
+    {
+      "$comment": "Loaded by path from the `setupFiles` arrays in packages/core/vitest.config.ts and apps/expo/vitest.config.ts, so no import edge reaches it and it reads as unreachable. See docs/adr/0002-network-boundary-mocking-with-msw.md.",
+      "files": ["vitest.msw-setup.ts"],
       "rules": {
         "unused-files": "off"
       }
