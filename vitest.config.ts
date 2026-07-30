@@ -22,9 +22,10 @@ export default defineConfig({
       // sidecar traces. Feeding fallow test coverage would make it report the
       // ADR-sanctioned untested layers as dead code.
       reportsDirectory: "./coverage/vitest",
-      // Floor, not a target, and deliberately *below* the measured baseline (100/99.51/100/100). Aggregate (`perFile: false`).
+      // Floor, not a target, and deliberately *below* the measured baseline. Enforced per file (`perFile: true`), so one thinly covered module cannot hide behind the rest of the suite.
       // The suite only clears 100 because the repo is boilerplate-sized; pinning the floor there would fail CI on the first partially covered file added to `include`, which is ordinary work, not a regression. 90 leaves room for that while still catching a real slide. Lowering it needs a reason in the commit.
       thresholds: {
+        perFile: true,
         statements: 90,
         branches: 90,
         functions: 90,

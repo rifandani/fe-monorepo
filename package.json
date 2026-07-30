@@ -24,8 +24,6 @@
     "check:dead-code": "fallow dead-code --quiet",
     "check:dupes": "fallow dupes --mode semantic --quiet",
     "check:security": "fallow security --surface  --quiet",
-    "check:flags": "fallow flags --quiet",
-    "check:coverage": "fallow coverage analyze --runtime-coverage ./coverage --quiet",
     "check:audit": "fallow audit --quiet",
     "check:fix": "fallow fix --yes --no-create-config",
     "typecheck": "bun run --parallel core:typecheck web:typecheck spa:typecheck expo:typecheck",

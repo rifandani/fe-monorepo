@@ -48,9 +48,15 @@ const applyCookieAttribute = (
   attrObj: CookieAttributes,
   attribute: string
 ): void => {
-  const [attrName, ...attrValueParts] = attribute.split("=");
-  const attrValue = attrValueParts.join("=");
-  const normalizedAttrName = attrName?.trim().toLowerCase() ?? "";
+  // Split on the *first* `=` only: an attribute value may itself contain `=`.
+  const separatorIndex = attribute.indexOf("=");
+  const hasValue = separatorIndex !== -1;
+  const attrValue = hasValue ? attribute.slice(separatorIndex + 1) : "";
+  const normalizedAttrName = (
+    hasValue ? attribute.slice(0, separatorIndex) : attribute
+  )
+    .trim()
+    .toLowerCase();
   const handler = COOKIE_ATTR_HANDLERS[normalizedAttrName];
   if (handler) {
     handler(attrObj, attrValue);
@@ -65,11 +71,23 @@ export const parseSetCookieHeader = (
   const cookies = new Map<string, CookieAttributes>();
   const cookieArray = setCookie.split(", ");
   for (const cookieString of cookieArray) {
-    const parts = cookieString.split(";").map((part) => part.trim());
-    const [nameValue, ...attributes] = parts;
-    const [name, ...valueParts] = nameValue?.split("=") ?? [];
-    const value = valueParts.join("=");
-    if (!name || value === undefined) {
+    const semicolonIndex = cookieString.indexOf(";");
+    const hasAttributes = semicolonIndex !== -1;
+    const nameValue = (
+      hasAttributes ? cookieString.slice(0, semicolonIndex) : cookieString
+    ).trim();
+    const attributes = hasAttributes
+      ? cookieString
+          .slice(semicolonIndex + 1)
+          .split(";")
+          .map((part) => part.trim())
+      : [];
+    // A valueless cookie (`novalue`) keeps an empty value; a nameless one is dropped.
+    const equalsIndex = nameValue.indexOf("=");
+    const name =
+      equalsIndex === -1 ? nameValue : nameValue.slice(0, equalsIndex);
+    const value = equalsIndex === -1 ? "" : nameValue.slice(equalsIndex + 1);
+    if (!name) {
       continue;
     }
     const attrObj: CookieAttributes = { value };

@@ -28,6 +28,15 @@ describe("collectPageRoutes", () => {
     expect(collectPageRoutes(tmp).toSorted()).toEqual(["/", "/login"]);
   });
 
+  it("keeps nested routes under a directory that has no page of its own", () => {
+    tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sitemap-"));
+    fs.mkdirSync(path.join(tmp, "docs", "intro"), { recursive: true });
+    fs.writeFileSync(path.join(tmp, "docs", "intro", "page.tsx"), "");
+
+    // `/docs` itself is pageless, so only the leaf route is emitted.
+    expect(collectPageRoutes(tmp)).toEqual(["/docs/intro"]);
+  });
+
   it("ignores non-page files", () => {
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sitemap-"));
     fs.writeFileSync(path.join(tmp, "layout.tsx"), "");
