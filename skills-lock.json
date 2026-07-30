@@ -59,6 +59,12 @@
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
       "computedHash": "67343881f5def98487d56243155716110afbcbf22ec92421c882d532b941cb17"
     },
+    "fallow": {
+      "source": "fallow-rs/fallow-skills",
+      "sourceType": "github",
+      "skillPath": "fallow/skills/fallow/SKILL.md",
+      "computedHash": "6151ca333a9cfe0d67401991ecf0717dfb20ddeb80e232408ac047a44f0fb7bb"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",
