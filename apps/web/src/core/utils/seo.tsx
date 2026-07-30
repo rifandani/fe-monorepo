@@ -157,12 +157,17 @@ const JSON_LD_ESCAPES = {
   "\u2029": "\\u2029",
 } as const;
 type JsonLdUnsafeChar = keyof typeof JSON_LD_ESCAPES;
-// Built from the map's own keys, so the lookup below is total by construction:
-// the regex can only ever match a character the map defines.
-const JSON_LD_UNSAFE = new RegExp(
-  `[${Object.keys(JSON_LD_ESCAPES).join("")}]`,
-  "gu"
-);
+// A literal rather than `new RegExp(Object.keys(...))`: a computed class would
+// need every key escaped, so adding `]`, `\`, `^` or `-` to the map above would
+// silently corrupt the pattern. The cost is that the two can drift, so
+// `seo.unit.test.ts` asserts the pattern matches every key of the map.
+const JSON_LD_UNSAFE = /[<>\u2028\u2029]/gu;
+
+/** Exposed so `seo.unit.test.ts` can assert the pattern covers every key. */
+export const jsonLdEscapeInternals = {
+  escapes: JSON_LD_ESCAPES,
+  pattern: JSON_LD_UNSAFE,
+} as const;
 
 /** Serialize a JSON-LD payload safely for embedding in an inline `<script>`. */
 const serializeJsonLd = (payload: Graph): string =>

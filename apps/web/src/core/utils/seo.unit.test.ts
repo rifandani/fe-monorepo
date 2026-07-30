@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createMetadata, createWebPage, createWebSite, JsonLd } from "./seo";
+import {
+  createMetadata,
+  createWebPage,
+  createWebSite,
+  JsonLd,
+  jsonLdEscapeInternals,
+} from "./seo";
 
 vi.mock("@/core/constants/env", () => ({
   ENV: {
@@ -141,19 +147,36 @@ describe("JsonLd", () => {
     );
   });
 
-  it("escapes U+2028/U+2029 line separators", () => {
-    const graphs = [
-      createWebPage({
-        url: "https://web.test/about",
-        title: `line\u2028sep\u2029arator`,
-      }),
-    ];
+  // End-to-end cover for each character currently escaped. The map/pattern
+  // sync invariant itself is asserted structurally in the test below.
+  it.each([
+    ["<", "less-than"],
+    [">", "greater-than"],
+    ["\u2028", "U+2028 line separator"],
+    ["\u2029", "U+2029 paragraph separator"],
+  ])("escapes %s (%s) without leaving a gap", (char) => {
+    const title = `a${char}b`;
+    const graphs = [createWebPage({ url: "https://web.test/about", title })];
     const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
       .__html as string;
 
-    expect(html).not.toContain("\u2028");
-    expect(html).not.toContain("\u2029");
+    expect(html).not.toContain(char);
+    expect(html).not.toContain("undefined");
+
     const parsed = JSON.parse(html) as { "@graph": [{ title: string }] };
-    expect(parsed["@graph"][0].title).toBe("line\u2028sep\u2029arator");
+    expect(parsed["@graph"][0].title).toBe(title);
+  });
+
+  // The pattern and the escape map are declared separately, so a key added to
+  // the map without a matching character-class entry would go unescaped. This
+  // catches that drift for any future key, not just the ones tabled above.
+  it("matches every character the escape map declares", () => {
+    const { escapes, pattern } = jsonLdEscapeInternals;
+    // Fresh non-global copy: `pattern` is /g and .test() would advance lastIndex.
+    const probe = new RegExp(pattern.source, "u");
+
+    for (const char of Object.keys(escapes)) {
+      expect(probe.test(char)).toBe(true);
+    }
   });
 });
