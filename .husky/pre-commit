@@ -6,18 +6,21 @@ if [ -z "$STAGED_FILES" ]; then
   exit 0
 fi
 
-# Run ultracite + fallow fix in parallel
-ULTRACITE_EXIT=0
-FALLOW_EXIT=0
-
-bun x ultracite fix &
+# Run ultracite + fallow fix concurrently (both start before either is awaited)
+(
+  bun lint:fix
+) &
 ULTRACITE_PID=$!
 
-bun check:fix &
+(
+  bun check:fix
+) &
 FALLOW_PID=$!
 
-wait $ULTRACITE_PID || ULTRACITE_EXIT=$?
-wait $FALLOW_PID || FALLOW_EXIT=$?
+wait "$ULTRACITE_PID"
+ULTRACITE_EXIT=$?
+wait "$FALLOW_PID"
+FALLOW_EXIT=$?
 
 # Re-stage files that were already staged
 echo "$STAGED_FILES" | while IFS= read -r file; do
