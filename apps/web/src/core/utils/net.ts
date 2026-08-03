@@ -16,9 +16,15 @@ export const getClientIpAddress = (headers: Headers): string | null => {
   // 2. X-Forwarded-For (most common)
   const xForwardedFor = headers.get(ipAddressHeaders.xForwardedFor);
   if (xForwardedFor) {
+    // Block form because `disable next-line` and `v8 ignore next` cannot stack — see docs/adr/0003-mutation-testing-is-advisory.md.
+    // OptionalChaining only: the MethodExpression mutant here (dropping `.trim()`) is killable and is a real gap.
+    // Stryker disable OptionalChaining: split always yields a first element for a non-empty header, so `?.` never short-circuits
     /* v8 ignore next -- @preserve split always yields a first element for a non-empty header */
     return xForwardedFor.split(",")[0]?.trim() ?? null;
   }
+  // `restore` must lead a statement — as a trailing comment inside the block above it
+  // attaches to the `return` and is never read, silently ignoring `match?.[1]` below.
+  // Stryker restore OptionalChaining
   // 3. X-Real-IP (Nginx)
   const xRealIp = headers.get(ipAddressHeaders.xRealIp);
   if (xRealIp) {

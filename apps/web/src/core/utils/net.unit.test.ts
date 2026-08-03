@@ -30,6 +30,15 @@ describe("getClientIpAddress", () => {
     expect(getClientIpAddress(headers)).toBe("3.3.3.3");
   });
 
+  // RFC 7239 allows optional whitespace around the comma, and proxies do emit it.
+  // The hop above has none, so it cannot show that the `.trim()` is doing anything.
+  it("trims whitespace around the first x-forwarded-for hop", () => {
+    const headers = new Headers({
+      "x-forwarded-for": "  3.3.3.3  ,  4.4.4.4",
+    });
+    expect(getClientIpAddress(headers)).toBe("3.3.3.3");
+  });
+
   it("falls through x-real-ip, x-client-ip, then forwarded", () => {
     expect(getClientIpAddress(new Headers({ "x-real-ip": "5.5.5.5" }))).toBe(
       "5.5.5.5"

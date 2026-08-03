@@ -24,11 +24,13 @@
       }
     },
     {
+      "$comment": "Root-level tool configs and service-worker entries: nothing imports them (their own CLI or the browser loads them), so they sit outside fallow's `entry` graph and read as unused files. `stryker.config.mjs` is loaded by the `stryker` binary — see docs/adr/0003-mutation-testing-is-advisory.md.",
       "files": [
         "apps/spa/pwa-assets.config.ts",
         "apps/spa/src/sw.ts",
         "apps/web/pwa-assets.config.ts",
-        "oxfmt.config.ts"
+        "oxfmt.config.ts",
+        "stryker.config.mjs"
       ],
       "rules": {
         "unused-files": "off"
@@ -80,6 +82,8 @@
     ]
   },
   "ignoreDependencies": [
+    "@stryker-mutator/core",
+    "@stryker-mutator/vitest-runner",
     "@opentelemetry/semantic-conventions",
     "msw",
     "postcss-load-config",
