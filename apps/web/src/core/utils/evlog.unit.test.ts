@@ -27,6 +27,11 @@ const mocks = vi.hoisted(() => {
     identify,
     createAuthMiddleware,
     createEvlog,
+    createOTLPDrain: vi.fn(() => drain),
+    createInstrumentation: vi.fn(() => ({
+      register: evlogRegister,
+      onRequestError: evlogOnRequestError,
+    })),
     evlogRegister,
     evlogOnRequestError,
     registerOtelTracerAndMeter,
@@ -68,7 +73,7 @@ vi.mock("evlog/pipeline", () => ({
 }));
 
 vi.mock("evlog/otlp", () => ({
-  createOTLPDrain: () => mocks.drain,
+  createOTLPDrain: mocks.createOTLPDrain,
 }));
 
 vi.mock("evlog/next", () => ({
@@ -80,10 +85,7 @@ vi.mock("evlog/better-auth", () => ({
 }));
 
 vi.mock("evlog/next/instrumentation/create", () => ({
-  createInstrumentation: () => ({
-    register: mocks.evlogRegister,
-    onRequestError: mocks.evlogOnRequestError,
-  }),
+  createInstrumentation: mocks.createInstrumentation,
 }));
 
 const loadSut = () => import("./evlog");
@@ -101,10 +103,36 @@ describe("evlog wiring", () => {
       expect.objectContaining({
         service: "web-test",
         drain: expect.objectContaining({ flush: mocks.flush }),
+        sampling: {
+          keep: [{ status: 400 }, { duration: 1000 }],
+          rates: { info: 10 },
+        },
+        routes: {
+          "/api/auth/**": { service: "auth-service" },
+        },
       })
     );
     expect(sut.createError).toBe(mocks.createError);
     expect(sut.log).toBe(mocks.log);
+  });
+
+  it("builds the OTLP drain with the env endpoint and service name", async () => {
+    await loadSut();
+
+    expect(mocks.createOTLPDrain).toHaveBeenCalledWith({
+      endpoint: "http://localhost:4318",
+      serviceName: "web-test",
+    });
+  });
+
+  it("registers instrumentation with captureOutput and the shared drain", async () => {
+    await loadSut();
+
+    expect(mocks.createInstrumentation).toHaveBeenCalledWith({
+      captureOutput: true,
+      drain: expect.objectContaining({ flush: mocks.flush }),
+      service: "web-test",
+    });
   });
 
   it("enrich runs every enricher and stamps deployment metadata", async () => {

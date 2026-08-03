@@ -47,6 +47,8 @@ export default defineConfig({
         "**/*.unit.test.ts",
         "**/*.d.ts",
         "**/types.ts",
+        // all constants
+        "apps/*/src/**/constants/**",
         // Pure Zod schema modules — declarations only, no functions. ADR-0001 puts
         // "plain Zod shapes" out of test scope, but leaving them in `include` gave
         // them a free 100%: importing a schema file executes every line, so this file
@@ -56,7 +58,6 @@ export default defineConfig({
         // (`auth.ts`, `better-auth.ts`, `cdn.ts`) stay in — their functions are tested.
         "packages/core/src/apis/core.ts",
         "packages/core/src/libs/i18n/locales/**",
-        "apps/*/src/**/constants/env.ts",
         "apps/*/src/core/services/http.ts",
         "apps/web/src/auth/utils/auth.ts",
         "apps/web/src/auth/utils/auth.client.ts",
@@ -64,9 +65,6 @@ export default defineConfig({
         "apps/web/src/app/manifest.ts",
         "apps/web/src/app/api/rate-limit.ts",
         "apps/web/src/core/utils/i18n.ts",
-        "apps/expo/src/core/constants/env/**",
-        // Orphaned Tamagui starter scaffolding (already `fallow-ignore-file unused-file`): nothing imports it, and `createThemes` throws on its empty `childrenThemes` palettes, so it cannot even be imported by a test.
-        "apps/expo/src/core/constants/theme.ts",
       ],
     },
   },

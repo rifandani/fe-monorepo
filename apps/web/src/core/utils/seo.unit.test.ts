@@ -26,19 +26,70 @@ describe("createMetadata", () => {
       description: "Welcome",
     });
 
-    expect(metadata.title).toBe("Home | Test App");
-    expect(metadata.description).toBe("Welcome");
-    expect(metadata.applicationName).toBe("Test App");
-    expect(metadata.openGraph).toMatchObject({
+    expect(metadata).toMatchObject({
       title: "Home | Test App",
-      siteName: "Test App",
-      url: "https://web.test",
-      type: "website",
+      description: "Welcome",
+      applicationName: "Test App",
+      publisher: "Rizeki Rifandani",
+      authors: { name: "Rizeki Rifandani", url: "https://web.com" },
+      creator: "Rizeki Rifandani",
+      category: "Personal Blog or Website",
+      icons: "/favicon.ico",
+      generator: "Next.js",
+      robots: { follow: true, index: true },
+      formatDetection: { telephone: true },
+      appleWebApp: {
+        capable: true,
+        startupImage: ["/api/og?title=Home"],
+        statusBarStyle: "default",
+        title: "Home | Test App",
+      },
+      openGraph: {
+        countryName: "Indonesia",
+        description: "Welcome",
+        images: [
+          {
+            alt: "Home | Test App",
+            height: 441,
+            url: "/api/og?title=Home",
+            width: 843,
+          },
+        ],
+        locale: "en_US",
+        siteName: "Test App",
+        title: "Home | Test App",
+        type: "website",
+        url: "https://web.test",
+      },
+      twitter: {
+        card: "summary_large_image",
+        creator: "Rizeki Rifandani",
+        creatorId: "@tri_rizeki",
+        description: "Welcome",
+        images: ["/api/og?title=Home"],
+        site: "@https://web.test",
+        siteId: "@tri_rizeki",
+        title: "Home | Test App",
+      },
     });
-    expect(metadata.twitter).toMatchObject({
-      card: "summary_large_image",
-      title: "Home | Test App",
+  });
+
+  it("keeps the default OG image when no image override is passed", () => {
+    const metadata = createMetadata({
+      title: "Home",
+      description: "Welcome",
     });
+
+    // Pins `image && metadata.openGraph` — `image || …` would overwrite with
+    // an undefined url; `true` would always enter the override branch.
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        alt: "Home | Test App",
+        height: 441,
+        url: "/api/og?title=Home",
+        width: 843,
+      },
+    ]);
   });
 
   it("overrides openGraph image when image is provided", () => {

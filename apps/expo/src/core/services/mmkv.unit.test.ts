@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { appStateStorage, appStorageId } from "./mmkv";
 
-const { mockMMKV, store } = vi.hoisted(() => {
+const { mockMMKV, MockMMKV, store } = vi.hoisted(() => {
   const memory = new Map<string, string>();
   const mmkv = {
     delete: vi.fn((key: string) => {
@@ -13,21 +13,26 @@ const { mockMMKV, store } = vi.hoisted(() => {
       memory.set(key, value);
     }),
   };
-  return { mockMMKV: mmkv, store: memory };
+  const MMKVMock = vi.fn(() => mmkv);
+  return { mockMMKV: mmkv, MockMMKV: MMKVMock, store: memory };
 });
 
-vi.mock("react-native-mmkv", () => {
-  class MMKV {
-    delete = mockMMKV.delete;
-    getString = mockMMKV.getString;
-    set = mockMMKV.set;
-  }
-  return { MMKV };
-});
+vi.mock("react-native-mmkv", () => ({
+  MMKV: MockMMKV,
+}));
 
 describe("appStorageId", () => {
   it("is app-storage", () => {
     expect(appStorageId).toBe("app-storage");
+  });
+});
+
+describe("appStorage", () => {
+  it("constructs MMKV with the storage id and encryption key", () => {
+    expect(MockMMKV).toHaveBeenCalledWith({
+      encryptionKey: "fe-monorepo/expo",
+      id: "app-storage",
+    });
   });
 });
 

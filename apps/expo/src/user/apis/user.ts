@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { http } from "@/core/services/http";
 
+// Stryker disable all: Zod shapes — ADR-0001 plain Zod out of unit-test
+// scope; file stays allowlisted for userKeys / userApi (ADR-0003).
 const userSchema = z.object({
   id: z.number(),
   firstName: z.string(),
@@ -25,6 +27,7 @@ const userSchema = z.object({
 const getUserApiRequestSchema = z.object({
   id: z.number(),
 });
+// Stryker restore all
 type GetUserApiRequestSchema = z.infer<typeof getUserApiRequestSchema>;
 const getUserApiResponseSchema = userSchema;
 export type GetUserApiResponseSchema = z.infer<typeof getUserApiResponseSchema>;
