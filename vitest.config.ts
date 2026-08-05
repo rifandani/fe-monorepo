@@ -49,6 +49,7 @@ export default defineConfig({
         "**/types.ts",
         // all constants
         "apps/*/src/**/constants/**",
+        "packages/*/src/**/constants/**",
         // Pure Zod schema modules — declarations only, no functions. ADR-0001 puts
         // "plain Zod shapes" out of test scope, but leaving them in `include` gave
         // them a free 100%: importing a schema file executes every line, so this file

@@ -13,8 +13,14 @@ const { mockMMKV, MockMMKV, store } = vi.hoisted(() => {
       memory.set(key, value);
     }),
   };
-  const MMKVMock = vi.fn(() => mmkv);
-  return { mockMMKV: mmkv, MockMMKV: MMKVMock, store: memory };
+  // `new MMKV()` needs a real constructor — arrow `vi.fn(() => …)` is not one.
+  const mmkvCtor = function mmkvCtor(_options?: {
+    encryptionKey: string;
+    id: string;
+  }) {
+    return mmkv;
+  };
+  return { mockMMKV: mmkv, MockMMKV: vi.fn(mmkvCtor), store: memory };
 });
 
 vi.mock("react-native-mmkv", () => ({
