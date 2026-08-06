@@ -1,0 +1,80 @@
+# Advisory mutation testing. Deliberately its own workflow rather than a job in
+# ci.yml: adding `workflow_dispatch` there would make every manual run also fire
+# the 4-shard e2e matrix and both builds.
+#
+# This never gates anything — `break: null` in stryker.config.mjs means Stryker
+# exits 0 whatever the score. See docs/adr/0003-mutation-testing-is-advisory.md.
+name: Mutation Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      mutate:
+        description: "Ad-hoc scope. REPLACES the derived scope entirely (Stryker's -m does not intersect), so results are not comparable to the baseline. Leave empty for the real run."
+        required: false
+        type: string
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    environment: dev
+    # Measured baseline is 2m49s (ADR-0003). 30 minutes is ~10x headroom for a slower
+    # runner and a growing suite, while still killing a hung run promptly.
+    timeout-minutes: 30
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Prepare env file
+        env:
+          SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
+          WEB_ENV_FILE: ${{ secrets.WEB_ENV_FILE }}
+        run: |
+          if [ -n "$SPA_ENV_FILE" ]; then
+            echo "$SPA_ENV_FILE" > apps/spa/.env.dev
+          else
+            cp apps/spa/.env.dev.example apps/spa/.env.dev
+          fi
+          if [ -n "$WEB_ENV_FILE" ]; then
+            echo "$WEB_ENV_FILE" > apps/web/.env.dev
+          else
+            cp apps/web/.env.dev.example apps/web/.env.dev
+          fi
+
+      - name: Run mutation testing
+        # Via `env`, not `${{ }}` interpolation into the script: a dispatch input is
+        # attacker-controlled text and would otherwise be evaluated by the shell.
+        env:
+          MUTATE_SCOPE: ${{ inputs.mutate }}
+        # Calls the binary directly rather than `bun run test:mutate -- -m …`: arg
+        # forwarding through `--` is not reliable, and a silently-dropped `-m` would
+        # look like a successful full run.
+        run: |
+          if [ -n "$MUTATE_SCOPE" ]; then
+            bunx stryker run -m "$MUTATE_SCOPE"
+          else
+            bun run test:mutate
+          fi
+
+      - name: Save mutation report as artifact
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: mutation-report
+          path: coverage/stryker
+          retention-days: 3
+          if-no-files-found: error

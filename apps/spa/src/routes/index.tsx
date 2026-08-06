@@ -7,7 +7,6 @@ import { ProfileMenu } from "@/core/components/profile-menu";
 import { ThemeToggle } from "@/core/components/theme-toggle";
 import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { reportWebVitals } from "@/core/utils/web-vitals";
 
 const HomeRoute = () => {
   useSeo({
@@ -64,7 +63,4 @@ export const Route = createFileRoute("/")({
     }
   },
   component: HomeRoute,
-  onEnter() {
-    reportWebVitals();
-  },
 });

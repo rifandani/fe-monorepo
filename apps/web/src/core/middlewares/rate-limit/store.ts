@@ -43,9 +43,8 @@ export class DbStore<P extends string = string> implements Store<P> {
         .from(rateLimitTable)
         .where(eq(rateLimitTable.key, key))
         .limit(1);
-      if (result.length === 0) {
-        return;
-      }
+      // No `result.length === 0` guard: destructuring an empty array already yields `undefined`, so the check below subsumes it.
+      // Mutation testing found the pair — every mutant of the length check survived, because no input can reach one guard without the other producing the same result.
       const [record] = result;
       if (!record) {
         return;

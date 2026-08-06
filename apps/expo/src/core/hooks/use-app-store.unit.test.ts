@@ -4,10 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { appStoreStateDefaultValues } from "./app-store-state-defaults";
 import { useAppStore } from "./use-app-store";
 
-vi.mock("../services/mmkv", () => {
+const mmkv = vi.hoisted(() => {
   const store = new Map<string, string>();
   return {
-    appStorageId: "app-storage",
+    store,
+    appStorageId: "app-storage" as const,
     appStateStorage: {
       getItem: (name: string) => store.get(name) ?? null,
       removeItem: (name: string) => {
@@ -19,6 +20,11 @@ vi.mock("../services/mmkv", () => {
     },
   };
 });
+
+vi.mock("../services/mmkv", () => ({
+  appStorageId: mmkv.appStorageId,
+  appStateStorage: mmkv.appStateStorage,
+}));
 
 const sampleUser: AuthLoginResponseSchema = {
   accessToken: "access",
@@ -43,6 +49,7 @@ describe("appStoreStateDefaultValues", () => {
 
 describe("useAppStore", () => {
   beforeEach(() => {
+    mmkv.store.clear();
     useAppStore.setState(appStoreStateDefaultValues);
   });
 
@@ -73,5 +80,14 @@ describe("useAppStore", () => {
     useAppStore.getState().setTheme("dark");
     useAppStore.getState().reset();
     expect(useAppStore.getState()).toMatchObject(appStoreStateDefaultValues);
+  });
+
+  it("persists under the app-storage key via mmkv state storage", () => {
+    useAppStore.getState().setTheme("dark");
+    // Pins the persist `{ name, storage }` options object — `{}` would write
+    // under Zustand's default key / storage instead.
+    expect(mmkv.store.get("app-storage")).toEqual(
+      expect.stringContaining('"theme":"dark"')
+    );
   });
 });

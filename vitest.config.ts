@@ -18,9 +18,11 @@ export default defineConfig({
       enabled: false,
       reportOnFailure: true,
       reporter: ["text", ["text-summary", { file: "summary.txt" }], "html"],
-      // Deliberately not `./coverage`, which is reserved for fallow's runtime
-      // sidecar traces. Feeding fallow test coverage would make it report the
-      // ADR-sanctioned untested layers as dead code.
+      // Deliberately not `./coverage` itself, whose root is reserved for fallow's
+      // runtime sidecar traces. Feeding fallow test coverage would make it report the
+      // ADR-sanctioned untested layers as dead code. Test reports live in named
+      // subdirectories instead — `coverage/vitest` here, `coverage/stryker` for
+      // mutation output (ADR-0003).
       reportsDirectory: "./coverage/vitest",
       // Floor, not a target, and deliberately *below* the measured baseline. Enforced per file (`perFile: true`), so one thinly covered module cannot hide behind the rest of the suite.
       // The suite only clears 100 because the repo is boilerplate-sized; pinning the floor there would fail CI on the first partially covered file added to `include`, which is ordinary work, not a regression. 90 leaves room for that while still catching a real slide. Lowering it needs a reason in the commit.
@@ -45,8 +47,18 @@ export default defineConfig({
         "**/*.unit.test.ts",
         "**/*.d.ts",
         "**/types.ts",
+        // all constants
+        "apps/*/src/**/constants/**",
+        "packages/*/src/**/constants/**",
+        // Pure Zod schema modules — declarations only, no functions. ADR-0001 puts
+        // "plain Zod shapes" out of test scope, but leaving them in `include` gave
+        // them a free 100%: importing a schema file executes every line, so this file
+        // scored 100% statements/branches/lines with no test file in existence.
+        // Mutation testing is what exposed it (9.09%, ADR-0003). Excluded so the
+        // coverage figure means something. Modules that mix schemas with repositories
+        // (`auth.ts`, `better-auth.ts`, `cdn.ts`) stay in — their functions are tested.
+        "packages/core/src/apis/core.ts",
         "packages/core/src/libs/i18n/locales/**",
-        "apps/*/src/**/constants/env.ts",
         "apps/*/src/core/services/http.ts",
         "apps/web/src/auth/utils/auth.ts",
         "apps/web/src/auth/utils/auth.client.ts",
@@ -54,9 +66,6 @@ export default defineConfig({
         "apps/web/src/app/manifest.ts",
         "apps/web/src/app/api/rate-limit.ts",
         "apps/web/src/core/utils/i18n.ts",
-        "apps/expo/src/core/constants/env/**",
-        // Orphaned Tamagui starter scaffolding (already `fallow-ignore-file unused-file`): nothing imports it, and `createThemes` throws on its empty `childrenThemes` palettes, so it cannot even be imported by a test.
-        "apps/expo/src/core/constants/theme.ts",
       ],
     },
   },

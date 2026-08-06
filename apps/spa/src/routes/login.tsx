@@ -10,7 +10,6 @@ import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { reportWebVitals } from "@/core/utils/web-vitals";
 
 const LoginForm = () => {
   const { t } = useTranslation();
@@ -154,7 +153,4 @@ export const Route = createFileRoute("/login")({
     }
   },
   component: LoginRoute,
-  onEnter() {
-    reportWebVitals();
-  },
 });

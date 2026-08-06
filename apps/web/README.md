@@ -7,6 +7,7 @@
 ## 🎯 Todo
 
 - [ ] drizzle beta
+- [ ] [Next 16.3](https://nextjs.org/blog/next-16-3)
 
 ## Testing
 
