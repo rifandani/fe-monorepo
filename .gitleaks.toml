@@ -8,3 +8,9 @@ useDefault = true
 [[allowlists]]
 description = "Example env templates"
 paths = ['''(.*?)\\.env\\..*\\.example$''', '''(.*?)\\.env\\.example$''']
+
+# Playwright storage-state fixtures (DummyJSON / local mock JWTs), including
+# historical apps/*/e2e/.auth paths no longer in the working tree.
+[[allowlists]]
+description = "Playwright E2E auth storage-state mocks"
+paths = ['''(?i).*e2e/\.auth/.*''', '''(?i).*playwright/\.auth/.*''']
