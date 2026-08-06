@@ -21,3 +21,7 @@ labels:
     color: 2ea44f
   - name: ready-for-human
     color: bfd4f2
+  - name: security
+    color: b60205
+  - name: security-exception
+    color: e4e669

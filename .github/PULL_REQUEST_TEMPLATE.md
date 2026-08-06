@@ -28,6 +28,8 @@ Please delete options that are not relevant.
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] Any dependent changes have been merged and published in downstream modules
 - [ ] I have checked my code and corrected any misspellings
+- [ ] I have considered OWASP Top 10 impact (auth, injection, secrets, deps)
+- [ ] CI secret detection is green; Security workflow is green, or `security-exception` was approved by the Application lead
 
 ## Screenshots (if applicable)
 

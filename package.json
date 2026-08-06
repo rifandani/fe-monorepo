@@ -24,6 +24,7 @@
     "check:dead-code": "fallow dead-code --quiet",
     "check:dupes": "fallow dupes --mode semantic --quiet",
     "check:security": "fallow security --surface  --quiet",
+    "audit:sca": "node scripts/security/sca-gate.ts",
     "check:all": "fallow --quiet",
     "check:fix": "fallow fix --yes --no-create-config",
     "typecheck": "bun run --parallel core:typecheck web:typecheck spa:typecheck expo:typecheck",

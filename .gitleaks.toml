@@ -1,0 +1,10 @@
+# https://github.com/gitleaks/gitleaks
+title = "fe-monorepo"
+
+[extend]
+useDefault = true
+
+# Example env files are templates only; real secrets live in GitHub Environments.
+[[allowlists]]
+description = "Example env templates"
+paths = ['''(.*?)\\.env\\..*\\.example$''', '''(.*?)\\.env\\.example$''']

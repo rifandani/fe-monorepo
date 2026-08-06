@@ -1,0 +1,97 @@
+{
+  "$schema_comment": "Temporary SCA exceptions for high-severity advisories (fed to osv-scanner as IgnoredVulns). Critical must never be listed. Expired entries fail the gate.",
+  "expires_format": "YYYY-MM-DD",
+  "entries": [
+    {
+      "id": "GHSA-mh99-v99m-4gvg",
+      "package": "brace-expansion",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
+    },
+    {
+      "id": "GHSA-rgw5-rvv9-x895",
+      "package": "brace-expansion",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
+    },
+    {
+      "id": "GHSA-3jxr-9vmj-r5cp",
+      "package": "brace-expansion",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
+    },
+    {
+      "id": "GHSA-7p8r-x3mc-p8w7",
+      "package": "fast-uri",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via ajv / dotenvx / expo; awaiting upstream"
+    },
+    {
+      "id": "GHSA-v2hh-gcrm-f6hx",
+      "package": "fast-uri",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via ajv / dotenvx / expo; awaiting upstream"
+    },
+    {
+      "id": "GHSA-89xv-2m56-2m9x",
+      "package": "next",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Bump apps/web next to >=16.2.11"
+    },
+    {
+      "id": "GHSA-6gpp-xcg3-4w24",
+      "package": "next",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Bump apps/web next to >=16.2.11"
+    },
+    {
+      "id": "GHSA-m99w-x7hq-7vfj",
+      "package": "next",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Bump apps/web next to >=16.2.11"
+    },
+    {
+      "id": "GHSA-p9j2-gv94-2wf4",
+      "package": "next",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Bump apps/web next to >=16.2.11"
+    },
+    {
+      "id": "GHSA-6g55-p6wh-862q",
+      "package": "postcss",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via next/vite; bump with framework releases"
+    },
+    {
+      "id": "GHSA-r28c-9q8g-f849",
+      "package": "postcss",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via next/vite; bump with framework releases"
+    },
+    {
+      "id": "GHSA-f88m-g3jw-g9cj",
+      "package": "sharp",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via next / vite-pwa; bump sharp >=0.35.0 when available"
+    },
+    {
+      "id": "GHSA-4cwx-7wf7-3272",
+      "package": "undici",
+      "severity": "high",
+      "expires": "2026-11-06",
+      "reason": "Transitive via expo / dotenvx; awaiting upstream"
+    }
+  ]
+}

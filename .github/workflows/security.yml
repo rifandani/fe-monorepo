@@ -1,0 +1,106 @@
+# Secure development pipeline (Security Governance item 8).
+#
+# Controls:
+#   - SCA  → google/osv-scanner (high+), with timed allowlist exceptions
+#   - SAST → CodeQL javascript-typescript (fail on security-severity >= 7.0)
+#
+# Secret detection (gitleaks) lives in ci.yml so it stays on every PR/push.
+#
+# Explicitly out of scope here (align with item 10):
+#   - DAST / web app assessment / platform assessment / penetration testing
+#   - Container / IaC scanning (no production images or Terraform in this repo)
+#
+# Exception: apply PR label `security-exception` (Application lead only).
+# That makes blocking jobs soft-fail; findings are still reported.
+name: Security
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Weekly full scan (catches newly published advisories)
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  sca:
+    name: Dependency scanning (SCA)
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'security-exception') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Install osv-scanner
+        env:
+          OSV_SCANNER_VERSION: "2.4.0"
+        run: |
+          curl -sSfL "https://github.com/google/osv-scanner/releases/download/v${OSV_SCANNER_VERSION}/osv-scanner_linux_amd64" \
+            -o /usr/local/bin/osv-scanner
+          chmod +x /usr/local/bin/osv-scanner
+          osv-scanner --version
+
+      - name: SCA gate (high+; timed allowlist)
+        run: node scripts/security/sca-gate.ts
+
+  sast:
+    name: SAST (CodeQL)
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'security-exception') }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          queries: security-extended
+
+      - name: Analyze
+        id: analyze
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"
+          # Always produce SARIF for the severity gate. Upload is best-effort
+          # (requires public repo or GitHub Code Security on private repos).
+          upload: never
+          output: sarif-results
+          post-processed-sarif-path: sarif-results
+
+      - name: Upload SARIF to code scanning
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: sarif-results
+          category: "/language:javascript-typescript"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Fail on High/Critical CodeQL findings
+        env:
+          SAST_MIN_SECURITY_SEVERITY: "7.0"
+        run: bun scripts/security/sarif-severity-gate.ts sarif-results
