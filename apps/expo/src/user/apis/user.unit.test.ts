@@ -1,19 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MOCK_API_BASE_URL, server } from "@test/msw";
+import { http, HttpResponse } from "msw";
+import { describe, expect, it } from "vitest";
 
 import { userApi, userKeys } from "./user";
 import type { GetUserApiResponseSchema } from "./user";
 
-const { mockGet } = vi.hoisted(() => ({
-  mockGet: vi.fn(),
-}));
-
-vi.mock("@/core/services/http", () => ({
-  http: {
-    instance: {
-      get: mockGet,
-    },
-  },
-}));
+const detailUrl = `${MOCK_API_BASE_URL}/users/:id`;
 
 const sampleUser: GetUserApiResponseSchema = {
   age: 36,
@@ -51,18 +43,45 @@ describe("userKeys", () => {
 });
 
 describe("userApi.getDetail", () => {
-  beforeEach(() => {
-    mockGet.mockReset();
-  });
-
-  it("fetches and returns parsed user detail", async () => {
-    const json = vi.fn().mockResolvedValue(sampleUser);
-    mockGet.mockReturnValue({ json });
+  it("fetches and returns the parsed user detail", async () => {
+    let capturedId: string | readonly string[] | undefined;
+    let capturedRequest: Request | undefined;
+    server.use(
+      http.get(detailUrl, ({ params, request }) => {
+        capturedId = params.id;
+        capturedRequest = request;
+        return HttpResponse.json(sampleUser);
+      })
+    );
 
     const result = await userApi.getDetail({ id: 1 });
 
-    expect(mockGet).toHaveBeenCalledWith("users/1");
-    expect(json).toHaveBeenCalledOnce();
+    // The path param is read off the real request rather than a spy's call args, so this
+    // covers the `users/${id}` template *and* the base URL the `http` singleton picked up
+    // from `EXPO_PUBLIC_API_BASE_URL` — neither of which the previous module-boundary
+    // mock could observe.
+    expect(capturedRequest?.method).toBe("GET");
+    expect(capturedId).toBe("1");
     expect(result).toEqual(sampleUser);
+  });
+
+  it("rejects when the response violates the schema", async () => {
+    server.use(
+      http.get(detailUrl, () =>
+        HttpResponse.json({ ...sampleUser, email: "not-an-email" })
+      )
+    );
+
+    await expect(userApi.getDetail({ id: 1 })).rejects.toThrow();
+  });
+
+  it("rejects on a 404", async () => {
+    server.use(
+      http.get(detailUrl, () =>
+        HttpResponse.json({ message: "User not found" }, { status: 404 })
+      )
+    );
+
+    await expect(userApi.getDetail({ id: 999 })).rejects.toThrow();
   });
 });

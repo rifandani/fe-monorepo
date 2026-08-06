@@ -150,19 +150,30 @@ export const createWebPage = (props: {
  * so a graph value containing `</script>` would break out of the tag. Escaping
  * them as JSON string escapes keeps the payload byte-identical after parsing.
  */
-const JSON_LD_UNSAFE = /[<>\u2028\u2029]/gu;
-const JSON_LD_ESCAPES: Record<string, string> = {
+const JSON_LD_ESCAPES = {
   "<": "\\u003c",
   ">": "\\u003e",
   "\u2028": "\\u2028",
   "\u2029": "\\u2029",
-};
+} as const;
+type JsonLdUnsafeChar = keyof typeof JSON_LD_ESCAPES;
+// A literal rather than `new RegExp(Object.keys(...))`: a computed class would
+// need every key escaped, so adding `]`, `\`, `^` or `-` to the map above would
+// silently corrupt the pattern. The cost is that the two can drift, so
+// `seo.unit.test.ts` asserts the pattern matches every key of the map.
+const JSON_LD_UNSAFE = /[<>\u2028\u2029]/gu;
+
+/** Exposed so `seo.unit.test.ts` can assert the pattern covers every key. */
+export const jsonLdEscapeInternals = {
+  escapes: JSON_LD_ESCAPES,
+  pattern: JSON_LD_UNSAFE,
+} as const;
 
 /** Serialize a JSON-LD payload safely for embedding in an inline `<script>`. */
 const serializeJsonLd = (payload: Graph): string =>
   JSON.stringify(payload).replace(
     JSON_LD_UNSAFE,
-    (char) => JSON_LD_ESCAPES[char] ?? char
+    (char) => JSON_LD_ESCAPES[char as JsonLdUnsafeChar]
   );
 
 export const JsonLd = ({ graphs }: { graphs: readonly Thing[] }) => {

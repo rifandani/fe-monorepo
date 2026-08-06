@@ -2,6 +2,9 @@ import type { Http } from "@workspace/core/services/http";
 import type { Options } from "ky";
 import { z } from "zod";
 // #region API SCHEMAS
+// Stryker disable all: Zod constraint/message mutants — ADR-0001 puts plain
+// Zod shapes out of test scope; this file stays allowlisted for authKeys /
+// authRepositories only (ADR-0003 accepted noise).
 export const authLoginRequestSchema = z.object({
   expiresInMins: z.number().optional(),
   password: z.string().min(6, "password must contain at least 6 characters"),
@@ -20,6 +23,7 @@ export const authLoginResponseSchema = z.object({
 });
 // #endregion API SCHEMAS
 // #region SCHEMAS TYPES
+// Stryker restore all
 export type AuthLoginRequestSchema = z.infer<typeof authLoginRequestSchema>;
 export type AuthLoginResponseSchema = z.infer<typeof authLoginResponseSchema>;
 // #endregion SCHEMAS TYPES
@@ -40,23 +44,6 @@ export const authRepositories = (http: InstanceType<typeof Http>) =>
     ) => {
       const resp = await http.instance
         .post("auth/login", {
-          hooks: {
-            afterResponse: [
-              async ({ request, response }) => {
-                if (response.status === 200) {
-                  const data =
-                    (await response.json()) as AuthLoginResponseSchema;
-                  if ("accessToken" in data) {
-                    // set 'Authorization' headers
-                    request.headers.set(
-                      "Authorization",
-                      `Bearer ${data.accessToken}`
-                    );
-                  }
-                }
-              },
-            ],
-          },
           json,
           ...options,
         })

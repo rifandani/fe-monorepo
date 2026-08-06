@@ -8,6 +8,8 @@
       // ],
       "*": ["./*"],
       "@/*": ["./src/*"],
+      // Mirrors the `@test/msw` alias in vitest.config.ts.
+      "@test/msw": ["../../vitest.msw.ts"],
       "@workspace/core/*": ["../../packages/core/src/*"]
     },
     "strict": true

@@ -12,6 +12,9 @@ import { recordException } from "@/core/utils/telemetry";
 
 import "@/core/styles/globals.css";
 import "./instrumentation";
+import { reportWebVitals } from "@/core/utils/web-vitals";
+
+reportWebVitals();
 
 const tracer = trace.getTracer(TRACER_REACT_ENTRY);
 const root = document.querySelector("#root");

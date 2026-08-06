@@ -4,6 +4,9 @@ We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, lib
 
 > Coverage was originally out of scope too. That clause was reversed on 2026-07-28 — see [Amendments](#amendments).
 > The four per-project CI jobs were collapsed into one on 2026-07-29 — same section.
+> "Targeted mocks" was narrowed on 2026-07-30: API-layer tests now fake at the network boundary via MSW, not at the module boundary. Scope above is unchanged — see [ADR-0002](./0002-network-boundary-mocking-with-msw.md).
+> A second tool now watches the same `coverage.include` allowlist from the other side: [ADR-0003](./0003-mutation-testing-is-advisory.md) derives its mutation scope from it. Coverage asks *did a test execute this line* (a floor, enforced); mutation asks *would a test notice if this line were wrong* (a ceiling, advisory).
+> Its first report then revised the allowlist itself on 2026-08-03 — pure Zod schema modules were scoring a free 100% — see [Amendments](#amendments).
 
 ## Considered Options
 
@@ -21,14 +24,16 @@ Coverage measures business logic, defined by the `coverage.include` allowlist in
 
 Logic left inside a shell is therefore invisible to coverage by design — that absence is the signal to extract it. Note `.tsx` is not a proxy for UI here: `core/utils/seo.tsx` and both Zustand stores are `.tsx` business logic.
 
-`thresholds` is a floor, not a target — `autoUpdate: false`, aggregate. First baseline 2026-07-28: statements 90.1%, branches 78.33%, functions 84.64%, lines 90.05%. Backfilling the untested branches of every allowlisted module the same day moved the measurement to statements 100%, branches 99.51%, functions 100%, lines 100%.
+`thresholds` is a floor, not a target — `autoUpdate: false`, `perFile: true`. First baseline 2026-07-28: statements 90.1%, branches 78.33%, functions 84.64%, lines 90.05%. Backfilling the untested branches of every allowlisted module the same day moved the measurement to statements 100%, branches 99.51%, functions 100%, lines 100%.
 
 The floor is **90 on all four**, deliberately below that measurement, which revises the original "baseline rounded down" rule. Rounding down only works while the baseline has slack; pinning at 100 would fail CI the moment anyone adds a partially covered file to `include` — ordinary work, not a regression — and the pressure to keep it green is exactly the padding the amendment above set out to avoid. The suite clears 100 because the repo is boilerplate-sized, not because 100 is sustainable. 90 absorbs new files and still catches a real slide. Lowering it needs a reason in the commit; raising it needs a reason to believe the headroom is no longer wanted.
 
 To skip unreachable defensive code instead of testing it, use `/* v8 ignore next -- @preserve */` — `@preserve` is required or the oxc transform strips the comment.
 
+**2026-08-03 — pure Zod schema modules leave the `include` allowlist.** The scope rule above already puts "plain Zod shapes" out of test scope, but they were still being *measured*, and that combination is worse than either choice alone: importing a file of `z.object({…})` executes every line, so it scores 100% statements/branches/lines while nothing asserts anything about it. `packages/core/src/apis/core.ts` had no test file at all and still reported 100%.
+
+Mutation testing is what surfaced it — that file scored 9.09%, the worst in the repo, with survivors like `z.number().min(1)` → `.min(100)` ([ADR-0003](./0003-mutation-testing-is-advisory.md)). The fix is to stop measuring what we deliberately do not test, not to start testing it: measuring it inflates the very number the 90% floor is meant to defend.
+
+Scope is narrow and structural: **modules that contain only schema declarations**. Files that mix schemas with functions — `apis/{auth,better-auth,cdn}.ts`, whose `authKeys`/`authRepositories` are MSW-tested per [ADR-0002](./0002-network-boundary-mocking-with-msw.md) — stay in. Their Zod-constraint mutants survive and are accepted noise, recorded as such in ADR-0003.
+
 `coverage` is root-only (Vitest's `NonProjectOptions`), so `--project <name> --coverage` measures the global include list against a partial run and reports the other projects at 0%. There is deliberately no `web:test:unit:cov`-style script despite the symmetry with the per-project ones: coverage is whole-suite only, via `bun test:unit:cov`.
-
-**2026-07-29 — one `unit` job replaces the four per-project ones.** `test:unit` is `vitest run`, which already runs every project, so `unit-coverage` was a superset of `core-unit` and its three siblings — four extra cold setups re-running the same suite. It is renamed `unit`; CI drops from 14 runners to 10. Wall-clock is unchanged, since the deleted jobs ran in parallel, so the win is runner-minutes.
-
-This promotes the ratchet from advisory, which a since-deleted clause deferred pending evidence of how often it trips on legitimate refactors. Deliberate: `main` is unprotected, so a breach is a red X to read rather than a merge block — which is how that evidence accumulates. If it proves noisy, drop `thresholds` and coverage reverts to reporting. The per-project scripts stay; CI no longer calls them, but focused runs are what Vitest projects are for.

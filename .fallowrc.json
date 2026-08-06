@@ -7,7 +7,12 @@
   "ignoreExports": [
     { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
     { "file": "apps/web/**/components/ui/**", "exports": ["*"] },
-    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] }
+    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] },
+    {
+      "$comment": "Root-level vitest infrastructure is outside fallow's `entry` graph, so `server` and `MOCK_API_BASE_URL` read as unused and `fallow fix` strips the `export` keyword. They are consumed by vitest.setup.ts, apps/expo/vitest.config.ts, and the *.unit.test.ts files that call `server.use()`.",
+      "file": "vitest.msw.ts",
+      "exports": ["*"]
+    }
   ],
   "overrides": [
     {
@@ -19,12 +24,21 @@
       }
     },
     {
+      "$comment": "Root-level tool configs and service-worker entries: nothing imports them (their own CLI or the browser loads them), so they sit outside fallow's `entry` graph and read as unused files. `stryker.config.mjs` is loaded by the `stryker` binary — see docs/adr/0003-mutation-testing-is-advisory.md.",
       "files": [
         "apps/spa/pwa-assets.config.ts",
         "apps/spa/src/sw.ts",
         "apps/web/pwa-assets.config.ts",
-        "oxfmt.config.ts"
+        "oxfmt.config.ts",
+        "stryker.config.mjs"
       ],
+      "rules": {
+        "unused-files": "off"
+      }
+    },
+    {
+      "$comment": "Loaded by path from the `setupFiles` arrays in packages/core/vitest.config.ts and apps/expo/vitest.config.ts, so no import edge reaches it and it reads as unreachable. See docs/adr/0002-network-boundary-mocking-with-msw.md.",
+      "files": ["vitest.msw-setup.ts"],
       "rules": {
         "unused-files": "off"
       }
@@ -68,7 +82,10 @@
     ]
   },
   "ignoreDependencies": [
+    "@stryker-mutator/core",
+    "@stryker-mutator/vitest-runner",
     "@opentelemetry/semantic-conventions",
+    "msw",
     "postcss-load-config",
     "workbox-core",
     "@expo-google-fonts/space-grotesk",

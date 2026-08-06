@@ -7,6 +7,9 @@
     "module": "NodeNext",
     "paths": {
       "*": ["./*"],
+      // Mirrors the `@test/msw` alias in vitest.config.ts. Root-level test infrastructure,
+      // so it resolves out of the package.
+      "@test/msw": ["../../vitest.msw.ts"],
       "@workspace/core/*": ["./src/*"]
     }
   },

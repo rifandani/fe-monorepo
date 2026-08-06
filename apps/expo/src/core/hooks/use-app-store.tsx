@@ -16,10 +16,13 @@ interface AppStoreAction {
   setTheme: (theme: AppStoreState["theme"]) => void;
 }
 type AppStore = AppStoreState & AppStoreAction;
+// Stryker disable all: Zod shape for persist rehydration — ADR-0001 plain
+// Zod out of unit-test scope (ADR-0003 accepted noise).
 const _appStoreStateSchema = z.object({
   theme: z.enum(["system", "light", "dark"]),
   user: authLoginResponseSchema.nullable(),
 });
+// Stryker restore all
 /**
  * Hooks to manipulate global app store that integrated with MMKV
  *

@@ -6,6 +6,11 @@ playwright
 blob-report
 playwright.cache
 coverage
+/.stryker-tmp
+stryker.log
+# The vitest runner writes ./stryker-setup-${STRYKER_MUTATOR_WORKER}.js into cwd,
+# one per worker, and does not always clean them up.
+stryker-setup-*.js
 html
 build
 .next

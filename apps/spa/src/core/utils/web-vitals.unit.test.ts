@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   METRICS_METER_WEB_VITALS,
@@ -9,8 +9,6 @@ import {
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/core/constants/global";
 
-import { reportWebVitals } from "./web-vitals";
-
 const {
   onLCP,
   onINP,
@@ -19,6 +17,7 @@ const {
   onTTFB,
   createHistogram,
   getMeter,
+  forceFlush,
   records,
 } = vi.hoisted(() => {
   const webVitalsRecords = {
@@ -41,7 +40,6 @@ const {
     i += 1;
     return histogram;
   });
-  const mockGgetMeter = vi.fn(() => ({ createHistogram: mockCreateHistogram }));
   return {
     onLCP: vi.fn(),
     onINP: vi.fn(),
@@ -49,7 +47,8 @@ const {
     onFCP: vi.fn(),
     onTTFB: vi.fn(),
     createHistogram: mockCreateHistogram,
-    getMeter: mockGgetMeter,
+    getMeter: vi.fn(() => ({ createHistogram: mockCreateHistogram })),
+    forceFlush: vi.fn(() => Promise.resolve()),
     records: webVitalsRecords,
   };
 });
@@ -65,22 +64,68 @@ vi.mock("web-vitals", () => ({
 vi.mock("@/instrumentation", () => ({
   meterProvider: {
     getMeter,
+    forceFlush,
   },
 }));
 
+type HideEvent = "pagehide" | "visibilitychange";
+
+const listeners: Record<HideEvent, EventListener[]> = {
+  pagehide: [],
+  visibilitychange: [],
+};
+
+const capture = (
+  type: string,
+  listener: EventListenerOrEventListenerObject
+) => {
+  if (type === "pagehide" || type === "visibilitychange") {
+    listeners[type].push(
+      typeof listener === "function" ? listener : listener.handleEvent
+    );
+  }
+};
+
+// `environment: "node"`, so the browser globals the module touches don't exist.
+const documentStub = {
+  addEventListener: capture,
+  visibilityState: "visible" as DocumentVisibilityState,
+};
+
+vi.stubGlobal("document", documentStub);
+vi.stubGlobal("addEventListener", capture);
+
+const { reportWebVitals } = await import("./web-vitals");
+
+const fire = (type: HideEvent) => {
+  for (const listener of listeners[type]) {
+    listener(new Event(type));
+  }
+};
+
+const hide = () => {
+  documentStub.visibilityState = "hidden";
+  fire("visibilitychange");
+};
+
+const show = () => {
+  documentStub.visibilityState = "visible";
+  fire("visibilitychange");
+};
+
 describe("reportWebVitals", () => {
+  beforeAll(() => {
+    reportWebVitals();
+  });
+
   beforeEach(() => {
-    onLCP.mockClear();
-    onINP.mockClear();
-    onCLS.mockClear();
-    onFCP.mockClear();
-    onTTFB.mockClear();
+    forceFlush.mockClear();
     for (const record of Object.values(records)) {
       record.mockClear();
     }
   });
 
-  it("registers meters and web-vitals listeners at import", () => {
+  it("registers meters at import", () => {
     expect(getMeter).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS);
     expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_LCP, {
       description: "Largest Contentful Paint",
@@ -92,6 +137,7 @@ describe("reportWebVitals", () => {
     });
     expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_CLS, {
       description: "Cumulative Layout Shift",
+      unit: "1",
     });
     expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_FCP, {
       description: "First Contentful Paint",
@@ -106,7 +152,7 @@ describe("reportWebVitals", () => {
     );
   });
 
-  it("wires each web-vital callback to its histogram", () => {
+  it("wires listeners once and is idempotent", () => {
     reportWebVitals();
 
     expect(onLCP).toHaveBeenCalledOnce();
@@ -114,29 +160,128 @@ describe("reportWebVitals", () => {
     expect(onCLS).toHaveBeenCalledOnce();
     expect(onFCP).toHaveBeenCalledOnce();
     expect(onTTFB).toHaveBeenCalledOnce();
+    // web-vitals finalizes CLS/INP/LCP on visibilitychange; pagehide is a backup
+    expect(listeners.visibilitychange).toHaveLength(1);
+    expect(listeners.pagehide).toHaveLength(1);
+  });
 
+  it("records LCP/FCP/TTFB immediately with semconv attrs", () => {
     const metric = {
+      id: "v1",
       value: 120,
-      delta: 10,
+      delta: 120,
       navigationType: "navigate",
       rating: "good",
     } as const;
 
     onLCP.mock.calls[0]?.[0]?.(metric as never);
-    onINP.mock.calls[0]?.[0]?.(metric as never);
-    onCLS.mock.calls[0]?.[0]?.(metric as never);
-    onFCP.mock.calls[0]?.[0]?.(metric as never);
-    onTTFB.mock.calls[0]?.[0]?.(metric as never);
+    onFCP.mock.calls[0]?.[0]?.({ ...metric, id: "v2" } as never);
+    onTTFB.mock.calls[0]?.[0]?.({ ...metric, id: "v3" } as never);
 
     const attrs = {
-      delta: 10,
-      navigationType: "navigate",
+      navigation_type: "navigate",
       rating: "good",
     };
     expect(records.lcp).toHaveBeenCalledWith(120, attrs);
-    expect(records.inp).toHaveBeenCalledWith(120, attrs);
-    expect(records.cls).toHaveBeenCalledWith(120, attrs);
     expect(records.fcp).toHaveBeenCalledWith(120, attrs);
     expect(records.ttfb).toHaveBeenCalledWith(120, attrs);
+
+    // same id must not double-record
+    onLCP.mock.calls[0]?.[0]?.({ ...metric, value: 200 } as never);
+    expect(records.lcp).toHaveBeenCalledOnce();
+  });
+
+  it("defers CLS/INP until the page hides and records the latest value once", () => {
+    const clsCb = onCLS.mock.calls[0]?.[0];
+    const inpCb = onINP.mock.calls[0]?.[0];
+
+    clsCb?.({
+      id: "cls-1",
+      value: 0.05,
+      delta: 0.05,
+      navigationType: "navigate",
+      rating: "good",
+    } as never);
+    clsCb?.({
+      id: "cls-1",
+      value: 0.12,
+      delta: 0.07,
+      navigationType: "navigate",
+      rating: "needs-improvement",
+    } as never);
+    inpCb?.({
+      id: "inp-1",
+      value: 80,
+      delta: 80,
+      navigationType: "navigate",
+      rating: "good",
+    } as never);
+
+    expect(records.cls).not.toHaveBeenCalled();
+    expect(records.inp).not.toHaveBeenCalled();
+
+    // a visibilitychange back to visible must not flush
+    show();
+    expect(records.cls).not.toHaveBeenCalled();
+    expect(forceFlush).not.toHaveBeenCalled();
+
+    hide();
+
+    expect(records.cls).toHaveBeenCalledOnce();
+    expect(records.cls).toHaveBeenCalledWith(0.12, {
+      navigation_type: "navigate",
+      rating: "needs-improvement",
+    });
+    expect(records.inp).toHaveBeenCalledOnce();
+    expect(records.inp).toHaveBeenCalledWith(80, {
+      navigation_type: "navigate",
+      rating: "good",
+    });
+    expect(forceFlush).toHaveBeenCalledOnce();
+
+    // a CLS increase under an already-exported id is dropped: a histogram
+    // sample cannot be retracted, so the first hidden-time value wins
+    clsCb?.({
+      id: "cls-1",
+      value: 0.4,
+      delta: 0.28,
+      navigationType: "navigate",
+      rating: "poor",
+    } as never);
+    hide();
+    expect(records.cls).toHaveBeenCalledOnce();
+  });
+
+  it("flushes the reader on hide even when nothing is pending", () => {
+    hide();
+
+    expect(records.cls).not.toHaveBeenCalled();
+    expect(records.inp).not.toHaveBeenCalled();
+    // LCP/FCP/TTFB are recorded immediately but only leave on the reader tick
+    expect(forceFlush).toHaveBeenCalledOnce();
+  });
+
+  it("still flushes on pagehide as a backup", () => {
+    const inpCb = onINP.mock.calls[0]?.[0];
+
+    inpCb?.({
+      id: "inp-2",
+      value: 240,
+      delta: 240,
+      navigationType: "back-forward-cache",
+      rating: "needs-improvement",
+    } as never);
+
+    fire("pagehide");
+
+    expect(records.inp).toHaveBeenCalledOnce();
+    expect(records.inp).toHaveBeenCalledWith(240, {
+      navigation_type: "back-forward-cache",
+      rating: "needs-improvement",
+    });
+    expect(forceFlush).toHaveBeenCalledOnce();
+
+    fire("pagehide");
+    expect(records.inp).toHaveBeenCalledOnce();
   });
 });

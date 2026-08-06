@@ -1,8 +1,6 @@
 import type * as OtelApi from "@opentelemetry/api";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { loginAction, logoutAction, registerAction } from "./auth";
-
 vi.mock("server-only", () => ({}));
 
 const log = vi.hoisted(() => ({
@@ -37,24 +35,56 @@ vi.mock("next/navigation", () => ({
   redirect,
 }));
 
-vi.mock("@opentelemetry/api", async (importOriginal) => {
-  const actual = await importOriginal<typeof OtelApi>();
+const otel = vi.hoisted(() => {
+  const span = {
+    addEvent: vi.fn(),
+    setStatus: vi.fn(),
+    end: vi.fn(),
+    recordException: vi.fn(),
+    setAttributes: vi.fn(),
+  };
   const counter = { add: vi.fn() };
   const meter = {
     createCounter: vi.fn(() => counter),
   };
+  const tracer = {
+    startActiveSpan: vi.fn(
+      (_name: string, _opts: unknown, fn: (s: typeof span) => unknown) =>
+        fn(span)
+    ),
+  };
+  return {
+    span,
+    counter,
+    meter,
+    tracer,
+    getMeter: vi.fn(() => meter),
+    getTracer: vi.fn(() => tracer),
+  };
+});
+
+vi.mock("@opentelemetry/api", async (importOriginal) => {
+  const actual = await importOriginal<typeof OtelApi>();
   return {
     ...actual,
     metrics: {
       ...actual.metrics,
-      getMeter: vi.fn(() => meter),
+      getMeter: otel.getMeter,
     },
     trace: {
       ...actual.trace,
-      getTracer: vi.fn(() => actual.trace.getTracer("test")),
+      getTracer: otel.getTracer,
     },
   };
 });
+
+const { loginAction, logoutAction, registerAction } = await import("./auth");
+
+// Captured after SUT import, before any `clearAllMocks`.
+const meterRegistration = {
+  getMeter: [...otel.getMeter.mock.calls],
+  createCounter: [...otel.meter.createCounter.mock.calls],
+};
 
 const loginFormData = (email: string, password: string) => {
   const formData = new FormData();
@@ -76,6 +106,18 @@ describe("auth actions", () => {
     vi.clearAllMocks();
   });
 
+  it("registers auth.action meter counters with descriptions", () => {
+    expect(meterRegistration.getMeter).toEqual([["auth.action"]]);
+    expect(meterRegistration.createCounter).toEqual([
+      ["login", { description: "How many times the login action is called" }],
+      ["logout", { description: "How many times the logout action is called" }],
+      [
+        "register",
+        { description: "How many times the register action is called" },
+      ],
+    ]);
+  });
+
   describe("loginAction", () => {
     it("returns mapped error when sign-in fails", async () => {
       authApi.signInEmail.mockRejectedValue(new Error("bad credentials"));
@@ -92,7 +134,7 @@ describe("auth actions", () => {
       expect(redirect).not.toHaveBeenCalled();
     });
 
-    it("redirects home on success", async () => {
+    it("redirects home on success and records the login span event", async () => {
       authApi.signInEmail.mockResolvedValue({
         token: "t",
         user: { id: "u1", email: "a@b.com" },
@@ -111,6 +153,18 @@ describe("auth actions", () => {
           }),
         })
       );
+      expect(otel.getTracer).toHaveBeenCalledWith("auth.action");
+      expect(otel.tracer.startActiveSpan).toHaveBeenCalledWith(
+        "loginAction",
+        expect.anything(),
+        expect.any(Function)
+      );
+      expect(otel.counter.add).toHaveBeenCalledWith(1);
+      expect(otel.span.addEvent).toHaveBeenCalledWith("Login success", {
+        token: "t",
+        "user.email": "a@b.com",
+        "user.id": "u1",
+      });
       expect(redirect).toHaveBeenCalledWith("/");
     });
 
@@ -150,7 +204,7 @@ describe("auth actions", () => {
       expect(redirect).not.toHaveBeenCalled();
     });
 
-    it("redirects home on success", async () => {
+    it("redirects home on success and records the register span event", async () => {
       authApi.signUpEmail.mockResolvedValue({
         token: "t",
         user: { id: "u1", email: "a@b.com" },
@@ -161,7 +215,25 @@ describe("auth actions", () => {
         registerFormData("a@b.com", "Ada Lovelace", "password1")
       );
 
-      expect(authApi.signUpEmail).toHaveBeenCalled();
+      expect(authApi.signUpEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            email: "a@b.com",
+            name: "Ada Lovelace",
+            password: "password1",
+            callbackURL: "/",
+          }),
+        })
+      );
+      expect(otel.tracer.startActiveSpan).toHaveBeenCalledWith(
+        "registerAction",
+        expect.anything(),
+        expect.any(Function)
+      );
+      expect(otel.span.addEvent).toHaveBeenCalledWith("Register success", {
+        "user.email": "a@b.com",
+        "user.id": "u1",
+      });
       expect(redirect).toHaveBeenCalledWith("/");
     });
 
@@ -195,12 +267,20 @@ describe("auth actions", () => {
       expect(redirect).not.toHaveBeenCalled();
     });
 
-    it("redirects to login on success", async () => {
+    it("redirects to login on success and records the logout span event", async () => {
       authApi.signOut.mockResolvedValue({ success: true });
 
       await logoutAction();
 
       expect(authApi.signOut).toHaveBeenCalled();
+      expect(otel.tracer.startActiveSpan).toHaveBeenCalledWith(
+        "logoutAction",
+        expect.anything(),
+        expect.any(Function)
+      );
+      expect(otel.span.addEvent).toHaveBeenCalledWith("Logout success", {
+        success: true,
+      });
       expect(redirect).toHaveBeenCalledWith("/login");
     });
   });

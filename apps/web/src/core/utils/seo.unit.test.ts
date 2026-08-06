@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createMetadata, createWebPage, createWebSite, JsonLd } from "./seo";
+import {
+  createMetadata,
+  createWebPage,
+  createWebSite,
+  JsonLd,
+  jsonLdEscapeInternals,
+} from "./seo";
 
 vi.mock("@/core/constants/env", () => ({
   ENV: {
@@ -20,19 +26,70 @@ describe("createMetadata", () => {
       description: "Welcome",
     });
 
-    expect(metadata.title).toBe("Home | Test App");
-    expect(metadata.description).toBe("Welcome");
-    expect(metadata.applicationName).toBe("Test App");
-    expect(metadata.openGraph).toMatchObject({
+    expect(metadata).toMatchObject({
       title: "Home | Test App",
-      siteName: "Test App",
-      url: "https://web.test",
-      type: "website",
+      description: "Welcome",
+      applicationName: "Test App",
+      publisher: "Rizeki Rifandani",
+      authors: { name: "Rizeki Rifandani", url: "https://web.com" },
+      creator: "Rizeki Rifandani",
+      category: "Personal Blog or Website",
+      icons: "/favicon.ico",
+      generator: "Next.js",
+      robots: { follow: true, index: true },
+      formatDetection: { telephone: true },
+      appleWebApp: {
+        capable: true,
+        startupImage: ["/api/og?title=Home"],
+        statusBarStyle: "default",
+        title: "Home | Test App",
+      },
+      openGraph: {
+        countryName: "Indonesia",
+        description: "Welcome",
+        images: [
+          {
+            alt: "Home | Test App",
+            height: 441,
+            url: "/api/og?title=Home",
+            width: 843,
+          },
+        ],
+        locale: "en_US",
+        siteName: "Test App",
+        title: "Home | Test App",
+        type: "website",
+        url: "https://web.test",
+      },
+      twitter: {
+        card: "summary_large_image",
+        creator: "Rizeki Rifandani",
+        creatorId: "@tri_rizeki",
+        description: "Welcome",
+        images: ["/api/og?title=Home"],
+        site: "@https://web.test",
+        siteId: "@tri_rizeki",
+        title: "Home | Test App",
+      },
     });
-    expect(metadata.twitter).toMatchObject({
-      card: "summary_large_image",
-      title: "Home | Test App",
+  });
+
+  it("keeps the default OG image when no image override is passed", () => {
+    const metadata = createMetadata({
+      title: "Home",
+      description: "Welcome",
     });
+
+    // Pins `image && metadata.openGraph` — `image || …` would overwrite with
+    // an undefined url; `true` would always enter the override branch.
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        alt: "Home | Test App",
+        height: 441,
+        url: "/api/og?title=Home",
+        width: 843,
+      },
+    ]);
   });
 
   it("overrides openGraph image when image is provided", () => {
@@ -141,19 +198,36 @@ describe("JsonLd", () => {
     );
   });
 
-  it("escapes U+2028/U+2029 line separators", () => {
-    const graphs = [
-      createWebPage({
-        url: "https://web.test/about",
-        title: `line\u2028sep\u2029arator`,
-      }),
-    ];
+  // End-to-end cover for each character currently escaped. The map/pattern
+  // sync invariant itself is asserted structurally in the test below.
+  it.each([
+    ["<", "less-than"],
+    [">", "greater-than"],
+    ["\u2028", "U+2028 line separator"],
+    ["\u2029", "U+2029 paragraph separator"],
+  ])("escapes %s (%s) without leaving a gap", (char) => {
+    const title = `a${char}b`;
+    const graphs = [createWebPage({ url: "https://web.test/about", title })];
     const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
       .__html as string;
 
-    expect(html).not.toContain("\u2028");
-    expect(html).not.toContain("\u2029");
+    expect(html).not.toContain(char);
+    expect(html).not.toContain("undefined");
+
     const parsed = JSON.parse(html) as { "@graph": [{ title: string }] };
-    expect(parsed["@graph"][0].title).toBe("line\u2028sep\u2029arator");
+    expect(parsed["@graph"][0].title).toBe(title);
+  });
+
+  // The pattern and the escape map are declared separately, so a key added to
+  // the map without a matching character-class entry would go unescaped. This
+  // catches that drift for any future key, not just the ones tabled above.
+  it("matches every character the escape map declares", () => {
+    const { escapes, pattern } = jsonLdEscapeInternals;
+    // Fresh non-global copy: `pattern` is /g and .test() would advance lastIndex.
+    const probe = new RegExp(pattern.source, "u");
+
+    for (const char of Object.keys(escapes)) {
+      expect(probe.test(char)).toBe(true);
+    }
   });
 });
