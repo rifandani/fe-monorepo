@@ -43,7 +43,7 @@ Apply every rule below to every touched spa UI file (and toast/globals where nam
 Loop until all green, in parallel/subagent:
 
 1. `bun lint-typecheck`
-2. `bun test:unit`
+2. `bun test:unit:cov`
 3. `bun spa:ci build` and `bun web:ci build`
 4. `bun check:all`
 
