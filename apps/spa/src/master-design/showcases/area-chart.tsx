@@ -6,27 +6,25 @@ import { revenueConfig, revenueData } from "../fixtures";
 import { Variant } from "../variant";
 
 export const AreaChartShowcase = () => (
-  <div className="flex flex-col gap-8">
-    <Variant label="gradient">
-      <div className="h-72 w-full max-w-2xl">
-        <AreaChart
-          config={revenueConfig}
-          data={revenueData}
-          dataKey="month"
-          fillType="gradient"
-        />
-      </div>
+  <div className="flex w-full flex-col gap-12">
+    <Variant className="w-full" label="gradient">
+      <AreaChart
+        className="w-full"
+        config={revenueConfig}
+        data={revenueData}
+        dataKey="month"
+        fillType="gradient"
+      />
     </Variant>
 
-    <Variant label="stacked">
-      <div className="h-72 w-full max-w-2xl">
-        <AreaChart
-          config={revenueConfig}
-          data={revenueData}
-          dataKey="month"
-          type="stacked"
-        />
-      </div>
+    <Variant className="w-full" label="stacked">
+      <AreaChart
+        className="w-full"
+        config={revenueConfig}
+        data={revenueData}
+        dataKey="month"
+        type="stacked"
+      />
     </Variant>
   </div>
 );

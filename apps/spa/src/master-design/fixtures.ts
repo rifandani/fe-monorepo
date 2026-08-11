@@ -21,6 +21,25 @@ export const revenueConfig = {
   Expenses: { label: "Expenses" },
 } satisfies ChartConfig;
 
+export const shareData = [
+  { name: "Chrome", value: 275 },
+  { name: "Safari", value: 200 },
+  { name: "Firefox", value: 187 },
+  { name: "Edge", value: 173 },
+  { name: "Other", value: 90 },
+];
+
+/** HSL so hue-channel color widgets don't throw (`Unknown color channel: hue` on RGB hex). */
+export const brandHsl = "hsl(216, 98%, 52%)";
+
+export const shareConfig = {
+  Chrome: { label: "Chrome" },
+  Safari: { label: "Safari" },
+  Firefox: { label: "Firefox" },
+  Edge: { label: "Edge" },
+  Other: { label: "Other" },
+} satisfies ChartConfig;
+
 export interface DemoUser {
   id: number;
   name: string;

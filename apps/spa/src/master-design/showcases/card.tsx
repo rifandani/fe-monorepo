@@ -11,7 +11,7 @@ import {
 
 export const CardShowcase = () => (
   <div className="grid gap-6 sm:grid-cols-2">
-    <Card className="max-w-sm">
+    <Card>
       <CardHeader
         description="Manage who has access to this project."
         title="Team members"
@@ -27,7 +27,7 @@ export const CardShowcase = () => (
       </CardFooter>
     </Card>
 
-    <Card className="max-w-sm">
+    <Card>
       <CardHeader>
         <CardTitle>Current plan</CardTitle>
         <CardDescription>Renews on Aug 30, 2026</CardDescription>

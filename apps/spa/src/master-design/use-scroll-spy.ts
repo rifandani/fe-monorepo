@@ -5,6 +5,32 @@ const THRESHOLD_RATIO = 0.2;
 /** Idle time after the last scroll event before click-suppression is lifted. */
 const SETTLE_MS = 150;
 
+const isPageBottom = () =>
+  window.innerHeight + window.scrollY >=
+  document.documentElement.scrollHeight - 2;
+
+const sectionTop = (id: string) =>
+  document.querySelector(`#${id}`)?.getBoundingClientRect().top;
+
+const firstId = (ids: string[]) => ids[0] ?? null;
+const lastId = (ids: string[]) => ids.at(-1) ?? null;
+
+const idAtThreshold = (ids: string[], line: number): string | null => {
+  let current = firstId(ids);
+  for (const id of ids) {
+    if ((sectionTop(id) ?? Number.POSITIVE_INFINITY) <= line) {
+      current = id;
+    }
+  }
+  return current;
+};
+
+/** Last section whose top has crossed the viewport threshold, or the last id at page bottom. */
+const activeSectionId = (ids: string[]): string | null =>
+  isPageBottom()
+    ? lastId(ids)
+    : idAtThreshold(ids, window.innerHeight * THRESHOLD_RATIO);
+
 interface ScrollSpy {
   activeId: string | null;
   /** Scroll a section into view and pin it active until the smooth scroll settles. */
@@ -44,28 +70,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     }
 
     const compute = () => {
-      const atBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 2;
-      if (atBottom) {
-        setActiveId(ids.at(-1) ?? null);
-        return;
-      }
-
-      const line = window.innerHeight * THRESHOLD_RATIO;
-      let current = ids[0] ?? null;
-      for (const id of ids) {
-        const el = document.querySelector(`#${id}`);
-        if (!el) {
-          continue;
-        }
-        if (el.getBoundingClientRect().top <= line) {
-          current = id;
-        } else {
-          break;
-        }
-      }
-      setActiveId(current);
+      setActiveId(activeSectionId(ids));
     };
 
     let raf = 0;
