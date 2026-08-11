@@ -1,0 +1,41 @@
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/core/components/ui";
+
+export const CardShowcase = () => (
+  <div className="grid gap-6 sm:grid-cols-2">
+    <Card className="max-w-sm">
+      <CardHeader
+        description="Manage who has access to this project."
+        title="Team members"
+      />
+      <CardContent className="text-muted-fg text-sm/6">
+        Invite collaborators and control their permissions from one place.
+      </CardContent>
+      <CardFooter className="gap-2">
+        <Button intent="outline" size="sm">
+          Cancel
+        </Button>
+        <Button size="sm">Invite</Button>
+      </CardFooter>
+    </Card>
+
+    <Card className="max-w-sm">
+      <CardHeader>
+        <CardTitle>Current plan</CardTitle>
+        <CardDescription>Renews on Aug 30, 2026</CardDescription>
+      </CardHeader>
+      <CardContent className="flex items-center gap-2">
+        <Badge intent="success">Active</Badge>
+        <span className="text-muted-fg text-sm/6">Pro · $29/mo</span>
+      </CardContent>
+    </Card>
+  </div>
+);

@@ -12,6 +12,11 @@
       "$comment": "Root-level vitest infrastructure is outside fallow's `entry` graph, so `server` and `MOCK_API_BASE_URL` read as unused and `fallow fix` strips the `export` keyword. They are consumed by vitest.setup.ts, apps/expo/vitest.config.ts, and the *.unit.test.ts files that call `server.use()`.",
       "file": "vitest.msw.ts",
       "exports": ["*"]
+    },
+    {
+      "$comment": "The /master-design component catalog is reachable only through a dev-only, lazily code-split TanStack route (gated by `import.meta.env.DEV`), so fallow's static `entry` graph treats its modules as unused and `fallow fix` strips their `export` keywords. It is a real route rendered at /master-design in development.",
+      "file": "apps/spa/src/master-design/**",
+      "exports": ["*"]
     }
   ],
   "overrides": [
