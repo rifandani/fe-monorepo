@@ -9,29 +9,7 @@
 - [ ] always update `CLAUDE.md` file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] lookout for nextjs update to support `typescript@7` natively, because currently we need `@typescript/native-preview`
 - [ ] consider moving `web` app into another repository `fs-monorepo` (fullstack monorepo) as i don't really like next.js and it's fullstack not pure client side
-- [ ] use impeccable instead of hallmark
-
-## 🛠️ Upgrading Dependencies
-
-- Remember to always use EXACT version for all dependencies
-- Run `bun bump:deps` to check for outdated dependencies, then run `bun install` to install it
-- To upgrade expo app, it's better to follow the steps in "How to upgrade?" section inside it's [README](./apps/expo/README.md)
-- To upgrade IntentUI components (last updated at ["June 30 2026" release](https://intentui.com/docs/prologue/release-notes) or ["v3.8.4"](https://github.com/intentui/intentui/releases)), run interactively `bun bump:ui`
-  - keep `'use client'` directive in components/hooks
-  - copy changes in toast props into `providers/toast/context.tsx`, then remove generated `toast.tsx` file
-  - use `react-stately` instead of `@react-stately/color`
-  - use `react-aria` instead of `@react-aria/i18n`
-  - change `@/hooks/use-mobile` into `@/core/hooks/use-mobile`
-  - `@/hooks/use-clipboard` into `@/core/hooks/use-clipboard`
-  - copy className in `chart.tsx` into `globals.css`
-  - do not use `.Provider` for react context because we're using react 19
-  - all regex should be defined outside of components/hooks for stable reference
-- If there's MINOR upgrade in `playwright`, run `bun web test:install` to install new version of chromium
-- Run `bun web test`, `bun spa test`, and `bun expo test:dev` to run E2E tests (run the dev server / emulator first)
-- Run `bun web build`, `bun spa build`, and `bun expo build:android:dev:local` to build with development env
-- Run `bun lint-typecheck` for linting and type checking
-
-After changes are checked, invoke the `release` skill: **add** writes a changeset for the PR; **cut** (on clean `main`) versions all packages together, updates each `CHANGELOG.md`, commits, tags `vX.Y.Z`, and pushes (GitHub Release via `.github/workflows/release.yml`). Manual: `bun cs` / `bun cs:v`.
+- [ ] use impeccable instead of hallmark (if we use the devtools, might be redundant with agentation)
 
 ## 📝 Environment Variables
 
