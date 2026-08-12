@@ -44,8 +44,14 @@ const cssColorToRgba = (color: string): Rgba | null => {
 
   ctx.clearRect(0, 0, 1, 1);
   ctx.fillRect(0, 0, 1, 1);
-  const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
-  return { r, g, b, a: a / 255 };
+  // 1×1 getImageData always yields RGBA; index via ?? for noUncheckedIndexedAccess.
+  const pixel = ctx.getImageData(0, 0, 1, 1).data;
+  return {
+    r: pixel[0] ?? 0,
+    g: pixel[1] ?? 0,
+    b: pixel[2] ?? 0,
+    a: (pixel[3] ?? 0) / 255,
+  };
 };
 
 const toLinearChannel = (c: number): number => {
