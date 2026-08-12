@@ -2,7 +2,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 // import { vercel } from '@t3-oss/env-nextjs/presets-zod'
 import { z } from "zod";
 
-const portlessUrl = process.env.PORTLESS_URL || undefined;
+const portlessUrl = process.env.PORTLESS_URL ?? undefined;
 
 export const ENV = createEnv({
   server: {

@@ -45,14 +45,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
   ctx.clearRect(0, 0, 1, 1);
   ctx.fillRect(0, 0, 1, 1);
   const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
-  if (
-    r === undefined ||
-    g === undefined ||
-    b === undefined ||
-    a === undefined
-  ) {
-    return null;
-  }
   return { r, g, b, a: a / 255 };
 };
 
@@ -174,7 +166,9 @@ const SwatchTile = ({ name, bg }: Swatch) => {
       attributeFilter: ["class"],
       attributes: true,
     });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (

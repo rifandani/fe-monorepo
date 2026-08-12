@@ -34,7 +34,7 @@ const activeSectionId = (ids: string[]): string | null =>
 interface ScrollSpy {
   activeId: string | null;
   /** Scroll a section into view and pin it active until the smooth scroll settles. */
-  scrollTo: (id: string) => void;
+  scrollTo: (_sectionId: string) => void;
 }
 
 /**
@@ -103,9 +103,9 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     if (!activeId) {
       return;
     }
-    const hash = `#${activeId}`;
-    if (window.location.hash !== hash) {
-      window.history.replaceState(null, "", hash);
+    const fragment = `#${activeId}`;
+    if (window.location.hash !== fragment) {
+      window.history.replaceState(null, "", fragment);
     }
   }, [activeId]);
 

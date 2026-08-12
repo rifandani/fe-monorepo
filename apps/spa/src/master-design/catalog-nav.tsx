@@ -14,7 +14,7 @@ import type { Category, ComponentEntry } from "./types";
 interface CatalogNavProps {
   activeId: string | null;
   filter: string;
-  onNavigate: (id: string) => void;
+  onNavigate: (_sectionId: string) => void;
 }
 
 const categoryIds = (cats: Category[]) =>
@@ -37,7 +37,7 @@ const CatalogNavItem = ({
 }: {
   entry: ComponentEntry;
   isActive: boolean;
-  onNavigate: (id: string) => void;
+  onNavigate: (_sectionId: string) => void;
 }) => (
   <li>
     <button
@@ -47,7 +47,9 @@ const CatalogNavItem = ({
           "bg-primary font-medium text-primary-fg hover:bg-primary hover:text-primary-fg"
       )}
       data-active={isActive || undefined}
-      onClick={() => onNavigate(entry.id)}
+      onClick={() => {
+        onNavigate(entry.id);
+      }}
       type="button"
     >
       {entry.name}
@@ -87,7 +89,9 @@ export const CatalogNav = ({
       <DisclosureGroup
         allowsMultipleExpanded
         expandedKeys={expandedKeys}
-        onExpandedChange={(keys) => setExpanded(new Set([...keys].map(String)))}
+        onExpandedChange={(keys) => {
+          setExpanded(new Set([...keys].map(String)));
+        }}
       >
         {visible.map((category) => (
           <Disclosure id={category.id} key={category.id}>

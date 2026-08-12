@@ -16,7 +16,9 @@ export const MasterDesignCatalog = () => {
   useMount(() => {
     const hash = window.location.hash.slice(1);
     if (hash && entryIds.includes(hash)) {
-      requestAnimationFrame(() => scrollTo(hash));
+      requestAnimationFrame(() => {
+        scrollTo(hash);
+      });
     }
   });
 

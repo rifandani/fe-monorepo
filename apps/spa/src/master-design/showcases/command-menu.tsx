@@ -20,7 +20,12 @@ export const CommandMenuShowcase = () => {
   return (
     <VariantGrid>
       <Variant label="default">
-        <Button intent="outline" onPress={() => setIsOpen(true)}>
+        <Button
+          intent="outline"
+          onPress={() => {
+            setIsOpen(true);
+          }}
+        >
           Open
         </Button>
         <CommandMenu isOpen={isOpen} onOpenChange={setIsOpen}>
