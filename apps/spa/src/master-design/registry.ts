@@ -13,6 +13,7 @@ import { CheckboxShowcase } from "./showcases/checkbox";
 import { ChoiceBoxShowcase } from "./showcases/choice-box";
 import { ColorAreaShowcase } from "./showcases/color-area";
 import { ColorFieldShowcase } from "./showcases/color-field";
+import { ColorPaletteShowcase } from "./showcases/color-palette";
 import { ColorPickerShowcase } from "./showcases/color-picker";
 import { ColorSliderShowcase } from "./showcases/color-slider";
 import { ColorSwatchShowcase } from "./showcases/color-swatch";
@@ -92,6 +93,17 @@ import type { Category } from "./types";
  * anchors, and the page order. Add a Component Entry here to surface it.
  */
 export const categories: Category[] = [
+  {
+    id: "foundation",
+    name: "Foundation",
+    entries: [
+      {
+        id: "color-palette",
+        name: "Color Palette",
+        Showcase: ColorPaletteShowcase,
+      },
+    ],
+  },
   {
     id: "layout",
     name: "Layout",
