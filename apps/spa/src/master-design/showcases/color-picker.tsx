@@ -1,14 +1,14 @@
+import { ColorArea } from "@/core/components/ui/color-area";
+import { ColorField } from "@/core/components/ui/color-field";
+import { ColorPicker } from "@/core/components/ui/color-picker";
 import {
-  ColorArea,
-  ColorField,
-  ColorPicker,
   ColorSlider,
   ColorSliderOutput,
   ColorSliderTrack,
-  ColorThumb,
-  Input,
-  Label,
-} from "@/core/components/ui";
+} from "@/core/components/ui/color-slider";
+import { ColorThumb } from "@/core/components/ui/color-thumb";
+import { Label } from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
 
 import { brandHsl } from "../fixtures";
 import { Variant } from "../variant";

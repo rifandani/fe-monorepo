@@ -8,7 +8,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/drawer";
 
 import { Variant, VariantGrid } from "../variant";
 

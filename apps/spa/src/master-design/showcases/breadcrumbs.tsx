@@ -1,4 +1,4 @@
-import { Breadcrumbs, BreadcrumbsItem } from "@/core/components/ui";
+import { Breadcrumbs, BreadcrumbsItem } from "@/core/components/ui/breadcrumbs";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,4 +1,4 @@
-import { ShowMore } from "@/core/components/ui";
+import { ShowMore } from "@/core/components/ui/show-more";
 
 import { Variant, VariantGrid } from "../variant";
 

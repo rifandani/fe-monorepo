@@ -1,9 +1,9 @@
+import { Label } from "@/core/components/ui/field";
 import {
-  Label,
   MultipleSelect,
   MultipleSelectContent,
   MultipleSelectItem,
-} from "@/core/components/ui";
+} from "@/core/components/ui/multiple-select";
 
 import { Variant, VariantGrid } from "../variant";
 

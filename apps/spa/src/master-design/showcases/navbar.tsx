@@ -5,7 +5,7 @@ import {
   NavbarSection,
   NavbarSpacer,
   NavbarStart,
-} from "@/core/components/ui";
+} from "@/core/components/ui/navbar";
 
 import { Variant, VariantGrid } from "../variant";
 

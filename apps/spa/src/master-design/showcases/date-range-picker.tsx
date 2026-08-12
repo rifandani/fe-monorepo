@@ -3,8 +3,8 @@ import { CalendarDate } from "@internationalized/date";
 import {
   DateRangePicker,
   DateRangePickerTrigger,
-  Label,
-} from "@/core/components/ui";
+} from "@/core/components/ui/date-range-picker";
+import { Label } from "@/core/components/ui/field";
 
 import { Variant, VariantGrid } from "../variant";
 

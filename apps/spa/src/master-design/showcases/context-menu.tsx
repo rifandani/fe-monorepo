@@ -3,7 +3,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/context-menu";
 
 import { Variant, VariantGrid } from "../variant";
 

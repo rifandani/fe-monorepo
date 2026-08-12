@@ -1,12 +1,12 @@
+import { Badge } from "@/core/components/ui/badge";
 import {
-  Badge,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
-} from "@/core/components/ui";
+} from "@/core/components/ui/table";
 
 import { demoUsers } from "../fixtures";
 

@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
 
-import { Button } from "@/core/components/ui";
+import { Button } from "@/core/components/ui/button";
 
 import { Variant, VariantGrid } from "../variant";
 

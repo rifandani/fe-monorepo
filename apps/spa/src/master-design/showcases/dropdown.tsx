@@ -2,8 +2,8 @@ import {
   DropdownItem,
   DropdownLabel,
   DropdownSection,
-  ListBox,
-} from "@/core/components/ui";
+} from "@/core/components/ui/dropdown";
+import { ListBox } from "@/core/components/ui/list-box";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -3,7 +3,7 @@ import {
   ChoiceBoxDescription,
   ChoiceBoxItem,
   ChoiceBoxLabel,
-} from "@/core/components/ui";
+} from "@/core/components/ui/choice-box";
 
 import { Variant, VariantGrid } from "../variant";
 

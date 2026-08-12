@@ -1,8 +1,8 @@
+import { ColorSwatch } from "@/core/components/ui/color-swatch";
 import {
-  ColorSwatch,
   ColorSwatchPicker,
   ColorSwatchPickerItem,
-} from "@/core/components/ui";
+} from "@/core/components/ui/color-swatch-picker";
 
 import { Variant } from "../variant";
 

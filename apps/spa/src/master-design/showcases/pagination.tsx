@@ -4,7 +4,7 @@ import {
   PaginationList,
   PaginationNext,
   PaginationPrevious,
-} from "@/core/components/ui";
+} from "@/core/components/ui/pagination";
 
 import { Variant, VariantGrid } from "../variant";
 

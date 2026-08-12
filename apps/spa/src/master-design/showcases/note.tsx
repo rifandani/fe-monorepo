@@ -1,4 +1,4 @@
-import { Note } from "@/core/components/ui";
+import { Note } from "@/core/components/ui/note";
 
 import { Variant, VariantGrid } from "../variant";
 

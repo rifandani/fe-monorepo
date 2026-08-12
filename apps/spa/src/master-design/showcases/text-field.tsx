@@ -1,10 +1,6 @@
-import {
-  Description,
-  FieldError,
-  Input,
-  Label,
-  TextField,
-} from "@/core/components/ui";
+import { Description, FieldError, Label } from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
+import { TextField } from "@/core/components/ui/text-field";
 
 import { Variant, VariantGrid } from "../variant";
 

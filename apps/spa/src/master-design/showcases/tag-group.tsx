@@ -1,4 +1,5 @@
-import { Label, Tag, TagGroup, TagList } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { Tag, TagGroup, TagList } from "@/core/components/ui/tag-group";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,4 +1,4 @@
-import { Label } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
 import {
   NativeSelect,
   NativeSelectContent,

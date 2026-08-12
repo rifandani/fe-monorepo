@@ -3,7 +3,7 @@ import {
   ProgressBarHeader,
   ProgressBarTrack,
   ProgressBarValue,
-} from "@/core/components/ui";
+} from "@/core/components/ui/progress-bar";
 
 import { Variant, VariantGrid } from "../variant";
 

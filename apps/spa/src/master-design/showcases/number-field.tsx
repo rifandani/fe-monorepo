@@ -1,4 +1,5 @@
-import { Label, NumberField, NumberInput } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { NumberField, NumberInput } from "@/core/components/ui/number-field";
 
 import { Variant, VariantGrid } from "../variant";
 

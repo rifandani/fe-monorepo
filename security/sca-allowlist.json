@@ -92,6 +92,41 @@
       "severity": "high",
       "expires": "2026-11-06",
       "reason": "Transitive via expo / dotenvx; awaiting upstream"
+    },
+    {
+      "id": "GHSA-5p2g-fcmc-qvqq",
+      "package": "image-size",
+      "severity": "high",
+      "expires": "2026-11-12",
+      "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
+    },
+    {
+      "id": "GHSA-w3rx-r6r6-pgpr",
+      "package": "image-size",
+      "severity": "high",
+      "expires": "2026-11-12",
+      "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
+    },
+    {
+      "id": "GHSA-5p4m-2wfm-xmqj",
+      "package": "js-yaml",
+      "severity": "high",
+      "expires": "2026-11-12",
+      "reason": "Transitive via expo/changesets/istanbul; awaiting upstream bumps"
+    },
+    {
+      "id": "GHSA-28wg-ghj8-5hjv",
+      "package": "nanoid",
+      "severity": "high",
+      "expires": "2026-11-12",
+      "reason": "Transitive via postcss/react-navigation; bump with framework releases"
+    },
+    {
+      "id": "GHSA-2v37-7h3g-55p8",
+      "package": "nanoid",
+      "severity": "high",
+      "expires": "2026-11-12",
+      "reason": "Transitive via postcss/react-navigation; bump with framework releases"
     }
   ]
 }

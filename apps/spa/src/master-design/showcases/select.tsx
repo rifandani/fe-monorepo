@@ -1,10 +1,10 @@
+import { Label } from "@/core/components/ui/field";
 import {
-  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/select";
 
 import { Variant, VariantGrid } from "../variant";
 

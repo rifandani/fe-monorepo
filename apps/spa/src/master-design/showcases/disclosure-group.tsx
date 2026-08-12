@@ -3,7 +3,7 @@ import {
   DisclosureGroup,
   DisclosurePanel,
   DisclosureTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/disclosure-group";
 
 import { Variant, VariantGrid } from "../variant";
 

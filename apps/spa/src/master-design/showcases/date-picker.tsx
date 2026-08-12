@@ -1,6 +1,10 @@
 import { CalendarDate } from "@internationalized/date";
 
-import { DatePicker, DatePickerTrigger, Label } from "@/core/components/ui";
+import {
+  DatePicker,
+  DatePickerTrigger,
+} from "@/core/components/ui/date-picker";
+import { Label } from "@/core/components/ui/field";
 
 import { Variant, VariantGrid } from "../variant";
 

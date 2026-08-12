@@ -81,6 +81,7 @@
       "**/routeTree.gen.ts",
       "**/*.gen.ts",
       "**/components/ui/**",
+      "apps/spa/src/master-design/**",
       "**/*.{test,spec}.{ts,tsx}",
       "**/e2e/**",
       "scripts/security/**"

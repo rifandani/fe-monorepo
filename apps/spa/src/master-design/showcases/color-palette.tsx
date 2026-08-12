@@ -24,74 +24,8 @@ interface Rgba {
   a: number;
 }
 
-const parseAlpha = (raw: string | undefined): number => {
-  if (raw === undefined) {
-    return 1;
-  }
-  return raw.endsWith("%") ? Number(raw.slice(0, -1)) / 100 : Number(raw);
-};
-
-const parseRgba = (color: string): Rgba | null => {
-  const value = color.trim();
-
-  // Modern: rgb(1 2 3 / 0.5)
-  const modern = value.match(
-    /^rgba?\(\s*(?<r>[\d.]+)\s+(?<g>[\d.]+)\s+(?<b>[\d.]+)(?:\s*\/\s*(?<a>[\d.]+%?))?\s*\)$/iu
-  );
-  if (modern?.groups) {
-    return {
-      r: Number(modern.groups.r),
-      g: Number(modern.groups.g),
-      b: Number(modern.groups.b),
-      a: parseAlpha(modern.groups.a),
-    };
-  }
-
-  // Legacy: rgba(1, 2, 3, 0.5)
-  const legacy = value.match(
-    /^rgba?\(\s*(?<r>[\d.]+)\s*,\s*(?<g>[\d.]+)\s*,\s*(?<b>[\d.]+)(?:\s*,\s*(?<a>[\d.]+))?\s*\)$/iu
-  );
-  if (legacy?.groups) {
-    return {
-      r: Number(legacy.groups.r),
-      g: Number(legacy.groups.g),
-      b: Number(legacy.groups.b),
-      a: parseAlpha(legacy.groups.a),
-    };
-  }
-
-  // Canvas / Chrome often serializes as color(srgb 0-1 channels)
-  const srgb = value.match(
-    /^color\(\s*srgb\s+(?<r>[\d.]+)\s+(?<g>[\d.]+)\s+(?<b>[\d.]+)(?:\s*\/\s*(?<a>[\d.]+%?))?\s*\)$/iu
-  );
-  if (srgb?.groups) {
-    return {
-      r: Number(srgb.groups.r) * 255,
-      g: Number(srgb.groups.g) * 255,
-      b: Number(srgb.groups.b) * 255,
-      a: parseAlpha(srgb.groups.a),
-    };
-  }
-
-  if (value.startsWith("#") && (value.length === 7 || value.length === 9)) {
-    return {
-      r: Number.parseInt(value.slice(1, 3), 16),
-      g: Number.parseInt(value.slice(3, 5), 16),
-      b: Number.parseInt(value.slice(5, 7), 16),
-      a: value.length === 9 ? Number.parseInt(value.slice(7, 9), 16) / 255 : 1,
-    };
-  }
-
-  return null;
-};
-
 /** Resolve any CSS color to RGBA by painting one pixel (handles oklch/oklab). */
 const cssColorToRgba = (color: string): Rgba | null => {
-  const parsed = parseRgba(color);
-  if (parsed) {
-    return parsed;
-  }
-
   const canvas = document.createElement("canvas");
   canvas.width = 1;
   canvas.height = 1;
@@ -106,11 +40,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
   ctx.fillStyle = color;
   if (ctx.fillStyle === sentinel) {
     return null;
-  }
-
-  const fromStyle = parseRgba(ctx.fillStyle);
-  if (fromStyle) {
-    return fromStyle;
   }
 
   ctx.clearRect(0, 0, 1, 1);

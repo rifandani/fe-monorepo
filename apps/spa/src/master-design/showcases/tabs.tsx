@@ -1,4 +1,10 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@/core/components/ui";
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@/core/components/ui/tabs";
 
 import { Variant, VariantGrid } from "../variant";
 

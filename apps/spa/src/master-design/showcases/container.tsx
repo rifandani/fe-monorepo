@@ -1,4 +1,4 @@
-import { Container } from "@/core/components/ui";
+import { Container } from "@/core/components/ui/container";
 
 import { Variant, VariantGrid } from "../variant";
 

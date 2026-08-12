@@ -1,4 +1,4 @@
-import { Code, Strong, Text, TextLink } from "@/core/components/ui";
+import { Code, Strong, Text, TextLink } from "@/core/components/ui/text";
 
 import { Variant, VariantGrid } from "../variant";
 

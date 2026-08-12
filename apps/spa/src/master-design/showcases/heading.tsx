@@ -1,4 +1,4 @@
-import { Heading } from "@/core/components/ui";
+import { Heading } from "@/core/components/ui/heading";
 
 import { Variant, VariantGrid } from "../variant";
 

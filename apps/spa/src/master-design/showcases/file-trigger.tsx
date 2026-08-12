@@ -1,4 +1,4 @@
-import { FileTrigger } from "@/core/components/ui";
+import { FileTrigger } from "@/core/components/ui/file-trigger";
 
 import { Variant, VariantGrid } from "../variant";
 

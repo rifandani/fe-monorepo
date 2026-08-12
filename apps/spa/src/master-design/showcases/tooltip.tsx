@@ -1,4 +1,8 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/core/components/ui";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/core/components/ui/tooltip";
 
 import { Variant, VariantGrid } from "../variant";
 

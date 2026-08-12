@@ -1,4 +1,4 @@
-import { DropZone } from "@/core/components/ui";
+import { DropZone } from "@/core/components/ui/drop-zone";
 
 import { Variant, VariantGrid } from "../variant";
 

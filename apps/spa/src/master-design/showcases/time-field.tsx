@@ -1,6 +1,7 @@
 import { Time } from "@internationalized/date";
 
-import { Label, TimeField, TimeInput } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { TimeField, TimeInput } from "@/core/components/ui/time-field";
 
 import { Variant, VariantGrid } from "../variant";
 

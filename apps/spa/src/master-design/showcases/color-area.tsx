@@ -1,4 +1,4 @@
-import { ColorArea } from "@/core/components/ui";
+import { ColorArea } from "@/core/components/ui/color-area";
 
 import { brandHsl } from "../fixtures";
 import { Variant } from "../variant";

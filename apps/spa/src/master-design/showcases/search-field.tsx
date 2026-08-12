@@ -1,4 +1,5 @@
-import { Label, SearchField, SearchInput } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { SearchField, SearchInput } from "@/core/components/ui/search-field";
 
 import { Variant, VariantGrid } from "../variant";
 

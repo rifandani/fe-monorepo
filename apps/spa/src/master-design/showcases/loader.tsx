@@ -1,4 +1,4 @@
-import { Loader } from "@/core/components/ui";
+import { Loader } from "@/core/components/ui/loader";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,8 +1,7 @@
+import { Button } from "@/core/components/ui/button";
+import { Description, Label } from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
 import {
-  Button,
-  Description,
-  Input,
-  Label,
   Modal,
   ModalBody,
   ModalClose,
@@ -11,8 +10,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-  TextField,
-} from "@/core/components/ui";
+} from "@/core/components/ui/modal";
+import { TextField } from "@/core/components/ui/text-field";
 
 import { Variant, VariantGrid } from "../variant";
 

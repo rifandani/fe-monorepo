@@ -8,14 +8,14 @@ import { useColorMode } from "@workspace/core/hooks/use-color-mode";
 import type { Selection } from "react-stately";
 import { match } from "ts-pattern";
 
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   Menu,
   MenuContent,
   MenuHeader,
   MenuItem,
   MenuSection,
-} from "@/core/components/ui";
+} from "@/core/components/ui/menu";
 import { useTranslation } from "@/core/providers/i18n/context";
 
 export const ThemeToggle = () => {

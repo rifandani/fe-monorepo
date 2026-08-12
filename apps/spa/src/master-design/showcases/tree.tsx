@@ -1,4 +1,4 @@
-import { Tree, TreeContent, TreeItem } from "@/core/components/ui";
+import { Tree, TreeContent, TreeItem } from "@/core/components/ui/tree";
 
 import { Variant, VariantGrid } from "../variant";
 

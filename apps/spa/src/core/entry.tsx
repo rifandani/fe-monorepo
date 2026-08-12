@@ -1,6 +1,6 @@
 import { StrictMode, Suspense } from "react";
 
-import { Loader } from "@/core/components/ui";
+import { Loader } from "@/core/components/ui/loader";
 import { TRACER_REACT_ENTRY } from "@/core/constants/global";
 import { AppHeadProvider } from "@/core/providers/head/provider";
 import {

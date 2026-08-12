@@ -1,4 +1,4 @@
-import { Avatar } from "@/core/components/ui";
+import { Avatar } from "@/core/components/ui/avatar";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -7,7 +7,7 @@ import {
   SidebarLabel,
   SidebarProvider,
   SidebarSection,
-} from "@/core/components/ui";
+} from "@/core/components/ui/sidebar";
 
 import { Variant, VariantGrid } from "../variant";
 

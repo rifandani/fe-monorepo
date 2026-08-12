@@ -1,4 +1,4 @@
-import { Separator } from "@/core/components/ui";
+import { Separator } from "@/core/components/ui/separator";
 
 import { Variant, VariantGrid } from "../variant";
 

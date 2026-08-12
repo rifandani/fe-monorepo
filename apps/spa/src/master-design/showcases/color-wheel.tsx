@@ -1,4 +1,4 @@
-import { ColorWheel } from "@/core/components/ui";
+import { ColorWheel } from "@/core/components/ui/color-wheel";
 
 import { brandHsl } from "../fixtures";
 import { Variant } from "../variant";

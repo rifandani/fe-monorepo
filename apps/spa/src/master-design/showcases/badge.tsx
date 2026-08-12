@@ -1,4 +1,4 @@
-import { Badge } from "@/core/components/ui";
+import { Badge } from "@/core/components/ui/badge";
 
 import { Variant, VariantGrid } from "../variant";
 

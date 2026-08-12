@@ -3,8 +3,8 @@ import {
   ComboBoxContent,
   ComboBoxInput,
   ComboBoxItem,
-  Label,
-} from "@/core/components/ui";
+} from "@/core/components/ui/combo-box";
+import { Label } from "@/core/components/ui/field";
 
 import { Variant, VariantGrid } from "../variant";
 

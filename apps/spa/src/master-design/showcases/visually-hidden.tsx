@@ -1,4 +1,4 @@
-import { VisuallyHidden } from "@/core/components/ui";
+import { VisuallyHidden } from "@/core/components/ui/visually-hidden";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,13 +1,13 @@
+import { Badge } from "@/core/components/ui/badge";
+import { Button } from "@/core/components/ui/button";
 import {
-  Badge,
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/core/components/ui";
+} from "@/core/components/ui/card";
 
 export const CardShowcase = () => (
   <div className="grid gap-6 sm:grid-cols-2">

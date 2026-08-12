@@ -1,4 +1,4 @@
-import { Toggle } from "@/core/components/ui";
+import { Toggle } from "@/core/components/ui/toggle";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,6 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 
-import { DateField, DateInput, Label } from "@/core/components/ui";
+import { DateField, DateInput } from "@/core/components/ui/date-field";
+import { Label } from "@/core/components/ui/field";
 
 import { Variant, VariantGrid } from "../variant";
 

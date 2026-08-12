@@ -2,7 +2,7 @@ import {
   DescriptionDetails,
   DescriptionList,
   DescriptionTerm,
-} from "@/core/components/ui";
+} from "@/core/components/ui/description-list";
 
 import { Variant, VariantGrid } from "../variant";
 

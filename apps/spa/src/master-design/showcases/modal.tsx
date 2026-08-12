@@ -1,5 +1,5 @@
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   Modal,
   ModalBody,
   ModalClose,
@@ -8,7 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-} from "@/core/components/ui";
+} from "@/core/components/ui/modal";
 
 import { Variant, VariantGrid } from "../variant";
 

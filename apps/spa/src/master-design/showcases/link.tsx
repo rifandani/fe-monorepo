@@ -1,4 +1,4 @@
-import { Link } from "@/core/components/ui";
+import { Link } from "@/core/components/ui/link";
 
 import { Variant, VariantGrid } from "../variant";
 

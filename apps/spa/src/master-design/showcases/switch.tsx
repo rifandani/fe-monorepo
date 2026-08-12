@@ -1,4 +1,4 @@
-import { Switch, SwitchField } from "@/core/components/ui";
+import { Switch, SwitchField } from "@/core/components/ui/switch";
 
 import { Variant, VariantGrid } from "../variant";
 

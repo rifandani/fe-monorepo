@@ -3,7 +3,7 @@ import {
   GridListDescription,
   GridListItem,
   GridListLabel,
-} from "@/core/components/ui";
+} from "@/core/components/ui/grid-list";
 
 import { demoUsers } from "../fixtures";
 import { Variant, VariantGrid } from "../variant";

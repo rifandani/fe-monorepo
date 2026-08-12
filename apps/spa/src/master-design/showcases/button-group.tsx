@@ -1,4 +1,5 @@
-import { Button, ButtonGroup } from "@/core/components/ui";
+import { Button } from "@/core/components/ui/button";
+import { ButtonGroup } from "@/core/components/ui/button-group";
 
 import { Variant, VariantGrid } from "../variant";
 

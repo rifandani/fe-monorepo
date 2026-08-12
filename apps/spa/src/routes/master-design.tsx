@@ -1,21 +1,12 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { lazy } from "react";
 
-import { useSeo } from "@/core/hooks/use-seo";
-import { MasterDesignCatalog } from "@/master-design/catalog";
-
-/** Catalog-only: drop Chart's `flex justify-center` so demos stretch full width. */
-const MasterDesignPage = () => {
-  useSeo({
-    description: "Internal catalog of core UI components and their variants.",
-    title: "Component Catalog",
-  });
-
-  return (
-    <div className="contents **:data-chart:block **:data-chart:justify-normal">
-      <MasterDesignCatalog />
-    </div>
-  );
-};
+// Keep this route module free of catalog/UI imports so routeTree's static
+// import cannot pull Intent UI into the main chunk (PWA 2 MiB precache limit).
+const MasterDesignPage = lazy(async () => {
+  const m = await import("@/master-design/catalog-page");
+  return { default: m.MasterDesignPage };
+});
 
 export const Route = createFileRoute("/master-design")({
   beforeLoad: () => {

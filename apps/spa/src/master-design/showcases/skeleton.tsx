@@ -1,4 +1,4 @@
-import { Skeleton } from "@/core/components/ui";
+import { Skeleton } from "@/core/components/ui/skeleton";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,10 +1,10 @@
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   Menu,
   MenuContent,
   MenuItem,
   MenuTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/menu";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,11 +1,11 @@
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   Popover,
   PopoverBody,
   PopoverContent,
   PopoverHeader,
   PopoverTitle,
-} from "@/core/components/ui";
+} from "@/core/components/ui/popover";
 
 import { Variant, VariantGrid } from "../variant";
 

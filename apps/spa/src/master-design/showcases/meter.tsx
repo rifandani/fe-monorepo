@@ -3,7 +3,7 @@ import {
   MeterHeader,
   MeterTrack,
   MeterValue,
-} from "@/core/components/ui";
+} from "@/core/components/ui/meter";
 
 import { Variant, VariantGrid } from "../variant";
 

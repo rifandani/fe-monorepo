@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   CommandMenu,
   CommandMenuItem,
   CommandMenuLabel,
   CommandMenuList,
   CommandMenuSearch,
   CommandMenuSection,
-} from "@/core/components/ui";
+} from "@/core/components/ui/command-menu";
 
 import { Variant, VariantGrid } from "../variant";
 

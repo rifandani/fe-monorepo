@@ -1,4 +1,6 @@
-import { Input, Label, TagField } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
+import { TagField } from "@/core/components/ui/tag-field";
 
 import { Variant, VariantGrid } from "../variant";
 

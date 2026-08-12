@@ -1,6 +1,8 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-import { Input, InputGroup, Label, TextField } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { Input, InputGroup } from "@/core/components/ui/input";
+import { TextField } from "@/core/components/ui/text-field";
 
 import { Variant, VariantGrid } from "../variant";
 

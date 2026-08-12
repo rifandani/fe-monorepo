@@ -3,7 +3,7 @@ import {
   ToolbarGroup,
   ToolbarItem,
   ToolbarSeparator,
-} from "@/core/components/ui";
+} from "@/core/components/ui/toolbar";
 
 import { Variant, VariantGrid } from "../variant";
 

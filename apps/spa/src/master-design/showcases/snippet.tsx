@@ -4,7 +4,7 @@ import {
   SnippetTabPanel,
   SnippetTabPanels,
   SnippetTabsList,
-} from "@/core/components/ui";
+} from "@/core/components/ui/snippet";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,6 +1,6 @@
 import { CalendarDate } from "@internationalized/date";
 
-import { Calendar } from "@/core/components/ui";
+import { Calendar } from "@/core/components/ui/calendar";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -2,7 +2,7 @@ import { useMount } from "@reactuses/core";
 import { useState } from "react";
 
 import { ThemeToggle } from "@/core/components/theme-toggle";
-import { SearchField, SearchInput } from "@/core/components/ui";
+import { SearchField, SearchInput } from "@/core/components/ui/search-field";
 
 import { CatalogNav } from "./catalog-nav";
 import { categories, entryIds } from "./registry";

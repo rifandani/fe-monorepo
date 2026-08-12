@@ -1,4 +1,6 @@
-import { Label, Textarea, TextField } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { TextField } from "@/core/components/ui/text-field";
+import { Textarea } from "@/core/components/ui/textarea";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -1,8 +1,8 @@
 import {
   ColorSlider,
   ColorSliderTrack,
-  ColorThumb,
-} from "@/core/components/ui";
+} from "@/core/components/ui/color-slider";
+import { ColorThumb } from "@/core/components/ui/color-thumb";
 
 import { brandHsl } from "../fixtures";
 import { Variant } from "../variant";

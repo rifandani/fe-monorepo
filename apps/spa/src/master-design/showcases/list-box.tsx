@@ -1,4 +1,4 @@
-import { ListBox, ListBoxItem } from "@/core/components/ui";
+import { ListBox, ListBoxItem } from "@/core/components/ui/list-box";
 
 import { Variant, VariantGrid } from "../variant";
 

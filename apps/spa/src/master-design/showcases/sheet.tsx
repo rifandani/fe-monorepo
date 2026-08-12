@@ -1,5 +1,5 @@
+import { Button } from "@/core/components/ui/button";
 import {
-  Button,
   Sheet,
   SheetBody,
   SheetClose,
@@ -8,7 +8,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/core/components/ui";
+} from "@/core/components/ui/sheet";
 
 import { Variant, VariantGrid } from "../variant";
 

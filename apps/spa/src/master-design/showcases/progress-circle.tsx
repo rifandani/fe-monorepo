@@ -1,4 +1,4 @@
-import { ProgressCircle } from "@/core/components/ui";
+import { ProgressCircle } from "@/core/components/ui/progress-circle";
 
 import { Variant, VariantGrid } from "../variant";
 

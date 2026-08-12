@@ -4,7 +4,7 @@ import {
   CarouselContent,
   CarouselHandler,
   CarouselItem,
-} from "@/core/components/ui";
+} from "@/core/components/ui/carousel";
 
 import { Variant, VariantGrid } from "../variant";
 

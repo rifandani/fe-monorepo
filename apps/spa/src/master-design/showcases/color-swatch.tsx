@@ -1,4 +1,4 @@
-import { ColorSwatch } from "@/core/components/ui";
+import { ColorSwatch } from "@/core/components/ui/color-swatch";
 
 import { Variant, VariantGrid } from "../variant";
 

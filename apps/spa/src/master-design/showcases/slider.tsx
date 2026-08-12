@@ -1,4 +1,5 @@
-import { Label, Slider, SliderOutput, SliderTrack } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { Slider, SliderOutput, SliderTrack } from "@/core/components/ui/slider";
 
 import { Variant, VariantGrid } from "../variant";
 

@@ -3,11 +3,11 @@ import {
   FieldError,
   FieldGroup,
   Fieldset,
-  Input,
   Label,
   Legend,
-  TextField,
-} from "@/core/components/ui";
+} from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
+import { TextField } from "@/core/components/ui/text-field";
 
 import { Variant, VariantGrid } from "../variant";
 

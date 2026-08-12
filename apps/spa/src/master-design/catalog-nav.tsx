@@ -6,7 +6,7 @@ import {
   DisclosureGroup,
   DisclosurePanel,
   DisclosureTrigger,
-} from "@/core/components/ui";
+} from "@/core/components/ui/disclosure-group";
 
 import { categories } from "./registry";
 import type { Category, ComponentEntry } from "./types";

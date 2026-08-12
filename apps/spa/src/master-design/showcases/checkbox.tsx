@@ -2,8 +2,8 @@ import {
   Checkbox,
   CheckboxField,
   CheckboxGroup,
-  Description,
-} from "@/core/components/ui";
+} from "@/core/components/ui/checkbox";
+import { Description } from "@/core/components/ui/field";
 
 import { Variant, VariantGrid } from "../variant";
 

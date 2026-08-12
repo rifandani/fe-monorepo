@@ -1,4 +1,5 @@
-import { Label, Radio, RadioField, RadioGroup } from "@/core/components/ui";
+import { Label } from "@/core/components/ui/field";
+import { Radio, RadioField, RadioGroup } from "@/core/components/ui/radio";
 
 import { Variant, VariantGrid } from "../variant";
 
