@@ -37,4 +37,4 @@ bun web db:seed
 
 Demo login: `vaandani@email.com` / `vaandani` (see `src/db/seed-user.ts`).
 
-OpenAPI reference: `http://web.localhost/api/auth/reference`
+OpenAPI reference: `https://web.fe-monorepo.localhost/api/auth/reference`

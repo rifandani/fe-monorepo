@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { getAllowedHosts, isAllowedOrigin, parseIngestBody } from "./ingest";
 
 vi.mock("@/core/constants/env", () => ({
-  ENV: { NEXT_PUBLIC_APP_URL: "https://web.localhost" },
+  ENV: { NEXT_PUBLIC_APP_URL: "https://web.fe-monorepo.localhost" },
 }));
 
 vi.mock("@/core/utils/evlog", () => ({
@@ -35,8 +35,10 @@ const mockRequest = (init: {
 
 describe("ingest", () => {
   it("getAllowedHosts includes app url host", () => {
-    const hosts = getAllowedHosts(mockRequest({ host: "web.localhost" }));
-    expect(hosts.has("web.localhost")).toBe(true);
+    const hosts = getAllowedHosts(
+      mockRequest({ host: "web.fe-monorepo.localhost" })
+    );
+    expect(hosts.has("web.fe-monorepo.localhost")).toBe(true);
   });
 
   it("getAllowedHosts collects every forwarded host and skips absent headers", () => {
@@ -46,23 +48,29 @@ describe("ingest", () => {
     expect([...hosts].toSorted()).toEqual([
       "a.test",
       "b.test",
-      "web.localhost",
+      "web.fe-monorepo.localhost",
     ]);
   });
 
   it("isAllowedOrigin accepts matching hosts", () => {
-    const req = mockRequest({ host: "web.localhost" });
-    expect(isAllowedOrigin(req, "https://web.localhost")).toBe(true);
+    const req = mockRequest({ host: "web.fe-monorepo.localhost" });
+    expect(isAllowedOrigin(req, "https://web.fe-monorepo.localhost")).toBe(
+      true
+    );
   });
 
   it("isAllowedOrigin allows *.localhost proxies in development only", () => {
     const req = mockRequest({ host: "localhost:3000" });
 
     vi.stubEnv("NODE_ENV", "development");
-    expect(isAllowedOrigin(req, "https://spa.localhost")).toBe(true);
+    expect(isAllowedOrigin(req, "https://spa.fe-monorepo.localhost")).toBe(
+      true
+    );
 
     vi.stubEnv("NODE_ENV", "production");
-    expect(isAllowedOrigin(req, "https://spa.localhost")).toBe(false);
+    expect(isAllowedOrigin(req, "https://spa.fe-monorepo.localhost")).toBe(
+      false
+    );
   });
 
   it("isAllowedOrigin rejects unknown hosts", () => {

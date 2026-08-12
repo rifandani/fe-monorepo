@@ -14,7 +14,9 @@ describe("robots", () => {
 
     const robots = await importRobots();
 
-    expect(robots().sitemap).toBe("https://web.localhost/sitemap.xml");
+    expect(robots().sitemap).toBe(
+      "https://web.fe-monorepo.localhost/sitemap.xml"
+    );
   });
 
   it("points the sitemap at the production host in production", async () => {

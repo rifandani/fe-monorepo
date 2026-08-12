@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const url = new URL(
   process.env.NODE_ENV === "production"
     ? "https://web.com"
-    : "https://web.localhost"
+    : "https://web.fe-monorepo.localhost"
 );
 const robots = (): MetadataRoute.Robots => ({
   rules: {

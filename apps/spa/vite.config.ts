@@ -35,6 +35,8 @@ export default defineConfig(({ mode }) => {
     env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 
   return {
+    // Expose portless's worktree-aware URL to import.meta.env (see env.ts).
+    envPrefix: ["VITE_", "PORTLESS_"],
     plugins: [
       tanstackDevtools(),
       tailwindcss(),

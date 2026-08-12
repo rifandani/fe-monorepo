@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string | undefined;
   readonly VITE_APP_URL: string | undefined;
   readonly VITE_API_BASE_URL: string | undefined;
+  // Injected by portless (envPrefix includes PORTLESS_)
+  readonly PORTLESS_URL: string | undefined;
 }
 
 interface ImportMeta {

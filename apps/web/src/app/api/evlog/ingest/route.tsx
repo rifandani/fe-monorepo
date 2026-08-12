@@ -10,7 +10,7 @@ export const POST = async (request: NextRequest) => {
   if (origin && !isAllowedOrigin(request, origin)) {
     const originHost = new URL(origin).host;
     throw createError({
-      fix: "Set NEXT_PUBLIC_APP_URL to your dev URL (e.g. https://web.localhost with portless)",
+      fix: "Set NEXT_PUBLIC_APP_URL to your dev URL (e.g. https://web.fe-monorepo.localhost with portless)",
       message: "Invalid origin",
       status: 403,
       why: `Origin ${originHost} is not allowed (allowed: ${[...getAllowedHosts(request)].join(", ")})`,

@@ -59,8 +59,14 @@ describe("sitemap", () => {
         : [dirent("page.tsx"), dirent("login", true)]) as never);
 
     expect(sitemap()).toEqual([
-      { lastModified: expect.any(Date), url: "https://web.localhost/" },
-      { lastModified: expect.any(Date), url: "https://web.localhost/login" },
+      {
+        lastModified: expect.any(Date),
+        url: "https://web.fe-monorepo.localhost/",
+      },
+      {
+        lastModified: expect.any(Date),
+        url: "https://web.fe-monorepo.localhost/login",
+      },
     ]);
   });
 });
