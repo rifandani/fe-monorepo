@@ -1,3 +1,7 @@
 {
-  "name": "fe-monorepo"
+  "name": "fe-monorepo",
+  "apps": {
+    "apps/spa": { "name": "spa.fe-monorepo" },
+    "apps/web": { "name": "web.fe-monorepo" }
+  }
 }

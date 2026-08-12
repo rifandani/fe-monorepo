@@ -12,6 +12,16 @@
       "$comment": "Root-level vitest infrastructure is outside fallow's `entry` graph, so `server` and `MOCK_API_BASE_URL` read as unused and `fallow fix` strips the `export` keyword. They are consumed by vitest.setup.ts, apps/expo/vitest.config.ts, and the *.unit.test.ts files that call `server.use()`.",
       "file": "vitest.msw.ts",
       "exports": ["*"]
+    },
+    {
+      "$comment": "The /master-design component catalog is reachable only through a dev-only, lazily code-split TanStack route (gated by `import.meta.env.DEV`), so fallow's static `entry` graph treats its modules as unused and `fallow fix` strips their `export` keywords. It is a real route rendered at /master-design in development.",
+      "file": "apps/spa/src/master-design/**",
+      "exports": ["*"]
+    },
+    {
+      "$comment": "next-intl plugin entry (`createNextIntlPlugin(\"./src/core/utils/i18n.ts\")`). The default export is loaded by path, not imported, so fallow's graph treats it as unused. `formats` is a real import from env.d.ts.",
+      "file": "apps/web/src/core/utils/i18n.ts",
+      "exports": ["default"]
     }
   ],
   "overrides": [
@@ -30,6 +40,7 @@
         "apps/spa/src/sw.ts",
         "apps/web/pwa-assets.config.ts",
         "oxfmt.config.ts",
+        "oxlint.config.ts",
         "stryker.config.mjs",
         "scripts/security/**"
       ],
@@ -70,6 +81,7 @@
       "**/routeTree.gen.ts",
       "**/*.gen.ts",
       "**/components/ui/**",
+      "apps/spa/src/master-design/**",
       "**/*.{test,spec}.{ts,tsx}",
       "**/e2e/**",
       "scripts/security/**"
@@ -96,6 +108,8 @@
     "burnt",
     "expo-atlas",
     "expo-dev-client",
-    "expo-system-ui"
+    "expo-system-ui",
+    "babel-plugin-react-compiler",
+    "metro-minify-terser"
   ]
 }

@@ -35,5 +35,8 @@ declare namespace NodeJS {
      */
     readonly DATABASE_URL: string;
     readonly BETTER_AUTH_SECRET: string;
+
+    /** Injected by portless; also exposed via next.config `env` for the client */
+    readonly PORTLESS_URL?: string;
   }
 }

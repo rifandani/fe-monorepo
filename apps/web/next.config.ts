@@ -3,6 +3,10 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/core/utils/i18n.ts");
 const config: NextConfig = withNextIntl({
+  // Expose portless's worktree-aware URL to the client bundle (see env.ts).
+  env: {
+    PORTLESS_URL: process.env.PORTLESS_URL ?? "",
+  },
   typedRoutes: true, // stable since v15.5
   reactCompiler: true,
   output: "standalone", // for deploying

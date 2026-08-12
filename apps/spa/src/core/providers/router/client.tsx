@@ -6,7 +6,7 @@ import { useColorMode } from "@workspace/core/hooks/use-color-mode";
 import { logger } from "@workspace/core/utils/logger";
 
 import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
-import { Button } from "@/core/components/ui";
+import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { TRACER_ROUTER, TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
 import { useTranslation } from "@/core/providers/i18n/context";

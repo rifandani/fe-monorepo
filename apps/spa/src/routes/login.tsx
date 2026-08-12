@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import { LoginTextField } from "@/auth/components/login-text-field";
 import { useLoginForm } from "@/auth/hooks/use-login-form";
 import { validateAuthUser } from "@/auth/utils/storage";
-import { Note } from "@/core/components/ui";
 import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
+import { Note } from "@/core/components/ui/note";
 import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
 

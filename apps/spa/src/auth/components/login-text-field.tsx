@@ -1,4 +1,6 @@
-import { FieldError, Input, Label, TextField } from "@/core/components/ui";
+import { FieldError, Label } from "@/core/components/ui/field";
+import { Input } from "@/core/components/ui/input";
+import { TextField } from "@/core/components/ui/text-field";
 
 /**
  * The slice of a TanStack Form field this input reads, kept structural so any

@@ -452,7 +452,7 @@ function SidebarItem({
             '[&:has([data-slot=avatar]+[data-slot=sidebar-label])_[data-slot=avatar]:has(+[data-slot=sidebar-label])]:me-2',
             '[--sidebar-current-bg:var(--color-sidebar-primary)] [--sidebar-current-fg:var(--color-sidebar-primary-fg)]',
             isCurrent
-            && 'font-medium text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
+            && 'font-medium bg-(--sidebar-current-bg) text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
             isFocusVisible && 'inset-ring inset-ring-sidebar-ring outline-hidden',
             isPressed
             && 'bg-sidebar-accent text-sidebar-accent-fg [&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
@@ -852,7 +852,7 @@ function SidebarTreeContent({
               values.isPressed
               && 'bg-sidebar-accent text-sidebar-accent-fg [&_svg:not([class*=\'text-\'])]:text-sidebar-accent-fg',
               isCurrent
-              && 'font-medium text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
+              && 'font-medium bg-(--sidebar-current-bg) text-(--sidebar-current-fg) hover:bg-(--sidebar-current-bg) hover:text-(--sidebar-current-fg) [&_.text-muted-fg]:text-fg/80 [&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg) hover:[&_svg:not([class*=\'text-\'])]:text-(--sidebar-current-fg)',
               values.isDisabled && 'opacity-50',
               className,
             )}

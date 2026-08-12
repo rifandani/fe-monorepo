@@ -7,7 +7,7 @@ const OUTPUT_PATH = "./public/sitemap.xml";
 const DOMAIN =
   process.env.NODE_ENV === "production"
     ? "https://spa.com"
-    : "https://spa.localhost";
+    : "https://spa.fe-monorepo.localhost";
 console.log("🚀 Generating sitemap...");
 // writes sitemaps and index out to the destination you provide.
 simpleSitemapAndIndex({
