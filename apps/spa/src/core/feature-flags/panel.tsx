@@ -9,7 +9,10 @@ import {
   featureFlagIds,
   featureFlagRegistry,
 } from "@/core/feature-flags/registry";
-import type { FeatureFlagDefinition } from "@/core/feature-flags/registry";
+import type {
+  FeatureFlagDefinition,
+  FeatureFlagId,
+} from "@/core/feature-flags/registry";
 import {
   featureFlagStoreName,
   useFeatureFlagStore,
@@ -62,14 +65,168 @@ const groupBySection = (
   return [...groups.entries()];
 };
 
-export const FeatureFlagsPanel = () => {
-  const overrides = useFeatureFlagStore((s) => s.overrides);
-  const setOverride = useFeatureFlagStore((s) => s.setOverride);
+const statusDotClass = (isOverridden: boolean, enabled: boolean): string => {
+  if (isOverridden) {
+    return "bg-blue-500";
+  }
+  if (enabled) {
+    return "bg-muted-fg";
+  }
+  return "bg-muted-fg/40";
+};
+
+const OverrideRail = ({ visible }: { visible: boolean }) => {
+  if (!visible) {
+    return null;
+  }
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute inset-y-0 left-0 w-0.5 bg-blue-500"
+    />
+  );
+};
+
+const OverrideResetButton = ({
+  displayId,
+  flagId,
+  visible,
+}: {
+  displayId: string;
+  flagId: FeatureFlagId;
+  visible: boolean;
+}) => {
   const resetOverride = useFeatureFlagStore((s) => s.resetOverride);
+
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <Button
+      intent="plain"
+      size="sq-xs"
+      aria-label={`Reset ${displayId} to default`}
+      className="size-6 text-muted-fg sm:size-6"
+      onPress={() => {
+        applyFlagChange(() => {
+          resetOverride(flagId);
+        });
+      }}
+    >
+      <ArrowPathIcon className="size-3" />
+    </Button>
+  );
+};
+
+const rowClassName = (isOverridden: boolean, enabled: boolean): string =>
+  twJoin(
+    "group/row relative flex items-center gap-2 py-1.5 pr-2.5 pl-2.5",
+    isOverridden && "bg-muted/50",
+    !enabled && "text-muted-fg"
+  );
+
+const idClassName = (enabled: boolean): string =>
+  twJoin("min-w-0 flex-1 truncate", enabled ? "text-fg" : "text-muted-fg");
+
+const FlagSwitchIndicator = ({
+  isFocusVisible,
+  isSelected,
+}: {
+  isFocusVisible: boolean;
+  isSelected: boolean;
+}) => (
+  <span
+    data-slot="indicator"
+    className={twJoin(
+      "relative inline-flex h-4 w-7 items-center rounded-full p-0.5 transition-colors",
+      isFocusVisible && "ring-2 ring-ring/50 ring-offset-1 ring-offset-bg",
+      isSelected ? "bg-fg" : "bg-muted-fg/25"
+    )}
+  >
+    <span
+      aria-hidden="true"
+      className={twJoin(
+        "size-3 rounded-full bg-bg shadow-sm transition-transform",
+        isSelected && "translate-x-3"
+      )}
+    />
+  </span>
+);
+
+const FlagSwitch = ({
+  flagId,
+  label,
+  enabled,
+}: {
+  flagId: FeatureFlagId;
+  label: string;
+  enabled: boolean;
+}) => {
+  const setOverride = useFeatureFlagStore((s) => s.setOverride);
+
+  return (
+    <SwitchField
+      aria-label={label}
+      isSelected={enabled}
+      onChange={(isSelected) => {
+        applyFlagChange(() => {
+          setOverride(flagId, isSelected);
+        });
+      }}
+    >
+      <SwitchButton className="shrink-0 outline-none">
+        {(values) => (
+          <FlagSwitchIndicator
+            isFocusVisible={values.isFocusVisible}
+            isSelected={values.isSelected}
+          />
+        )}
+      </SwitchButton>
+    </SwitchField>
+  );
+};
+
+const FeatureFlagRow = ({ flag }: { flag: FeatureFlagDefinition }) => {
+  const { id, label } = flag;
+  const isOverridden = useFeatureFlagStore(
+    (s) => typeof s.overrides[id] === "boolean"
+  );
+  const enabled = isFeatureEnabled(id);
+  const displayId = toKebab(id);
+
+  return (
+    <li className={rowClassName(isOverridden, enabled)}>
+      <OverrideRail visible={isOverridden} />
+
+      <span
+        aria-hidden="true"
+        className={twJoin(
+          "size-1.5 shrink-0 rounded-full",
+          statusDotClass(isOverridden, enabled)
+        )}
+      />
+
+      <span className={idClassName(enabled)}>{displayId}</span>
+
+      <OverrideResetButton
+        displayId={displayId}
+        flagId={id}
+        visible={isOverridden}
+      />
+
+      <FlagSwitch flagId={id} label={label} enabled={enabled} />
+    </li>
+  );
+};
+
+export const FeatureFlagsPanel = () => {
+  const overrideCount = useFeatureFlagStore(
+    (s) => Object.keys(s.overrides).length
+  );
   const resetAllOverrides = useFeatureFlagStore((s) => s.resetAllOverrides);
 
   const [query, setQuery] = useState("");
-  const overrideCount = Object.keys(overrides).length;
 
   const filteredFlags = featureFlagRegistry.filter((flag) =>
     fuzzyMatch(query, flag.id, toKebab(flag.id), flag.label, flag.section)
@@ -137,98 +294,9 @@ export const FeatureFlagsPanel = () => {
                   </span>
                 </h3>
                 <ul className="m-0 list-none p-0">
-                  {flags.map((flag) => {
-                    const { id } = flag;
-                    const enabled = isFeatureEnabled(id);
-                    const isOverridden = typeof overrides[id] === "boolean";
-                    const displayId = toKebab(id);
-                    const backgroundColor = enabled
-                      ? "bg-muted-fg"
-                      : "bg-muted-fg/40";
-
-                    return (
-                      <li
-                        key={id}
-                        className={twJoin(
-                          "group/row relative flex items-center gap-2 py-1.5 pr-2.5 pl-2.5",
-                          isOverridden && "bg-muted/50",
-                          !enabled && "text-muted-fg"
-                        )}
-                      >
-                        {isOverridden ? (
-                          <span
-                            aria-hidden="true"
-                            className="absolute inset-y-0 left-0 w-0.5 bg-blue-500"
-                          />
-                        ) : null}
-
-                        <span
-                          aria-hidden="true"
-                          className={twJoin(
-                            "size-1.5 shrink-0 rounded-full",
-                            isOverridden ? "bg-blue-500" : backgroundColor
-                          )}
-                        />
-
-                        <span
-                          className={twJoin(
-                            "min-w-0 flex-1 truncate",
-                            enabled ? "text-fg" : "text-muted-fg"
-                          )}
-                        >
-                          {displayId}
-                        </span>
-
-                        {isOverridden ? (
-                          <Button
-                            intent="plain"
-                            size="sq-xs"
-                            aria-label={`Reset ${displayId} to default`}
-                            className="size-6 text-muted-fg sm:size-6"
-                            onPress={() => {
-                              applyFlagChange(() => {
-                                resetOverride(id);
-                              });
-                            }}
-                          >
-                            <ArrowPathIcon className="size-3" />
-                          </Button>
-                        ) : null}
-
-                        <SwitchField
-                          aria-label={flag.label}
-                          isSelected={enabled}
-                          onChange={(isSelected) => {
-                            applyFlagChange(() => {
-                              setOverride(id, isSelected);
-                            });
-                          }}
-                        >
-                          <SwitchButton className="shrink-0 outline-none">
-                            {(values) => (
-                              <span
-                                data-slot="indicator"
-                                className={twJoin(
-                                  "relative inline-flex h-4 w-7 items-center rounded-full p-0.5 transition-colors",
-                                  values.isFocusVisible &&
-                                    "ring-2 ring-ring/50 ring-offset-1 ring-offset-bg",
-                                  values.isSelected ? "bg-fg" : "bg-muted-fg/25"
-                                )}
-                              >
-                                <span
-                                  aria-hidden="true"
-                                  className={twJoin(
-                                    "size-3 rounded-full bg-bg shadow-sm transition-transform",
-                                    values.isSelected && "translate-x-3"
-                                  )}
-                                />
-                              </span>
-                            )}
-                          </SwitchButton>
-                        </SwitchField>
-                      </li>
-                    );
-                  })}
+                  {flags.map((flag) => (
+                    <FeatureFlagRow key={flag.id} flag={flag} />
+                  ))}
                 </ul>
               </section>
             ))
