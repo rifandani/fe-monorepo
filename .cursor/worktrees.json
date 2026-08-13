@@ -1,0 +1,7 @@
+{
+  "setup-worktree-unix": "setup-worktree-unix.sh",
+  "setup-worktree-windows": "setup-worktree-windows.ps1",
+  "setup-worktree": [
+    "echo 'OS-specific setup missing; use setup-worktree-unix.sh or setup-worktree-windows.ps1'"
+  ]
+}

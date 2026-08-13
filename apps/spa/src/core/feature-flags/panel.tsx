@@ -142,6 +142,9 @@ export const FeatureFlagsPanel = () => {
                     const enabled = isFeatureEnabled(id);
                     const isOverridden = typeof overrides[id] === "boolean";
                     const displayId = toKebab(id);
+                    const backgroundColor = enabled
+                      ? "bg-muted-fg"
+                      : "bg-muted-fg/40";
 
                     return (
                       <li
@@ -163,11 +166,7 @@ export const FeatureFlagsPanel = () => {
                           aria-hidden="true"
                           className={twJoin(
                             "size-1.5 shrink-0 rounded-full",
-                            isOverridden
-                              ? "bg-blue-500"
-                              : (enabled
-                                ? "bg-muted-fg"
-                                : "bg-muted-fg/40")
+                            isOverridden ? "bg-blue-500" : backgroundColor
                           )}
                         />
 
