@@ -10,9 +10,8 @@ import {
   Outlet,
   useRouter,
 } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { RouterProvider as RACRouterProvider } from "react-aria-components";
-
-import { Devtools } from "@/core/providers/devtools";
 
 declare module "react-aria-components" {
   interface RouterConfig {
@@ -20,6 +19,14 @@ declare module "react-aria-components" {
     routerOptions: Omit<NavigateOptions, "to" | "from">;
   }
 }
+
+const Devtools = import.meta.env.DEV
+  ? lazy(async () => {
+      const m = await import("@/core/providers/devtools");
+      return { default: m.Devtools };
+    })
+  : null;
+
 const RootRoute = () => {
   const router = useRouter();
   return (
@@ -40,7 +47,11 @@ const RootRoute = () => {
         <Outlet />
       </RACRouterProvider>
 
-      <Devtools />
+      {Devtools ? (
+        <Suspense fallback={null}>
+          <Devtools />
+        </Suspense>
+      ) : null}
     </>
   );
 };

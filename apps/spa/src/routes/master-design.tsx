@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { lazy } from "react";
 
+import { isFeatureEnabled } from "@/core/feature-flags/is-enabled";
+
 // Keep this route module free of catalog/UI imports so routeTree's static
 // import cannot pull Intent UI into the main chunk (PWA 2 MiB precache limit).
 const MasterDesignPage = lazy(async () => {
@@ -10,8 +12,8 @@ const MasterDesignPage = lazy(async () => {
 
 export const Route = createFileRoute("/master-design")({
   beforeLoad: () => {
-    // Dev-only catalog: hidden from production builds (`build:prod`).
-    if (!import.meta.env.DEV) {
+    // Gated by the `componentCatalog` Feature Flag (ON by default in DEV only).
+    if (!isFeatureEnabled("componentCatalog")) {
       throw notFound();
     }
   },
