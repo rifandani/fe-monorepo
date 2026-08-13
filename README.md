@@ -8,7 +8,6 @@
 
 - [ ] always update `CLAUDE.md` file in root dir and subpackage inside monorepo and consider it as a living document
 - [ ] use impeccable instead of hallmark (if we use the devtools, might be redundant with agentation)
-- [ ] add feature flag in tanstack devtools, and make /master-design hidden behind a flag with enabled by default only on development
 - [ ] lookout for nextjs update to support `typescript@7` natively, because currently we need `@typescript/native-preview`
 - [ ] consider moving `web` app into another repository `fs-monorepo` (fullstack monorepo) as i don't really like next.js and it's fullstack not pure client side
 
