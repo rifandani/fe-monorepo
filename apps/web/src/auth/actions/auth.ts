@@ -1,6 +1,7 @@
 /* oxlint-disable react-doctor/server-auth-actions -- login/register/logout are intentionally public or session-clearing */
 "use server";
 import { metrics, trace } from "@opentelemetry/api";
+import type { ServerFormState } from "@tanstack/react-form-nextjs";
 import {
   createServerValidate,
   ServerValidateError,
@@ -31,6 +32,14 @@ const registerCounter = meter.createCounter("register", {
   description: "How many times the register action is called",
 });
 
+/** The `useActionState` state these actions are handed and hand back. */
+type LoginFormState =
+  | ServerFormState<typeof loginFormOpts.defaultValues, undefined>
+  | undefined;
+type RegisterFormState =
+  | ServerFormState<typeof registerFormOpts.defaultValues, undefined>
+  | undefined;
+
 const validateLogin = createServerValidate({
   ...loginFormOpts,
   onServerValidate: authSignInEmailRequestSchema,
@@ -49,7 +58,10 @@ const validateRegister = createServerValidate({
  * 2. Save session to database / set HTTP-only auth cookie
  * 3. Redirect user to home page
  */
-export const loginAction = async (_prev: unknown, formData: FormData) => {
+export const loginAction = async (
+  _prev: LoginFormState,
+  formData: FormData
+) => {
   let validated: Awaited<ReturnType<typeof validateLogin>>;
   try {
     validated = await validateLogin(formData);
@@ -98,7 +110,10 @@ export const loginAction = async (_prev: unknown, formData: FormData) => {
  * 2. Save session to database / set HTTP-only auth cookie
  * 3. Redirect user to home page
  */
-export const registerAction = async (_prev: unknown, formData: FormData) => {
+export const registerAction = async (
+  _prev: RegisterFormState,
+  formData: FormData
+) => {
   let validated: Awaited<ReturnType<typeof validateRegister>>;
   try {
     validated = await validateRegister(formData);

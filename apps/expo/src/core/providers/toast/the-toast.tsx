@@ -6,20 +6,20 @@ import { YStack } from "tamagui";
 import type { ToastPreset } from "@/core/utils/toast";
 import { resolveToastPreset } from "@/core/utils/toast";
 
-const themeMapper: Record<ToastPreset, ThemeName> = {
+const themeMapper = {
   default: "light",
   error: "red",
   info: "blue",
   success: "green",
   warning: "yellow",
-};
-const iconMapper: Record<ToastPreset, React.ReactNode> = {
+} satisfies Record<ToastPreset, ThemeName>;
+const iconMapper = {
   default: null,
   error: <Feather name="alert-circle" size={16} color="white" />,
   info: <Feather name="info" size={16} color="white" />,
   success: <Feather name="check-circle" size={16} color="white" />,
   warning: <Feather name="alert-octagon" size={16} color="white" />,
-};
+} satisfies Record<ToastPreset, React.ReactNode>;
 export const TheToast = () => {
   const currentToast = useToastState();
   if (!currentToast || currentToast.isHandledNatively) {

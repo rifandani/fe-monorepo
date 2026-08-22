@@ -45,7 +45,7 @@ const otlpEndpoint = import.meta.env.DEV
   : ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT;
 const TRACE_EXPORTER_URL = `${otlpEndpoint}/v1/traces`;
 const METRICS_EXPORTER_URL = `${otlpEndpoint}/v1/metrics`;
-const logLevelMap: Record<string, DiagLogLevel> = {
+const logLevelMap = {
   ALL: DiagLogLevel.ALL,
   DEBUG: DiagLogLevel.DEBUG,
   ERROR: DiagLogLevel.ERROR,
@@ -53,7 +53,7 @@ const logLevelMap: Record<string, DiagLogLevel> = {
   NONE: DiagLogLevel.NONE,
   VERBOSE: DiagLogLevel.VERBOSE,
   WARN: DiagLogLevel.WARN,
-};
+} satisfies Record<typeof ENV.VITE_OTEL_LOG_LEVEL, DiagLogLevel>;
 // for troubleshooting the internal otel logs, set the log level to DEBUG
 diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.VITE_OTEL_LOG_LEVEL]);
 let resource = resourceFromAttributes({

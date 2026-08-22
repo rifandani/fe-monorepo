@@ -97,7 +97,13 @@ export const AppTamaguiProvider = ({
       disableInjectCSS
       config={config}
       defaultTheme={match(theme)
-        .with("system", () => scheme as string)
+        .with(
+          "system",
+          () =>
+            // SAFETY: `useColorScheme` resolves to "light" or "dark" here; its type
+            // keeps the null the RN API allows before the first read.
+            scheme as string
+        )
         .otherwise((t) => t)}
       {...rest}
     >

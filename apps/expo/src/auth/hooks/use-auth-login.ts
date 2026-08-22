@@ -43,7 +43,7 @@ export const useAuthLogin = (
       toast.show(message, {
         customData: {
           preset: "error",
-        } as ToastCustomData,
+        } satisfies ToastCustomData,
       });
       onError?.(error, variables, onMutateResult, context);
     },

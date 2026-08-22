@@ -491,13 +491,13 @@ const DarkReactSvg = (): ReactElement => (
   </svg>
 );
 
-const OG_LOGOS: Record<OgLogoKey, () => ReactElement | null> = {
+const OG_LOGOS = {
   "next-dark": DarkNextSvg,
   "next-light": LightNextSvg,
   none: () => null,
   "react-dark": DarkReactSvg,
   "react-light": LightReactSvg,
-};
+} satisfies Record<OgLogoKey, () => ReactElement | null>;
 
 export const GET = withEvlog((req: NextRequest): Response | ImageResponse => {
   const log = useLogger();

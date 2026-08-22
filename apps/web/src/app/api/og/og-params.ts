@@ -39,6 +39,8 @@ export const resolveOgLogoKey = (
   isLight: boolean
 ): OgLogoKey => {
   const key = `${logo}-${isLight ? "light" : "dark"}`;
+  // SAFETY: guarded by the membership check - `OG_LOGO_KEYS` holds exactly the
+  // `OgLogoKey` values.
   return OG_LOGO_KEYS.has(key) ? (key as OgLogoKey) : "none";
 };
 
@@ -46,7 +48,7 @@ export const resolveOgLogoKey = (
  * Re-throw anything that is not an `Error` so framework control-flow signals
  * (redirects, `notFound()`) are not swallowed by an image-generation catch.
  */
-export const rethrowNonError = (error: unknown): void => {
+export const rethrowNonError = <T>(error: T): void => {
   if (!(error instanceof Error)) {
     throw error;
   }

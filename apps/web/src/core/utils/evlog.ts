@@ -64,14 +64,19 @@ export const { withEvlog, useLogger, createError, log } = createEvlog({
 // ------------------------------------------------------------
 // Better Auth Middleware
 // ------------------------------------------------------------
-export const identify = createAuthMiddleware(auth as BetterAuthInstance, {
-  exclude: ["/api/auth/**", "/api/public/**", "/api/health"],
-  include: ["/api/**"],
-  // extend: (session) => ({
-  //   organization: session.user.activeOrganization,
-  //   role: session.user.role,
-  // }),
-});
+export const identify = createAuthMiddleware(
+  // SAFETY: `auth` is a Better Auth instance; the evlog middleware types it
+  // against its own vendored copy of that interface.
+  auth as BetterAuthInstance,
+  {
+    exclude: ["/api/auth/**", "/api/public/**", "/api/health"],
+    include: ["/api/**"],
+    // extend: (session) => ({
+    //   organization: session.user.activeOrganization,
+    //   role: session.user.role,
+    // }),
+  }
+);
 // ------------------------------------------------------------
 // Instrumentation
 // ------------------------------------------------------------

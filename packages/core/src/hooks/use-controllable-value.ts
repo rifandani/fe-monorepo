@@ -11,8 +11,13 @@ interface Options<T> {
   valuePropName?: string;
   trigger?: string;
 }
-// oxlint-disable-next-line typescript/no-explicit-any
-type Props = Record<string, any>;
+/** The change handler a component passes under the configured `trigger` name. */
+type TriggerFn<T> = (value: T, ...args: unknown[]) => void;
+/**
+ * A component's props addressed by caller-supplied names: this hook reads the
+ * value, the default value and the change trigger, and nothing else.
+ */
+type Props<T> = Record<string, T | TriggerFn<T> | undefined>;
 interface StandardProps<T> {
   value: T;
   defaultValue?: T;
@@ -42,13 +47,13 @@ export function useControllableValue<T = any>(
 ): [T, (v: SetStateAction<T>) => void];
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
-  props?: Props,
+  props?: Props<T>,
   options?: Options<T>
   // oxlint-disable-next-line typescript/no-explicit-any
 ): [T, (v: SetStateAction<T>, ...args: any[]) => void];
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
-  props: Props = {},
+  props: Props<T> | StandardProps<T> = {},
   options: Options<T> = {}
 ) {
   const {
@@ -57,14 +62,20 @@ export function useControllableValue<T = any>(
     valuePropName = "value",
     trigger = "onChange",
   } = options;
-  const value = props[valuePropName] as T;
-  const isControlled = Object.hasOwn(props, valuePropName);
+  // SAFETY: the standard `{ value, defaultValue, onChange }` shape is exactly the
+  // name-addressed bag under this hook's default prop names.
+  const bag = props as Props<T>;
+  // SAFETY: `valuePropName` names the prop holding this hook's value, whose type
+  // the caller states as `T` when instantiating the hook.
+  const value = bag[valuePropName] as T;
+  const isControlled = Object.hasOwn(bag, valuePropName);
   const initialValue = useMemo(() => {
     if (isControlled) {
       return value;
     }
-    if (Object.hasOwn(props, defaultValuePropName)) {
-      return props[defaultValuePropName];
+    if (Object.hasOwn(bag, defaultValuePropName)) {
+      // SAFETY: as above, for the prop named by `defaultValuePropName`.
+      return bag[defaultValuePropName] as T;
     }
     return defaultValue;
     // oxlint-disable-next-line react-hooks/exhaustive-deps
@@ -76,13 +87,18 @@ export function useControllableValue<T = any>(
   const update = useUpdate();
   // oxlint-disable-next-line typescript/no-explicit-any
   const setState = (v: SetStateAction<T>, ...args: any[]) => {
-    const r = isFunction(v) ? v(stateRef.current) : v;
+    const r = isFunction(v)
+      ? // SAFETY: `stateRef` is seeded from the controlled value or the default, so
+        // it holds `undefined` only when the caller's own `T` includes it.
+        v(stateRef.current as T)
+      : v;
     if (!isControlled) {
       stateRef.current = r;
       update();
     }
-    if (props[trigger]) {
-      props[trigger](r, ...args);
+    const onChange = bag[trigger];
+    if (isFunction(onChange)) {
+      onChange(r, ...args);
     }
   };
   return [stateRef.current, useMemoizedFn(setState)] as const;

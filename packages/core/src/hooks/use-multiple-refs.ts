@@ -4,6 +4,11 @@ interface RefObject<T> {
   current: T;
 }
 
+interface RefIterator<T> {
+  next: () => { done: boolean; value: RefObject<T> };
+  [Symbol.iterator]: () => RefIterator<T>;
+}
+
 /**
  * Hook that creates an iterable collection of refs with the same initial value.
  * Useful when you need multiple refs with the same initialization, like in a list of elements.
@@ -32,22 +37,23 @@ export const useMultipleRefs = <T>(initialValue: T) => {
   const cache = useRef<RefObject<T>[]>([]);
   const callIndex = useRef(0);
 
-  return {
-    next() {
+  // Named so `[Symbol.iterator]` can hand back the same object without `this`,
+  // which the React Compiler cannot lower.
+  const iterator: RefIterator<T> = {
+    next: () => {
       const index = callIndex.current;
-      if (!cache.current[index]) {
-        cache.current[index] = { current: initialValue };
-      }
-      const value = cache.current[index];
+      const ref = cache.current[index] ?? { current: initialValue };
+      cache.current[index] = ref;
       callIndex.current = index + 1;
       return {
         done: false,
-        value,
+        value: ref,
       };
     },
-    [Symbol.iterator]() {
+    [Symbol.iterator]: () => {
       callIndex.current = 0;
-      return this;
+      return iterator;
     },
   };
+  return iterator;
 };

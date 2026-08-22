@@ -8,9 +8,13 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
+interface SarifProperties {
+  "security-severity"?: string | number;
+}
+
 interface SarifRule {
   id: string;
-  properties?: Record<string, unknown>;
+  properties?: SarifProperties;
   defaultConfiguration?: { level?: string };
 }
 
@@ -18,7 +22,7 @@ interface SarifResult {
   ruleId?: string;
   level?: string;
   message?: { text?: string };
-  properties?: Record<string, unknown>;
+  properties?: SarifProperties;
   locations?: {
     physicalLocation?: { artifactLocation?: { uri?: string } };
   }[];
@@ -70,17 +74,27 @@ if (files.length === 0) {
   process.exit(0);
 }
 
+const parseSarifLog = (text: string): SarifLog => {
+  const parsed = JSON.parse(text);
+  if (!(parsed instanceof Object) || Array.isArray(parsed)) {
+    return {};
+  }
+  return parsed;
+};
+
+const emptyRule: SarifRule = { id: "" };
+
 const blockers: Blocker[] = [];
 
 for (const file of files) {
-  const sarif = JSON.parse(readFileSync(file, "utf-8")) as SarifLog;
+  const sarif = parseSarifLog(readFileSync(file, "utf-8"));
   for (const run of sarif.runs ?? []) {
     const rules = new Map(
       (run.tool?.driver?.rules ?? []).map((r) => [r.id, r] as const)
     );
     for (const result of run.results ?? []) {
-      const rule = rules.get(result.ruleId ?? "") ?? ({} as SarifRule);
-      const props = {
+      const rule = rules.get(result.ruleId ?? "") ?? emptyRule;
+      const props: SarifProperties = {
         ...rule.properties,
         ...result.properties,
       };

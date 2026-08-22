@@ -24,7 +24,7 @@ export const logger = {
   // oxlint-disable-next-line typescript/no-explicit-any -- structured log attributes
   debug(message: string, ...attributes: any[]) {
     const severity = "DEBUG";
-    const severityColor = LEVEL_COLORS[severity as keyof typeof LEVEL_COLORS];
+    const severityColor = LEVEL_COLORS[severity];
     const timeFormatted = formatTime(new Date());
     console.debug(
       `${severityColor}[${timeFormatted}] ${severityColor}${severity}: ${COLOR.WHITE}${message}`,
@@ -34,7 +34,7 @@ export const logger = {
   // oxlint-disable-next-line typescript/no-explicit-any -- structured log attributes
   error(message: string, ...attributes: any[]) {
     const severity = "ERROR";
-    const severityColor = LEVEL_COLORS[severity as keyof typeof LEVEL_COLORS];
+    const severityColor = LEVEL_COLORS[severity];
     const timeFormatted = formatTime(new Date());
     console.error(
       `${severityColor}[${timeFormatted}] ${severityColor}${severity}: ${COLOR.WHITE}${message}`,
@@ -44,7 +44,7 @@ export const logger = {
   // oxlint-disable-next-line typescript/no-explicit-any -- structured log attributes
   log(message: string, ...attributes: any[]) {
     const severity = "INFO";
-    const severityColor = LEVEL_COLORS[severity as keyof typeof LEVEL_COLORS];
+    const severityColor = LEVEL_COLORS[severity];
     const timeFormatted = formatTime(new Date());
     console.log(
       `${severityColor}[${timeFormatted}] ${severityColor}${severity}: ${COLOR.WHITE}${message}`,
@@ -54,7 +54,7 @@ export const logger = {
   // oxlint-disable-next-line typescript/no-explicit-any -- structured log attributes
   warn(message: string, ...attributes: any[]) {
     const severity = "WARN";
-    const severityColor = LEVEL_COLORS[severity as keyof typeof LEVEL_COLORS];
+    const severityColor = LEVEL_COLORS[severity];
     const timeFormatted = formatTime(new Date());
     console.warn(
       `${severityColor}[${timeFormatted}] ${severityColor}${severity}: ${COLOR.WHITE}${message}`,

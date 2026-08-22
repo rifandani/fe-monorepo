@@ -47,18 +47,13 @@ export default function Error({
       <div className="max-w-md space-y-8 text-center">
         {/* Hero Section */}
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold text-primary">4xx</h1>
+          <h1 className="text-primary text-8xl font-bold">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
           <p className="text-muted-fg">Something went wrong</p>
         </div>
 
         {/* Quick Actions */}
-        <div
-          className={`
-          flex flex-col justify-center gap-4
-          sm:flex-row
-        `}
-        >
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button
             intent="primary"
             className="flex items-center"

@@ -19,7 +19,7 @@ export const SidebarShowcase = () => (
         defaultOpen
       >
         <Sidebar collapsible="none">
-          <SidebarHeader className="font-semibold text-sm">Acme</SidebarHeader>
+          <SidebarHeader className="text-sm font-semibold">Acme</SidebarHeader>
           <SidebarContent>
             <SidebarSection label="Nav">
               <SidebarItem href="#" isCurrent>
@@ -32,7 +32,7 @@ export const SidebarShowcase = () => (
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
-          <div className="p-4 text-muted-fg text-sm">Inset content</div>
+          <div className="text-muted-fg p-4 text-sm">Inset content</div>
         </SidebarInset>
       </SidebarProvider>
     </Variant>

@@ -181,7 +181,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
     <div
       aria-label={name}
       className={twMerge(
-        "flex h-16 min-w-24 items-center justify-center rounded-lg border border-border px-1.5 font-mono text-[10px]",
+        "border-border flex h-16 min-w-24 items-center justify-center rounded-lg border px-1.5 font-mono text-[10px]",
         bg
       )}
       ref={ref}
@@ -196,7 +196,7 @@ export const ColorPaletteShowcase = () => (
   <div className="flex flex-col gap-8">
     {groups.map((group) => (
       <div key={group.label}>
-        <h4 className="mb-3 font-medium text-muted-fg text-sm">
+        <h4 className="text-muted-fg mb-3 text-sm font-medium">
           {group.label}
         </h4>
         <VariantGrid>

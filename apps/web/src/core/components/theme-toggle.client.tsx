@@ -5,7 +5,6 @@ import {
   MoonIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import type { BasicColorMode } from "@workspace/core/hooks/use-color-mode";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import type { Selection } from "react-stately";
@@ -31,6 +30,8 @@ export const ThemeToggle = () => {
   const activeTheme = theme ?? "system"; // avoid hydration mismatch
   // `theme` is a free-form string in next-themes, so fall back to the
   // system icon for anything outside the three we render a menu item for.
+  // SAFETY: the lookup is guarded by the `??` fallback, so an unknown theme name
+  // simply misses instead of producing an undefined icon.
   const ActiveThemeIcon =
     THEME_ICONS[activeTheme as keyof typeof THEME_ICONS] ?? ComputerDesktopIcon;
   return (
@@ -43,8 +44,10 @@ export const ThemeToggle = () => {
         selectionMode="single"
         selectedKeys={new Set([activeTheme])}
         onSelectionChange={(_selection) => {
+          // SAFETY: `selectionMode="single"` rules out the "all" sentinel, and every
+          // menu item below is keyed by one of the values named here.
           const selection = _selection as Exclude<Selection, "all"> & {
-            currentKey: "system" | BasicColorMode;
+            currentKey: "system" | "light" | "dark";
           };
           setTheme(selection.currentKey);
         }}

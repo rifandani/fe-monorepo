@@ -18,6 +18,16 @@ export interface ClientRateLimitInfo {
  *   type getUser = Promisify<User>;      // getUser can be User or Promise<User>
  */
 export type Promisify<T> = T | Promise<T>;
+
+/** A value that survives `NextResponse.json`. */
+export type JsonSerializable =
+  | JsonSerializable[]
+  | boolean
+  | null
+  | number
+  | string
+  | undefined
+  | { [key: string]: JsonSerializable };
 /**
  * The rate limit related information for each client included in the Hono context object.
  */
@@ -70,7 +80,7 @@ export interface ConfigType<P extends string = string> {
    *
    * Defaults to `'Too many requests, please try again later.'`
    */
-  message: string | Record<string, unknown>;
+  message: string | Record<string, JsonSerializable>;
   /**
    * The HTTP status code to send back when a client is rate limited.
    *

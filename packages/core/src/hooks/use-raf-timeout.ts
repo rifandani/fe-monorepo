@@ -3,18 +3,24 @@ import { useLatest } from "@workspace/core/hooks/use-latest";
 import { isNumber } from "radashi";
 import { useEffect, useRef } from "react";
 
-interface Handle {
+interface FrameHandle {
+  kind: "frame";
   id: number;
 }
+interface TimerHandle {
+  kind: "timer";
+  id: ReturnType<typeof setTimeout>;
+}
+type Handle = FrameHandle | TimerHandle;
+
+// The animation-frame pair is absent outside the DOM (SSR, Node test runs),
+// where the plain timers are the fallback.
+const hasRequestAnimationFrame = () => "requestAnimationFrame" in globalThis;
 const setRafTimeout = (callback: () => void, delay = 0): Handle => {
-  if (typeof requestAnimationFrame === typeof undefined) {
-    return {
-      id: setTimeout(callback, delay) as unknown as number,
-    };
+  if (!hasRequestAnimationFrame()) {
+    return { kind: "timer", id: setTimeout(callback, delay) };
   }
-  const handle: Handle = {
-    id: 0,
-  };
+  const handle: FrameHandle = { kind: "frame", id: 0 };
   const startTime = Date.now();
   const loop = () => {
     const current = Date.now();
@@ -27,11 +33,10 @@ const setRafTimeout = (callback: () => void, delay = 0): Handle => {
   handle.id = requestAnimationFrame(loop);
   return handle;
 };
-const cancelAnimationFrameIsNotDefined = (_t: unknown): _t is number =>
-  typeof cancelAnimationFrame === typeof undefined;
 const clearRafTimeout = (handle: Handle) => {
-  if (cancelAnimationFrameIsNotDefined(handle.id)) {
-    return clearTimeout(handle.id);
+  if (handle.kind === "timer") {
+    clearTimeout(handle.id);
+    return;
   }
   cancelAnimationFrame(handle.id);
 };

@@ -149,10 +149,16 @@ export type Themes = typeof builtThemes;
 // back into JS for you, and the bundler plugins set TAMAGUI_ENVIRONMENT. so
 // long as you are using the Vite, Next, Webpack plugins this should just work,
 // but if not you can just export builtThemes directly as themes:
+// SAFETY: in a production client bundle tamagui hydrates the themes from CSS at
+// runtime, so shipping the JS theme objects is dead weight - the empty stub is
+// what tamagui's own docs prescribe here.
+const hydratedFromCss = {} as Themes;
+// SAFETY: `builtThemes` is the generator output, which tamagui types loosely; it
+// is the very value `Themes` describes.
+const jsThemes = builtThemes as Themes;
+
 export const themes: Themes =
   process.env.TAMAGUI_ENVIRONMENT === "client" &&
   process.env.NODE_ENV === "production"
-    ? // oxlint-disable-next-line typescript/no-explicit-any -- tamagui client theme stub
-      ({} as any)
-    : // oxlint-disable-next-line typescript/no-explicit-any -- tamagui built themes
-      (builtThemes as any);
+    ? hydratedFromCss
+    : jsThemes;

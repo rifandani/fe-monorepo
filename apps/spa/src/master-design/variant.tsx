@@ -17,7 +17,7 @@ export const Variant = ({
   children: ReactNode;
 }) => (
   <div className={twMerge("flex flex-col items-start gap-2", className)}>
-    <span className="font-mono text-muted-fg text-xs">{label}</span>
+    <span className="text-muted-fg font-mono text-xs">{label}</span>
     {children}
   </div>
 );

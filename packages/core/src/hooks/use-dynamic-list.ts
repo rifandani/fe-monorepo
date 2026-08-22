@@ -72,6 +72,8 @@ const useKeyList = () => {
       const keyTemp = keyListRef.current.filter(
         (_, index: number) => index !== oldIndex
       );
+      // SAFETY: `oldIndex` addresses an existing entry - the caller moves an item
+      // already in the list, so the key list has a number at that position.
       keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
       keyListRef.current = keyTemp;
     },
@@ -130,6 +132,8 @@ const createListMutators = <T>(
     setList((l) => {
       const newList = [...l];
       const temp = newList.filter((_, index: number) => index !== oldIndex);
+      // SAFETY: `oldIndex` addresses an existing item; `noUncheckedIndexedAccess`
+      // widens the read to `T | undefined` even though the slot is occupied.
       temp.splice(newIndex, 0, newList[oldIndex] as T);
       // move keys if necessary
       keys.moveKey(oldIndex, newIndex);

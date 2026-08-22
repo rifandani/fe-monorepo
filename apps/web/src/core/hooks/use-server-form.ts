@@ -1,5 +1,6 @@
 "use client";
 
+import type { ServerFormState } from "@tanstack/react-form-nextjs";
 import {
   initialFormState,
   mergeForm,
@@ -9,22 +10,47 @@ import {
 } from "@tanstack/react-form-nextjs";
 import { useActionState } from "react";
 
-interface UseServerFormOptions<TDefaultValues extends Record<string, unknown>> {
+/** A value a form field can hold, or a group of them. */
+type FormFieldValue =
+  | Date
+  | File
+  | FormFieldValue[]
+  | FormFieldValues
+  | boolean
+  | null
+  | number
+  | string
+  | undefined;
+interface FormFieldValues {
+  [field: string]: FormFieldValue;
+}
+
+interface UseServerFormOptions<TDefaultValues extends FormFieldValues> {
   formOpts: {
     defaultValues: TDefaultValues;
     validators?: {
       onChange?: unknown;
     };
   };
-  // oxlint-disable-next-line typescript/no-explicit-any
-  action: (prev: unknown, formData: FormData) => Promise<any>;
+  /**
+   * The `useActionState` action. It is handed the previous server form state and
+   * returns the next one - the shape `mergeForm` reads below.
+   */
+  action: (
+    prev: ServerFormState<TDefaultValues, undefined> | undefined,
+    formData: FormData
+  ) => Promise<ServerFormState<TDefaultValues, undefined> | undefined>;
 }
+
+/** Form-level errors arrive either as a plain message or as an issue object. */
+const isMessage = <T>(error: T): error is T & string =>
+  typeof error === "string";
 
 /**
  * Wires TanStack Form to a Next.js FormData server action via `useActionState`,
  * `mergeForm`, and `useTransform` (see TanStack next-server-actions example).
  */
-export const useServerForm = <TDefaultValues extends Record<string, unknown>>({
+export const useServerForm = <TDefaultValues extends FormFieldValues>({
   formOpts,
   action,
 }: UseServerFormOptions<TDefaultValues>) => {
@@ -36,7 +62,8 @@ export const useServerForm = <TDefaultValues extends Record<string, unknown>>({
   const form = useForm({
     defaultValues: formOpts.defaultValues,
     validators: {
-      // Zod 4 / Standard Schema — TanStack Form accepts this at runtime.
+      // SAFETY: Zod 4 / Standard Schema - TanStack Form accepts this at runtime,
+      // but its validator generic is not inferable from an opaque schema value.
       onChange: formOpts.validators?.onChange as never,
     },
     transform: useTransform(
@@ -47,7 +74,7 @@ export const useServerForm = <TDefaultValues extends Record<string, unknown>>({
 
   const formLevelError = useStore(form.store, (formState) => {
     for (const error of formState.errors) {
-      if (typeof error === "string") {
+      if (isMessage(error)) {
         return error;
       }
     }

@@ -1,5 +1,5 @@
 // oxlint-disable no-throw-literal
-import type { Span, Tracer } from "@opentelemetry/api";
+import type { Span, SpanOptions, Tracer } from "@opentelemetry/api";
 import type * as OtelApi from "@opentelemetry/api";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -46,14 +46,22 @@ const createMockSpan = (): Span => ({
   updateName: vi.fn().mockReturnThis(),
 });
 
-const createMockTracer = (span: Span = createMockSpan()): Tracer =>
-  ({
+const createMockTracer = (span: Span = createMockSpan()): Tracer => {
+  const tracer = {
     startActiveSpan: vi.fn(
-      (_name: string, _opts: unknown, fn: (span: Span) => unknown): unknown =>
+      <T>(_name: string, _opts: SpanOptions, fn: (span: Span) => T): T =>
         fn(span)
     ),
     startSpan: vi.fn().mockReturnValue(span),
-  }) as unknown as Tracer;
+  };
+  // SAFETY: the code under test calls only these two members, so the stub covers
+  // its whole surface; the cast stands in for the rest of otel's `Tracer`.
+  return tracer as never;
+};
+
+// SAFETY: otel's overloads declare these arguments; passing them as absent is the
+// behaviour under test, which the types cannot express.
+const absentArg: never = undefined as never;
 
 describe("noopTracer", () => {
   it("returns a non-recording span from startSpan", () => {
@@ -70,20 +78,13 @@ describe("noopTracer", () => {
     const fn = vi.fn((span: Span) => span.isRecording());
     expect(noopTracer.startActiveSpan("a", fn)).toBe(false);
     expect(noopTracer.startActiveSpan("a", {}, fn)).toBe(false);
-    expect(noopTracer.startActiveSpan("a", {}, undefined as never, fn)).toBe(
-      false
-    );
+    expect(noopTracer.startActiveSpan("a", {}, absentArg, fn)).toBe(false);
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
   it("returns undefined when no callback is supplied", () => {
     expect(
-      noopTracer.startActiveSpan(
-        "a",
-        {},
-        undefined as never,
-        undefined as never
-      )
+      noopTracer.startActiveSpan("a", {}, absentArg, absentArg)
     ).toBeUndefined();
   });
 

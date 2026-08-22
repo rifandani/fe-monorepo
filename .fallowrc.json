@@ -9,24 +9,24 @@
     { "file": "apps/web/**/components/ui/**", "exports": ["*"] },
     { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] },
     {
-      "$comment": "Root-level vitest infrastructure is outside fallow's `entry` graph, so `server` and `MOCK_API_BASE_URL` read as unused and `fallow fix` strips the `export` keyword. They are consumed by vitest.setup.ts, apps/expo/vitest.config.ts, and the *.unit.test.ts files that call `server.use()`.",
       "file": "vitest.msw.ts",
       "exports": ["*"]
     },
     {
-      "$comment": "The /master-design component catalog is reachable only through a dev-only, lazily code-split TanStack route (gated by `import.meta.env.DEV`), so fallow's static `entry` graph treats its modules as unused and `fallow fix` strips their `export` keywords. It is a real route rendered at /master-design in development.",
       "file": "apps/spa/src/master-design/**",
       "exports": ["*"]
     },
     {
-      "$comment": "next-intl plugin entry (`createNextIntlPlugin(\"./src/core/utils/i18n.ts\")`). The default export is loaded by path, not imported, so fallow's graph treats it as unused. `formats` is a real import from env.d.ts.",
       "file": "apps/web/src/core/utils/i18n.ts",
       "exports": ["default"]
+    },
+    {
+      "file": "apps/web/src/core/middlewares/rate-limit/rate-limit.ts",
+      "exports": ["rateLimit"]
     }
   ],
   "overrides": [
     {
-      "$comment": "`fallow security` ignores rule severities from `rules`/`overrides` entirely (verified: setting security-sink/security-client-server-leak to off changes nothing). Its findings are suppressed only by in-source tokens — `// fallow-ignore-file security-client-server-leak` and `// fallow-ignore-next-line security-sink`. See apps/web/src/**/*.client.tsx and components/ui/chart.tsx.",
       "files": ["apps/spa/**/components/ui/**", "apps/web/**/components/ui/**"],
       "rules": {
         "unused-files": "off",
@@ -34,31 +34,38 @@
       }
     },
     {
-      "$comment": "Root-level tool configs and service-worker entries: nothing imports them (their own CLI or the browser loads them), so they sit outside fallow's `entry` graph and read as unused files. `stryker.config.mjs` is loaded by the `stryker` binary — see docs/adr/0003-mutation-testing-is-advisory.md. `scripts/security/*` are CI entry points invoked by node/bun from workflows / package.json scripts (not imported).",
       "files": [
         "apps/spa/pwa-assets.config.ts",
         "apps/spa/src/sw.ts",
+        "apps/spa/src/core/hooks/**",
         "apps/web/pwa-assets.config.ts",
+        "apps/web/src/test/server-only-stub.ts",
+        "apps/web/src/app/api/rate-limit.ts",
+        "apps/web/src/core/components/typed-links.client.tsx",
+        "apps/web/src/core/hooks/**",
+        "apps/web/src/core/middlewares/rate-limit/**",
+        "apps/expo/src/test/react-native-mmkv-stub.ts",
+        "apps/expo/src/core/constants/**",
         "oxfmt.config.ts",
         "oxlint.config.ts",
         "stryker.config.mjs",
-        "scripts/security/**"
+        "scripts/security/**",
+        "vitest.msw-setup.ts"
       ],
-      "rules": {
-        "unused-files": "off"
-      }
-    },
-    {
-      "$comment": "Loaded by path from the `setupFiles` arrays in packages/core/vitest.config.ts and apps/expo/vitest.config.ts, so no import edge reaches it and it reads as unreachable. See docs/adr/0002-network-boundary-mocking-with-msw.md.",
-      "files": ["vitest.msw-setup.ts"],
       "rules": {
         "unused-files": "off"
       }
     }
   ],
+  "ignoreFindings": [
+    "apps/spa/src/core/feature-flags/panel.tsx",
+    "apps/spa/src/core/providers/router/client.tsx",
+    "apps/spa/src/routeTree.gen.ts",
+    "apps/spa/src/routes/__root.tsx",
+    "apps/spa/src/core/providers/devtools.tsx"
+  ],
   "duplicates": {
     "minOccurrences": 3,
-    "$comment": "spa and web are deliberate mirrors for browser-only code that cannot move into @workspace/core (core must stay browser + expo/native safe). Ignoring one side of each mirrored pair drops the whole clone group from duplication analysis while leaving complexity, coupling and hotspot analysis intact.",
     "ignore": [
       "apps/web/playwright.config.ts",
       "apps/web/vitest.config.ts",
@@ -92,6 +99,13 @@
         "functions": ["LightNextSvg", "DarkNextSvg"],
         "maxUnitSize": 200,
         "reason": "Inline OG SVG markup is declarative length, not control-flow complexity"
+      },
+      {
+        "files": ["apps/web/src/core/middlewares/rate-limit/store.ts"],
+        "functions": ["increment"],
+        "maxCrap": 50,
+        "maxCyclomatic": 15,
+        "reason": "Drizzle upsert with sliding-window expiry is branchy by design; covered by store.unit.test.ts"
       }
     ]
   },

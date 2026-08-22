@@ -1,4 +1,3 @@
-import type { UserStoreLocalStorage } from "@/auth/hooks/use-auth-user-store";
 import {
   userStoreLocalStorageSchema,
   userStoreName,
@@ -6,7 +5,6 @@ import {
 
 export const checkAuthUser = () => {
   const appUser = localStorage.getItem(userStoreName) ?? "{}";
-  const parsedAppUser = JSON.parse(appUser) as UserStoreLocalStorage;
-  const parsed = userStoreLocalStorageSchema.safeParse(parsedAppUser);
+  const parsed = userStoreLocalStorageSchema.safeParse(JSON.parse(appUser));
   return parsed.success && !!parsed.data.state.user;
 };

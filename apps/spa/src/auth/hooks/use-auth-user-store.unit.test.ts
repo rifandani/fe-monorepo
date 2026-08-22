@@ -14,6 +14,12 @@ const validUser = {
   username: "ada",
 };
 
+/** The envelope zustand's persist middleware writes to localStorage. */
+interface PersistedStore<TUser> {
+  state: { user: TUser };
+  version: number;
+}
+
 describe("useAuthUserStore", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -35,10 +41,9 @@ describe("useAuthUserStore", () => {
 
     const raw = localStorage.getItem(userStoreName);
     expect(raw).toBeTruthy();
-    const parsed = JSON.parse(raw ?? "{}") as {
-      state: { user: typeof validUser };
-      version: number;
-    };
+    // SAFETY: the persisted blob is the store's own zustand envelope, written by
+    // the `setUser` call above.
+    const parsed = JSON.parse(raw ?? "{}") as PersistedStore<typeof validUser>;
     expect(parsed.state.user).toEqual(validUser);
     expect(parsed.version).toBe(0);
   });
@@ -51,7 +56,8 @@ describe("useAuthUserStore", () => {
 
     const raw = localStorage.getItem(userStoreName);
     expect(raw).toBeTruthy();
-    const parsed = JSON.parse(raw ?? "{}") as { state: { user: null } };
+    // SAFETY: as above - the envelope this store just wrote.
+    const parsed = JSON.parse(raw ?? "{}") as PersistedStore<null>;
     expect(parsed.state.user).toBeNull();
   });
 });

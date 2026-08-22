@@ -58,6 +58,8 @@ const pushValue = <T>(
   val: T,
   maxLength: number
 ): IData<T> => {
+  // SAFETY: `present` is only absent before the first value is set, and every
+  // caller of this helper has already committed one.
   const _past = [...history.past, history.present as T];
   const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
   // maximum number of records exceeded
@@ -80,6 +82,7 @@ const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.future);
   return {
     future: _after,
+    // SAFETY: travelling implies a committed `present` - see `updateHistory`.
     past: [...history.past, history.present as T, ..._before],
     present: _current,
   };
@@ -92,6 +95,7 @@ const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
 const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.past);
   return {
+    // SAFETY: travelling implies a committed `present` - see `updateHistory`.
     future: [..._after, history.present as T, ...history.future],
     past: _before,
     present: _current,

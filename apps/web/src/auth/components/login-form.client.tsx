@@ -19,10 +19,7 @@ export const LoginForm = () => {
   return (
     <form
       action={formAction}
-      className={`
-        flex flex-col pt-3
-        md:pt-8
-      `}
+      className="flex flex-col pt-3 md:pt-8"
       onSubmit={() => {
         void form.handleSubmit();
       }}

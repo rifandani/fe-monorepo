@@ -3,14 +3,14 @@ import type { URLSearchParamsInit } from "@workspace/core/types/core";
 /**
  * Check if we are in browser, not server
  */
-export const isBrowser = () => typeof window !== "undefined";
+export const isBrowser = () => "window" in globalThis;
 
 /**
  * Whether the async Clipboard API is usable here. It is absent on the server,
  * and browsers only expose `navigator.clipboard` in secure contexts.
  */
 export const canWriteToClipboard = () =>
-  isBrowser() && typeof navigator.clipboard?.writeText === "function";
+  isBrowser() && navigator.clipboard?.writeText !== undefined;
 
 /**
  * This will works with below rules, otherwise it only view on new tab
@@ -57,20 +57,23 @@ export const doDownload = (url: string) => {
  * });
  * ```
  */
+/** The one member of `URLSearchParamsInit` that `URLSearchParams` cannot take as-is. */
+const isParamsRecord = (
+  init: URLSearchParamsInit
+): init is Record<string, string | string[]> =>
+  typeof init === "object" &&
+  !Array.isArray(init) &&
+  !(init instanceof URLSearchParams);
+
 export const createSearchParams = (
   init: URLSearchParamsInit = ""
 ): URLSearchParams =>
   new URLSearchParams(
-    typeof init === "string" ||
-      Array.isArray(init) ||
-      init instanceof URLSearchParams
-      ? init
-      : Object.keys(init).flatMap((key) => {
-          const value = init[key];
-          return Array.isArray(value)
-            ? value.map((v): [string, string] => [key, v])
-            : [[key, value as string]];
-        })
+    isParamsRecord(init)
+      ? Object.entries(init).flatMap(([key, value]): [string, string][] =>
+          Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value]]
+        )
+      : init
   );
 
 /**
@@ -125,16 +128,15 @@ interface ExperimentalNavigator {
  * @returns {string} The platform name
  */
 export const getPlatform = (): string => {
+  // SAFETY: `userAgentData` is not in the DOM lib yet; every read below is guarded
+  // and falls back to the standard `navigator.platform`.
   const nav = navigator as ExperimentalNavigator;
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
     return nav.userAgentData.platform;
   }
-  // Fallback to navigator.platform (deprecated but widely supported)
-  if (typeof navigator.platform === "string") {
-    return navigator.platform;
-  }
-  return "";
+  // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
+  return navigator.platform || "";
 };
 
 /**
@@ -146,6 +148,7 @@ export const getPlatform = (): string => {
  * @returns {Promise<string>} The platform name
  */
 export const getPlatformAsync = async (): Promise<string> => {
+  // SAFETY: as in `getPlatform` - an unshipped API behind guarded reads.
   const nav = navigator as ExperimentalNavigator;
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
@@ -164,11 +167,8 @@ export const getPlatformAsync = async (): Promise<string> => {
       // Fall through to next fallback
     }
   }
-  // Fallback to navigator.platform (deprecated but widely supported)
-  if (typeof navigator.platform === "string") {
-    return navigator.platform;
-  }
-  return "";
+  // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
+  return navigator.platform || "";
 };
 
 /**

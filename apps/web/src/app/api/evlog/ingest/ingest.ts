@@ -38,8 +38,25 @@ export const isAllowedOrigin = (
   return false;
 };
 
-export const parseIngestBody = (body: unknown) => {
-  if (!body || typeof body !== "object" || Array.isArray(body)) {
+/** A field of a posted log record. */
+type IngestValue =
+  | IngestValue[]
+  | IngestBody
+  | boolean
+  | null
+  | number
+  | string
+  | undefined;
+interface IngestBody {
+  [field: string]: IngestValue;
+}
+
+/** A JSON body is only ingestible if it is a plain object. */
+const isIngestBody = <T>(body: T): body is T & IngestBody =>
+  Boolean(body) && typeof body === "object" && !Array.isArray(body);
+
+export const parseIngestBody = <T>(body: T): IngestBody => {
+  if (!isIngestBody(body)) {
     throw createError({
       fix: "Please provide a valid request body",
       message: "Invalid request body",
@@ -47,8 +64,7 @@ export const parseIngestBody = (body: unknown) => {
       why: "Request body is not a valid object",
     });
   }
-  const payload = body as Record<string, unknown>;
-  if (!payload.timestamp) {
+  if (!body.timestamp) {
     throw createError({
       fix: "Please provide a timestamp",
       message: "Missing timestamp",
@@ -56,10 +72,7 @@ export const parseIngestBody = (body: unknown) => {
       why: "Timestamp is required",
     });
   }
-  if (
-    !payload.level ||
-    !VALID_LEVELS.includes(payload.level as (typeof VALID_LEVELS)[number])
-  ) {
+  if (!(body.level && VALID_LEVELS.some((level) => level === body.level))) {
     throw createError({
       fix: `Please provide a valid level: ${VALID_LEVELS.join(", ")}`,
       message: "Invalid level",
@@ -67,5 +80,5 @@ export const parseIngestBody = (body: unknown) => {
       why: `Level is required and must be one of the following: ${VALID_LEVELS.join(", ")}`,
     });
   }
-  return payload;
+  return body;
 };

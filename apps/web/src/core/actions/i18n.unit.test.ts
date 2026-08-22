@@ -49,6 +49,8 @@ describe("i18n actions", () => {
     });
 
     it("rejects invalid locales", async () => {
+      // SAFETY: the signature only admits supported locales; the cast feeds an
+      // unsupported one through to assert the runtime rejection.
       const result = await setUserLocaleAction("fr" as "en");
 
       expect(result?.error).toBeDefined();

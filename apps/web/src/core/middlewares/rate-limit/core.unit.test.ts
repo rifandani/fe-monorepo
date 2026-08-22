@@ -10,6 +10,7 @@ vi.mock("./store", () => ({
   },
 }));
 
+// SAFETY: the middleware reads only `request.headers`.
 const mockRequest = (headers?: HeadersInit): NextRequest =>
   ({
     headers: new Headers(headers),
@@ -31,6 +32,7 @@ describe("rateLimiter", () => {
     expect(() =>
       rateLimiter({
         keyGenerator: () => "k",
+        // SAFETY: an empty object is exactly the malformed store under test.
         store: {} as Store,
       })
     ).toThrow("The store is not correctly implemented!");
@@ -100,14 +102,14 @@ describe("rateLimiter", () => {
   });
 
   it("accepts a store without an init method", async () => {
-    const initless = {
+    const initless: Omit<Store, "init"> = {
       increment: vi.fn().mockResolvedValue({
         totalHits: 1,
         resetTime: new Date(),
       }),
       decrement: vi.fn(),
       resetKey: vi.fn(),
-    } as unknown as Store;
+    };
 
     const middleware = rateLimiter({
       keyGenerator: () => "client-5",

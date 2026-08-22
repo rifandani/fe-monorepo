@@ -14,7 +14,7 @@ export const NavbarShowcase = () => (
     <Variant className="w-full max-w-xl" label="default">
       <NavbarProvider className="overflow-hidden rounded-lg border">
         <Navbar>
-          <NavbarStart className="font-semibold text-sm">Acme</NavbarStart>
+          <NavbarStart className="text-sm font-semibold">Acme</NavbarStart>
           <NavbarSection>
             <NavbarItem href="#" isCurrent>
               Home

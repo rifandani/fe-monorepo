@@ -38,7 +38,7 @@ export const useGetUser = (
     toast.show(message, {
       customData: {
         preset: "error",
-      } as ToastCustomData,
+      } satisfies ToastCustomData,
     });
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [query.error]);

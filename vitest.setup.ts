@@ -32,6 +32,12 @@ const sessionStorageMock = createMemoryStorage();
 vi.stubGlobal("localStorage", localStorageMock);
 vi.stubGlobal("sessionStorage", sessionStorageMock);
 
+if (globalThis.window === undefined) {
+  vi.stubGlobal("window", {
+    location: { origin: "https://spa.test" },
+  });
+}
+
 beforeEach(() => {
   resetTestEnv();
   localStorageMock.clear();

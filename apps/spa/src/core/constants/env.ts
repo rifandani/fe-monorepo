@@ -2,17 +2,11 @@ import { createEnv } from "@t3-oss/env-core";
 import { vite } from "@t3-oss/env-core/presets-zod";
 import { z } from "zod";
 
-const portlessUrl =
-  typeof import.meta.env.PORTLESS_URL === "string" &&
-  import.meta.env.PORTLESS_URL.length > 0
-    ? import.meta.env.PORTLESS_URL
-    : undefined;
+const portlessUrl = import.meta.env.PORTLESS_URL || undefined;
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const resolvedApiBaseUrl =
-  portlessUrl &&
-  typeof apiBaseUrl === "string" &&
-  apiBaseUrl.includes("fe-monorepo.localhost")
+  portlessUrl && apiBaseUrl?.includes("fe-monorepo.localhost")
     ? `${portlessUrl}/api`
     : apiBaseUrl;
 

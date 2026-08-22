@@ -17,6 +17,10 @@ describe("simplifyErrorObject", () => {
   });
 });
 
+interface SelfReferential {
+  self?: SelfReferential;
+}
+
 describe("errorAttributesFromUnknown", () => {
   it("simplifies Error instances", () => {
     const error = new TypeError("bad type");
@@ -38,7 +42,7 @@ describe("errorAttributesFromUnknown", () => {
   });
 
   it("falls back to String for non-serializable values", () => {
-    const circular: { self?: unknown } = {};
+    const circular: SelfReferential = {};
     circular.self = circular;
     expect(errorAttributesFromUnknown(circular)).toEqual({
       message: String(circular),

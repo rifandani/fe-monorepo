@@ -138,6 +138,7 @@ describe("objectToFormData", () => {
     const file = new File(["hi"], "hi.txt", { type: "text/plain" });
     const formData = objectToFormData({ avatar: file });
     expect(formData.get("avatar")).toBeInstanceOf(File);
+    // SAFETY: the assertion on the previous line established the entry is a File.
     expect((formData.get("avatar") as File).name).toBe("hi.txt");
   });
 
@@ -153,7 +154,9 @@ describe("objectToFormData", () => {
   });
 
   it("skips inherited enumerable properties", () => {
-    const obj = Object.create({ inherited: "no" }) as Record<string, unknown>;
+    // SAFETY: `Object.create` returns `any`; the prototype and the own property
+    // assigned below are both string-valued, which is what the walk reads.
+    const obj = Object.create({ inherited: "no" }) as Record<string, string>;
     obj.own = "yes";
     const formData = objectToFormData({ nested: obj });
     expect(formData.get("nested.own")).toBe("yes");

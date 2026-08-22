@@ -1,23 +1,25 @@
-const firstIssueMessage = (value: unknown): string | undefined => {
-  if (typeof value === "string") {
+/** A form error is a plain message, an issue object, or a list of either. */
+const isMessage = <T>(value: T): value is T & string =>
+  typeof value === "string";
+
+const hasMessage = <T>(value: T): value is T & { message: string } =>
+  typeof value === "object" &&
+  value !== null &&
+  "message" in value &&
+  typeof value.message === "string";
+
+const firstIssueMessage = <T>(value: T): string | undefined => {
+  if (isMessage(value)) {
     return value;
   }
   if (!Array.isArray(value)) {
     return undefined;
   }
-  const [first] = value;
-  if (typeof first === "string") {
+  const first: unknown = value[0];
+  if (isMessage(first)) {
     return first;
   }
-  if (
-    typeof first === "object" &&
-    first !== null &&
-    "message" in first &&
-    typeof first.message === "string"
-  ) {
-    return first.message;
-  }
-  return undefined;
+  return hasMessage(first) ? first.message : undefined;
 };
 
 /**

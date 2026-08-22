@@ -3,8 +3,7 @@ import {
   MoonIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
-import type { BasicColorMode } from "@workspace/core/hooks/use-color-mode";
-import { useColorMode } from "@workspace/core/hooks/use-color-mode";
+import { useLocalStorage } from "@reactuses/core";
 import type { Selection } from "react-stately";
 import { match } from "ts-pattern";
 
@@ -16,11 +15,17 @@ import {
   MenuItem,
   MenuSection,
 } from "@/core/components/ui/menu";
+import type { ColorMode } from "@/core/constants/global";
+import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
 import { useTranslation } from "@/core/providers/i18n/context";
 
 export const ThemeToggle = () => {
   const { t } = useTranslation();
-  const [theme, setTheme] = useColorMode();
+  // `Entry` owns applying the mode to `<html>`; this only reads and writes the pick
+  const [theme, setTheme] = useLocalStorage<ColorMode>(
+    COLOR_MODE_STORAGE_KEY,
+    "auto"
+  );
   return (
     <Menu>
       <Button intent="outline">
@@ -35,10 +40,12 @@ export const ThemeToggle = () => {
 
       <MenuContent
         selectionMode="single"
-        selectedKeys={new Set([theme as string])}
+        selectedKeys={new Set([theme ?? "auto"])}
         onSelectionChange={(_selection) => {
+          // SAFETY: `selectionMode="single"` rules out the "all" sentinel, and every
+          // menu item below is keyed by one of the values named here.
           const selection = _selection as Exclude<Selection, "all"> & {
-            currentKey: "auto" | BasicColorMode;
+            currentKey: ColorMode;
           };
           setTheme(selection.currentKey);
         }}

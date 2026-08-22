@@ -18,15 +18,11 @@ const report = (
   kind: string,
   err: Error,
   span: Span | undefined,
-  response?: unknown
+  response?: ErrorResponseSchema | string
 ) => {
   const errorObject = simplifyErrorObject(err);
-  log.error({
-    area: "serverErrorMapper",
-    kind,
-    ...errorObject,
-    ...(response === undefined ? {} : { response }),
-  });
+  const entry = { area: "serverErrorMapper", kind, ...errorObject };
+  log.error(response === undefined ? entry : { ...entry, response });
   span?.recordException(errorObject);
   span?.setStatus({
     code: SpanStatusCode.ERROR,

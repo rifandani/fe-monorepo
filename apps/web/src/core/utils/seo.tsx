@@ -116,7 +116,9 @@ export const createMetadata = ({
       },
     ];
   }
-  // Return the final merged metadata object
+  // SAFETY: `assign` erases the declared shape into a structural intersection of
+  // the Metadata defaults and the caller's `Omit<Metadata, ...>` extras, so every
+  // member of the result already comes from Metadata.
   return metadata as Metadata;
 };
 export const createWebSite = (props: {
@@ -173,6 +175,7 @@ export const jsonLdEscapeInternals = {
 const serializeJsonLd = (payload: Graph): string =>
   JSON.stringify(payload).replace(
     JSON_LD_UNSAFE,
+    // SAFETY: `JSON_LD_UNSAFE` only matches the characters keyed in JSON_LD_ESCAPES.
     (char) => JSON_LD_ESCAPES[char as JsonLdUnsafeChar]
   );
 

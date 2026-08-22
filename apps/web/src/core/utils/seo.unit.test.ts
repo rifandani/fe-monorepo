@@ -158,6 +158,16 @@ describe("createWebPage", () => {
   });
 });
 
+// SAFETY: React types `__html` as `string | TrustedHTML`; `JsonLd` always assigns
+// the `JSON.stringify` output of `serializeJsonLd`.
+const jsonLdHtml = (graphs: Parameters<typeof JsonLd>[0]["graphs"]): string =>
+  JsonLd({ graphs }).props.dangerouslySetInnerHTML.__html as string;
+
+// SAFETY: the HTML under test is always a `serializeJsonLd` payload, so the parse
+// yields the graph shape these assertions read.
+const parseJsonLd = (html: string) =>
+  JSON.parse(html) as { "@graph": [{ title: string }] };
+
 describe("JsonLd", () => {
   it("serializes the graph into a ld+json script element", () => {
     const graphs = [createWebPage({ url: "https://web.test/about" })];
@@ -165,9 +175,7 @@ describe("JsonLd", () => {
 
     expect(element.type).toBe("script");
     expect(element.props.type).toBe("application/ld+json");
-    expect(
-      JSON.parse(element.props.dangerouslySetInnerHTML.__html as string)
-    ).toMatchObject({
+    expect(JSON.parse(jsonLdHtml(graphs))).toMatchObject({
       "@context": "https://schema.org",
       "@graph": [{ "@type": "WebPage", url: "https://web.test/about" }],
     });
@@ -180,8 +188,7 @@ describe("JsonLd", () => {
         title: "</script><script>alert(1)</script>",
       }),
     ];
-    const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
-      .__html as string;
+    const html = jsonLdHtml(graphs);
 
     // No literal tag delimiters survive, so the payload cannot escape the tag.
     expect(html).not.toContain("</script");
@@ -190,9 +197,7 @@ describe("JsonLd", () => {
     expect(html).toContain("\\u003c");
 
     // Escaping is transparent: the parsed value is still the original string.
-    const parsed = JSON.parse(html) as {
-      "@graph": [{ title: string }];
-    };
+    const parsed = parseJsonLd(html);
     expect(parsed["@graph"][0].title).toBe(
       "</script><script>alert(1)</script>"
     );
@@ -208,13 +213,12 @@ describe("JsonLd", () => {
   ])("escapes %s (%s) without leaving a gap", (char) => {
     const title = `a${char}b`;
     const graphs = [createWebPage({ url: "https://web.test/about", title })];
-    const html = JsonLd({ graphs }).props.dangerouslySetInnerHTML
-      .__html as string;
+    const html = jsonLdHtml(graphs);
 
     expect(html).not.toContain(char);
     expect(html).not.toContain("undefined");
 
-    const parsed = JSON.parse(html) as { "@graph": [{ title: string }] };
+    const parsed = parseJsonLd(html);
     expect(parsed["@graph"][0].title).toBe(title);
   });
 

@@ -7,8 +7,11 @@ interface CookieAttributes {
   secure?: boolean;
   httponly?: boolean;
   samesite?: "strict" | "lax" | "none";
-  // oxlint-disable-next-line typescript/no-explicit-any -- cookie attribute index signature
-  [key: string]: any;
+  /**
+   * Attributes outside the set above: `name=value` keeps the trimmed value,
+   * a bare flag becomes `true`.
+   */
+  [key: string]: string | number | boolean | Date | undefined;
 }
 
 type CookieAttrHandler = (attrObj: CookieAttributes, attrValue: string) => void;
@@ -16,7 +19,7 @@ type CookieAttrHandler = (attrObj: CookieAttributes, attrValue: string) => void;
 const trimOrUndefined = (value: string): string | undefined =>
   value ? value.trim() : undefined;
 
-const COOKIE_ATTR_HANDLERS: Record<string, CookieAttrHandler> = {
+const COOKIE_ATTR_HANDLERS = {
   "max-age": (attrObj, attrValue) => {
     attrObj["max-age"] = attrValue
       ? Math.trunc(Number(attrValue.trim()))
@@ -38,11 +41,18 @@ const COOKIE_ATTR_HANDLERS: Record<string, CookieAttrHandler> = {
     attrObj.httponly = true;
   },
   samesite: (attrObj, attrValue) => {
+    // SAFETY: `SameSite` is validated by the consumer, not the parser - the
+    // header value is echoed through lowercased so callers see what was sent.
     attrObj.samesite = attrValue
       ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
       : undefined;
   },
-};
+} satisfies Record<string, CookieAttrHandler>;
+
+const isKnownCookieAttr = (
+  name: string
+): name is keyof typeof COOKIE_ATTR_HANDLERS =>
+  Object.hasOwn(COOKIE_ATTR_HANDLERS, name);
 
 const applyCookieAttribute = (
   attrObj: CookieAttributes,
@@ -57,9 +67,8 @@ const applyCookieAttribute = (
   )
     .trim()
     .toLowerCase();
-  const handler = COOKIE_ATTR_HANDLERS[normalizedAttrName];
-  if (handler) {
-    handler(attrObj, attrValue);
+  if (isKnownCookieAttr(normalizedAttrName)) {
+    COOKIE_ATTR_HANDLERS[normalizedAttrName](attrObj, attrValue);
     return;
   }
   attrObj[normalizedAttrName] = attrValue ? attrValue.trim() : true;

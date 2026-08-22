@@ -8,6 +8,9 @@ import { appStorage } from "@/core/services/mmkv";
 
 export const DevPlugins = () => {
   const navigationRef = useNavigationContainerRef();
+  // SAFETY: @dev-plugins/react-navigation pins its own @react-navigation/core
+  // copy, so the ref's generic parameter list is nominally a different type than
+  // the identical one expo-router hands back. Dev-only devtools wiring.
   // oxlint-disable-next-line typescript/no-explicit-any
   useReactNavigationDevTools(navigationRef as any);
   useMMKVDevTools({ storage: appStorage });

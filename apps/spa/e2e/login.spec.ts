@@ -85,10 +85,8 @@ test.describe("unauthorized", () => {
     await expect(submitBtn).toBeEnabled();
     // assert that user value in localstorage is null and error alert is visible
     await submitBtn.click();
-    const appUser = await page.evaluate(
-      () => localStorage.getItem("app-user") as string
-    );
-    expect(JSON.parse(appUser)).toBeNull();
+    const appUser = await page.evaluate(() => localStorage.getItem("app-user"));
+    expect(appUser === null ? null : JSON.parse(appUser)).toBeNull();
     await expect(errorAlert).toBeVisible();
   });
 });

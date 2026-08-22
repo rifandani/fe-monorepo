@@ -29,6 +29,8 @@ export const LanguageToggle = () => {
         selectionMode="single"
         selectedKeys={new Set([locale])}
         onSelectionChange={(_selection) => {
+          // SAFETY: `selectionMode="single"` rules out the "all" sentinel, and every
+          // menu item below is keyed by one of the values named here.
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: LocaleDictLanguage;
           };

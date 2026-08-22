@@ -46,6 +46,8 @@ describe("collectPageRoutes", () => {
   });
 });
 
+// SAFETY: `collectPageRoutes` reads only `name` and `isDirectory()` off a Dirent,
+// so the stub implements exactly the surface under test.
 const dirent = (name: string, isDirectory = false) =>
   ({ name, isDirectory: () => isDirectory }) as fs.Dirent;
 
@@ -53,6 +55,8 @@ describe("sitemap", () => {
   it("maps collected routes to absolute URLs", () => {
     // the app dir is resolved from `process.cwd()` at import time, so stub the
     // reads instead of depending on the real tree
+    // SAFETY: `readdirSync` is heavily overloaded; the cast selects the string-path
+    // overload this test drives.
     vi.spyOn(fs, "readdirSync").mockImplementation(((dir: string) =>
       dir.endsWith("login")
         ? [dirent("page.tsx")]

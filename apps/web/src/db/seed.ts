@@ -51,6 +51,7 @@ const linkCredentialAccounts = async (db: Db) => {
     users.map((user) => ({
       accountId: user.id,
       id: crypto.randomUUID(),
+      issuer: "local:credential",
       password: bulkPasswordHash,
       providerId: "credential",
       userId: user.id,
@@ -71,6 +72,7 @@ const seedDemoUser = async (db: Db) => {
   await db.insert(accountTable).values({
     accountId: demoUserId,
     id: crypto.randomUUID(),
+    issuer: "local:credential",
     password: demoPasswordHash,
     providerId: "credential",
     userId: demoUserId,

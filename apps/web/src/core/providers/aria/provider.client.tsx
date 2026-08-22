@@ -23,6 +23,8 @@ export const AppAriaProvider = ({
       <RouterProvider
         navigate={(path, routerOptions) =>
           router.push(
+            // SAFETY: react-aria hands back an href built from this app's own links,
+            // which typedRoutes cannot verify through the generic `navigate` hook.
             path as __next_route_internal_types__.RouteImpl<string>,
             routerOptions
           )

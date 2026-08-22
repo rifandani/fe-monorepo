@@ -7,7 +7,22 @@ import {
   setRetryAfterHeader,
 } from "./headers";
 import { DbStore } from "./store";
-import type { ConfigType, GeneralConfigType, RateLimitInfo } from "./types";
+import type {
+  ConfigType,
+  GeneralConfigType,
+  Promisify,
+  RateLimitInfo,
+} from "./types";
+
+/** The configured message is either a ready-made body string or a JSON payload. */
+const isPlainMessage = <T>(message: T): message is T & string =>
+  typeof message === "string";
+
+/** The limit is either a fixed number or resolved per request from the context. */
+const isLimitResolver = <T>(
+  limit: T
+): limit is T & ((context: Map<string, unknown>) => Promisify<number>) =>
+  typeof limit === "function";
 
 const RATE_LIMIT_WINDOW_MS = 60_000; // 60 seconds
 const RATE_LIMIT_LIMIT = 5; // Limit each IP to 5 requests per 60 seconds (1 req/s average)
@@ -26,7 +41,7 @@ const resolveOptions = <P extends string = string>(
     keyGenerator,
     handler = ({ options, headers }) => {
       const responseMessage = options.message;
-      if (typeof responseMessage === "string") {
+      if (isPlainMessage(responseMessage)) {
         return new Response(responseMessage, {
           headers,
           status: options.statusCode,
@@ -95,7 +110,7 @@ const createRateLimitMiddleware =
       resetKey: store.resetKey.bind(store),
     });
     // Get the limit (max number of hits) for each client.
-    const retrieveLimit = typeof limit === "function" ? limit(context) : limit;
+    const retrieveLimit = isLimitResolver(limit) ? limit(context) : limit;
     const _limit = await retrieveLimit;
     // Define the rate limit info for the client.
     const info: RateLimitInfo = {
@@ -129,8 +144,6 @@ export const rateLimiter = <P extends string = string>(
     throw new Error("The store is not correctly implemented!");
   }
   // Call the `init` method on the store, if it exists
-  if (typeof store.init === "function") {
-    store.init(options);
-  }
+  store.init?.(options);
   return createRateLimitMiddleware<P>(options);
 };

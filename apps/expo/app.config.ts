@@ -7,9 +7,18 @@ import { version } from "./package.json";
 const EAS_PROJECT_ID = "28f2412b-baec-4843-b0d3-c51706061d29";
 const PROJECT_SLUG = "expoapp";
 const OWNER = "rifandani";
-const getDynamicAppConfig = (
-  environment: "development" | "preview" | "production"
-) => {
+type AppVariant = "development" | "preview" | "production";
+const APP_VARIANTS: readonly AppVariant[] = [
+  "development",
+  "preview",
+  "production",
+];
+// `APP_VARIANT` comes from the shell, so anything unrecognized (including unset)
+// falls through to the development config below.
+const isAppVariant = (value?: string): value is AppVariant =>
+  APP_VARIANTS.some((variant) => variant === value);
+
+const getDynamicAppConfig = (environment?: AppVariant) => {
   const APP_NAME = "Expo App";
   const BUNDLE_IDENTIFIER = "com.rifandani.expoapp";
   const BASE_ICON_SRC = "./src/core/assets/icons";
@@ -124,7 +133,9 @@ const appConfig = ({ config }: ConfigContext): ExpoConfig => {
   );
   const { name, bundleIdentifier, icon, adaptiveIcon, scheme } =
     getDynamicAppConfig(
-      process.env.APP_VARIANT as "development" | "preview" | "production"
+      isAppVariant(process.env.APP_VARIANT)
+        ? process.env.APP_VARIANT
+        : undefined
     );
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)

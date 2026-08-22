@@ -5,6 +5,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
@@ -40,22 +41,32 @@ export const sessionTable = pgTable("session", {
 });
 export const selectSessionTableSchema = createSelectSchema(sessionTable);
 export type SessionTable = z.infer<typeof selectSessionTableSchema>;
-export const accountTable = pgTable("account", {
-  accessToken: text(),
-  accessTokenExpiresAt: timestamp(),
-  accountId: text().notNull(),
-  id: text().primaryKey(),
-  idToken: text(),
-  password: text(),
-  providerId: text().notNull(),
-  refreshToken: text(),
-  refreshTokenExpiresAt: timestamp(),
-  scope: text(),
-  userId: text()
-    .notNull()
-    .references(() => userTable.id, { onDelete: "cascade" }),
-  ...timestamps,
-});
+export const accountTable = pgTable(
+  "account",
+  {
+    accessToken: text(),
+    accessTokenExpiresAt: timestamp(),
+    accountId: text().notNull(),
+    id: text().primaryKey(),
+    idToken: text(),
+    issuer: text().notNull(),
+    password: text(),
+    providerId: text().notNull(),
+    refreshToken: text(),
+    refreshTokenExpiresAt: timestamp(),
+    scope: text(),
+    userId: text()
+      .notNull()
+      .references(() => userTable.id, { onDelete: "cascade" }),
+    ...timestamps,
+  },
+  (table) => [
+    unique("account_issuer_account_id_unique").on(
+      table.issuer,
+      table.accountId
+    ),
+  ]
+);
 export const selectAccountTableSchema = createSelectSchema(accountTable);
 export type AccountTable = z.infer<typeof selectAccountTableSchema>;
 export const verificationTable = pgTable("verification", {

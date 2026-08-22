@@ -79,10 +79,10 @@ const CheckForUpdatesListItem = () => {
       try {
         await checkForUpdateAsync();
       } catch (error) {
-        show((error as Error).message, {
+        show(error instanceof Error ? error.message : String(error), {
           customData: {
             preset: "error",
-          } as ToastCustomData,
+          } satisfies ToastCustomData,
         });
       }
     })();
@@ -93,10 +93,10 @@ const CheckForUpdatesListItem = () => {
         try {
           await reloadAsync();
         } catch (error) {
-          show((error as Error).message, {
+          show(error instanceof Error ? error.message : String(error), {
             customData: {
               preset: "error",
-            } as ToastCustomData,
+            } satisfies ToastCustomData,
           });
         }
       })();
@@ -113,10 +113,10 @@ const CheckForUpdatesListItem = () => {
           try {
             await fetchUpdateAsync();
           } catch (error) {
-            show((error as Error).message, {
+            show(error instanceof Error ? error.message : String(error), {
               customData: {
                 preset: "error",
-              } as ToastCustomData,
+              } satisfies ToastCustomData,
             });
           }
         })();

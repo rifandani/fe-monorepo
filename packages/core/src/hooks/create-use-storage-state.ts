@@ -8,8 +8,16 @@ export interface Options<T> {
   defaultValue?: T | (() => T);
   serializer?: (value: T) => string;
   deserializer?: (value: string) => T;
-  onError?: (error: unknown) => void;
+  onError?: (error: Error) => void;
 }
+
+/** Storage and `JSON.parse` both throw `Error` subclasses; anything else is wrapped. */
+const toError = <T>(thrown: T) =>
+  thrown instanceof Error ? thrown : new Error(String(thrown));
+
+const logError = (error: Error) => {
+  console.error(error);
+};
 
 /**
  * Serializes a value before storing in storage
@@ -49,7 +57,7 @@ const readStoredValue = <T>(
   storage: Storage | undefined,
   key: string,
   options: Options<T>,
-  onError: (error: unknown) => void
+  onError: (error: Error) => void
 ) => {
   try {
     const raw = storage?.getItem(key);
@@ -57,7 +65,7 @@ const readStoredValue = <T>(
       return deserialize(raw, options);
     }
   } catch (error) {
-    onError(error);
+    onError(toError(error));
   }
   return resolveDefaultValue(options);
 };
@@ -78,17 +86,13 @@ export const createUseStorageState = (
    */
   const useStorageState = <T>(key: string, options: Options<T> = {}) => {
     let storage: Storage | undefined;
-    const {
-      onError = (e) => {
-        console.error(e);
-      },
-    } = options;
+    const { onError = logError } = options;
     // Try to get storage instance, with error handling
     // https://github.com/alibaba/hooks/issues/800
     try {
       storage = getStorage();
     } catch (error) {
-      onError(error);
+      onError(toError(error));
     }
     const getStoredValue = () =>
       readStoredValue(storage, key, options, onError);

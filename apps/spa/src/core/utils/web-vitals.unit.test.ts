@@ -70,7 +70,12 @@ vi.mock("@/instrumentation", () => ({
 
 type HideEvent = "pagehide" | "visibilitychange";
 
-const listeners: Record<HideEvent, EventListener[]> = {
+interface HideListeners {
+  pagehide: EventListener[];
+  visibilitychange: EventListener[];
+}
+
+const listeners: HideListeners = {
   pagehide: [],
   visibilitychange: [],
 };
@@ -81,16 +86,35 @@ const capture = (
 ) => {
   if (type === "pagehide" || type === "visibilitychange") {
     listeners[type].push(
-      typeof listener === "function" ? listener : listener.handleEvent
+      "handleEvent" in listener ? listener.handleEvent : listener
     );
   }
 };
 
 // `environment: "node"`, so the browser globals the module touches don't exist.
-const documentStub = {
+interface DocumentStub {
+  addEventListener: typeof capture;
+  visibilityState: DocumentVisibilityState;
+}
+
+const documentStub: DocumentStub = {
   addEventListener: capture,
-  visibilityState: "visible" as DocumentVisibilityState,
+  visibilityState: "visible",
 };
+
+/**
+ * SAFETY: web-vitals' `Metric` is a per-metric discriminated union carrying
+ * `entries` arrays of `PerformanceEntry`. The reporter under test reads only the
+ * five fields below, so the fixtures supply those and the cast stands in for the
+ * performance-timeline data no assertion here depends on.
+ */
+const asMetric = (metric: {
+  id: string;
+  value: number;
+  delta: number;
+  navigationType: string;
+  rating: string;
+}) => metric as never;
 
 vi.stubGlobal("document", documentStub);
 vi.stubGlobal("addEventListener", capture);
@@ -174,9 +198,9 @@ describe("reportWebVitals", () => {
       rating: "good",
     } as const;
 
-    onLCP.mock.calls[0]?.[0]?.(metric as never);
-    onFCP.mock.calls[0]?.[0]?.({ ...metric, id: "v2" } as never);
-    onTTFB.mock.calls[0]?.[0]?.({ ...metric, id: "v3" } as never);
+    onLCP.mock.calls[0]?.[0]?.(asMetric(metric));
+    onFCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v2" }));
+    onTTFB.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v3" }));
 
     const attrs = {
       navigation_type: "navigate",
@@ -187,7 +211,7 @@ describe("reportWebVitals", () => {
     expect(records.ttfb).toHaveBeenCalledWith(120, attrs);
 
     // same id must not double-record
-    onLCP.mock.calls[0]?.[0]?.({ ...metric, value: 200 } as never);
+    onLCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, value: 200 }));
     expect(records.lcp).toHaveBeenCalledOnce();
   });
 
@@ -195,27 +219,33 @@ describe("reportWebVitals", () => {
     const clsCb = onCLS.mock.calls[0]?.[0];
     const inpCb = onINP.mock.calls[0]?.[0];
 
-    clsCb?.({
-      id: "cls-1",
-      value: 0.05,
-      delta: 0.05,
-      navigationType: "navigate",
-      rating: "good",
-    } as never);
-    clsCb?.({
-      id: "cls-1",
-      value: 0.12,
-      delta: 0.07,
-      navigationType: "navigate",
-      rating: "needs-improvement",
-    } as never);
-    inpCb?.({
-      id: "inp-1",
-      value: 80,
-      delta: 80,
-      navigationType: "navigate",
-      rating: "good",
-    } as never);
+    clsCb?.(
+      asMetric({
+        id: "cls-1",
+        value: 0.05,
+        delta: 0.05,
+        navigationType: "navigate",
+        rating: "good",
+      })
+    );
+    clsCb?.(
+      asMetric({
+        id: "cls-1",
+        value: 0.12,
+        delta: 0.07,
+        navigationType: "navigate",
+        rating: "needs-improvement",
+      })
+    );
+    inpCb?.(
+      asMetric({
+        id: "inp-1",
+        value: 80,
+        delta: 80,
+        navigationType: "navigate",
+        rating: "good",
+      })
+    );
 
     expect(records.cls).not.toHaveBeenCalled();
     expect(records.inp).not.toHaveBeenCalled();
@@ -241,13 +271,15 @@ describe("reportWebVitals", () => {
 
     // a CLS increase under an already-exported id is dropped: a histogram
     // sample cannot be retracted, so the first hidden-time value wins
-    clsCb?.({
-      id: "cls-1",
-      value: 0.4,
-      delta: 0.28,
-      navigationType: "navigate",
-      rating: "poor",
-    } as never);
+    clsCb?.(
+      asMetric({
+        id: "cls-1",
+        value: 0.4,
+        delta: 0.28,
+        navigationType: "navigate",
+        rating: "poor",
+      })
+    );
     hide();
     expect(records.cls).toHaveBeenCalledOnce();
   });
@@ -264,13 +296,15 @@ describe("reportWebVitals", () => {
   it("still flushes on pagehide as a backup", () => {
     const inpCb = onINP.mock.calls[0]?.[0];
 
-    inpCb?.({
-      id: "inp-2",
-      value: 240,
-      delta: 240,
-      navigationType: "back-forward-cache",
-      rating: "needs-improvement",
-    } as never);
+    inpCb?.(
+      asMetric({
+        id: "inp-2",
+        value: 240,
+        delta: 240,
+        navigationType: "back-forward-cache",
+        rating: "needs-improvement",
+      })
+    );
 
     fire("pagehide");
 

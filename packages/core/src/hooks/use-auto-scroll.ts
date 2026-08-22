@@ -31,9 +31,6 @@ export const useAutoScroll = ({
   const [isAutoScroll, setIsAutoScroll] = useState(true);
   // Detect user scroll to toggle auto-scroll
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
     const anchor = anchorRef.current;
     if (!anchor) {
       return;
@@ -54,7 +51,7 @@ export const useAutoScroll = ({
     return () => {
       observer.disconnect();
     };
-  }, [threshold, dependency]);
+  }, [threshold]);
   // Auto-scroll on updates and during streaming
   useEffect(() => {
     if (!isAutoScroll) {

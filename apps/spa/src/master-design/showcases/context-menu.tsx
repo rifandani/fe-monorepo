@@ -11,7 +11,7 @@ export const ContextMenuShowcase = () => (
   <VariantGrid>
     <Variant label="default">
       <ContextMenu>
-        <ContextMenuTrigger className="rounded-lg border border-dashed px-8 py-6 text-muted-fg text-sm">
+        <ContextMenuTrigger className="text-muted-fg rounded-lg border border-dashed px-8 py-6 text-sm">
           Right click here
         </ContextMenuTrigger>
         <ContextMenuContent>

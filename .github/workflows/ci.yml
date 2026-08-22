@@ -166,10 +166,10 @@ jobs:
           fi
 
       - name: Install playwright browsers
-        run: bun spa:ci test:install
+        run: bun spa test:install
 
       - name: Run playwright tests
-        run: bun spa:ci test:ci
+        run: bun spa test:ci
         env:
           SHARD_INDEX: ${{ matrix.shardIndex }}
           SHARD_TOTAL: ${{ matrix.shardTotal }}
@@ -209,10 +209,10 @@ jobs:
   #       run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
 
   #     - name: Install playwright browsers
-  #       run: bun web:ci test:install
+  #       run: bun web test:install
 
   #     - name: Run playwright tests
-  #       run: bun web:ci test:ci
+  #       run: bun web test:ci
   #       env:
   #         SHARD_INDEX: ${{ matrix.shardIndex }}
   #         SHARD_TOTAL: ${{ matrix.shardTotal }}
@@ -254,7 +254,7 @@ jobs:
           fi
 
       - name: Build
-        run: bun spa:ci build
+        run: bun spa build
 
   dev-web-build:
     runs-on: ubuntu-latest
@@ -278,4 +278,4 @@ jobs:
         run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
 
       - name: Build
-        run: bun web:ci build
+        run: bun web build

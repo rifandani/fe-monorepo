@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { parseOgRequest, resolveOgLogoKey, rethrowNonError } from "./og-params";
 
+// SAFETY: `parseOgRequest` reads only the url and the color-scheme hint header.
 const mockReq = (url: string, colorScheme?: string): NextRequest =>
   ({
     url,

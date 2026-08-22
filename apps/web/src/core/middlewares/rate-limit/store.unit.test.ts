@@ -21,7 +21,9 @@ interface Chain {
 }
 
 const db = vi.hoisted(() => {
-  const makeChain = (result: unknown = []): Chain => {
+  const makeChain = <T>(result: T | [] = []): Chain => {
+    // SAFETY: every member of `Chain` is assigned immediately below; the builder
+    // has to start from an empty object to close over itself.
     const chain = {} as Chain;
     chain.from = vi.fn(() => chain);
     chain.where = vi.fn(() => chain);

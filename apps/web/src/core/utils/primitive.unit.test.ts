@@ -2,10 +2,19 @@ import { describe, expect, it } from "vitest";
 
 import { composeTailwindRenderProps, cx } from "./primitive";
 
+/**
+ * Both helpers return `string | ((v: T) => string)`: the render-prop form only
+ * appears when the caller passes one. The predicate names that branch so the
+ * tests can assert on either shape.
+ */
+const isRenderFn = <T>(
+  value: string | ((v: T) => string)
+): value is (v: T) => string => typeof value === "function";
+
 describe("composeTailwindRenderProps", () => {
   it("merges fixed tailwind with string className", () => {
     const result = composeTailwindRenderProps("text-red-500", "p-4");
-    const resolved = typeof result === "function" ? result({}) : result;
+    const resolved = isRenderFn(result) ? result({}) : result;
     expect(resolved).toContain("p-4");
     expect(resolved).toContain("text-red-500");
   });
@@ -15,8 +24,8 @@ describe("composeTailwindRenderProps", () => {
       (v: { active: boolean }) => (v.active ? "bg-blue-500" : "bg-gray-500"),
       "rounded"
     );
-    expect(typeof result).toBe("function");
-    if (typeof result === "function") {
+    expect(isRenderFn(result)).toBe(true);
+    if (isRenderFn(result)) {
       expect(result({ active: true })).toContain("bg-blue-500");
       expect(result({ active: true })).toContain("rounded");
     }
@@ -26,7 +35,7 @@ describe("composeTailwindRenderProps", () => {
 describe("cx", () => {
   it("merges multiple class values with a trailing className", () => {
     const result = cx("p-2", "m-2", "text-sm");
-    const resolved = typeof result === "function" ? result({}) : result;
+    const resolved = isRenderFn(result) ? result({}) : result;
     expect(resolved).toContain("p-2");
     expect(resolved).toContain("m-2");
     expect(resolved).toContain("text-sm");
@@ -34,7 +43,7 @@ describe("cx", () => {
 
   it("accepts a single array argument", () => {
     const result = cx(["flex", "gap-2", "items-center"]);
-    const resolved = typeof result === "function" ? result({}) : result;
+    const resolved = isRenderFn(result) ? result({}) : result;
     expect(resolved).toContain("flex");
     expect(resolved).toContain("gap-2");
   });
@@ -50,8 +59,8 @@ describe("cx", () => {
       "p-2",
       (v: { on: boolean }) => (v.on ? "on" : "off"),
     ]);
-    expect(typeof result).toBe("function");
-    if (typeof result === "function") {
+    expect(isRenderFn(result)).toBe(true);
+    if (isRenderFn(result)) {
       expect(result({ on: true })).toContain("base");
       expect(result({ on: true })).toContain("p-2");
       expect(result({ on: true })).toContain("on");
@@ -63,7 +72,7 @@ describe("cx", () => {
   // and unwrapping it would leave a string where an array is expected.
   it("does not unwrap a single non-array argument", () => {
     const result = cx("solo-class");
-    const resolved = typeof result === "function" ? result({}) : result;
+    const resolved = isRenderFn(result) ? result({}) : result;
     expect(resolved).toBe("solo-class");
   });
 
@@ -72,7 +81,7 @@ describe("cx", () => {
   // NOT be unwrapped. Without the length check the trailing argument is discarded.
   it("does not unwrap an array that is one of several arguments", () => {
     const result = cx(["flex", "gap-2"], "text-sm");
-    const resolved = typeof result === "function" ? result({}) : result;
+    const resolved = isRenderFn(result) ? result({}) : result;
     expect(resolved).toContain("flex");
     expect(resolved).toContain("gap-2");
     expect(resolved).toContain("text-sm");
@@ -82,8 +91,8 @@ describe("cx", () => {
     const result = cx("base", (v: { open: boolean }) =>
       v.open ? "open" : "closed"
     );
-    expect(typeof result).toBe("function");
-    if (typeof result === "function") {
+    expect(isRenderFn(result)).toBe(true);
+    if (isRenderFn(result)) {
       expect(result({ open: false })).toContain("closed");
       expect(result({ open: false })).toContain("base");
     }

@@ -1,5 +1,5 @@
 // oxlint-disable no-throw-literal
-import type { Span } from "@opentelemetry/api";
+import type { Span, SpanOptions, Tracer } from "@opentelemetry/api";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -9,6 +9,10 @@ import {
   recordException,
   recordSpan,
 } from "./telemetry";
+
+// SAFETY: the noop tracer's signature declares these arguments; passing them as
+// absent is the behaviour under test, which the types cannot express.
+const absentArg: never = undefined as never;
 
 describe("noopTracer", () => {
   it("startSpan returns a non-recording span", () => {
@@ -32,20 +36,13 @@ describe("noopTracer", () => {
   it("passes the noop span to whichever argument is the callback", () => {
     const fn = vi.fn((span: Span) => span.spanContext().traceId);
     expect(noopTracer.startActiveSpan("a", {}, fn)).toBe("");
-    expect(noopTracer.startActiveSpan("a", {}, undefined as never, fn)).toBe(
-      ""
-    );
+    expect(noopTracer.startActiveSpan("a", {}, absentArg, fn)).toBe("");
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
   it("returns undefined when no callback is supplied", () => {
     expect(
-      noopTracer.startActiveSpan(
-        "a",
-        {},
-        undefined as never,
-        undefined as never
-      )
+      noopTracer.startActiveSpan("a", {}, absentArg, absentArg)
     ).toBeUndefined();
   });
 
@@ -90,15 +87,22 @@ describe("recordSpan", () => {
     recordException: vi.fn(),
   };
 
+  // SAFETY: `recordSpan`/`recordException` touch only the members stubbed here, so
+  // the stub covers the whole surface under test; the cast stands in for the rest
+  // of otel's `Span` interface.
+  const spanStub: Span = span as never;
+
   const tracer = {
     startActiveSpan: vi.fn(
-      (
+      <T>(
         _name: string,
-        _opts: unknown,
-        fn: (activeSpan: Span) => Promise<unknown>
-      ) => fn(span as unknown as Span)
+        _opts: SpanOptions,
+        fn: (activeSpan: Span) => Promise<T>
+      ) => fn(spanStub)
     ),
   };
+  // SAFETY: as above, for the `Tracer` surface `recordSpan` calls into.
+  const tracerStub: Tracer = tracer as never;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -107,7 +111,7 @@ describe("recordSpan", () => {
   it("sets OK status and ends span on success", async () => {
     const result = await recordSpan({
       name: "work",
-      tracer: tracer as never,
+      tracer: tracerStub,
       attributes: { a: 1 },
       fn: () => Promise.resolve("done"),
     });
@@ -125,7 +129,7 @@ describe("recordSpan", () => {
   it("skips ending when endWhenDone is false", async () => {
     await recordSpan({
       name: "work",
-      tracer: tracer as never,
+      tracer: tracerStub,
       endWhenDone: false,
       fn: async () => {},
     });
@@ -139,7 +143,7 @@ describe("recordSpan", () => {
     await expect(
       recordSpan({
         name: "work",
-        tracer: tracer as never,
+        tracer: tracerStub,
         fn: () => {
           throw error;
         },
@@ -162,7 +166,7 @@ describe("recordSpan", () => {
     await expect(
       recordSpan({
         name: "work",
-        tracer: tracer as never,
+        tracer: tracerStub,
         fn: () => {
           throw "raw";
         },
@@ -185,11 +189,14 @@ describe("recordException", () => {
     const tracer = {
       startSpan: vi.fn(() => span),
     };
+    // SAFETY: `recordException` calls only `startSpan` and the span members stubbed
+    // above; the cast stands in for the rest of otel's `Tracer` interface.
+    const tracerStub: Tracer = tracer as never;
 
     recordException({
       name: "boom",
       error: { message: "oops", stack: "stack", code: 1 },
-      tracer: tracer as never,
+      tracer: tracerStub,
     });
 
     expect(tracer.startSpan).toHaveBeenCalledWith("boom");

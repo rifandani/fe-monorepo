@@ -39,7 +39,7 @@ export default async function RegisterPage() {
     <div className="flex min-h-screen w-full">
       {/* form */}
       <section className="flex min-h-screen w-full flex-col justify-center px-10 md:w-1/2 xl:px-20">
-        <h1 className="text-center text-3xl text-primary">Welcome</h1>
+        <h1 className="text-primary text-center text-3xl">Welcome</h1>
 
         <RegisterForm />
 

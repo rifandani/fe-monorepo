@@ -5,7 +5,7 @@ describe("Http", () => {
   it("creates a ky instance from config", () => {
     const http = new Http({ prefix: "https://api.example.com" });
     expect(http.instance).toBeDefined();
-    expect(typeof http.instance.get).toBe("function");
+    expect(http.instance.get).toBeTypeOf("function");
   });
 
   it("updateConfig replaces the instance via extend", () => {

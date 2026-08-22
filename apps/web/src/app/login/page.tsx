@@ -41,7 +41,7 @@ export default async function LoginPage() {
     <div className="flex min-h-screen w-full">
       {/* form */}
       <section className="flex min-h-screen w-full flex-col justify-center px-10 md:w-1/2 xl:px-20">
-        <h1 className="text-center text-3xl text-primary">{t("welcome")}</h1>
+        <h1 className="text-primary text-center text-3xl">{t("welcome")}</h1>
 
         <LoginForm />
 

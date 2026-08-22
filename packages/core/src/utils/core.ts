@@ -1,4 +1,14 @@
-import type { RequireAtLeastOne, UnknownRecord } from "type-fest";
+import { camel, snake } from "radashi";
+import type { RequireAtLeastOne } from "type-fest";
+
+/** A decoded JSON value: what an HTTP payload or `JSON.parse` result can hold. */
+type JsonValue = JsonRecord | JsonValue[] | boolean | null | number | string;
+interface JsonRecord {
+  [key: string]: JsonValue | undefined;
+}
+
+const isJsonRecord = (value: JsonValue | undefined): value is JsonRecord =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
  * Clamps a value to a specified range.
@@ -58,66 +68,43 @@ export const indonesianPhoneNumberFormat = (phoneNumber: string) => {
   const matches = uniqNumber.replace(regexp, "$1-$2");
   return [code, ndc, matches].join("-");
 };
-const replaceCamelCaseRegex = /\.?(?<group>[A-Z]+)/gu;
-const replaceCamelCaseRegex2 = /^_/u;
-const replaceCamelCaseRegex3 = /(?:_\w)|(?:-\w)/gu;
+
+/** Rewrites every key of a decoded JSON value, leaving the leaves untouched. */
+const mapKeysDeep = (
+  value: JsonValue,
+  mapKey: (key: string) => string
+): JsonValue => {
+  if (Array.isArray(value)) {
+    return value.map((item) => mapKeysDeep(item, mapKey));
+  }
+  if (!isJsonRecord(value)) {
+    return value;
+  }
+  const mapped: JsonRecord = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (entry !== undefined) {
+      mapped[mapKey(key)] = mapKeysDeep(entry, mapKey);
+    }
+  }
+  return mapped;
+};
 
 /**
  * convert deep nested object keys to camelCase.
  */
-export const toCamelCase = <T>(object: unknown): T => {
-  let transformedObject = object as Record<string, unknown>;
-  if (typeof object === "object" && object !== null) {
-    if (Array.isArray(object)) {
-      transformedObject = object.map(toCamelCase) as unknown as Record<
-        string,
-        unknown
-      >;
-    } else {
-      transformedObject = {};
-      for (const key of Object.keys(object)) {
-        if ((object as Record<string, unknown>)[key] !== undefined) {
-          const firstUnderscore = key.replace(replaceCamelCaseRegex2, "");
-          const newKey = firstUnderscore.replace(replaceCamelCaseRegex3, (k) =>
-            (k[1] as string).toUpperCase()
-          );
-          transformedObject[newKey] = toCamelCase(
-            (object as Record<string, unknown>)[key]
-          );
-        }
-      }
-    }
-  }
-  return transformedObject as T;
-};
-export const toSnakeCase = <T>(object: unknown): T => {
-  let transformedObject = object as Record<string, unknown>;
-  if (typeof object === "object" && object !== null) {
-    if (Array.isArray(object)) {
-      transformedObject = object.map(toSnakeCase) as unknown as Record<
-        string,
-        unknown
-      >;
-    } else {
-      transformedObject = {};
-      for (const key of Object.keys(object)) {
-        if ((object as Record<string, unknown>)[key] !== undefined) {
-          const newKey = key
-            .replace(
-              replaceCamelCaseRegex,
-              /* v8 ignore next -- @preserve the capture group requires [A-Z]+, so it is never empty on a match */
-              (_, y) => `_${y ? (y as string).toLowerCase() : ""}`
-            )
-            .replace(replaceCamelCaseRegex2, "");
-          transformedObject[newKey] = toSnakeCase(
-            (object as Record<string, unknown>)[key]
-          );
-        }
-      }
-    }
-  }
-  return transformedObject as T;
-};
+export const toCamelCase = <T>(object: JsonValue): T =>
+  // SAFETY: only keys are rewritten - the leaves keep their runtime values, so
+  // `T` is the caller's snake_case-to-camelCase restatement of its own payload
+  // type, which the traversal cannot express generically.
+  mapKeysDeep(object, camel) as T;
+
+/**
+ * convert deep nested object keys to snake_case.
+ */
+export const toSnakeCase = <T>(object: JsonValue): T =>
+  // SAFETY: only keys are rewritten - see `toCamelCase`.
+  mapKeysDeep(object, snake) as T;
+
 const removeLeadingZerosRegex = /^0+[1-9]+/u;
 const removeLeadingZeroRegex = /^(?<group>0)/u;
 const removeLeadingZeros2Regex = /^0{2,}/u;
@@ -147,10 +134,29 @@ export const removeLeadingWhitespace = (value?: string) => {
   return value;
 };
 
-type FormDataAppend = (value: unknown, rootName?: string) => void;
+/** A value `FormData` can carry, or a container of such values. */
+type FormDataValue =
+  | Blob
+  | Date
+  | FormDataRecord
+  | FormDataValue[]
+  | boolean
+  | null
+  | number
+  | string
+  | undefined;
+interface FormDataRecord {
+  [key: string]: FormDataValue;
+}
+type FormDataAppend = (value: FormDataValue, rootName?: string) => void;
+
+// Blob/Date land here too: they carry no own enumerable keys, so - as before -
+// they are walked and contribute nothing.
+const isWalkable = (value: FormDataValue): value is FormDataRecord =>
+  typeof value === "object" && value !== null;
 
 const appendObjectEntries = (
-  obj: object,
+  obj: FormDataRecord,
   rootName: string,
   append: FormDataAppend
 ) => {
@@ -159,14 +165,13 @@ const appendObjectEntries = (
       continue;
     }
     const nextRoot = rootName === "" ? key : `${rootName}.${key}`;
-    // @ts-expect-error index access on unknown object shape
     append(obj[key], nextRoot);
   }
 };
 
 const appendFormDataValue = (
   formData: FormData,
-  value: unknown,
+  value: FormDataValue,
   rootName: string,
   append: FormDataAppend,
   arrayMode: "index" | "comma"
@@ -185,18 +190,18 @@ const appendFormDataValue = (
     }
     return;
   }
-  if (typeof value === "object" && value) {
+  if (isWalkable(value)) {
     appendObjectEntries(value, rootName, append);
     return;
   }
   if (value !== null && value !== undefined) {
-    formData.append(rootName, value as Blob | string);
+    formData.append(rootName, String(value));
   }
 };
 
 const createObjectToFormData =
   (arrayMode: "index" | "comma") =>
-  <T extends UnknownRecord>(
+  <T extends FormDataRecord>(
     obj: T,
     options?: RequireAtLeastOne<{
       rootName?: string;
@@ -206,7 +211,7 @@ const createObjectToFormData =
     const formData = new FormData();
     const ignore = (_key?: string) =>
       Array.isArray(options?.ignoreList) &&
-      options.ignoreList.includes(_key as keyof T);
+      options.ignoreList.some((ignored) => ignored === _key);
     const appendFormData: FormDataAppend = (_obj, _rootName) => {
       if (ignore(_rootName)) {
         return;
@@ -331,16 +336,20 @@ export const objectToFormDataArrayWithComma = createObjectToFormData("comma");
  * // => 'not found'
  * ```
  */
-// oxlint-disable-next-line typescript/no-explicit-any
-export const deepReadObject = <T = any>(
-  obj: Record<string, unknown>,
+export const deepReadObject = <T>(
+  obj: JsonRecord,
   path: string,
-  defaultValue?: unknown
-): T => {
-  const value = path
-    .trim()
-    .split(".")
-    // oxlint-disable-next-line typescript/no-explicit-any -- dynamic path traversal
-    .reduce<any>((a, b) => (a ? a[b] : undefined), obj);
-  return value === undefined ? (defaultValue as T) : value;
+  defaultValue?: T
+): T | undefined => {
+  let current: JsonValue | undefined = obj;
+  for (const segment of path.trim().split(".")) {
+    if (!isJsonRecord(current)) {
+      current = undefined;
+      break;
+    }
+    current = current[segment];
+  }
+  // SAFETY: the shape behind a runtime path string is unknowable here, so the
+  // read site names the type it expects - the same contract as `defaultValue`.
+  return current === undefined ? defaultValue : (current as T);
 };

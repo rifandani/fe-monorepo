@@ -90,6 +90,23 @@ type PathsWithNoParams = {
 }[DotPathsFor];
 const replaceKeyRegex = /-?[^-]+$/u;
 
+/** A value a `{name:type}` placeholder can be given, per `ParseArgType`. */
+type TranslationArg = Date | number | string | string[];
+
+/** A catalog entry that renders, as opposed to a nested group of entries. */
+const isRenderableMessage = (
+  value: I18nMessage | LanguageMessages
+): value is I18nMessage => typeof value === "string" || Array.isArray(value);
+
+const isPlainMessage = (value: I18nMessage): value is string =>
+  typeof value === "string";
+
+const isNumberArg = (value: TranslationArg): value is number =>
+  typeof value === "number";
+
+const isStringArg = (value: TranslationArg): value is string =>
+  typeof value === "string";
+
 const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
   let parentLocale = locale;
@@ -112,7 +129,7 @@ const getTranslationByKey = (obj: LanguageMessages, key: string) => {
     if (!newObj) {
       return;
     }
-    if (typeof newObj === "string" || Array.isArray(newObj)) {
+    if (isRenderableMessage(newObj)) {
       if (i < keys.length - 1) {
         return;
       }
@@ -126,7 +143,7 @@ interface SubstitutionContext {
   locale: string;
   result: string;
   argKey: string;
-  argValue: unknown;
+  argValue: TranslationArg;
   replaceKey: string;
   translationParams: ParamOptions;
 }
@@ -139,7 +156,7 @@ const substitutePlural = ({
   replaceKey,
   translationParams,
 }: SubstitutionContext): string => {
-  if (typeof argValue !== "number") {
+  if (!isNumberArg(argValue)) {
     throw new TypeError("Invalid argument");
   }
   const pluralMap = translationParams.plural?.[argKey];
@@ -165,7 +182,7 @@ const substituteEnum = ({
   replaceKey,
   translationParams,
 }: SubstitutionContext): string => {
-  if (typeof argValue !== "string") {
+  if (!isStringArg(argValue)) {
     throw new TypeError("Invalid argument");
   }
   const replacement = translationParams.enum?.[argKey]?.[argValue];
@@ -184,7 +201,7 @@ type Formatable = number | string[] | Date;
  */
 const substituteWithFormatter =
   <T extends Formatable>(
-    isValid: (value: unknown) => value is T,
+    isValid: (value: TranslationArg) => value is T,
     format: (ctx: SubstitutionContext, value: T) => string
   ) =>
   (ctx: SubstitutionContext): string => {
@@ -195,7 +212,12 @@ const substituteWithFormatter =
   };
 
 /** Maps the `{arg:type}` annotation to the substituter handling it. */
-const substituters: Record<string, (ctx: SubstitutionContext) => string> = {
+type Substituter = (ctx: SubstitutionContext) => string;
+interface SubstituterMap {
+  [annotation: string]: Substituter;
+}
+
+const substituters: SubstituterMap = {
   date: substituteWithFormatter(
     (value): value is Date => value instanceof Date,
     (c, value) =>
@@ -227,7 +249,7 @@ const substituters: Record<string, (ctx: SubstitutionContext) => string> = {
 const performSubstitution = (
   locale: string,
   str: string,
-  args: Record<string, unknown>,
+  args: Record<string, TranslationArg>,
   translationParams: ParamOptions
 ): string =>
   Object.entries(args).reduce((result, [argKey, argValue]) => {
@@ -256,18 +278,21 @@ const getTranslation = <S extends DotPathsFor, A extends Params<S>>(
   const translation = getTranslationByKey(translations, key);
   const argObj = args || {};
 
-  if (typeof translation === "string") {
+  if (translation === undefined) {
+    return;
+  }
+  if (isPlainMessage(translation)) {
     return performSubstitution(locale, translation, argObj, {});
   }
-  if (Array.isArray(translation)) {
-    const [str, translationParams] = translation;
-    return performSubstitution(
-      locale,
-      str,
-      argObj,
-      translationParams as ParamOptions
-    );
-  }
+  const [str, translationParams] = translation;
+  // SAFETY: `defineTranslation` builds the tuple, so its second element is the
+  // `ParamOptions` it was given; the catalog type widens it on the way out.
+  return performSubstitution(
+    locale,
+    str,
+    argObj,
+    translationParams as ParamOptions
+  );
 };
 
 export const initI18n = ({
@@ -293,6 +318,8 @@ export const initI18n = ({
   ): string;
   function t<S extends DotPathsFor, A extends Params<S>>(key: S, args?: A) {
     for (const _locale of orderedLocales) {
+      // SAFETY: `toLowerCase()` returns exactly the `Lowercase<string>` the
+      // catalog is keyed by; TypeScript does not track that through the call.
       const translationFile =
         translations[_locale.toLowerCase() as Lowercase<string>];
       if (!translationFile) {

@@ -33,7 +33,7 @@ Confirmed:
 - Auth sample (login + client session check); not a full product domain.
 - UI built on React Aria Components / Intent UI patterns; master-design catalog proves variants.
 - PWA (vite-plugin-pwa), theme toggle, i18n (`en-US`, `id-ID`), OpenTelemetry/web-vitals hooks, feature flags.
-- MIT license; package identity `@workspace/spa` / description “Bulletproof React.js 19 Template”; publisher credited in SEO as Roryki Rifandani.
+- MIT license; package identity `@workspace/spa` / description “Bulletproof React.js 19 Template”; publisher credited in SEO as Rizeki Rifandani.
 
 Undecided / open:
 
@@ -44,7 +44,7 @@ Undecided / open:
 ## Brand Commitments
 
 - Name/identity: `@workspace/spa`, “Bulletproof React.js 19 Template.”
-- Author/publisher: Tri Rizeki Rifandani / Roryki Rifandani (as used in package and SEO).
+- Author/publisher: Tri Rizeki Rifandani / Rizeki Rifandani (as used in package and SEO).
 - No separate marketing brand system, logo lockup, or voice guide beyond this template framing.
 
 ## Evidence on Hand

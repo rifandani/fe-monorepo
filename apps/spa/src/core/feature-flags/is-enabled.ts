@@ -18,7 +18,7 @@ export const resolveFeatureEnabled = ({
   if (!isDev) {
     return false;
   }
-  if (typeof override === "boolean") {
+  if (override !== undefined) {
     return override;
   }
   return defaultEnabled;

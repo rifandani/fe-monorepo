@@ -56,6 +56,8 @@ registerRoute(
 );
 
 self.addEventListener("push", (event) => {
+  // SAFETY: the push payload is attacker-visible JSON, so both fields stay
+  // optional and every read below falls back to a literal default.
   const data = (event.data?.json() ?? {}) as {
     body?: string;
     title?: string;

@@ -42,9 +42,9 @@ const CatalogNavItem = ({
   <li>
     <button
       className={twMerge(
-        "w-full rounded-md px-3 py-1.5 text-left text-muted-fg text-sm transition-colors hover:bg-secondary hover:text-fg",
+        "text-muted-fg hover:bg-secondary hover:text-fg w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
         isActive &&
-          "bg-primary font-medium text-primary-fg hover:bg-primary hover:text-primary-fg"
+          "bg-primary text-primary-fg hover:bg-primary hover:text-primary-fg font-medium"
       )}
       data-active={isActive || undefined}
       onClick={() => {
@@ -79,7 +79,7 @@ export const CatalogNav = ({
   if (visible.length === 0) {
     return (
       <nav aria-label="Components" className="p-3">
-        <p className="px-3 py-2 text-muted-fg text-sm">No matches.</p>
+        <p className="text-muted-fg px-3 py-2 text-sm">No matches.</p>
       </nav>
     );
   }

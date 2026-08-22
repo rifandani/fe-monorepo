@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
       }),
       visualizer({
         filename: "html/visualizer-stats.html",
-      }) as unknown as PluginOption,
+      }) satisfies PluginOption,
       serveDevServiceWorker(),
       VitePWA({
         strategies: "injectManifest",

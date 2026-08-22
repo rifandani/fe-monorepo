@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 
 /** Fraction of the viewport height where the "active section" threshold sits. */
@@ -31,6 +32,23 @@ const activeSectionId = (ids: string[]): string | null =>
     ? lastId(ids)
     : idAtThreshold(ids, window.innerHeight * THRESHOLD_RATIO);
 
+/**
+ * Pins the spy and restarts the settle window. Hoisted out of the hook so the
+ * scroll effect can call it without taking an unstable dependency.
+ */
+const suppress = (
+  suppressedRef: RefObject<boolean>,
+  settleTimer: RefObject<ReturnType<typeof setTimeout> | null>
+) => {
+  suppressedRef.current = true;
+  if (settleTimer.current) {
+    clearTimeout(settleTimer.current);
+  }
+  settleTimer.current = setTimeout(() => {
+    suppressedRef.current = false;
+  }, SETTLE_MS);
+};
+
 interface ScrollSpy {
   activeId: string | null;
   /** Scroll a section into view and pin it active until the smooth scroll settles. */
@@ -55,13 +73,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const suppressUntilSettled = () => {
-    suppressedRef.current = true;
-    if (settleTimer.current) {
-      clearTimeout(settleTimer.current);
-    }
-    settleTimer.current = setTimeout(() => {
-      suppressedRef.current = false;
-    }, SETTLE_MS);
+    suppress(suppressedRef, settleTimer);
   };
 
   useEffect(() => {
@@ -77,12 +89,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     const onScroll = () => {
       if (suppressedRef.current) {
         // Keep the highlight pinned; just extend the settle window.
-        if (settleTimer.current) {
-          clearTimeout(settleTimer.current);
-        }
-        settleTimer.current = setTimeout(() => {
-          suppressedRef.current = false;
-        }, SETTLE_MS);
+        suppress(suppressedRef, settleTimer);
         return;
       }
       cancelAnimationFrame(raf);
@@ -94,6 +101,10 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
+      if (settleTimer.current) {
+        clearTimeout(settleTimer.current);
+        settleTimer.current = null;
+      }
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };

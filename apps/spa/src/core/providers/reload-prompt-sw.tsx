@@ -40,6 +40,8 @@ const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
 /** Run `run` once this worker reaches the `activated` state. */
 const whenActivated = (sw: ServiceWorker | null, run: () => void) => {
   sw?.addEventListener("statechange", (event) => {
+    // SAFETY: a `statechange` listener bound to a ServiceWorker is only ever
+    // dispatched with that worker as the target.
     if ((event.target as ServiceWorker).state === "activated") {
       run();
     }
@@ -74,7 +76,7 @@ const onRegisteredSW = (
     registerPeriodicSync(swUrl, registration);
   });
 };
-const onRegisterError = (error: unknown) => {
+const onRegisterError = <T,>(error: T) => {
   console.error("🛑 Service Worker registration error", error);
 };
 export const ReloadPromptSw = () => {

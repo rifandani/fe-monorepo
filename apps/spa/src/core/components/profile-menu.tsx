@@ -30,6 +30,7 @@ export const ProfileMenu = () => {
 
       <MenuContent
         onAction={(key) => {
+          // SAFETY: the three menu items below are the only keys this menu emits.
           const currentKey = key as "profile" | "settings" | "logout";
           if (currentKey === "logout") {
             clearUser();

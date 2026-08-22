@@ -21,7 +21,9 @@ const TOAST_PRESETS = new Set<string>([
  * missing bag, or a preset added by a caller that skipped the type — falls
  * back to `default` rather than rendering an unthemed toast.
  */
-export const resolveToastPreset = (customData?: unknown): ToastPreset => {
+export const resolveToastPreset = <T>(customData?: T): ToastPreset => {
+  // SAFETY: `preset` is validated against `TOAST_PRESETS` below, and anything
+  // else - including a bag without the field - falls back to `default`.
   const preset = (customData as Partial<ToastCustomData> | undefined)?.preset;
   return preset && TOAST_PRESETS.has(preset) ? preset : "default";
 };

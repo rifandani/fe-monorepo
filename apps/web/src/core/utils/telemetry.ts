@@ -1,4 +1,11 @@
-import type { Attributes, Span, SpanContext, Tracer } from "@opentelemetry/api";
+import type {
+  Attributes,
+  Context,
+  Span,
+  SpanContext,
+  SpanOptions,
+  Tracer,
+} from "@opentelemetry/api";
 import { context, SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { SERVICE_NAME } from "@/core/constants/global";
@@ -46,23 +53,48 @@ const noopSpan: Span = {
 /**
  * Tracer implementation that does nothing (null object).
  */
+/** The callback otel hands the active span, in any of the overload positions. */
+type SpanCallback<R> = (span: Span) => R;
+
+/**
+ * `startActiveSpan` is overloaded on `(name, fn)`, `(name, options, fn)` and
+ * `(name, options, context, fn)`, so the callback can arrive in any of three
+ * positions. This predicate names that argument.
+ */
+const isSpanCallback = <R>(
+  value: Context | SpanCallback<R> | SpanOptions | undefined
+): value is SpanCallback<R> => typeof value === "function";
+
+/** Picks the callback out of whichever overload position it arrived in. */
+const resolveSpanCallback = <R>(
+  arg1: SpanCallback<R> | SpanOptions,
+  arg2?: Context | SpanCallback<R>,
+  arg3?: SpanCallback<R>
+): SpanCallback<R> | undefined => {
+  if (isSpanCallback<R>(arg1)) {
+    return arg1;
+  }
+  if (isSpanCallback<R>(arg2)) {
+    return arg2;
+  }
+  return arg3;
+};
+
+/** Value of an extra field recorded next to an error; each is stringified. */
+type ErrorAttributeValue = boolean | null | number | string | undefined;
+
 export const noopTracer: Tracer = {
-  startActiveSpan<F extends (span: Span) => unknown>(
-    _: unknown,
-    arg1: unknown,
-    arg2?: unknown,
-    arg3?: F
-    // oxlint-disable-next-line typescript/no-explicit-any -- noop span overload return
-  ): ReturnType<any> {
-    if (typeof arg1 === "function") {
-      return arg1(noopSpan);
-    }
-    if (typeof arg2 === "function") {
-      return arg2(noopSpan);
-    }
-    if (typeof arg3 === "function") {
-      return arg3(noopSpan);
-    }
+  startActiveSpan<R>(
+    _name: string,
+    arg1: SpanCallback<R> | SpanOptions,
+    arg2?: Context | SpanCallback<R>,
+    arg3?: SpanCallback<R>
+  ): R {
+    const fn = resolveSpanCallback<R>(arg1, arg2, arg3);
+    // SAFETY: a noop tracer has nothing to report, so with no callback in any
+    // overload position there is no value to produce - which the `R` fixed by
+    // otel's own signature cannot express.
+    return fn?.(noopSpan) as R;
   },
   startSpan(): Span {
     return noopSpan;
@@ -158,9 +190,9 @@ export const recordException = ({
   error: {
     message: string;
     stack?: string;
-    [key: string]: unknown;
-    [key: number]: unknown;
-    [key: symbol]: unknown;
+    [key: string]: ErrorAttributeValue;
+    [key: number]: ErrorAttributeValue;
+    [key: symbol]: ErrorAttributeValue;
   };
   /**
    * the tracer

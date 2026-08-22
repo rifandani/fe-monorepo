@@ -26,7 +26,8 @@ const translations = {
     }),
     unknownPlural: defineTranslation("{count:plural}", {
       plural: {
-        // deliberately missing `other`, so `select()` finds nothing to use
+        // SAFETY: deliberately missing `other`, so `select()` finds nothing to
+        // use - the cast is what lets the fixture express that broken catalog.
         count: { two: "two" } as never,
       },
     }),
@@ -53,89 +54,84 @@ const translations = {
   },
 } as const;
 
-const setup = (locale = "en-us", fallbackLocale: string | string[] = "en-us") =>
-  initI18n({
+/** Values the fixture catalog's placeholders accept, valid or deliberately not. */
+type FixtureParams = Record<string, Date | number | string | readonly string[]>;
+
+/**
+ * SAFETY: `initI18n` and the `t` it returns are typed against the application's
+ * real catalog through the `my-translations` module augmentation, while this suite
+ * drives the fixture catalog above. The `never` casts opt each call out of that
+ * global contract; the runtime values are the fixture keys and params declared
+ * here, which is exactly what the assertions check.
+ */
+const setup = (
+  locale = "en-us",
+  fallbackLocale: string | string[] = "en-us"
+) => {
+  // SAFETY: see the note above - the fixture catalog only matches at runtime.
+  const { t } = initI18n({
     locale,
     fallbackLocale,
     translations: translations as never,
-  }).t;
+  });
+  // SAFETY: likewise, the fixture's keys and params are absent from the
+  // registered catalog `t` is typed against.
+  return (key: string, params?: FixtureParams) =>
+    t(key as never, params as never);
+};
 
 describe("initI18n", () => {
   it("translates simple keys for the active locale", () => {
-    const { t } = initI18n({
-      locale: "en-US",
-      fallbackLocale: "en-us",
-      translations: translations as never,
-    });
-    expect(t("welcome" as never)).toBe("Welcome");
+    const t = setup("en-US");
+    expect(t("welcome")).toBe("Welcome");
   });
 
   it("falls back to another locale catalog", () => {
-    const { t } = initI18n({
-      locale: "fr-FR",
-      fallbackLocale: "id-id",
-      translations: translations as never,
-    });
-    expect(t("welcome" as never)).toBe("Selamat datang");
+    const t = setup("fr-FR", "id-id");
+    expect(t("welcome")).toBe("Selamat datang");
   });
 
   it("substitutes plain params", () => {
-    const { t } = initI18n({
-      locale: "en-us",
-      fallbackLocale: "en-us",
-      translations: translations as never,
-    });
-    expect(t("greeting" as never, { name: "Ada" } as never)).toBe("Hello Ada!");
+    const t = setup();
+    expect(t("greeting", { name: "Ada" })).toBe("Hello Ada!");
   });
 
   it("handles plural substitution", () => {
-    const { t } = initI18n({
-      locale: "en-us",
-      fallbackLocale: "en-us",
-      translations: translations as never,
-    });
-    expect(t("inbox" as never, { count: 1 } as never)).toBe(
-      "You have 1 message"
-    );
-    expect(t("inbox" as never, { count: 3 } as never)).toBe(
-      "You have 3 messages"
-    );
+    const t = setup();
+    expect(t("inbox", { count: 1 })).toBe("You have 1 message");
+    expect(t("inbox", { count: 3 })).toBe("You have 3 messages");
   });
 
   it("returns the key when missing everywhere", () => {
-    const { t } = initI18n({
-      locale: "en-us",
-      fallbackLocale: "en-us",
-      translations: translations as never,
-    });
-    expect(t("missing.key" as never)).toBe("missing.key");
+    const t = setup();
+    expect(t("missing.key")).toBe("missing.key");
   });
 
   it("walks parent locales and skips catalogs it has no entry for", () => {
     // `en-US-POSIX` narrows to `en-US` then `en`; only the `en-us` catalog exists
     const t = setup("en-US-POSIX", ["fr-FR", "id-id"]);
-    expect(t("welcome" as never)).toBe("Welcome");
+    expect(t("welcome")).toBe("Welcome");
   });
 
   it("accepts an array of fallback locales", () => {
     const t = setup("fr-FR", ["de-DE", "id-id"]);
-    expect(t("welcome" as never)).toBe("Selamat datang");
+    expect(t("welcome")).toBe("Selamat datang");
   });
 
   it("resolves nested dot paths", () => {
-    expect(setup()("nested.deep.label" as never)).toBe("Deep label");
+    expect(setup()("nested.deep.label")).toBe("Deep label");
   });
 
   it("returns the key for paths that stop on a string or on an object", () => {
     const t = setup();
     // `welcome` is a string, so `welcome.extra` cannot resolve
-    expect(t("welcome.extra" as never)).toBe("welcome.extra");
+    expect(t("welcome.extra")).toBe("welcome.extra");
     // `nested.deep` is an object, so it is not a renderable translation
-    expect(t("nested.deep" as never)).toBe("nested.deep");
+    expect(t("nested.deep")).toBe("nested.deep");
   });
 
   it("throws on keys with empty segments", () => {
-    expect(() => setup()("nested..label" as never)).toThrow(
+    expect(() => setup()("nested..label")).toThrow(
       "[getTranslationByKey]: Invalid key!"
     );
   });
@@ -144,73 +140,54 @@ describe("initI18n", () => {
 describe("initI18n substitutions", () => {
   it("selects plural rules by type", () => {
     const t = setup();
-    expect(t("ordinal" as never, { place: 1 } as never)).toBe("1st");
-    expect(t("ordinal" as never, { place: 2 } as never)).toBe("2nd");
-    expect(t("ordinal" as never, { place: 4 } as never)).toBe("4th");
+    expect(t("ordinal", { place: 1 })).toBe("1st");
+    expect(t("ordinal", { place: 2 })).toBe("2nd");
+    expect(t("ordinal", { place: 4 })).toBe("4th");
   });
 
   it("substitutes enum values", () => {
-    expect(setup()("status" as never, { state: "archived" } as never)).toBe(
-      "Status: Archived"
-    );
+    expect(setup()("status", { state: "archived" })).toBe("Status: Archived");
   });
 
   it("substitutes numbers with Intl.NumberFormat options", () => {
-    expect(setup()("price" as never, { amount: 1234.5 } as never)).toBe(
-      "Total $1,234.50"
-    );
+    expect(setup()("price", { amount: 1234.5 })).toBe("Total $1,234.50");
   });
 
   it("substitutes lists with Intl.ListFormat options", () => {
-    expect(setup()("tags" as never, { items: ["a", "b", "c"] } as never)).toBe(
+    expect(setup()("tags", { items: ["a", "b", "c"] })).toBe(
       "Tags: a, b, and c"
     );
   });
 
   it("substitutes dates with Intl.DateTimeFormat options", () => {
     expect(
-      setup()(
-        "lastLogin" as never,
-        {
-          at: new Date("2024-03-05T00:00:00.000Z"),
-        } as never
-      )
+      setup()("lastLogin", {
+        at: new Date("2024-03-05T00:00:00.000Z"),
+      })
     ).toBe("Last login 3/5/24");
   });
 
   it("throws TypeError when an argument does not match its param type", () => {
     const t = setup();
-    expect(() => t("inbox" as never, { count: "1" } as never)).toThrow(
-      TypeError
-    );
-    expect(() => t("status" as never, { state: 1 } as never)).toThrow(
-      TypeError
-    );
-    expect(() => t("price" as never, { amount: "1" } as never)).toThrow(
-      TypeError
-    );
-    expect(() => t("tags" as never, { items: "a" } as never)).toThrow(
-      TypeError
-    );
-    expect(() =>
-      t("lastLogin" as never, { at: "2024-03-05" } as never)
-    ).toThrow(TypeError);
+    expect(() => t("inbox", { count: "1" })).toThrow(TypeError);
+    expect(() => t("status", { state: 1 })).toThrow(TypeError);
+    expect(() => t("price", { amount: "1" })).toThrow(TypeError);
+    expect(() => t("tags", { items: "a" })).toThrow(TypeError);
+    expect(() => t("lastLogin", { at: "2024-03-05" })).toThrow(TypeError);
   });
 
   it("throws when a plural or enum replacement is missing", () => {
     const t = setup();
-    expect(() => t("unknownPlural" as never, { count: 5 } as never)).toThrow(
+    expect(() => t("unknownPlural", { count: 5 })).toThrow(
       "Missing replacement value"
     );
-    expect(() => t("status" as never, { state: "deleted" } as never)).toThrow(
+    expect(() => t("status", { state: "deleted" })).toThrow(
       "Missing replacement value"
     );
   });
 
   it("leaves the raw key in place when the arg has no placeholder", () => {
     // `{missing}` never appears in "Welcome", so `replace` finds nothing
-    expect(setup()("welcome" as never, { missing: "x" } as never)).toBe(
-      "Welcome"
-    );
+    expect(setup()("welcome", { missing: "x" })).toBe("Welcome");
   });
 });

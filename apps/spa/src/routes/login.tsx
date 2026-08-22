@@ -11,15 +11,17 @@ import { Note } from "@/core/components/ui/note";
 import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
 
+/** The login repository rejects with the API's error envelope. */
+const loginErrorMessage = (error: Error) =>
+  // SAFETY: see above - the mutation's rejection carries the API error body.
+  (error as ErrorResponseSchema & Error).message;
+
 const LoginForm = () => {
   const { t } = useTranslation();
   const { form, loginMutation } = useLoginForm();
   return (
     <form
-      className={`
-        flex flex-col pt-3
-        md:pt-8
-      `}
+      className="flex flex-col pt-3 md:pt-8"
       onSubmit={(ev) => {
         ev.preventDefault();
         form.handleSubmit();
@@ -58,7 +60,7 @@ const LoginForm = () => {
           intent="danger"
           className="mt-4"
         >
-          {(loginMutation.error as ErrorResponseSchema).message}
+          {loginErrorMessage(loginMutation.error)}
         </Note>
       )}
 
@@ -89,14 +91,8 @@ const LoginRoute = () => {
     <div className="flex min-h-screen w-full">
       {/* form */}
 
-      <section
-        className={`
-        flex min-h-screen w-full flex-col justify-center px-10
-        md:w-1/2
-        xl:px-20
-      `}
-      >
-        <h1 className="text-center text-3xl text-primary">{t("welcome")}</h1>
+      <section className="flex min-h-screen w-full flex-col justify-center px-10 md:w-1/2 xl:px-20">
+        <h1 className="text-primary text-center text-3xl">{t("welcome")}</h1>
 
         <LoginForm />
 
@@ -113,18 +109,8 @@ const LoginRoute = () => {
       </section>
 
       {/* image */}
-      <section
-        className={`
-        hidden w-1/2 shadow-2xl
-        md:block
-      `}
-      >
-        <span
-          className={`
-          relative h-screen w-full
-          md:flex md:items-center md:justify-center
-        `}
-        >
+      <section className="hidden w-1/2 shadow-2xl md:block">
+        <span className="relative h-screen w-full md:flex md:items-center md:justify-center">
           <svg
             viewBox="0 0 256 228"
             className="size-60"

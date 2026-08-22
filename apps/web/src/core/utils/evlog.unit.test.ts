@@ -2,6 +2,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
+/** Fields an enricher stamps onto the event it is handed. */
+type EvlogEventFields = Record<string, boolean | number | string | undefined>;
+interface EvlogContext {
+  event: EvlogEventFields;
+}
+interface EvlogConfig {
+  enrich: (ctx: EvlogContext) => void;
+}
+
 const mocks = vi.hoisted(() => {
   const flush = vi.fn(async () => {});
   const drain = { flush };
@@ -9,7 +18,9 @@ const mocks = vi.hoisted(() => {
   const log = { error: vi.fn(), info: vi.fn() };
   const identify = vi.fn();
   const createAuthMiddleware = vi.fn(() => identify);
-  const createEvlog = vi.fn(() => ({
+  // Typed on the one field the enrichment test reads back, so the recorded call
+  // needs no cast.
+  const createEvlog = vi.fn((_config: EvlogConfig) => ({
     withEvlog: vi.fn(),
     useLogger: vi.fn(),
     createError,
@@ -140,11 +151,9 @@ describe("evlog wiring", () => {
     vi.stubEnv("VERCEL_REGION", "sfo1");
     await loadSut();
 
-    const [config] = mocks.createEvlog.mock.calls[0] as unknown as [
-      { enrich: (ctx: { event: Record<string, unknown> }) => void },
-    ];
-    const ctx = { event: {} as Record<string, unknown> };
-    config.enrich(ctx);
+    const config = mocks.createEvlog.mock.calls[0]?.[0];
+    const ctx: EvlogContext = { event: {} };
+    config?.enrich(ctx);
 
     expect(mocks.userAgentEnricher).toHaveBeenCalledWith(ctx);
     expect(mocks.requestSizeEnricher).toHaveBeenCalledWith(ctx);

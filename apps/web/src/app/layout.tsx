@@ -57,11 +57,7 @@ const RootLayout = async ({ children }: LayoutProps<"/">) => {
       </head>
 
       <body
-        className={`
-          ${fontSans.variable}
-          ${fontMono.variable}
-          min-h-svh font-sans antialiased
-        `}
+        className={` ${fontSans.variable} ${fontMono.variable} min-h-svh font-sans antialiased`}
       >
         <IconSprite />
 

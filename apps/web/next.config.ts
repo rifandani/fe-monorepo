@@ -28,7 +28,6 @@ const config: NextConfig = withNextIntl({
   experimental: {
     optimizePackageImports: ["@workspace/core"],
     testProxy: true, // for e2e testing server side
-    turbopackFileSystemCacheForDev: true,
   },
 });
 export default config;

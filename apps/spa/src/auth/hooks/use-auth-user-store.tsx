@@ -11,7 +11,6 @@ interface UserStoreAction {
   clearUser: () => void;
 }
 type UserStore = UserStoreState & UserStoreAction;
-export type UserStoreLocalStorage = z.infer<typeof userStoreLocalStorageSchema>;
 export const userStoreName = "app-user" as const;
 const userStoreStateSchema = z.object({
   user: authLoginResponseSchema.nullable(),

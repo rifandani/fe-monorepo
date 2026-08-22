@@ -33,6 +33,7 @@ vi.mock("@/auth/utils/auth", () => ({
   },
 }));
 
+// SAFETY: the middleware reads only `request.headers`.
 const mockRequest = (headers?: HeadersInit): NextRequest =>
   ({
     headers: new Headers(headers),

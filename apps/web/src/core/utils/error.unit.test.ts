@@ -1,3 +1,4 @@
+import type { Span } from "@opentelemetry/api";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { HTTPError, TimeoutError } from "ky";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -14,9 +15,17 @@ const log = vi.hoisted(() => ({
 
 vi.mock("@/core/utils/evlog", () => ({ log }));
 
-const makeHttpError = (data?: unknown) => {
+/** The parsed error body ky hangs off `HTTPError.data`, schema-shaped or not. */
+type HttpErrorBody = Record<string, string>;
+interface HttpErrorWithData {
+  data?: HttpErrorBody;
+}
+
+const makeHttpError = (data?: HttpErrorBody) => {
   const request = new Request("https://api.example.com/x");
   const response = new Response(null, { status: 400 });
+  // SAFETY: `HTTPError` wants ky's full internal request context; the mapper
+  // under test reads only `data` and `message` off the error it builds.
   const error = new HTTPError(response, request, {
     request,
     response,
@@ -24,7 +33,9 @@ const makeHttpError = (data?: unknown) => {
     state: {},
   } as never);
   if (data !== undefined) {
-    (error as { data?: unknown }).data = data;
+    // SAFETY: ky assigns the parsed body to `data` at runtime; the published
+    // `HTTPError` type does not declare it.
+    (error as HttpErrorWithData).data = data;
   }
   return error;
 };
@@ -34,6 +45,9 @@ describe("serverErrorMapper", () => {
     recordException: vi.fn(),
     setStatus: vi.fn(),
   };
+  // SAFETY: `serverErrorMapper` calls only `recordException` and `setStatus`, so
+  // the stub covers its whole use of the span.
+  const spanStub: Span = span as never;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -41,7 +55,7 @@ describe("serverErrorMapper", () => {
 
   it("maps HTTPError with parsed error body", () => {
     const error = makeHttpError({ message: "invalid credentials" });
-    const result = serverErrorMapper(error, span as never);
+    const result = serverErrorMapper(error, spanStub);
 
     expect(result).toBe("invalid credentials");
     expect(log.error).toHaveBeenCalledWith(
@@ -67,7 +81,7 @@ describe("serverErrorMapper", () => {
 
   it("maps TimeoutError", () => {
     const error = new TimeoutError(new Request("https://api.example.com/x"));
-    const result = serverErrorMapper(error, span as never);
+    const result = serverErrorMapper(error, spanStub);
 
     expect(result).toBe(error.message);
     expect(log.error).toHaveBeenCalledWith(
@@ -85,7 +99,7 @@ describe("serverErrorMapper", () => {
       return;
     }
 
-    const result = serverErrorMapper(parsed.error, span as never);
+    const result = serverErrorMapper(parsed.error, spanStub);
     expect(result).toContain("email");
     expect(log.error).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -97,7 +111,7 @@ describe("serverErrorMapper", () => {
 
   it("maps unknown errors", () => {
     const error = new Error("unexpected");
-    const result = serverErrorMapper(error, span as never);
+    const result = serverErrorMapper(error, spanStub);
 
     expect(result).toBe("unexpected");
     expect(log.error).toHaveBeenCalledWith(

@@ -49,8 +49,11 @@ const otel = vi.hoisted(() => {
   };
   const tracer = {
     startActiveSpan: vi.fn(
-      (_name: string, _opts: unknown, fn: (s: typeof span) => unknown) =>
-        fn(span)
+      (
+        _name: string,
+        _opts: OtelApi.SpanOptions,
+        fn: (s: typeof span) => void
+      ) => fn(span)
     ),
   };
   return {
@@ -123,7 +126,7 @@ describe("auth actions", () => {
       authApi.signInEmail.mockRejectedValue(new Error("bad credentials"));
 
       const result = await loginAction(
-        null,
+        undefined,
         loginFormData("a@b.com", "password1")
       );
 
@@ -142,7 +145,7 @@ describe("auth actions", () => {
         url: null,
       });
 
-      await loginAction(null, loginFormData("a@b.com", "password1"));
+      await loginAction(undefined, loginFormData("a@b.com", "password1"));
 
       expect(authApi.signInEmail).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -170,7 +173,7 @@ describe("auth actions", () => {
 
     it("returns validation errors for invalid input", async () => {
       const result = await loginAction(
-        null,
+        undefined,
         loginFormData("not-an-email", "short")
       );
 
@@ -183,7 +186,9 @@ describe("auth actions", () => {
     });
 
     it("rethrows non-validation errors", async () => {
-      await expect(loginAction(null, null as never)).rejects.toThrow();
+      // SAFETY: the action is typed to receive FormData; `null` exercises the
+      // non-validation failure path a malformed client request produces.
+      await expect(loginAction(undefined, null as never)).rejects.toThrow();
       expect(authApi.signInEmail).not.toHaveBeenCalled();
     });
   });
@@ -193,7 +198,7 @@ describe("auth actions", () => {
       authApi.signUpEmail.mockRejectedValue(new Error("email taken"));
 
       const result = await registerAction(
-        null,
+        undefined,
         registerFormData("a@b.com", "Ada Lovelace", "password1")
       );
 
@@ -211,7 +216,7 @@ describe("auth actions", () => {
       });
 
       await registerAction(
-        null,
+        undefined,
         registerFormData("a@b.com", "Ada Lovelace", "password1")
       );
 
@@ -239,7 +244,7 @@ describe("auth actions", () => {
 
     it("returns validation errors for invalid input", async () => {
       const result = await registerAction(
-        null,
+        undefined,
         registerFormData("not-an-email", "A", "short")
       );
 
@@ -252,7 +257,8 @@ describe("auth actions", () => {
     });
 
     it("rethrows non-validation errors", async () => {
-      await expect(registerAction(null, null as never)).rejects.toThrow();
+      // SAFETY: as above - `null` stands in for a malformed client submission.
+      await expect(registerAction(undefined, null as never)).rejects.toThrow();
       expect(authApi.signUpEmail).not.toHaveBeenCalled();
     });
   });

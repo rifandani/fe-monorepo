@@ -40,7 +40,7 @@ describe("ldParams", () => {
 });
 
 describe("buildSeoMetadata", () => {
-  it("brands the title and mirrors it across og and twitter", () => {
+  it("brands the title and mirrors it across og tags", () => {
     const { metadata, title, description } = buildSeoMetadata({
       title: "Home",
       description: "Welcome",
@@ -60,10 +60,6 @@ describe("buildSeoMetadata", () => {
       ogImage: "https://spa.test/og.png",
       ogImageHeight: 441,
       ogImageWidth: 843,
-      twitterTitle: "Home | Test App",
-      twitterDescription: "Welcome",
-      twitterSite: "@https://spa.test",
-      twitterImage: "https://spa.test/og.png",
     });
   });
 
@@ -75,6 +71,8 @@ describe("buildSeoMetadata", () => {
   });
 
   it("handles a missing params object", () => {
+    // SAFETY: the cast exists to exercise the runtime guard for callers that
+    // reach this from untyped JS - the signature itself requires the params.
     expect(buildSeoMetadata(undefined as never).title).toBe(
       "Layout | Test App"
     );
@@ -84,23 +82,18 @@ describe("buildSeoMetadata", () => {
     const { metadata } = buildSeoMetadata({
       title: "Post",
       ogImage: "/post.png",
-      twitterImage: "/post-tw.png",
     });
 
     expect(metadata.ogImage).toBe("https://spa.test/post.png");
-    expect(metadata.twitterImage).toBe("https://spa.test/post-tw.png");
   });
 
   it("leaves the structured image form untouched", () => {
     const ogImage = [{ url: "https://cdn.test/a.png", width: 1, height: 2 }];
-    const twitterImage = [{ url: "https://cdn.test/b.png" }];
     const { metadata } = buildSeoMetadata({
       title: "Post",
       ogImage,
-      twitterImage,
     });
 
     expect(metadata.ogImage).toBe(ogImage);
-    expect(metadata.twitterImage).toBe(twitterImage);
   });
 });

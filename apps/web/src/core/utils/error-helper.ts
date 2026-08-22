@@ -3,11 +3,15 @@ export const simplifyErrorObject = (error: Error) => ({
   name: error.name,
   stack: error.stack,
 });
-export const errorAttributesFromUnknown = (caught: unknown) => {
+/** JS lets any value be thrown, so this accepts whatever the `catch` produced. */
+const isString = <T>(value: T): value is T & string =>
+  typeof value === "string";
+
+export const errorAttributesFromUnknown = <T>(caught: T) => {
   if (caught instanceof Error) {
     return simplifyErrorObject(caught);
   }
-  if (typeof caught === "string") {
+  if (isString(caught)) {
     return { message: caught };
   }
   try {

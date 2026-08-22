@@ -30,6 +30,8 @@ export const useCdnFileQuery = (
   const query = useQuery({
     queryFn: opt.url
       ? ({ signal }) =>
+          // SAFETY: this branch only runs when `opt.url` is set - the `skipToken`
+          // alternative covers the empty case.
           cdnRepositories().getCdnFile({ url: opt.url as string }, { signal })
       : skipToken,
     queryKey: cdnKeys[opt.key](opt.url),

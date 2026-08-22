@@ -30,6 +30,7 @@ const mockRequest = (init: {
   if (init.forwardedHost) {
     headers.set("x-forwarded-host", init.forwardedHost);
   }
+  // SAFETY: the code under test reads only `headers` off the request.
   return { headers } as NextRequest;
 };
 

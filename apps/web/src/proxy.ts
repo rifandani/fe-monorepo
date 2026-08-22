@@ -34,7 +34,7 @@ const proxy = async (request: NextRequest) => {
   const existingId = request.headers.get(REQUEST_ID_HEADER);
   const requestId = existingId || crypto.randomUUID();
   // Forward modified headers to the route handler
-  const requestHeaders = new Headers(request.headers as HeadersInit);
+  const requestHeaders = new Headers(request.headers);
   requestHeaders.set(REQUEST_ID_HEADER, requestId);
   requestHeaders.set("x-evlog-start", String(Date.now()));
   const { NextResponse: nextResponse } = await import("next/server");

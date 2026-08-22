@@ -17,6 +17,8 @@ export const useCreateToastContext = () => {
       duration: 3000,
       position: "bottom-right",
       richColors: true,
+      // SAFETY: sonner forwards `style` to the DOM, so the custom properties below
+      // are valid CSS - React's `CSSProperties` just does not model them.
       style: {
         "--error-bg": "var(--color-danger-subtle)",
         "--error-border":
@@ -39,6 +41,8 @@ export const useCreateToastContext = () => {
         "--warning-text": "var(--color-warning-subtle-fg)",
       } as CSSProperties,
       theme:
+        // SAFETY: next-themes types `theme` as a free-form string; this provider
+        // only ever sets "light", "dark" or "auto".
         !theme || theme === "auto" ? "system" : (theme as "light" | "dark"),
       toastOptions: {
         className: twJoin(
@@ -54,5 +58,7 @@ export const useCreateToastContext = () => {
   return [toastConfig, actions] as const;
 };
 export const ToastContext = createContext<ToastContextInterface>(
+  // SAFETY: the provider always supplies a real value; a consumer outside it is a
+  // programming error rather than a supported state.
   {} as ToastContextInterface
 );

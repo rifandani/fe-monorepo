@@ -39,6 +39,8 @@ const RootRoute = () => {
         navigate={(to, options) =>
           router.navigate({
             ...options,
+            // SAFETY: react-aria hands back an href built from this app's own
+            // links; TanStack cannot verify that through the generic `navigate` hook.
             to: to as ToPathOption<RegisteredRouter, "/", "/">,
           })
         }

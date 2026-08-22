@@ -19,13 +19,13 @@ export const isBot = (userAgent: string): boolean =>
   botPatterns.some((pattern) => pattern.test(userAgent));
 export const sanitizeInput = (input: string): string => {
   // If running in a browser, use a temporary DOM element to safely escape input.
-  if (typeof document !== "undefined") {
+  if ("document" in globalThis) {
     const div = document.createElement("div");
     div.textContent = input;
     return div.innerHTML;
   }
   // Fallback for non-browser environments:
-  const map: Record<string, string> = {
+  const map = {
     '"': "&quot;",
     "&": "&amp;",
     "'": "&#x27;",
@@ -33,6 +33,10 @@ export const sanitizeInput = (input: string): string => {
     "<": "&lt;",
     ">": "&gt;",
     "`": "&#x60;",
-  };
-  return input.replace(reg, (match) => map[match] as string);
+  } satisfies Record<string, string>;
+  return input.replace(
+    reg,
+    // SAFETY: `reg` matches exactly the characters keyed in `map`.
+    (match) => map[match as keyof typeof map]
+  );
 };

@@ -66,6 +66,12 @@ export default defineConfig({
         "apps/web/src/app/manifest.ts",
         "apps/web/src/app/api/rate-limit.ts",
         "apps/web/src/core/utils/i18n.ts",
+        // Logic Seam shells — logic lives in tested siblings (ADR-0001).
+        "apps/web/src/core/utils/evlog.ts",
+        "apps/web/src/auth/actions/auth.ts",
+        "apps/web/src/proxy.ts",
+        "apps/expo/src/core/hooks/use-app-store.tsx",
+        "apps/expo/src/core/services/mmkv.ts",
       ],
     },
   },

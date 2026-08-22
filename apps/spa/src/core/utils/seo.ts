@@ -6,6 +6,10 @@ import { SERVICE_NAME } from "@/core/constants/global";
 
 export type SeoMetaInput = Parameters<typeof useSeoMeta>[0];
 
+/** unhead's image fields accept a path, or an already-complete object/array form. */
+const isImagePath = <T>(image: T): image is T & string =>
+  typeof image === "string";
+
 const appName = SERVICE_NAME;
 const appDescription = "Bulletproof React.js 19 Template";
 const appBaseUrl = ENV.VITE_APP_URL;
@@ -52,20 +56,13 @@ export const buildSeoMetadata = (params: SeoMetaInput) => {
     ogImage: resolveOgImage(),
     ogImageHeight: 441,
     ogImageWidth: 843,
-    twitterTitle: title,
-    twitterDescription: description,
-    twitterSite: `@${appBaseUrl}`,
-    twitterImage: resolveOgImage(),
   };
   // Merge the default metadata with any additional properties passed in
   const metadata = assign(defaultMetadata, params ?? { title: "Layout" });
   // Only the plain-string form is a path we can absolutize; unhead also accepts
   // an object/array form, which is already fully specified by the caller.
-  if (typeof metadata.ogImage === "string") {
+  if (isImagePath(metadata.ogImage)) {
     metadata.ogImage = resolveOgImage(metadata.ogImage);
-  }
-  if (typeof metadata.twitterImage === "string") {
-    metadata.twitterImage = resolveOgImage(metadata.twitterImage);
   }
   return { description, metadata, title };
 };

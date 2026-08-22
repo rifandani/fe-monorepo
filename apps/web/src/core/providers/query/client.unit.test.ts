@@ -15,6 +15,7 @@ vi.mock("@tanstack/react-query", async (importOriginal) => {
   };
 });
 
+// SAFETY: the dehydrate predicate under test reads only `state` and `meta`.
 const query = (status: string, dataUpdatedAt = 1) =>
   ({
     state: { status, data: undefined, dataUpdatedAt, fetchStatus: "idle" },

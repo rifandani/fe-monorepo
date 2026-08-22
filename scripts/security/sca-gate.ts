@@ -64,12 +64,24 @@ interface Finding {
 
 type SeverityBand = "low" | "moderate" | "high" | "critical";
 
-const LEVEL_RANK: Record<SeverityBand, number> = {
+const LEVEL_RANK = {
   low: 1,
   moderate: 2,
   high: 3,
   critical: 4,
-};
+} satisfies Record<SeverityBand, number>;
+
+/** Node's `process.arch` names mapped to the ones osv-scanner publishes. */
+const OSV_ARCHES = {
+  arm64: "arm64",
+  x64: "amd64",
+} satisfies Partial<Record<typeof process.arch, string>>;
+
+const isOsvArch = (arch: string): arch is keyof typeof OSV_ARCHES =>
+  Object.hasOwn(OSV_ARCHES, arch);
+
+const isSeverityBand = (value: string): value is SeverityBand =>
+  Object.hasOwn(LEVEL_RANK, value);
 
 const root = path.resolve(import.meta.dirname, "../..");
 const allowlistPath = path.resolve(
@@ -80,14 +92,16 @@ const auditLevel = (process.env.SCA_AUDIT_LEVEL ?? "high").toLowerCase();
 const today = new Date().toISOString().slice(0, 10);
 const lockfile = "bun.lock";
 
-const minRank = LEVEL_RANK[auditLevel as SeverityBand];
-if (!minRank) {
+if (!isSeverityBand(auditLevel)) {
   console.error(
     `::error::invalid SCA_AUDIT_LEVEL=${auditLevel} (use low|moderate|high|critical)`
   );
   process.exit(2);
 }
+const minRank = LEVEL_RANK[auditLevel];
 
+// SAFETY: the allowlist is a repo-owned file; every field read below is optional
+// and validated in the loop that follows.
 const raw = JSON.parse(readFileSync(allowlistPath, "utf-8")) as {
   entries?: AllowEntry[];
 };
@@ -121,7 +135,7 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-const bandFromCvss = (score: unknown): SeverityBand | null => {
+const bandFromCvss = (score?: string): SeverityBand | null => {
   const n = Number(score);
   if (!Number.isFinite(n) || n <= 0) {
     return null;
@@ -138,17 +152,12 @@ const bandFromCvss = (score: unknown): SeverityBand | null => {
   return "low";
 };
 
-const normalizeBand = (value: unknown): SeverityBand | null => {
-  const v = String(value ?? "")
-    .trim()
-    .toLowerCase();
+const normalizeBand = (value?: string): SeverityBand | null => {
+  const v = (value ?? "").trim().toLowerCase();
   if (v === "medium") {
     return "moderate";
   }
-  if (v in LEVEL_RANK) {
-    return v as SeverityBand;
-  }
-  return null;
+  return isSeverityBand(v) ? v : null;
 };
 
 const maxBand = (
@@ -191,16 +200,11 @@ const ensureOsvScanner = (): string => {
   }
 
   const version = process.env.OSV_SCANNER_VERSION ?? "2.4.0";
-  const platforms: Record<string, string> = {
-    darwin: "darwin",
-    linux: "linux",
-  };
-  const arches: Record<string, string> = {
-    arm64: "arm64",
-    x64: "amd64",
-  };
-  const platform = platforms[process.platform];
-  const arch = arches[process.arch];
+  const platform =
+    process.platform === "darwin" || process.platform === "linux"
+      ? process.platform
+      : undefined;
+  const arch = isOsvArch(process.arch) ? OSV_ARCHES[process.arch] : undefined;
   if (!(platform && arch)) {
     throw new Error(
       `osv-scanner not found and no binary for ${process.platform}/${process.arch}`
@@ -257,9 +261,12 @@ const writeConfig = (activeEntries: AllowEntry[]): string => {
   return configPath;
 };
 
-const buildIdBands = (
-  groups: OsvGroup[]
-): { idBand: Map<string, SeverityBand>; pkgMax: SeverityBand | null } => {
+interface IdBands {
+  idBand: Map<string, SeverityBand>;
+  pkgMax: SeverityBand | null;
+}
+
+const buildIdBands = (groups: OsvGroup[]): IdBands => {
   const idBand = new Map<string, SeverityBand>();
   let pkgMax: SeverityBand | null = null;
   for (const g of groups) {
@@ -376,6 +383,9 @@ if (code !== 0 && code !== 1) {
 
 let doc: OsvDocument;
 try {
+  // SAFETY: osv-scanner's JSON schema is mirrored in `OsvDocument`, and every
+  // field it declares is optional, so a schema drift degrades to "no findings"
+  // rather than a bad read.
   doc = JSON.parse(stdout || "{}") as OsvDocument;
 } catch {
   console.error("::error::failed to parse osv-scanner JSON output");

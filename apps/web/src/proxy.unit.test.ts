@@ -33,6 +33,8 @@ vi.mock("next/server", async (importOriginal) => {
   };
 });
 
+// SAFETY: the proxy touches only `request.headers`, so the stub covers the whole
+// surface it reads.
 const mockRequest = (headers?: HeadersInit): NextRequest =>
   ({
     headers: new Headers(headers),

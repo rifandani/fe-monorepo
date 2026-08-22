@@ -2,7 +2,6 @@
 import { trace } from "@opentelemetry/api";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";
-import { useColorMode } from "@workspace/core/hooks/use-color-mode";
 import { logger } from "@workspace/core/utils/logger";
 
 import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
@@ -41,7 +40,7 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
       <div className="max-w-md space-y-8 text-center">
         {/* Hero Section */}
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold text-primary">4xx</h1>
+          <h1 className="text-primary text-8xl font-bold">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
           <p className="text-muted-fg">Something went wrong</p>
         </div>
@@ -64,7 +63,6 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
   );
 };
 const NotFoundRoute = () => {
-  useColorMode();
   const userStore = useAuthUserStore();
   const { t } = useTranslation();
   return (
@@ -72,18 +70,13 @@ const NotFoundRoute = () => {
       <div className="max-w-md space-y-8 text-center">
         {/* Hero Section */}
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold text-primary">404</h1>
+          <h1 className="text-primary text-8xl font-bold">404</h1>
           <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
           <p className="text-muted-fg">{t("gone")}</p>
         </div>
 
         {/* Quick Actions */}
-        <div
-          className={`
-          flex flex-col justify-center gap-4
-          sm:flex-row
-        `}
-        >
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Link
             href={userStore.user ? "/" : "/login"}
             className="flex items-center"

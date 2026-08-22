@@ -1,20 +1,30 @@
-import { useColorMode } from "@workspace/core/hooks/use-color-mode";
+import { useLocalStorage } from "@reactuses/core";
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
 import { createContext } from "react";
 import type { ComponentPropsWithoutRef, CSSProperties } from "react";
 import type { Toaster } from "sonner";
 import { twJoin } from "tailwind-merge";
 
+import type { ColorMode } from "@/core/constants/global";
+import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
+
 type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
 export const useCreateToastContext = () => {
-  const [theme] = useColorMode();
+  // `Entry` owns applying the mode to `<html>`; this only needs to read it back
+  const [colorMode] = useLocalStorage<ColorMode>(
+    COLOR_MODE_STORAGE_KEY,
+    "auto"
+  );
+  const theme = colorMode ?? "auto";
   const [toastConfig, setToastConfig, resetToastConfig] =
     useResetState<ToasterProps>({
       className: "toaster group",
       duration: 3000,
       position: "bottom-right",
       richColors: true,
+      // SAFETY: sonner forwards `style` to the DOM, so the custom properties below
+      // are valid CSS - React's `CSSProperties` just does not model them.
       style: {
         "--error-bg": "var(--color-danger-subtle)",
         "--error-border":
@@ -51,5 +61,7 @@ export const useCreateToastContext = () => {
   return [toastConfig, actions] as const;
 };
 export const ToastContext = createContext<ToastContextInterface>(
+  // SAFETY: the provider always supplies a real value; a consumer outside it is a
+  // programming error rather than a supported state.
   {} as ToastContextInterface
 );
