@@ -1,12 +1,10 @@
 'use client'
 
-import type { DialogProps } from 'react-aria-components/Dialog'
-import type { ModalOverlayProps } from 'react-aria-components/Modal'
 import {
-
+  type DialogProps,
   DialogTrigger as DialogTriggerPrimitive,
 } from 'react-aria-components/Dialog'
-import { Modal, ModalOverlay } from 'react-aria-components/Modal'
+import { Modal, ModalOverlay, type ModalOverlayProps } from 'react-aria-components/Modal'
 import { cx } from '@/core/utils/primitive'
 import {
   Dialog,
@@ -24,8 +22,8 @@ const Sheet = DialogTriggerPrimitive
 
 interface SheetContentProps
   extends
-  Omit<ModalOverlayProps, 'children'>,
-  Pick<DialogProps, 'aria-label' | 'role' | 'aria-labelledby' | 'children'> {
+    Omit<ModalOverlayProps, 'children'>,
+    Pick<DialogProps, 'aria-label' | 'role' | 'aria-labelledby' | 'children'> {
   closeButton?: boolean
   isFloat?: boolean
   side?: 'top' | 'bottom' | 'left' | 'right'
@@ -41,7 +39,7 @@ const sideVariants: Record<string, string> = {
     'entering:slide-in-from-right exiting:slide-out-to-right-80 inset-y-0 right-0 h-auto w-3/4 overflow-y-auto border-l sm:max-w-80 data-[float=true]:inset-y-2 data-[float=true]:right-2 data-[float=true]:border-l-0',
 }
 
-function SheetContent({
+const SheetContent = ({
   className,
   isDismissable: isDismissableInternal,
   side = 'right',
@@ -51,14 +49,14 @@ function SheetContent({
   overlay,
   children,
   ...props
-}: SheetContentProps) {
+}: SheetContentProps) => {
   const isDismissable = isDismissableInternal ?? role !== 'alertdialog'
   return (
     <ModalOverlay
       isDismissable={isDismissable}
       className={cx(
         'entering:fade-in exiting:fade-out fixed start-0 top-0 z-50 size-full entering:animate-in exiting:animate-out overflow-hidden bg-black/15 entering:duration-500 exiting:duration-300',
-        overlay?.className,
+        overlay?.className
       )}
       {...props}
     >
@@ -72,11 +70,11 @@ function SheetContent({
           'entering:fade-in entering:animate-in entering:duration-500',
           'exiting:fade-in exiting:animate-out exiting:duration-300',
           sideVariants[side],
-          className,
+          className
         )}
       >
         <Dialog className="sm:[--gutter:--spacing(6)]" aria-label={props['aria-label']} role={role}>
-          {values => (
+          {(values) => (
             <>
               {typeof children === 'function' ? children(values) : children}
               {closeButton && (

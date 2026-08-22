@@ -1,14 +1,13 @@
 'use client'
 
-import type { ColorPickerProps as ColorPickerPrimitiveProps } from 'react-aria-components/ColorPicker'
 import { EyeDropperIcon } from '@heroicons/react/24/solid'
+import { parseColor } from 'react-stately'
 import { use } from 'react'
 import {
   ColorPicker as ColorPickerPrimitive,
-
+  type ColorPickerProps as ColorPickerPrimitiveProps,
   ColorPickerStateContext,
 } from 'react-aria-components/ColorPicker'
-import { parseColor } from 'react-stately'
 import { twMerge } from 'tailwind-merge'
 import { Button } from './button'
 import { fieldStyles } from './field'
@@ -17,7 +16,7 @@ interface ColorPickerProps extends ColorPickerPrimitiveProps {
   className?: string
 }
 
-function ColorPicker({ className, ...props }: ColorPickerProps) {
+const ColorPicker = ({ className, ...props }: ColorPickerProps) => {
   return (
     <div data-slot="control" className={twMerge(fieldStyles({ className: 'w-fit' }), className)}>
       <ColorPickerPrimitive {...props} />
@@ -31,7 +30,7 @@ declare global {
   }
 }
 
-function EyeDropper() {
+const EyeDropper = () => {
   const state = use(ColorPickerStateContext)!
 
   if (!window.EyeDropper) {
@@ -46,7 +45,7 @@ function EyeDropper() {
       intent="outline"
       onPress={() => {
         const eyeDropper = window.EyeDropper ? new window.EyeDropper() : null
-        eyeDropper?.open().then(result => state.setColor(parseColor(result.sRGBHex)))
+        eyeDropper?.open().then((result) => state.setColor(parseColor(result.sRGBHex)))
       }}
     >
       <EyeDropperIcon />

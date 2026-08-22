@@ -1,15 +1,13 @@
 'use client'
 
-import type { DialogTriggerProps } from 'react-aria-components/Dialog'
-import type { PopoverProps } from 'react-aria-components/Popover'
 import {
   DialogTrigger as DialogTriggerPrimitive,
-
+  type DialogTriggerProps,
 } from 'react-aria-components/Dialog'
 import {
   OverlayArrow,
   Popover as PopoverPrimitive,
-
+  type PopoverProps,
 } from 'react-aria-components/Popover'
 import { cx } from '@/core/utils/primitive'
 import {
@@ -22,7 +20,7 @@ import {
   DialogTrigger,
 } from './dialog'
 
-function Popover(props: DialogTriggerProps) {
+const Popover = (props: DialogTriggerProps) => {
   return <DialogTriggerPrimitive {...props} />
 }
 
@@ -36,13 +34,13 @@ interface PopoverContentProps extends PopoverProps {
   ref?: React.Ref<HTMLDivElement>
 }
 
-function PopoverContent({
+const PopoverContent = ({
   children,
   arrow = false,
   className,
   ref,
   ...props
-}: PopoverContentProps) {
+}: PopoverContentProps) => {
   const offset = props.offset ?? (arrow ? 12 : 8)
   return (
     <PopoverPrimitive
@@ -56,11 +54,11 @@ function PopoverContent({
         'placement-left:entering:slide-in-from-right-1 placement-right:entering:slide-in-from-left-1 placement-top:entering:slide-in-from-bottom-1 placement-bottom:entering:slide-in-from-top-1',
         'placement-left:exiting:slide-out-to-right-1 placement-right:exiting:slide-out-to-left-1 placement-top:exiting:slide-out-to-bottom-1 placement-bottom:exiting:slide-out-to-top-1',
         'forced-colors:bg-[Canvas]',
-        className,
+        className
       )}
       {...props}
     >
-      {values => (
+      {(values) => (
         <>
           {arrow && (
             <OverlayArrow className="group">
@@ -68,13 +66,13 @@ function PopoverContent({
                 width={12}
                 height={12}
                 viewBox="0 0 12 12"
-                className="block fill-overlay stroke-border group-placement-left:-rotate-90 group-placement-right:rotate-90 group-placement-bottom:rotate-180 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
+                className="block fill-overlay stroke-border group-placement-bottom:rotate-180 group-placement-left:-rotate-90 group-placement-right:rotate-90 forced-colors:fill-[Canvas] forced-colors:stroke-[ButtonBorder]"
               >
                 <path d="M0 0 L6 6 L12 0" />
               </svg>
             </OverlayArrow>
           )}
-          <div data-slot="popover-inner" className="flex max-h-[inherit] flex-col overflow-y-auto">
+          <div data-slot="popover-inner" className="max-h-[inherit] overflow-x-hidden overflow-y-auto flex flex-col">
             {typeof children === 'function' ? children(values) : children}
           </div>
         </>

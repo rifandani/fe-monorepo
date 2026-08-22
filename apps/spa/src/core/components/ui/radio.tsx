@@ -1,18 +1,17 @@
 'use client'
 
-import type { RadioButtonProps, RadioFieldProps, RadioGroupProps } from 'react-aria-components/RadioGroup'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import {
   RadioButton,
-
+  type RadioButtonProps,
   RadioField as RadioFieldPrimitive,
-
+  type RadioFieldProps,
   RadioGroup as RadioGroupPrimitive,
-
+  type RadioGroupProps,
 } from 'react-aria-components/RadioGroup'
 import { twMerge } from 'tailwind-merge'
-import { Label } from '@/core/components/ui/field'
 import { cx } from '@/core/utils/primitive'
+import { Label } from '@/core/components/ui/field'
 
 export function RadioGroup({ className, ...props }: RadioGroupProps) {
   return (
@@ -21,7 +20,7 @@ export function RadioGroup({ className, ...props }: RadioGroupProps) {
       data-slot="control"
       className={cx(
         'space-y-3 has-[[slot=description]]:not-has-[[slot=errorMessage]]:space-y-6 *:data-[slot=label]:font-medium',
-        className,
+        className
       )}
     />
   )
@@ -37,7 +36,7 @@ export function RadioField({ className, ...props }: RadioFieldProps) {
         '**:data-[slot=control-label]:col-start-2 **:data-[slot=control-label]:row-start-1',
         '*:[[slot=description]]:col-start-2 *:[[slot=description]]:row-start-2',
         'has-[[slot=description]]:**:data-[slot=control-label]:font-medium',
-        className,
+        className
       )}
       data-slot="control"
     />
@@ -57,14 +56,14 @@ export function Radio({ className, children, ...props }: RadioButtonProps) {
             <span
               data-slot="indicator"
               className={twMerge([
-                'sm:before:size-1.7 relative isolate col-start-1 row-start-1 mt-0.75 flex size-4.5 shrink-0 items-center justify-center rounded-full bg-(--control-bg,transparent) text-bg inset-ring inset-ring-input transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[\'\'] hover:before:bg-muted-fg/20 sm:mt-1 sm:size-4',
+                "relative col-start-1 row-start-1 mt-0.75 sm:mt-1 inset-ring inset-ring-input isolate flex size-4.5 shrink-0 items-center justify-center rounded-full bg-(--control-bg,transparent) text-bg transition before:absolute before:inset-auto before:size-2 before:shrink-0 before:rounded-full before:content-[''] hover:before:bg-muted-fg/20 sm:size-4 sm:before:size-1.7",
                 'in-disabled:bg-muted',
                 isSelected && [
-                  'bg-(--radio-bg,var(--color-primary)) text-(--radio-fg,var(--color-primary-fg)) inset-ring-(--radio-ring,var(--color-ring)) before:bg-bg hover:before:bg-muted/90',
-                  'group-invalid:bg-danger group-invalid:text-danger-fg group-invalid:inset-ring-danger-subtle-fg/70',
+                  'inset-ring-(--radio-ring,var(--color-ring)) bg-(--radio-bg,var(--color-primary)) text-(--radio-fg,var(--color-primary-fg)) before:bg-bg hover:before:bg-muted/90',
+                  'group-invalid:inset-ring-danger-subtle-fg/70 group-invalid:bg-danger group-invalid:text-danger-fg',
                 ],
-                isInvalid
-                && 'bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20 inset-ring-danger-subtle-fg/70',
+                isInvalid &&
+                  'inset-ring-danger-subtle-fg/70 bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20',
               ])}
             />
             <Label data-slot="control-label" elementType="span">

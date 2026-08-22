@@ -1,14 +1,12 @@
 'use client'
 
-import type { FileTriggerProps as FileTriggerPrimitiveProps } from 'react-aria-components/FileTrigger'
-import type { VariantProps } from 'tailwind-variants'
-import type { buttonStyles } from './button'
 import { CameraIcon, FolderIcon, PaperClipIcon } from '@heroicons/react/24/outline'
 import {
   FileTrigger as FileTriggerPrimitive,
-
+  type FileTriggerProps as FileTriggerPrimitiveProps,
 } from 'react-aria-components/FileTrigger'
-import { Button } from './button'
+import type { VariantProps } from 'tailwind-variants'
+import { Button, type buttonStyles } from './button'
 import { Loader } from './loader'
 
 export interface FileTriggerProps
@@ -36,37 +34,29 @@ export function FileTrigger({
         size={size}
         isCircle={isCircle}
       >
-        {!props.isPending
-          ? (
-              props.defaultCamera
-                ? (
-                    <CameraIcon />
-                  )
-                : props.acceptDirectory
-                  ? (
-                      <FolderIcon />
-                    )
-                  : (
-                      <PaperClipIcon />
-                    )
-            )
-          : (
-              <Loader />
-            )}
-        {props.children
-          ? (
-              props.children
-            )
-          : (
-              <>
-                {props.allowsMultiple
-                  ? 'Browse a files'
-                  : props.acceptDirectory
-                    ? 'Browse'
-                    : 'Browse a file'}
-                ...
-              </>
-            )}
+        {!props.isPending ? (
+          props.defaultCamera ? (
+            <CameraIcon />
+          ) : props.acceptDirectory ? (
+            <FolderIcon />
+          ) : (
+            <PaperClipIcon />
+          )
+        ) : (
+          <Loader />
+        )}
+        {props.children ? (
+          props.children
+        ) : (
+          <>
+            {props.allowsMultiple
+              ? 'Browse a files'
+              : props.acceptDirectory
+                ? 'Browse'
+                : 'Browse a file'}
+            ...
+          </>
+        )}
       </Button>
     </FileTriggerPrimitive>
   )

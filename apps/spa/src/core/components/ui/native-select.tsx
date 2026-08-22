@@ -35,7 +35,7 @@ export function NativeSelectContent({ className, isInvalid, ...props }: NativeSe
           'disabled:bg-muted forced-colors:in-disabled:text-[GrayText]',
           'in-disabled:bg-muted forced-colors:in-disabled:text-[GrayText]',
           'dark:scheme-dark',
-          className,
+          className
         )}
         {...props}
       />

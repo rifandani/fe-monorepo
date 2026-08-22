@@ -1,20 +1,19 @@
 'use client'
 
+import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { Button } from 'react-aria-components/Button'
 import type {
   ComboBoxProps as ComboBoxPrimitiveProps,
   ComboBoxValueProps,
 } from 'react-aria-components/ComboBox'
-import type { InputProps } from 'react-aria-components/Input'
-import type { ListBoxProps } from 'react-aria-components/ListBox'
-import type { PopoverProps } from 'react-aria-components/Popover'
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { Button } from 'react-aria-components/Button'
 import {
-  ComboBoxContext,
   ComboBox as ComboBoxPrimitive,
+  ComboBoxContext,
   ComboBoxValue as ComboBoxValuePrimitive,
 } from 'react-aria-components/ComboBox'
-import { ListBox } from 'react-aria-components/ListBox'
+import type { InputProps } from 'react-aria-components/Input'
+import { ListBox, type ListBoxProps } from 'react-aria-components/ListBox'
+import type { PopoverProps } from 'react-aria-components/Popover'
 import { useSlottedContext } from 'react-aria-components/slots'
 import { fieldStyles } from '@/core/components/ui/field'
 import { Input } from '@/core/components/ui/input'
@@ -29,10 +28,10 @@ interface ComboBoxProps<T extends object, M extends 'single' | 'multiple' = 'sin
   children: React.ReactNode
 }
 
-function ComboBox<T extends object, M extends 'single' | 'multiple' = 'single'>({
+const ComboBox = <T extends object, M extends 'single' | 'multiple' = 'single'>({
   className,
   ...props
-}: ComboBoxProps<T, M>) {
+}: ComboBoxProps<T, M>) => {
   return (
     <ComboBoxPrimitive data-slot="control" className={cx(fieldStyles(), className)} {...props} />
   )
@@ -43,19 +42,19 @@ interface ComboBoxListProps<T extends object>
   popover?: Omit<PopoverProps, 'children'>
 }
 
-function ComboBoxContent<T extends object>({
+const ComboBoxContent = <T extends object>({
   children,
   items,
   className,
   popover,
   ...props
-}: ComboBoxListProps<T>) {
+}: ComboBoxListProps<T>) => {
   return (
     <PopoverContent
       placement={popover?.placement ?? 'bottom'}
       className={cx(
         'min-w-(--trigger-width) overflow-hidden *:data-[slot=popover-inner]:overflow-hidden',
-        popover?.className,
+        popover?.className
       )}
       {...popover}
     >
@@ -63,8 +62,8 @@ function ComboBoxContent<T extends object>({
         layout="stack"
         orientation="vertical"
         className={cx(
-          'grid max-h-[inherit] w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
-          className,
+          "grid max-h-[inherit] w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role='group']+[role=group]]:mt-4 *:[[role='group']+[role=separator]]:mt-1",
+          className
         )}
         items={items}
         {...props}
@@ -75,7 +74,7 @@ function ComboBoxContent<T extends object>({
   )
 }
 
-function ComboBoxInput(props: InputProps) {
+const ComboBoxInput = (props: InputProps) => {
   const context = useSlottedContext(ComboBoxContext)!
   return (
     <span
@@ -96,9 +95,9 @@ const ComboBoxSection = DropdownSection
 const ComboBoxItem = DropdownItem
 const ComboBoxLabel = DropdownLabel
 const ComboBoxDescription = DropdownDescription
-function ComboBoxValue<T extends object>(props: ComboBoxValueProps<T>) {
-  return <ComboBoxValuePrimitive data-slot="control" {...props} />
-}
+const ComboBoxValue = <T extends object>(props: ComboBoxValueProps<T>) => (
+  <ComboBoxValuePrimitive data-slot="control" {...props} />
+)
 
 export type { ComboBoxListProps, ComboBoxProps }
 export {

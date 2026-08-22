@@ -1,5 +1,4 @@
 'use client'
-
 import type {
   ColorSliderProps,
   SliderOutputProps,
@@ -20,7 +19,7 @@ export function ColorSlider({ className, ...props }: ColorSliderProps) {
       className={cx(
         'orientation-vertical:flex orientation-horizontal:grid orientation-horizontal:w-full grid-cols-[1fr_auto] flex-col items-center gap-2',
         fieldStyles(),
-        className,
+        className
       )}
       {...props}
     />
@@ -44,7 +43,7 @@ export function ColorSliderTrack({ className, ...props }: SliderTrackProps) {
         'orientation-horizontal:h-6 orientation-horizontal:w-full',
         'orientation-vertical:ms-[50%] orientation-vertical:h-56 orientation-vertical:w-6 orientation-vertical:-translate-x-[50%]',
         'disabled:bg-muted-fg disabled:opacity-50 forced-colors:bg-[GrayText]',
-        className,
+        className
       )}
       {...props}
       style={({ defaultStyle, isDisabled }) => ({

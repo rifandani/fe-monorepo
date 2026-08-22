@@ -1,10 +1,9 @@
 'use client'
 
 import type { ComponentProps } from 'react'
-import type { BaseChartProps } from './chart'
 import { Cell, Pie, PieChart as PieChartPrimitive } from 'recharts'
 import {
-
+  type BaseChartProps,
   Chart,
   ChartTooltip,
   ChartTooltipContent,
@@ -23,7 +22,7 @@ function calculateDefaultLabel(data: BaseChartProps['data'], valueKey: string): 
     data.map((dataPoint) => {
       const value = dataPoint[valueKey]
       return typeof value === 'number' ? value : 0
-    }),
+    })
   )
 }
 
@@ -31,7 +30,7 @@ function parseLabelInput(
   labelInput: string | undefined,
   valueFormatter: (value: number) => string,
   data: BaseChartProps['data'],
-  valueKey: string,
+  valueKey: string
 ): string {
   return labelInput || valueFormatter(calculateDefaultLabel(data, valueKey))
 }
@@ -57,7 +56,7 @@ interface PieChartProps extends Omit<
   pieProps?: Omit<ComponentProps<typeof Pie>, 'data' | 'dataKey' | 'name'>
 }
 
-function PieChart({
+const PieChart = ({
   data = [],
   dataKey,
   colors = DEFAULT_COLORS,
@@ -78,7 +77,7 @@ function PieChart({
   valueFormatter = (value: number) => value.toString(),
   pieProps,
   ...props
-}: PieChartProps) {
+}: PieChartProps) => {
   const parsedLabelInput = parseLabelInput(label, valueFormatter, data, dataKey)
 
   return (
@@ -110,54 +109,50 @@ function PieChart({
             </text>
           )}
 
-          {!children
-            ? (
-                <Pie
-                  name={nameKey}
-                  dataKey={dataKey}
-                  data={data}
-                  cx={pieProps?.cx ?? '50%'}
-                  cy={pieProps?.cy ?? '50%'}
-                  startAngle={pieProps?.startAngle ?? 90}
-                  endAngle={pieProps?.endAngle ?? -270}
-                  strokeLinejoin="round"
-                  innerRadius={variant === 'donut' ? '50%' : '0%'}
-                  isAnimationActive
-                  {...pieProps}
-                >
-                  {data.map((datum: PieChartDatum, index: number) => {
-                    const configKey
-                      = typeof datum.code === 'string'
-                        ? datum.code
-                        : typeof datum.name === 'string'
-                          ? datum.name
-                          : undefined
+          {!children ? (
+            <Pie
+              name={nameKey}
+              dataKey={dataKey}
+              data={data}
+              cx={pieProps?.cx ?? '50%'}
+              cy={pieProps?.cy ?? '50%'}
+              startAngle={pieProps?.startAngle ?? 90}
+              endAngle={pieProps?.endAngle ?? -270}
+              strokeLinejoin="round"
+              innerRadius={variant === 'donut' ? '50%' : '0%'}
+              isAnimationActive
+              {...pieProps}
+            >
+              {data.map((datum: PieChartDatum, index: number) => {
+                const configKey =
+                  typeof datum.code === 'string'
+                    ? datum.code
+                    : typeof datum.name === 'string'
+                      ? datum.name
+                      : undefined
 
-                    return (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={getColorValue(
-                          config?.[configKey ?? '']?.color ?? colors[index % colors.length],
-                        )}
-                      />
-                    )
-                  })}
-                </Pie>
-              )
-            : (
-                children
-              )}
+                return (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={getColorValue(
+                      config?.[configKey ?? '']?.color ?? colors[index % colors.length]
+                    )}
+                  />
+                )
+              })}
+            </Pie>
+          ) : (
+            children
+          )}
 
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === 'boolean'
-                  ? (
-                      <ChartTooltipContent hideLabel labelSeparator={false} accessibilityLayer />
-                    )
-                  : (
-                      tooltip
-                    )
+                typeof tooltip === 'boolean' ? (
+                  <ChartTooltipContent hideLabel labelSeparator={false} accessibilityLayer />
+                ) : (
+                  tooltip
+                )
               }
               {...tooltipProps}
             />

@@ -1,36 +1,33 @@
 'use client'
 
-import type { GridListItemProps, GridListProps } from 'react-aria-components/GridList'
-import type { TextProps } from 'react-aria-components/Text'
 import { Button } from 'react-aria-components/Button'
+import type { GridListItemProps, GridListProps } from 'react-aria-components/GridList'
 import {
+  GridList as GridListPrimitive,
   GridListHeader as GridListHeaderPrimitive,
   GridListItem as GridListItemPrimitive,
-  GridList as GridListPrimitive,
   GridListSection as GridListSectionPrimitive,
 } from 'react-aria-components/GridList'
-import { Text } from 'react-aria-components/Text'
+import { Text, type TextProps } from 'react-aria-components/Text'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Checkbox, CheckboxField } from './checkbox'
 
-function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
-  return (
-    <GridListPrimitive
-      data-slot="grid-list"
-      className={cx(
-        'relative divide-y overflow-hidden rounded-lg border bg-bg *:drop-target:border-accent sm:text-sm/6 dark:bg-muted',
-        className,
-      )}
-      {...props}
-    />
-  )
-}
+const GridList = <T extends object>({ className, ...props }: GridListProps<T>) => (
+  <GridListPrimitive
+    data-slot="grid-list"
+    className={cx(
+      'relative divide-y overflow-hidden rounded-lg border bg-bg *:drop-target:border-accent sm:text-sm/6 dark:bg-muted',
+      className
+    )}
+    {...props}
+  />
+)
 
-function GridListSection<T extends object>({
+const GridListSection = <T extends object>({
   className,
   ...props
-}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) {
+}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) => {
   return (
     <GridListSectionPrimitive
       data-slot="grid-list-section"
@@ -40,20 +37,20 @@ function GridListSection<T extends object>({
   )
 }
 
-function GridListHeader({
+const GridListHeader = ({
   className,
   ...props
-}: React.ComponentProps<typeof GridListHeaderPrimitive>) {
+}: React.ComponentProps<typeof GridListHeaderPrimitive>) => {
   return (
     <GridListHeaderPrimitive
       data-slot="grid-list-header"
-      className={twMerge('px-3 py-2.5 text-sm/6 font-semibold', className)}
+      className={twMerge('px-3 py-2.5 font-semibold text-sm/6', className)}
       {...props}
     />
   )
 }
 
-function GridListItem({ className, children, ...props }: GridListItemProps) {
+const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
   const textValue = typeof children === 'string' ? children : undefined
   return (
     <GridListItemPrimitive
@@ -63,13 +60,13 @@ function GridListItem({ className, children, ...props }: GridListItemProps) {
         'group relative min-w-0 px-3 py-2.5 outline-hidden [--me-icon:--spacing(2)]',
         'flex min-w-0 cursor-default items-center gap-2 sm:gap-2.5',
         'dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-fg',
-        'hover:bg-accent/50 **:[svg:not([data-slot=\'check-indicator\'])]:size-5 **:[svg:not([data-slot=\'check-indicator\'])]:shrink-0 **:[svg:not([data-slot=\'check-indicator\'])]:text-muted-fg sm:**:[svg:not([data-slot=\'check-indicator\'])]:size-4',
+        "hover:bg-accent/50 **:[svg:not([data-slot='check-indicator'])]:size-5 **:[svg:not([data-slot='check-indicator'])]:shrink-0 **:[svg:not([data-slot='check-indicator'])]:text-muted-fg sm:**:[svg:not([data-slot='check-indicator'])]:size-4",
         'selected:bg-accent/40 selected:text-fg selected:hover:bg-accent/80 selected:**:[.text-muted-fg]:text-accent-fg/80',
         'href' in props && 'cursor-pointer',
-        className,
+        className
       )}
     >
-      {values => (
+      {(values) => (
         <>
           {values.allowsDragging && (
             <Button slot="drag">
@@ -120,15 +117,15 @@ function GridListItem({ className, children, ...props }: GridListItemProps) {
   )
 }
 
-function GridListEmptyState({ ref, className, ...props }: React.ComponentProps<'div'>) {
-  return <div ref={ref} className={twMerge('p-6', className)} {...props} />
-}
+const GridListEmptyState = ({ ref, className, ...props }: React.ComponentProps<'div'>) => (
+  <div ref={ref} className={twMerge('p-6', className)} {...props} />
+)
 
-function GridListSpacer({ className, ref, ...props }: React.ComponentProps<'div'>) {
+const GridListSpacer = ({ className, ref, ...props }: React.ComponentProps<'div'>) => {
   return <div ref={ref} aria-hidden className={twMerge('-ms-4 flex-1', className)} {...props} />
 }
 
-function GridListStart({ className, ref, ...props }: React.ComponentProps<'div'>) {
+const GridListStart = ({ className, ref, ...props }: React.ComponentProps<'div'>) => {
   return (
     <div
       ref={ref}
@@ -142,20 +139,18 @@ interface GridListTextProps extends TextProps {
   ref?: React.Ref<HTMLDivElement>
 }
 
-function GridListLabel({ className, ref, ...props }: GridListTextProps) {
-  return <Text ref={ref} className={twMerge('font-medium', className)} {...props} />
-}
+const GridListLabel = ({ className, ref, ...props }: GridListTextProps) => (
+  <Text ref={ref} className={twMerge('font-medium', className)} {...props} />
+)
 
-function GridListDescription({ className, ref, ...props }: GridListTextProps) {
-  return (
-    <Text
-      slot="description"
-      ref={ref}
-      className={twMerge('text-sm font-normal text-muted-fg', className)}
-      {...props}
-    />
-  )
-}
+const GridListDescription = ({ className, ref, ...props }: GridListTextProps) => (
+  <Text
+    slot="description"
+    ref={ref}
+    className={twMerge('font-normal text-muted-fg text-sm', className)}
+    {...props}
+  />
+)
 
 export type { GridListItemProps, GridListProps }
 export {

@@ -1,9 +1,7 @@
 'use client'
 
-import type { LabelProps } from 'react-aria-components/Label'
-import type { ProgressBarProps } from 'react-aria-components/ProgressBar'
-import { Label } from 'react-aria-components/Label'
-import { ProgressBar } from 'react-aria-components/ProgressBar'
+import { Label, type LabelProps } from 'react-aria-components/Label'
+import { ProgressBar, type ProgressBarProps } from 'react-aria-components/ProgressBar'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 
@@ -22,7 +20,7 @@ export function LeaderboardHeader({ className, ...props }: React.ComponentProps<
       data-slot="leaderboard-header"
       className={twMerge(
         'grid auto-rows-min grid-rows-[auto_auto] items-start gap-1 px-(--gutter) has-data-[slot=card-action]:grid-cols-[1fr_auto]',
-        className,
+        className
       )}
       {...props}
     />
@@ -33,7 +31,7 @@ export function LeaderboardTitle({ className, ...props }: React.ComponentProps<'
   return (
     <div
       data-slot="leaderboard-title"
-      className={twMerge('text-base/6 font-semibold text-balance', className)}
+      className={twMerge('text-balance font-semibold text-base/6', className)}
       {...props}
     />
   )
@@ -45,7 +43,7 @@ export function LeaderboardAction({ className, ...props }: React.ComponentProps<
       data-slot="leaderboard-action"
       className={twMerge(
         'col-start-2 row-span-2 row-start-1 self-start justify-self-end',
-        className,
+        className
       )}
       {...props}
     />
@@ -80,12 +78,12 @@ export function LeaderboardItem({
         minValue={minValue}
         className={cx(
           'relative cursor-default overflow-hidden rounded-md px-1.5 py-1 text-sm/6 outline-hidden focus-visible:ring focus-visible:ring-ring',
-          '[&_svg:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
-          className,
+          "[&_svg:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          className
         )}
         {...props}
       >
-        {values => (
+        {(values) => (
           <>
             <span className="relative z-2 flex items-center justify-between font-medium">
               {typeof children === 'function' ? children(values) : children}
@@ -93,7 +91,7 @@ export function LeaderboardItem({
             <span
               className={twJoin(
                 'absolute inset-y-0 start-0 z-1 rounded-e-md bg-secondary/60',
-                onAction ? 'cursor-default group-hover:bg-secondary' : '',
+                onAction ? 'cursor-default group-hover:bg-secondary' : ''
               )}
               style={{ width: `${values.percentage}%` }}
             />

@@ -25,7 +25,7 @@ export function ColorSwatchPickerItem({
         ...defaultStyle,
         '--tw-ring-color': props.color
           ? `color-mix(in oklab, ${props.color} 40%, transparent)`
-          : '',
+          : undefined,
       })}
       className={cx(
         'relative size-(--default-item-size,--spacing(8)) rounded-lg outline-hidden *:rounded-[calc(var(--radius-lg)-1px)] *:data-[slot=color-swatch]:size-(--default-item-size,--spacing(8))',
@@ -33,11 +33,11 @@ export function ColorSwatchPickerItem({
         'focus-visible:opacity-80 focus-visible:ring-ring/20 focus-visible:*:inset-ring-current/40',
         'hover:opacity-90',
         'disabled:opacity-50',
-        className,
+        className
       )}
       {...props}
     >
-      {values => (
+      {(values) => (
         <>
           {values.isSelected && (
             <span

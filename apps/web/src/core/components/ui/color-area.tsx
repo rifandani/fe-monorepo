@@ -1,9 +1,8 @@
 'use client'
 
-import type { ColorAreaProps } from 'react-aria-components/ColorArea'
 import {
   ColorArea as ColorAreaPrimitive,
-
+  type ColorAreaProps,
 } from 'react-aria-components/ColorArea'
 import { cx } from '@/core/utils/primitive'
 import { ColorThumb } from './color-thumb'
@@ -15,7 +14,7 @@ export function ColorArea({ className, ...props }: ColorAreaProps) {
       data-slot="color-area"
       className={cx(
         'size-56 shrink-0 rounded-md bg-muted disabled:bg-muted-fg forced-colors:bg-[GrayText]',
-        className,
+        className
       )}
       style={({ defaultStyle, isDisabled }) => ({
         ...defaultStyle,

@@ -1,8 +1,8 @@
 'use client'
 
-import type { TagGroupProps, TagListProps, TagProps } from 'react-aria-components/TagGroup'
 import { XCircleIcon } from '@heroicons/react/16/solid'
 import { Button } from 'react-aria-components/Button'
+import type { TagGroupProps, TagListProps, TagProps } from 'react-aria-components/TagGroup'
 import {
   Tag as PrimitiveTag,
   TagGroup as PrimitiveTagGroup,
@@ -39,7 +39,7 @@ export function Tag({ children, className, ...props }: TagProps) {
         'selected:inset-ring-ring/70 selected:bg-primary-subtle selected:text-primary-subtle-fg',
         'disabled:opacity-50 disabled:forced-colors:text-[GrayText]',
         props.href && 'cursor-pointer hover:inset-ring-muted-fg',
-        className,
+        className
       )}
       {...props}
     >

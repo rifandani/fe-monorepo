@@ -1,32 +1,28 @@
 'use client'
 
-import type { AutocompleteProps } from 'react-aria-components/Autocomplete'
-import type { CollectionRenderer } from 'react-aria-components/CollectionBuilder'
-import type { MenuProps, MenuTriggerProps } from 'react-aria-components/Menu'
-import type { ModalOverlayProps } from 'react-aria-components/Modal'
-import type { SearchFieldProps } from 'react-aria-components/SearchField'
-import type { MenuSectionProps } from './menu'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { createContext, use, useEffect } from 'react'
-import { Autocomplete, useFilter } from 'react-aria-components/Autocomplete'
+import { Autocomplete, type AutocompleteProps, useFilter } from 'react-aria-components/Autocomplete'
 import { Button } from 'react-aria-components/Button'
 import { Collection } from 'react-aria-components/Collection'
 import {
-
+  type CollectionRenderer,
   CollectionRendererContext,
   DefaultCollectionRenderer,
 } from 'react-aria-components/CollectionBuilder'
 import { Dialog, OverlayTriggerStateContext } from 'react-aria-components/Dialog'
 import { Header } from 'react-aria-components/Header'
 import { Input } from 'react-aria-components/Input'
+import type { MenuProps, MenuTriggerProps } from 'react-aria-components/Menu'
 import { Menu as MenuPrimitive, MenuSection } from 'react-aria-components/Menu'
+import type { ModalOverlayProps } from 'react-aria-components/Modal'
 import { Modal, ModalContext, ModalOverlay } from 'react-aria-components/Modal'
-import { SearchField } from 'react-aria-components/SearchField'
+import { SearchField, type SearchFieldProps } from 'react-aria-components/SearchField'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { DropdownKeyboard } from './dropdown'
 import { Loader } from './loader'
-import { MenuDescription, MenuItem, MenuLabel, MenuSeparator } from './menu'
+import { MenuDescription, MenuItem, MenuLabel, type MenuSectionProps, MenuSeparator } from './menu'
 
 interface CommandMenuProviderProps {
   isPending?: boolean
@@ -35,7 +31,7 @@ interface CommandMenuProviderProps {
 
 const CommandMenuContext = createContext<CommandMenuProviderProps | undefined>(undefined)
 
-function useCommandMenu() {
+const useCommandMenu = () => {
   const context = use(CommandMenuContext)
 
   if (!context) {
@@ -46,25 +42,25 @@ function useCommandMenu() {
 }
 
 const sizes = {
-  'xs': 'sm:max-w-xs',
-  'sm': 'sm:max-w-sm',
-  'md': 'sm:max-w-md',
-  'lg': 'sm:max-w-lg',
-  'xl': 'sm:max-w-xl',
+  xs: 'sm:max-w-xs',
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-lg',
+  xl: 'sm:max-w-xl',
   '2xl': 'sm:max-w-2xl',
   '3xl': 'sm:max-w-3xl',
 }
 
 interface CommandMenuProps extends AutocompleteProps, MenuTriggerProps, CommandMenuProviderProps {
-  'isDismissable'?: boolean
+  isDismissable?: boolean
   'aria-label'?: string
-  'shortcut'?: string
-  'className'?: string
-  'size'?: keyof typeof sizes
-  'overlay'?: Pick<ModalOverlayProps, 'className'>
+  shortcut?: string
+  className?: string
+  size?: keyof typeof sizes
+  overlay?: Pick<ModalOverlayProps, 'className'>
 }
 
-function CommandMenu({
+const CommandMenu = ({
   onOpenChange,
   className,
   isDismissable = true,
@@ -74,12 +70,11 @@ function CommandMenu({
   size = 'lg',
   shortcut,
   ...props
-}: CommandMenuProps) {
+}: CommandMenuProps) => {
   const { contains } = useFilter({ sensitivity: 'base' })
   const filter = (textValue: string, inputValue: string) => contains(textValue, inputValue)
   useEffect(() => {
-    if (!shortcut)
-      return
+    if (!shortcut) return
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === shortcut && (e.metaKey || e.ctrlKey)) {
@@ -91,8 +86,8 @@ function CommandMenu({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [shortcut, onOpenChange])
   return (
-    <CommandMenuContext value={{ isPending, escapeButton }}>
-      <ModalContext value={{ isOpen: props.isOpen, onOpenChange }}>
+    <CommandMenuContext value={{ isPending: isPending, escapeButton: escapeButton }}>
+      <ModalContext value={{ isOpen: props.isOpen, onOpenChange: onOpenChange }}>
         <ModalOverlay
           {...props}
           isDismissable={isDismissable}
@@ -101,7 +96,7 @@ function CommandMenu({
             'grid grid-rows-[1fr_auto] justify-items-center text-center sm:grid-rows-[1fr_auto_3fr]',
             'entering:fade-in entering:animate-in entering:duration-300 entering:ease-out',
             'exiting:fade-out exiting:animate-out exiting:ease-in',
-            overlay?.className,
+            overlay?.className
           )}
         >
           <Modal
@@ -112,7 +107,7 @@ function CommandMenu({
               sizes[size],
               'entering:slide-in-from-bottom sm:entering:zoom-in-95 sm:entering:slide-in-from-bottom-0 entering:animate-in entering:duration-300 entering:ease-out',
               'exiting:slide-out-to-bottom sm:exiting:zoom-out-95 sm:exiting:slide-out-to-bottom-0 exiting:animate-out exiting:ease-in',
-              className,
+              className
             )}
           >
             <Dialog
@@ -133,7 +128,7 @@ interface CommandMenuSearchProps extends SearchFieldProps {
   className?: string
 }
 
-function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSearchProps) {
+const CommandMenuSearch = ({ className, placeholder, ...props }: CommandMenuSearchProps) => {
   const state = use(OverlayTriggerStateContext)!
   const { isPending, escapeButton } = useCommandMenu()
   return (
@@ -143,16 +138,14 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
       className={cx('flex w-full items-center px-2.5 py-1', className)}
       {...props}
     >
-      {isPending
-        ? (
-            <Loader className="size-4.5" variant="spin" />
-          )
-        : (
-            <MagnifyingGlassIcon
-              data-slot="command-menu-search-icon"
-              className="size-5 shrink-0 text-muted-fg"
-            />
-          )}
+      {isPending ? (
+        <Loader className="size-4.5" variant="spin" />
+      ) : (
+        <MagnifyingGlassIcon
+          data-slot="command-menu-search-icon"
+          className="size-5 shrink-0 text-muted-fg"
+        />
+      )}
       <Input
         placeholder={placeholder ?? 'Search...'}
         className="w-full min-w-0 bg-transparent px-2.5 py-2 text-base text-fg placeholder-muted-fg outline-hidden focus:outline-hidden sm:px-2 sm:py-1.5 sm:text-sm [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:hidden"
@@ -169,25 +162,13 @@ function CommandMenuSearch({ className, placeholder, ...props }: CommandMenuSear
   )
 }
 
-const renderer: CollectionRenderer = {
-  CollectionRoot(props) {
-    if (props.collection.size === 0) {
-      return (
-        <div className="col-span-full p-4 text-center text-sm text-muted-fg">No results found.</div>
-      )
-    }
-    return <DefaultCollectionRenderer.CollectionRoot {...props} />
-  },
-  CollectionBranch: DefaultCollectionRenderer.CollectionBranch,
-}
-
-function CommandMenuList<T extends object>({ className, ...props }: MenuProps<T>) {
+const CommandMenuList = <T extends object>({ className, ...props }: MenuProps<T>) => {
   return (
     <CollectionRendererContext value={renderer}>
       <MenuPrimitive
         className={cx(
           'grid max-h-full flex-1 grid-cols-[auto_1fr] content-start overflow-y-auto border-t p-2 sm:max-h-110 *:[[role=group]]:mb-6 *:[[role=group]]:last:mb-0',
-          className,
+          className
         )}
         {...props}
       />
@@ -195,22 +176,22 @@ function CommandMenuList<T extends object>({ className, ...props }: MenuProps<T>
   )
 }
 
-function CommandMenuSection<T extends object>({
+const CommandMenuSection = <T extends object>({
   className,
   ref,
   ...props
-}: MenuSectionProps<T>) {
+}: MenuSectionProps<T>) => {
   return (
     <MenuSection
       ref={ref}
       className={twMerge(
         'col-span-full grid grid-cols-[auto_1fr] content-start gap-y-0.25',
-        className,
+        className
       )}
       {...props}
     >
       {'label' in props && (
-        <Header className="col-span-full mb-1 block min-w-(--trigger-width) truncate px-2.5 text-xs text-muted-fg">
+        <Header className="col-span-full mb-1 block min-w-(--trigger-width) truncate px-2.5 text-muted-fg text-xs">
           {props.label}
         </Header>
       )}
@@ -219,9 +200,9 @@ function CommandMenuSection<T extends object>({
   )
 }
 
-function CommandMenuItem({ className, ...props }: React.ComponentProps<typeof MenuItem>) {
-  const textValue
-    = props.textValue || (typeof props.children === 'string' ? props.children : undefined)
+const CommandMenuItem = ({ className, ...props }: React.ComponentProps<typeof MenuItem>) => {
+  const textValue =
+    props.textValue || (typeof props.children === 'string' ? props.children : undefined)
   return (
     <MenuItem
       {...props}
@@ -233,26 +214,38 @@ function CommandMenuItem({ className, ...props }: React.ComponentProps<typeof Me
 
 interface CommandMenuDescriptionProps extends React.ComponentProps<typeof MenuDescription> {}
 
-function CommandMenuDescription({ className, ...props }: CommandMenuDescriptionProps) {
+const CommandMenuDescription = ({ className, ...props }: CommandMenuDescriptionProps) => {
   return (
     <MenuDescription className={twMerge('col-start-3 row-start-1 ms-auto', className)} {...props} />
   )
 }
 
-function CommandMenuSeparator({
-  className,
-  ...props
-}: React.ComponentProps<typeof MenuSeparator>) {
-  return <MenuSeparator className={twMerge('-mx-2', className)} {...props} />
+const renderer: CollectionRenderer = {
+  CollectionRoot(props) {
+    if (props.collection.size === 0) {
+      return (
+        <div className="col-span-full p-4 text-center text-muted-fg text-sm">No results found.</div>
+      )
+    }
+    return <DefaultCollectionRenderer.CollectionRoot {...props} />
+  },
+  CollectionBranch: DefaultCollectionRenderer.CollectionBranch,
 }
 
-function CommandMenuFooter({ className, ...props }: React.ComponentProps<'div'>) {
+const CommandMenuSeparator = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof MenuSeparator>) => (
+  <MenuSeparator className={twMerge('-mx-2', className)} {...props} />
+)
+
+const CommandMenuFooter = ({ className, ...props }: React.ComponentProps<'div'>) => {
   return (
     <div
       className={twMerge(
-        'col-span-full flex-none border-t px-2 py-1.5 text-sm text-muted-fg',
-        '*:[kbd]:mx-1 *:[kbd]:inline-grid *:[kbd]:h-4 *:[kbd]:min-w-4 *:[kbd]:place-content-center *:[kbd]:rounded-xs *:[kbd]:bg-secondary *:[kbd]:inset-ring *:[kbd]:inset-ring-fg/10',
-        className,
+        'col-span-full flex-none border-t px-2 py-1.5 text-muted-fg text-sm',
+        '*:[kbd]:inset-ring *:[kbd]:inset-ring-fg/10 *:[kbd]:mx-1 *:[kbd]:inline-grid *:[kbd]:h-4 *:[kbd]:min-w-4 *:[kbd]:place-content-center *:[kbd]:rounded-xs *:[kbd]:bg-secondary',
+        className
       )}
       {...props}
     />
@@ -260,20 +253,18 @@ function CommandMenuFooter({ className, ...props }: React.ComponentProps<'div'>)
 }
 
 const CommandMenuLabel = MenuLabel
-function CommandMenuShortcut({
+const CommandMenuShortcut = ({
   className,
   ...props
-}: React.ComponentProps<typeof DropdownKeyboard>) {
-  return (
-    <DropdownKeyboard
-      className={twMerge(
-        'gap-0.5 font-sans text-[10.5px] uppercase *:grid *:size-5.5 *:place-content-center *:rounded-xs *:bg-bg *:inset-ring *:inset-ring-muted-fg/20',
-        className,
-      )}
-      {...props}
-    />
-  )
-}
+}: React.ComponentProps<typeof DropdownKeyboard>) => (
+  <DropdownKeyboard
+    className={twMerge(
+      'gap-0.5 font-sans text-[10.5px] uppercase *:inset-ring *:inset-ring-muted-fg/20 *:grid *:size-5.5 *:place-content-center *:rounded-xs *:bg-bg',
+      className
+    )}
+    {...props}
+  />
+)
 
 export type { CommandMenuDescriptionProps, CommandMenuProps, CommandMenuSearchProps }
 export {

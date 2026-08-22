@@ -1,10 +1,9 @@
 'use client'
 
-import type { SelectProps } from 'react-aria-components/Select'
 import { Children, isValidElement, useMemo, useRef } from 'react'
 import { Autocomplete, useFilter } from 'react-aria-components/Autocomplete'
 import { ListBox } from 'react-aria-components/ListBox'
-import { Select, SelectValue } from 'react-aria-components/Select'
+import { Select, type SelectProps, SelectValue } from 'react-aria-components/Select'
 import { cx } from '@/core/utils/primitive'
 import { Button } from './button'
 import { fieldStyles } from './field'
@@ -57,7 +56,7 @@ function MultipleSelect<T extends OptionBase>({
   const { before, after, list } = useMemo(() => {
     const arr = Children.toArray(children)
     const idx = arr.findIndex(
-      c => isValidElement(c) && (c.type as any)?.displayName === 'MultipleSelectContent',
+      (c) => isValidElement(c) && (c.type as any)?.displayName === 'MultipleSelectContent'
     )
     if (idx === -1) {
       return { before: arr, after: [], list: null as null | MultipleSelectContentProps<T> }
@@ -88,17 +87,17 @@ function MultipleSelect<T extends OptionBase>({
                   aria-label="Selected items"
                   onRemove={(keys) => {
                     if (Array.isArray(state.value)) {
-                      state.setValue(state.value.filter(k => !keys.has(k)))
+                      state.setValue(state.value.filter((k) => !keys.has(k)))
                     }
                   }}
                 >
                   <TagList
-                    items={selectedItems.filter(i => i != null)}
+                    items={selectedItems.filter((i) => i != null)}
                     renderEmptyState={() => (
-                      <i className="ps-2 text-sm text-muted-fg">{placeholder}</i>
+                      <i className="ps-2 text-muted-fg text-sm">{placeholder}</i>
                     )}
                   >
-                    {item => <Tag className="rounded-md">{item.name}</Tag>}
+                    {(item) => <Tag className="rounded-md">{item.name}</Tag>}
                   </TagList>
                 </TagGroup>
               )}

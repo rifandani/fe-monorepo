@@ -1,13 +1,11 @@
 'use client'
 
-import type { ToggleButtonProps } from 'react-aria-components/ToggleButton'
-import type { ToggleButtonGroupProps } from 'react-aria-components/ToggleButtonGroup'
 import { createContext, use } from 'react'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
-import { ToggleButton } from 'react-aria-components/ToggleButton'
+import { ToggleButton, type ToggleButtonProps } from 'react-aria-components/ToggleButton'
 import {
   ToggleButtonGroup,
-
+  type ToggleButtonGroupProps,
 } from 'react-aria-components/ToggleButtonGroup'
 import { twMerge } from 'tailwind-merge'
 import { tv } from 'tailwind-variants'
@@ -35,16 +33,16 @@ interface ToggleGroupProps extends ToggleButtonGroupProps {
   isCircle?: boolean
 }
 
-function ToggleGroup({
+const ToggleGroup = ({
   size = 'md',
   orientation = 'horizontal',
   selectionMode = 'single',
   isCircle,
   className,
   ...props
-}: ToggleGroupProps) {
+}: ToggleGroupProps) => {
   return (
-    <ToggleGroupContext.Provider value={{ size, selectionMode, orientation }}>
+    <ToggleGroupContext value={{ size, selectionMode, orientation }}>
       <ToggleButtonGroup
         data-slot="control"
         selectionMode={selectionMode}
@@ -59,18 +57,18 @@ function ToggleGroup({
             orientation === 'horizontal' ? 'flex-row' : 'flex-col',
             selectionMode === 'single' ? 'gap-(--toggle-gutter)' : 'gap-0',
             isCircle ? 'rounded-full' : 'rounded-(--toggle-group-radius)',
-            selectionMode === 'single'
-            && isCircle
-            && '*:data-[slot=toggle-group-item]:rounded-full',
-            selectionMode === 'multiple'
-            && isCircle
-            && '*:data-[slot=toggle-group-item]:last:rounded-e-full *:data-[slot=toggle-group-item]:first:rounded-s-full',
+            selectionMode === 'single' &&
+              isCircle &&
+              '*:data-[slot=toggle-group-item]:rounded-full',
+            selectionMode === 'multiple' &&
+              isCircle &&
+              '*:data-[slot=toggle-group-item]:last:rounded-e-full *:data-[slot=toggle-group-item]:first:rounded-s-full',
           ],
-          className,
+          className
         )}
         {...props}
       />
-    </ToggleGroupContext.Provider>
+    </ToggleGroupContext>
   )
 }
 
@@ -96,22 +94,22 @@ const toggleGroupItemStyles = tv({
       multiple: 'rounded-none',
     },
     size: {
-      'xs': [
+      xs: [
         'min-h-8 gap-x-1.5 px-2.5 py-1.5 text-sm sm:min-h-7 sm:px-2 sm:py-1.5 sm:text-xs/4',
         '*:[svg]:-mx-px *:[svg]:size-3.5 sm:*:[svg]:size-3',
         '*:data-[slot=loader]:-mx-px *:data-[slot=loader]:size-3.5 sm:*:data-[slot=loader]:size-3',
       ],
-      'sm': [
+      sm: [
         'min-h-9 gap-x-1.5 px-3 py-1.5 sm:min-h-8 sm:px-2.5 sm:py-1.5 sm:text-sm/5',
         '*:[svg]:size-4.5 sm:*:[svg]:size-4',
         '*:data-[slot=loader]:size-4.5 sm:*:data-[slot=loader]:size-4',
       ],
-      'md': [
+      md: [
         'min-h-10 gap-x-2 px-3.5 py-2 sm:min-h-9 sm:px-3 sm:py-1.5 sm:text-sm/6',
         '*:[svg]:size-5 sm:*:[svg]:size-4',
         '*:data-[slot=loader]:size-5 sm:*:data-[slot=loader]:size-4',
       ],
-      'lg': [
+      lg: [
         'min-h-11 gap-x-2 px-4 py-2.5 sm:min-h-10 sm:px-3.5 sm:py-2 sm:text-sm/6',
         '*:[svg]:size-5 sm:*:[svg]:size-4.5',
         '*:data-[slot=loader]:size-5 sm:*:data-[slot=loader]:size-4.5',
@@ -126,7 +124,7 @@ const toggleGroupItemStyles = tv({
         'touch-target size-11 *:data-[slot=loader]:size-5 sm:size-10 sm:*:data-[slot=loader]:size-5 *:[svg]:size-5 sm:*:[svg]:size-5',
     },
     isSelected: {
-      true: 'bg-(--toggle-selected-bg) text-(--toggle-selected-fg) inset-ring-fg/20 [--toggle-icon:var(--primary-fg)] hover:bg-(--toggle-selected-bg)/90',
+      true: 'inset-ring-fg/20 bg-(--toggle-selected-bg) text-(--toggle-selected-fg) [--toggle-icon:var(--primary-fg)] hover:bg-(--toggle-selected-bg)/90',
     },
     isFocused: {
       true: 'not-selected:bg-(--toggle-focused-bg) not-selected:text-(--toggle-focused-fg) not-selected:[--toggle-icon:var(--toggle-focused-fg)]',
@@ -165,7 +163,7 @@ const toggleGroupItemStyles = tv({
   ],
 })
 
-function ToggleGroupItem({ className, ...props }: ToggleGroupItemProps) {
+const ToggleGroupItem = ({ className, ...props }: ToggleGroupItemProps) => {
   const { size, selectionMode, orientation } = useToggleGroupContext()
 
   return (
@@ -179,8 +177,9 @@ function ToggleGroupItem({ className, ...props }: ToggleGroupItemProps) {
             orientation,
             selectionMode,
             className,
-          }),
-        ))}
+          })
+        )
+      )}
       {...props}
     />
   )

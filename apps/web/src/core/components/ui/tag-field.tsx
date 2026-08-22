@@ -1,8 +1,8 @@
 'use client'
 
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Key, Selection } from 'react-aria-components/TagGroup'
 import type { TextFieldProps } from 'react-aria-components/TextField'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { FieldError } from '@/core/components/ui/field'
 import { Tag, TagGroup, TagList } from '@/core/components/ui/tag-group'
@@ -53,7 +53,7 @@ export function TagField({
   const applySelection = (next: Selection) => (onChange ?? setInternalSelection)(next as Selection)
 
   const list = useMemo(() => {
-    return selection === 'all' ? [] : Array.from(selection).map(v => String(v))
+    return selection === 'all' ? [] : Array.from(selection).map((v) => String(v))
   }, [selection])
 
   const isInvalid = Boolean(isRequired && list.length === 0 && touched)
@@ -62,16 +62,14 @@ export function TagField({
   useEffect(() => {
     const input = hiddenRef.current
     const form = input?.form
-    if (!form || !input)
-      return
+    if (!form || !input) return
     const onSubmit = (e: Event) => {
       if (isRequired && list.length === 0) {
         e.preventDefault()
         setTouched(true)
         input.setCustomValidity(errorText)
         form.reportValidity()
-      }
-      else {
+      } else {
         input.setCustomValidity('')
       }
     }
@@ -87,21 +85,18 @@ export function TagField({
   }
 
   function addTag() {
-    if (selection === 'all')
-      return
+    if (selection === 'all') return
     const next = new Set<Key>(Array.from(selection))
     inputValue.split(splitPattern).forEach((raw) => {
       const formatted = raw
         .trim()
         .replace(whitespaceRegex, ' ')
         .replace(tabRegex, '')
-      if (formatted === '')
-        return
+      if (formatted === '') return
       const exists = Array.from(next).some(
-        id => String(id).toLocaleLowerCase() === formatted.toLocaleLowerCase(),
+        (id) => String(id).toLocaleLowerCase() === formatted.toLocaleLowerCase()
       )
-      if (!exists)
-        next.add(formatted)
+      if (!exists) next.add(formatted)
     })
     applySelection(next)
     setInputValue('')
@@ -109,8 +104,7 @@ export function TagField({
   }
 
   function removeKeys(keys: Selection) {
-    if (selection === 'all')
-      return
+    if (selection === 'all') return
     const next = new Set<Key>(Array.from(selection))
     if (keys !== 'all') {
       for (const k of keys) next.delete(k)
@@ -129,31 +123,29 @@ export function TagField({
         isInvalid={isInvalid}
         {...props}
       >
-        {values => (
+        {(values) => (
           <>
             {typeof children === 'function' ? children(values) : children}
             <FieldError>{isInvalid ? errorText : undefined}</FieldError>
           </>
         )}
       </TextField>
-      {selection
-        ? (
-            <TagGroup
-              disabledKeys={props.isDisabled ? new Set(list) : undefined}
-              className="mt-1"
-              aria-label="Selected tags"
-              {...(!props.isReadOnly && !props.isDisabled ? { onRemove: removeKeys } : {})}
-            >
-              <TagList>
-                {list.map(id => (
-                  <Tag key={id} id={id}>
-                    {id}
-                  </Tag>
-                ))}
-              </TagList>
-            </TagGroup>
-          )
-        : null}
+      {selection ? (
+        <TagGroup
+          disabledKeys={props.isDisabled ? new Set(list) : undefined}
+          className="mt-1"
+          aria-label="Selected tags"
+          {...(!props.isReadOnly && !props.isDisabled ? { onRemove: removeKeys } : {})}
+        >
+          <TagList>
+            {list.map((id) => (
+              <Tag key={id} id={id}>
+                {id}
+              </Tag>
+            ))}
+          </TagList>
+        </TagGroup>
+      ) : null}
       <input
         ref={hiddenRef}
         name={name}

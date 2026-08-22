@@ -291,9 +291,11 @@
     stroke: color-mix(in oklab, var(--border) 80%, transparent);
   }
 }
-[data-chart] .recharts-curve.recharts-tooltip-cursor,
-[data-chart] .recharts-rectangle.recharts-tooltip-cursor {
+[data-chart] .recharts-curve.recharts-tooltip-cursor {
   stroke: var(--border);
+}
+[data-chart] .recharts-rectangle.recharts-tooltip-cursor {
+  fill: var(--muted);
 }
 [data-chart] .recharts-layer {
   outline: none;
@@ -315,6 +317,12 @@
 }
 [data-chart] .recharts-surface {
   outline: none;
+}
+[data-chart]
+  .recharts-surface
+  .recharts-text.recharts-cartesian-axis-tick-value
+  > * {
+  fill: var(--muted-fg);
 }
 [data-chart] .recharts-dot[fill="\23 fff"] {
   fill: var(--line-color, var(--border));

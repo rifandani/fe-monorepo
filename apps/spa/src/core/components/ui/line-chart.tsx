@@ -1,11 +1,9 @@
 'use client'
 
-import type { LineProps } from 'recharts'
-import type { BaseChartProps } from './chart'
 import { useMemo } from 'react'
-import { Line, LineChart as LineChartPrimitive } from 'recharts'
+import { Line, LineChart as LineChartPrimitive, type LineProps } from 'recharts'
 import {
-
+  type BaseChartProps,
   CartesianGrid,
   Chart,
   ChartLegend,
@@ -63,7 +61,7 @@ export function LineChart({
   const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
-    [configKeys, colors],
+    [configKeys, colors]
   )
 
   const configEntries = useMemo(() => Object.entries(config), [config])
@@ -130,7 +128,7 @@ export function LineChart({
                     style={
                       {
                         strokeOpacity,
-                        'strokeWidth': 2,
+                        strokeWidth: 2,
                         '--line-color': color,
                       } as React.CSSProperties
                     }

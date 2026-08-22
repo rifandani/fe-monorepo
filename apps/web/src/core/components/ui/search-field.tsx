@@ -1,12 +1,11 @@
 'use client'
 
-import type { InputProps } from 'react-aria-components/Input'
-import type { SearchFieldProps } from 'react-aria-components/SearchField'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { Button } from 'react-aria-components/Button'
+import type { InputProps } from 'react-aria-components/Input'
 import {
   SearchField as SearchFieldPrimitive,
-
+  type SearchFieldProps,
 } from 'react-aria-components/SearchField'
 import { twJoin } from 'tailwind-merge'
 import { fieldStyles } from '@/core/components/ui/field'
@@ -31,8 +30,8 @@ export function SearchInput(props: InputProps) {
       <Input {...props} />
       <Button
         className={twJoin(
-          'touch-target grid place-content-center text-muted-fg group-empty/search-field:invisible hover:text-fg pressed:text-fg',
-          'px-3 py-2 sm:px-2.5 sm:py-1.5 sm:text-sm/5',
+          'touch-target grid place-content-center pressed:text-fg text-muted-fg hover:text-fg group-empty/search-field:invisible',
+          'px-3 py-2 sm:px-2.5 sm:py-1.5 sm:text-sm/5'
         )}
       >
         <XMarkIcon className="size-5 sm:size-4" />

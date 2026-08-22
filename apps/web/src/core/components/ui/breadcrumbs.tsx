@@ -1,23 +1,23 @@
 'use client'
 
-import type { BreadcrumbProps, BreadcrumbsProps } from 'react-aria-components/Breadcrumbs'
-import type { LinkProps } from 'react-aria-components/Link'
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import { createContext, use } from 'react'
+import type { BreadcrumbProps, BreadcrumbsProps } from 'react-aria-components/Breadcrumbs'
 import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components/Breadcrumbs'
+import type { LinkProps } from 'react-aria-components/Link'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
 import { Link } from './link'
 
-interface BreadcrumbsContextProps { separator?: 'chevron' | 'slash' | boolean }
+type BreadcrumbsContextProps = { separator?: 'chevron' | 'slash' | boolean }
 const BreadcrumbsProvider = createContext<BreadcrumbsContextProps>({
   separator: 'chevron',
 })
 
-function Breadcrumbs<T extends object>({
+const Breadcrumbs = <T extends object>({
   className,
   ...props
-}: BreadcrumbsProps<T> & BreadcrumbsContextProps) {
+}: BreadcrumbsProps<T> & BreadcrumbsContextProps) => {
   return (
     <BreadcrumbsProvider value={{ separator: props.separator }}>
       <BreadcrumbsPrimitive {...props} className={twMerge('flex items-center gap-2', className)} />
@@ -27,11 +27,11 @@ function Breadcrumbs<T extends object>({
 
 interface BreadcrumbsItemProps extends BreadcrumbProps, BreadcrumbsContextProps {}
 
-function BreadcrumbsItem({
+const BreadcrumbsItem = ({
   separator = true,
   className,
   ...props
-}: BreadcrumbsItemProps & Partial<Omit<LinkProps, 'className'>>) {
+}: BreadcrumbsItemProps & Partial<Omit<LinkProps, 'className'>>) => {
   const { separator: contextSeparator } = use(BreadcrumbsProvider)
   separator = contextSeparator ?? separator
   const separatorValue = separator === true ? 'chevron' : separator
@@ -48,7 +48,7 @@ function BreadcrumbsItem({
             className={twJoin(
               'has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2',
               '*:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4',
-              '*:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg',
+              '*:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg'
             )}
             {...props}
           />
@@ -59,11 +59,11 @@ function BreadcrumbsItem({
   )
 }
 
-function Separator({
+const Separator = ({
   separator = 'chevron',
 }: {
   separator?: BreadcrumbsItemProps['separator']
-}) {
+}) => {
   return (
     <span className="*:shrink-0 *:text-muted-fg *:data-[slot=icon]:size-3.5">
       {separator === 'chevron' && <ChevronRightIcon />}

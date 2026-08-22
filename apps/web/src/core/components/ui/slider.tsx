@@ -1,14 +1,13 @@
 'use client'
 
 import type { ComponentProps } from 'react'
-import type { SliderFillProps } from 'react-aria-components/Slider'
 import {
   Slider as PrimitiveSlider,
   SliderFill as PrimitiveSliderFill,
+  type SliderFillProps,
   SliderOutput as PrimitiveSliderOutput,
   SliderThumb as PrimitiveSliderThumb,
   SliderTrack as PrimitiveSliderTrack,
-
 } from 'react-aria-components/Slider'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -30,7 +29,7 @@ export function Slider({ className, ...props }: ComponentProps<typeof PrimitiveS
         'group relative flex touch-none select-none flex-col disabled:opacity-50',
         'orientation-horizontal:w-full orientation-horizontal:min-w-fit orientation-horizontal:gap-y-2',
         'orientation-vertical:h-full orientation-vertical:min-h-fit orientation-vertical:w-1.5 orientation-vertical:items-center orientation-vertical:gap-y-2',
-        className,
+        className
       )}
       {...props}
     />
@@ -54,7 +53,7 @@ export function SliderThumb({ className, ...props }: ComponentProps<typeof Primi
     <PrimitiveSliderThumb
       className={cx(
         'top-[50%] left-[50%] size-5 rounded-full bg-white outline-hidden ring ring-muted-fg/30 transition-[width,height] dark:ring-white',
-        className,
+        className
       )}
       {...props}
     />
@@ -73,11 +72,11 @@ export function SliderTrack({
         'group/track relative cursor-default rounded-full',
         'grow group-orientation-horizontal:h-1.5 group-orientation-horizontal:w-full group-orientation-vertical:w-1.5 group-orientation-vertical:flex-1',
         'disabled:cursor-default disabled:opacity-60',
-        className,
+        className
       )}
       {...props}
     >
-      {values => (
+      {(values) => (
         <>
           {typeof children === 'function'
             ? children(values)

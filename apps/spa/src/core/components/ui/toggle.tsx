@@ -1,47 +1,45 @@
 'use client'
 
-import type { ToggleButtonProps } from 'react-aria-components/ToggleButton'
-import type { VariantProps } from 'tailwind-variants'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
-import { ToggleButton } from 'react-aria-components/ToggleButton'
+import { ToggleButton, type ToggleButtonProps } from 'react-aria-components/ToggleButton'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
+import { tv, type VariantProps } from 'tailwind-variants'
 
 export const toggleStyles = tv({
   base: [
     '[--toggle-icon-active:var(--secondary-fg)] [--toggle-icon:color-mix(in_oklab,var(--secondary-fg)_50%,var(--secondary))]',
     'relative isolate inline-flex items-center justify-center border font-medium',
-    'focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:ring-offset-bg focus-visible:outline focus-visible:outline-offset-2',
+    'focus-visible:outline focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:ring-offset-bg',
     '*:[svg]:-mx-0.5 *:[svg]:my-0.5 *:[svg]:shrink-0 *:[svg]:self-center *:[svg]:text-(--toggle-icon) sm:*:[svg]:my-1',
     'focus-visible:*:[svg]:text-(--toggle-icon-active)',
     'selected:*:[svg]:text-(--toggle-icon-active)',
     'hover:*:[svg]:text-(--toggle-icon-active)',
-    'forced-colors:[--toggle-icon:ButtonText] forced-colors:hover:[--toggle-icon:ButtonText] *:[svg]:-mx-0.5 *:[svg]:shrink-0 *:[svg]:self-center *:[svg]:text-(--toggle-icon) hover:*:[svg]:text-(--toggle-icon-active)/90 focus-visible:*:[svg]:text-(--toggle-icon-active)/80 pressed:*:[svg]:text-(--toggle-icon-active)',
+    'forced-colors:[--toggle-icon:ButtonText] forced-colors:hover:[--toggle-icon:ButtonText] *:[svg]:-mx-0.5 *:[svg]:shrink-0 *:[svg]:self-center *:[svg]:text-(--toggle-icon) pressed:*:[svg]:text-(--toggle-icon-active) hover:*:[svg]:text-(--toggle-icon-active)/90 focus-visible:*:[svg]:text-(--toggle-icon-active)/80',
     'forced-colors:[--toggle-icon:ButtonText] forced-colors:hover:[--toggle-icon:ButtonText]',
   ],
   variants: {
     intent: {
       outline: [
-        'bg-transparent ring-secondary-fg/25 outline-secondary-fg hover:bg-secondary selected:bg-secondary',
+        'bg-transparent selected:bg-secondary outline-secondary-fg ring-secondary-fg/25 hover:bg-secondary',
       ],
       plain: [
-        'border-transparent bg-transparent ring-secondary-fg/25 outline-secondary-fg hover:bg-secondary selected:bg-secondary',
+        'border-transparent bg-transparent selected:bg-secondary outline-secondary-fg ring-secondary-fg/25 hover:bg-secondary',
       ],
     },
     size: {
-      'xs': [
+      xs: [
         'min-h-8 gap-x-1.5 px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] text-sm sm:min-h-7 sm:px-2 sm:py-[calc(--spacing(1.5)-1px)] sm:text-xs/4',
         '*:[svg]:-mx-px *:[svg]:size-3.5 sm:*:[svg]:size-3',
       ],
-      'sm': [
+      sm: [
         'min-h-9 gap-x-1.5 px-3 py-[calc(--spacing(2)-1px)] sm:min-h-8 sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/5',
         '*:[svg]:size-4.5 sm:*:[svg]:size-4',
       ],
-      'md': [
+      md: [
         'min-h-10 gap-x-2 px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:min-h-9 sm:px-3 sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/6',
         '*:[svg]:size-5 sm:*:[svg]:size-4',
       ],
-      'lg': [
+      lg: [
         'min-h-10 gap-x-2 px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(3)-1px)] sm:min-h-9 sm:px-3 sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/7',
         '*:[svg]:size-5 sm:*:[svg]:size-4.5',
       ],
@@ -80,8 +78,9 @@ export function Toggle({ className, size, intent, isCircle, ref, ...props }: Tog
             size,
             intent,
             className,
-          }),
-        ))}
+          })
+        )
+      )}
       {...props}
     />
   )

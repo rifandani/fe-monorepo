@@ -1,23 +1,21 @@
 'use client'
 
-import type { ButtonProps as ButtonPrimitiveProps } from 'react-aria-components/Button'
-import type { VariantProps } from 'tailwind-variants'
 import {
   Button as ButtonPrimitive,
-
+  type ButtonProps as ButtonPrimitiveProps,
 } from 'react-aria-components/Button'
-import { tv } from 'tailwind-variants'
+import { tv, type VariantProps } from 'tailwind-variants'
 import { cx } from '@/core/utils/primitive'
 
 export const buttonStyles = tv({
   base: [
     '[--btn-border:var(--color-fg)]/15 [--btn-icon-active:var(--btn-fg)] [--btn-outline:var(--btn-bg)] [--btn-radius:calc(var(--radius-lg)-1px)] [--btn-ring:var(--btn-bg)]/20',
-    'bg-(--btn-bg) text-(--btn-fg) ring-(--btn-ring) outline-(--btn-outline) hover:bg-(--btn-overlay)',
+    'bg-(--btn-bg) text-(--btn-fg) outline-(--btn-outline) ring-(--btn-ring) hover:bg-(--btn-overlay)',
     'relative isolate inline-flex items-center justify-center border border-(--btn-border) font-medium hover:no-underline',
-    'focus:outline-0 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:ring-offset-bg focus-visible:outline focus-visible:outline-offset-2',
+    'focus:outline-0 focus-visible:outline focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:ring-offset-bg',
     'forced-colors:[--btn-icon:ButtonText] forced-colors:hover:[--btn-icon:ButtonText] *:[svg]:-mx-0.5 *:[svg]:shrink-0 *:[svg]:self-center *:[svg]:text-(--btn-icon) hover:*:[svg]:text-(--btn-icon-active)/90 focus-visible:*:[svg]:text-(--btn-icon-active)/80',
     '*:data-[slot=loader]:-mx-0.5 *:data-[slot=loader]:shrink-0 *:data-[slot=loader]:self-center *:data-[slot=loader]:text-(--btn-icon)',
-    'disabled:opacity-50 disabled:forced-colors:text-[GrayText] pending:opacity-50',
+    'pending:opacity-50 disabled:opacity-50 disabled:forced-colors:text-[GrayText]',
     '*:data-[slot=color-swatch]:-mx-0.5 *:data-[slot=color-swatch]:shrink-0 *:data-[slot=color-swatch]:self-center *:data-[slot=color-swatch]:[--size:--spacing(5)]',
   ],
   variants: {
@@ -38,22 +36,22 @@ export const buttonStyles = tv({
         'border-transparent [--btn-bg:transparent] [--btn-icon:var(--color-muted-fg)] [--btn-outline:var(--color-ring)] [--btn-overlay:var(--color-secondary)] [--btn-ring:var(--color-ring)]/20',
     },
     size: {
-      'xs': [
+      xs: [
         'min-h-8 gap-x-1.5 px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] text-sm sm:min-h-7 sm:px-2 sm:py-[calc(--spacing(1.5)-1px)] sm:text-xs/4',
         '*:[svg]:-mx-px *:[svg]:size-3.5 sm:*:[svg]:size-3',
         '*:data-[slot=loader]:-mx-px *:data-[slot=loader]:size-3.5 sm:*:data-[slot=loader]:size-3',
       ],
-      'sm': [
+      sm: [
         'min-h-9 gap-x-1.5 px-3 py-[calc(--spacing(2)-1px)] sm:min-h-8 sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/5',
         '*:[svg]:size-4.5 sm:*:[svg]:size-4',
         '*:data-[slot=loader]:size-4.5 sm:*:data-[slot=loader]:size-4',
       ],
-      'md': [
+      md: [
         'min-h-10 gap-x-2 px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:min-h-9 sm:px-3 sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/6',
         '*:[svg]:size-5 sm:*:[svg]:size-4',
         '*:data-[slot=loader]:size-5 sm:*:data-[slot=loader]:size-4',
       ],
-      'lg': [
+      lg: [
         'min-h-10 gap-x-2 px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(3)-1px)] sm:min-h-9 sm:px-3 sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/7',
         '*:[svg]:size-5 sm:*:[svg]:size-4.5',
         '*:data-[slot=loader]:size-5 sm:*:data-[slot=loader]:size-4.5',
@@ -107,7 +105,7 @@ export function Button({ className, intent, size, isCircle, ref, ...props }: But
           size,
           isCircle,
         }),
-        className,
+        className
       )}
     />
   )

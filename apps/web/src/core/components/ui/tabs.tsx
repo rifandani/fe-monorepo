@@ -1,5 +1,9 @@
 'use client'
 
+import { createContext, use } from 'react'
+import { composeRenderProps } from 'react-aria-components/composeRenderProps'
+import { SelectionIndicator } from 'react-aria-components/SelectionIndicator'
+import { useSlottedContext } from 'react-aria-components/slots'
 import type {
   TabListProps as TabListPrimitiveProps,
   TabPanelProps as TabPanelPrimitiveProps,
@@ -7,17 +11,13 @@ import type {
   TabProps as TabPrimitiveProps,
   TabsProps as TabsPrimitiveProps,
 } from 'react-aria-components/Tabs'
-import { createContext, use } from 'react'
-import { composeRenderProps } from 'react-aria-components/composeRenderProps'
-import { SelectionIndicator } from 'react-aria-components/SelectionIndicator'
-import { useSlottedContext } from 'react-aria-components/slots'
 import {
-  TabPanels as PrimitiveTabPanels,
+  Tab as TabPrimitive,
   TabList as TabListPrimitive,
   TabPanel as TabPanelPrimitive,
-  Tab as TabPrimitive,
-  TabsContext,
+  TabPanels as PrimitiveTabPanels,
   Tabs as TabsPrimitive,
+  TabsContext,
 } from 'react-aria-components/Tabs'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -25,7 +25,7 @@ import { cx } from '@/core/utils/primitive'
 interface TabsProps extends TabsPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
 }
-function Tabs({ className, ref, orientation = 'horizontal', ...props }: TabsProps) {
+const Tabs = ({ className, ref, orientation = 'horizontal', ...props }: TabsProps) => {
   return (
     <TabsContext value={{ orientation }}>
       <TabsPrimitive
@@ -33,7 +33,7 @@ function Tabs({ className, ref, orientation = 'horizontal', ...props }: TabsProp
         className={cx(
           orientation === 'vertical' ? 'w-full flex-row' : 'flex-col',
           'group/tabs flex gap-4 self-start forced-color-adjust-none',
-          className,
+          className
         )}
         ref={ref}
         {...props}
@@ -57,12 +57,12 @@ export function useTabListContext() {
 interface TabListProps<T extends object> extends TabListPrimitiveProps<T>, TabListContextValue {
   ref?: React.RefObject<HTMLDivElement>
 }
-function TabList<T extends object>({
+const TabList = <T extends object>({
   className,
   selectionIndicator = true,
   ref,
   ...props
-}: TabListProps<T>) {
+}: TabListProps<T>) => {
   return (
     <TabListContext value={{ selectionIndicator }}>
       <TabListPrimitive
@@ -73,12 +73,13 @@ function TabList<T extends object>({
           twMerge([
             '[--tab-list-gutter:--spacing(1)]',
             'relative flex forced-color-adjust-none',
-            orientation === 'horizontal'
-            && 'flex-row gap-x-(--tab-list-gutter) rounded-(--tab-list-rounded) border-b py-(--tab-list-gutter)',
-            orientation === 'vertical'
-            && 'min-w-56 shrink-0 flex-col items-start gap-y-(--tab-list-gutter) border-l px-(--tab-list-gutter) [--tab-list-gutter:--spacing(2)]',
+            orientation === 'horizontal' &&
+              'flex-row gap-x-(--tab-list-gutter) rounded-(--tab-list-rounded) border-b py-(--tab-list-gutter)',
+            orientation === 'vertical' &&
+              'min-w-56 shrink-0 flex-col items-start gap-y-(--tab-list-gutter) border-l px-(--tab-list-gutter) [--tab-list-gutter:--spacing(2)]',
             className,
-          ]))}
+          ])
+        )}
       />
     </TabListContext>
   )
@@ -101,7 +102,7 @@ export function TabScrollArea({ className, ...props }: React.ComponentProps<'div
 interface TabProps extends TabPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
 }
-function Tab({ className, ref, ...props }: TabProps) {
+const Tab = ({ className, ref, ...props }: TabProps) => {
   const { orientation } = useSlottedContext(TabsContext)!
   const { selectionIndicator } = useTabListContext()
   return (
@@ -120,10 +121,10 @@ function Tab({ className, ref, ...props }: TabProps) {
         'selected:text-primary-subtle-fg text-muted-fg hover:bg-secondary selected:hover:bg-primary-subtle hover:text-fg selected:hover:text-primary-subtle-fg focus:ring-0',
         'disabled:opacity-50',
         'href' in props ? 'cursor-pointer' : 'cursor-default',
-        className,
+        className
       )}
     >
-      {composeRenderProps(props.children, children => (
+      {composeRenderProps(props.children, (children) => (
         <>
           {children}
           {selectionIndicator && (
@@ -132,8 +133,8 @@ function Tab({ className, ref, ...props }: TabProps) {
               className={twMerge(
                 'absolute bg-primary-subtle-fg duration-200 will-change-transform',
                 orientation === 'horizontal'
-                  ? 'start-(--tab-gutter-x) inset-e-(--tab-gutter-x) bottom-[calc(-1*(var(--tab-gutter-y)+1px))] h-0.5 motion-safe:transition-[translate,width]'
-                  : 'inset-y-(--tab-gutter-y) -inset-s-[calc(var(--tab-gutter-x)-var(--tab-list-gutter)+1px)] w-0.5 motion-safe:transition-[translate,height]',
+                  ? 'inset-e-(--tab-gutter-x) start-(--tab-gutter-x) -bottom-[calc(var(--tab-gutter-y)+1px)] h-0.5 motion-safe:transition-[translate,width]'
+                  : '-inset-s-[calc(var(--tab-gutter-x)-var(--tab-list-gutter)+1px)] top-(--tab-gutter-y) bottom-(--tab-gutter-y) w-0.5 motion-safe:transition-[translate,height]'
               )}
             />
           )}
@@ -147,11 +148,11 @@ interface TabPanelProps extends TabPanelPrimitiveProps {
   ref?: React.RefObject<HTMLDivElement>
 }
 
-function TabPanels<T extends object>(props: TabPanelsProps<T>) {
+const TabPanels = <T extends object>(props: TabPanelsProps<T>) => {
   return <PrimitiveTabPanels {...props} />
 }
 
-function TabPanel({ className, ref, ...props }: TabPanelProps) {
+const TabPanel = ({ className, ref, ...props }: TabPanelProps) => {
   return (
     <TabPanelPrimitive
       {...props}

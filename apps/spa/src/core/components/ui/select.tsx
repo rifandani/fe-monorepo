@@ -1,14 +1,12 @@
 'use client'
 
-import type { ListBoxProps } from 'react-aria-components/ListBox'
-import type { PopoverProps } from 'react-aria-components/Popover'
-import type { SelectProps as SelectPrimitiveProps } from 'react-aria-components/Select'
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Button } from 'react-aria-components/Button'
-import { ListBox } from 'react-aria-components/ListBox'
+import { ListBox, type ListBoxProps } from 'react-aria-components/ListBox'
+import type { PopoverProps } from 'react-aria-components/Popover'
 import {
   Select as SelectPrimitive,
-
+  type SelectProps as SelectPrimitiveProps,
   SelectValue,
 } from 'react-aria-components/Select'
 import { twJoin } from 'tailwind-merge'
@@ -30,10 +28,10 @@ interface SelectProps<
   items?: Iterable<T, M>
 }
 
-function Select<T extends object, M extends 'single' | 'multiple' = 'single'>({
+const Select = <T extends object, M extends 'single' | 'multiple' = 'single'>({
   className,
   ...props
-}: SelectProps<T, M>) {
+}: SelectProps<T, M>) => {
   return (
     <SelectPrimitive
       data-slot="control"
@@ -51,18 +49,18 @@ interface SelectListProps<T extends object> extends Omit<
   popover?: Omit<PopoverProps, 'children'>
 }
 
-function SelectContent<T extends object>({
+const SelectContent = <T extends object>({
   items,
   className,
   popover,
   ...props
-}: SelectListProps<T>) {
+}: SelectListProps<T>) => {
   return (
     <PopoverContent
       placement={popover?.placement ?? 'bottom'}
       className={cx(
         'min-w-(--trigger-width) overflow-hidden *:data-[slot=popover-inner]:overflow-hidden',
-        popover?.className,
+        popover?.className
       )}
       {...popover}
     >
@@ -70,8 +68,8 @@ function SelectContent<T extends object>({
         layout="stack"
         orientation="vertical"
         className={cx(
-          'grid max-h-[inherit] w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role=\'group\']+[role=group]]:mt-4 *:[[role=\'group\']+[role=separator]]:mt-1',
-          className,
+          "grid max-h-[inherit] w-full grid-cols-[auto_1fr] flex-col gap-y-1 overflow-y-auto p-1 outline-hidden *:[[role='group']+[role=group]]:mt-4 *:[[role='group']+[role=separator]]:mt-1",
+          className
         )}
         items={items}
         {...props}
@@ -85,7 +83,7 @@ interface SelectTriggerProps extends React.ComponentProps<typeof Button> {
   className?: string
 }
 
-function SelectTrigger({ children, className, ...props }: SelectTriggerProps) {
+const SelectTrigger = ({ children, className, ...props }: SelectTriggerProps) => {
   return (
     <span data-slot="control" className="relative block w-full">
       <Button
@@ -101,10 +99,10 @@ function SelectTrigger({ children, className, ...props }: SelectTriggerProps) {
           'group-disabled/select:bg-muted group-disabled/select:opacity-50 forced-colors:group-disabled/select:border-[GrayText] forced-colors:group-disabled/select:text-[GrayText]',
           'in-disabled:bg-muted in-disabled:opacity-50 forced-colors:in-disabled:border-[GrayText] forced-colors:in-disabled:text-[GrayText]',
           'dark:scheme-dark',
-          className,
+          className
         )}
       >
-        {values => (
+        {(values) => (
           <>
             {props.prefix && <span className="text-muted-fg">{props.prefix}</span>}
             {typeof children === 'function' ? children(values) : children}

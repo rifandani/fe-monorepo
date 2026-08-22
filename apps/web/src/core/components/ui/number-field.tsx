@@ -1,19 +1,17 @@
 'use client'
 
-import type { ButtonProps } from 'react-aria-components/Button'
-import type { InputProps as PrimitiveInputProps } from 'react-aria-components/Input'
-import type { NumberFieldProps } from 'react-aria-components/NumberField'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { Button } from 'react-aria-components/Button'
+import { Button, type ButtonProps } from 'react-aria-components/Button'
+import type { InputProps as PrimitiveInputProps } from 'react-aria-components/Input'
 import {
   NumberField as NumberFieldPrimitive,
-
+  type NumberFieldProps,
 } from 'react-aria-components/NumberField'
 import { Input, InputGroup } from '@/core/components/ui/input'
 import { cx } from '@/core/utils/primitive'
 import { fieldStyles } from './field'
 
-function NumberField({ className, ...props }: NumberFieldProps) {
+const NumberField = ({ className, ...props }: NumberFieldProps) => {
   return (
     <NumberFieldPrimitive {...props} data-slot="control" className={cx(fieldStyles(), className)} />
   )
@@ -29,7 +27,7 @@ function NumberInput({ className, ...props }: InputProps) {
       <Input className={cx('tabular-nums', className)} {...props} />
       <div
         data-slot="text"
-        className="pointer-events-auto end-0 p-px in-disabled:pointer-events-none in-disabled:opacity-50"
+        className="in-disabled:pointer-events-none pointer-events-auto end-0 p-px in-disabled:opacity-50"
       >
         <div className="flex h-full items-center divide-x overflow-hidden rounded-e-[calc(var(--radius-lg)-1px)] border-s">
           <StepperButton slot="decrement" />
@@ -45,7 +43,7 @@ interface StepperButtonProps extends ButtonProps {
   className?: string
 }
 
-function StepperButton({ slot, className, ...props }: StepperButtonProps) {
+const StepperButton = ({ slot, className, ...props }: StepperButtonProps) => {
   return (
     <Button
       className={cx(
@@ -53,18 +51,16 @@ function StepperButton({ slot, className, ...props }: StepperButtonProps) {
         'size-full min-w-11 grow bg-input/20 pressed:bg-input/60 sm:min-w-8.5',
         '*:data-[slot=stepper-icon]:size-5 sm:*:data-[slot=stepper-icon]:size-4',
         'disabled:pointer-events-none disabled:opacity-50',
-        className,
+        className
       )}
       slot={slot}
       {...props}
     >
-      {slot === 'increment'
-        ? (
-            <PlusIcon data-slot="stepper-icon" />
-          )
-        : (
-            <MinusIcon data-slot="stepper-icon" />
-          )}
+      {slot === 'increment' ? (
+        <PlusIcon data-slot="stepper-icon" />
+      ) : (
+        <MinusIcon data-slot="stepper-icon" />
+      )}
     </Button>
   )
 }

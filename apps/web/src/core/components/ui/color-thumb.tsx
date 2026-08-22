@@ -1,9 +1,8 @@
 'use client'
 
-import type { ColorThumbProps } from 'react-aria-components/ColorThumb'
 import {
   ColorThumb as ColorThumbPrimitive,
-
+  type ColorThumbProps,
 } from 'react-aria-components/ColorThumb'
 import { cx } from '@/core/utils/primitive'
 
@@ -20,7 +19,7 @@ export function ColorThumb({ className, ...props }: ColorThumbProps) {
         'focus-visible:size-8',
         'dragging:bg-muted-fg dragging:forced-colors:bg-[ButtonBorder]',
         'disabled:opacity-50 disabled:forced-colors:border-[GrayText] disabled:forced-colors:bg-[GrayText]',
-        className,
+        className
       )}
     />
   )

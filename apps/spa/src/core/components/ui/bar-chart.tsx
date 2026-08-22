@@ -1,11 +1,9 @@
 'use client'
 
-import type { ComponentProps } from 'react'
-import type { BaseChartProps } from './chart'
-import { startTransition, useMemo } from 'react'
+import { type ComponentProps, startTransition, useMemo } from 'react'
 import { Bar, BarChart as BarChartPrimitive } from 'recharts'
 import {
-
+  type BaseChartProps,
   CartesianGrid,
   Chart,
   ChartLegend,
@@ -73,7 +71,7 @@ export function BarChart({
   const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
-    [configKeys, colors],
+    [configKeys, colors]
   )
 
   const configEntries = useMemo(() => Object.entries(config), [config])

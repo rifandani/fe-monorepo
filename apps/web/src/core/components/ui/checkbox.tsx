@@ -1,22 +1,20 @@
 'use client'
 
-import type { CheckboxButtonProps, CheckboxFieldProps } from 'react-aria-components/Checkbox'
-import type { CheckboxGroupProps } from 'react-aria-components/CheckboxGroup'
 import { CheckIcon, MinusIcon } from '@heroicons/react/20/solid'
 import {
   CheckboxButton,
-
+  type CheckboxButtonProps,
   CheckboxField as CheckboxFieldPrimitive,
-
+  type CheckboxFieldProps,
 } from 'react-aria-components/Checkbox'
 import {
   CheckboxGroup as CheckboxGroupPrimitive,
-
+  type CheckboxGroupProps,
 } from 'react-aria-components/CheckboxGroup'
 import { composeRenderProps } from 'react-aria-components/composeRenderProps'
 import { twMerge } from 'tailwind-merge'
-import { Label } from '@/core/components/ui/field'
 import { cx } from '@/core/utils/primitive'
+import { Label } from '@/core/components/ui/field'
 
 export function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
   return (
@@ -25,7 +23,7 @@ export function CheckboxGroup({ className, ...props }: CheckboxGroupProps) {
       data-slot="control"
       className={cx(
         'space-y-3 has-[[slot=description]]:not-has-[[slot=errorMessage]]:space-y-6 has-[[slot=description]]:**:data-[slot=label]:font-medium **:[[slot=description]]:block',
-        className,
+        className
       )}
     />
   )
@@ -43,7 +41,7 @@ export function CheckboxField({ className, ...props }: CheckboxFieldProps) {
         '**:data-[slot=control-label]:col-start-2 **:data-[slot=control-label]:row-start-1',
         '*:[[slot=description]]:col-start-2 *:[[slot=description]]:row-start-2',
         'has-[[slot=description]]:**:data-[slot=control-label]:font-medium',
-        className,
+        className
       )}
     />
   )
@@ -58,34 +56,30 @@ export function Checkbox({ className, ...props }: CheckboxButtonProps) {
       {composeRenderProps(
         props.children,
         (children, { isSelected, isIndeterminate, isInvalid }) => {
-          const indicator = isIndeterminate
-            ? (
-                <MinusIcon data-slot="check-indicator" />
-              )
-            : isSelected
-              ? (
-                  <CheckIcon data-slot="check-indicator" />
-                )
-              : null
+          const indicator = isIndeterminate ? (
+            <MinusIcon data-slot="check-indicator" />
+          ) : isSelected ? (
+            <CheckIcon data-slot="check-indicator" />
+          ) : null
 
           return (
             <div
               className={twMerge(
-                'grid grid-cols-[1.125rem_1fr] items-center gap-y-1 has-data-[slot=control-label]:gap-x-3 sm:grid-cols-[1rem_1fr]',
+                'grid grid-cols-[1.125rem_1fr] items-center gap-y-1 has-data-[slot=control-label]:gap-x-3 sm:grid-cols-[1rem_1fr]'
               )}
             >
               <span
                 data-slot="indicator"
                 className={twMerge([
-                  'relative isolate col-start-1 row-start-1 flex shrink-0 items-center justify-center rounded bg-(--control-bg,transparent) text-bg inset-ring inset-ring-input transition group-hover:inset-ring-muted-fg/30 group-focus-visible:inset-ring-ring',
+                  'col-start-1 row-start-1 relative inset-ring inset-ring-input isolate flex shrink-0 items-center justify-center rounded bg-(--control-bg,transparent) text-bg transition group-hover:inset-ring-muted-fg/30 group-focus-visible:inset-ring-ring',
                   'size-4.5 *:data-[slot=check-indicator]:size-4 sm:size-4 sm:*:data-[slot=check-indicator]:size-3.5',
                   'in-disabled:bg-muted',
                   (isSelected || isIndeterminate) && [
-                    'bg-(--checkbox-bg,var(--color-primary)) text-(--checkbox-fg,var(--color-primary-fg)) inset-ring-(--checkbox-ring,var(--color-ring))',
+                    'inset-ring-(--checkbox-ring,var(--color-ring)) bg-(--checkbox-bg,var(--color-primary)) text-(--checkbox-fg,var(--color-primary-fg))',
                     'group-invalid:inset-ring/70 group-invalid:bg-danger group-invalid:text-danger-fg dark:group-invalid:inset-ring-danger-subtle-fg/70',
                   ],
-                  isInvalid
-                  && 'bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20 inset-ring-danger-subtle-fg/70 group-hover:inset-ring-danger-subtle-fg/70',
+                  isInvalid &&
+                    'inset-ring-danger-subtle-fg/70 bg-danger-subtle/5 text-danger-fg ring-danger-subtle-fg/20 group-hover:inset-ring-danger-subtle-fg/70',
                 ])}
               >
                 {indicator}
@@ -99,7 +93,7 @@ export function Checkbox({ className, ...props }: CheckboxButtonProps) {
               </Label>
             </div>
           )
-        },
+        }
       )}
     </CheckboxButton>
   )

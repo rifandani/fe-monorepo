@@ -1,13 +1,11 @@
 'use client'
 
-import type { UseEmblaCarouselType } from 'embla-carousel-react'
-import type { ButtonProps } from './button'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import useEmblaCarousel from 'embla-carousel-react'
+import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react'
 import { createContext, use, useCallback, useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
-import { Button } from './button'
+import { Button, type ButtonProps } from './button'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -25,7 +23,7 @@ type CarouselContextProps = {
 
 const CarouselContext = createContext<CarouselContextProps | null>(null)
 
-function useCarousel() {
+const useCarousel = () => {
   const context = use(CarouselContext)
 
   if (!context) {
@@ -49,7 +47,7 @@ interface CarouselProps extends React.HTMLAttributes<HTMLDivElement>, CarouselRo
   setApi?: (api: CarouselApi) => void
 }
 
-function Carousel({
+const Carousel = ({
   orientation = 'horizontal',
   opts,
   setApi,
@@ -57,13 +55,13 @@ function Carousel({
   className,
   children,
   ...props
-}: CarouselProps) {
+}: CarouselProps) => {
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
       axis: orientation === 'horizontal' ? 'x' : 'y',
     },
-    plugins,
+    plugins
   )
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -90,13 +88,12 @@ function Carousel({
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
         scrollPrev()
-      }
-      else if (event.key === 'ArrowRight') {
+      } else if (event.key === 'ArrowRight') {
         event.preventDefault()
         scrollNext()
       }
     },
-    [scrollPrev, scrollNext],
+    [scrollPrev, scrollNext]
   )
 
   useEffect(() => {
@@ -125,7 +122,7 @@ function Carousel({
     <CarouselContext
       value={{
         carouselRef,
-        api,
+        api: api,
         opts,
         orientation: orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
         scrollPrev,
@@ -147,7 +144,7 @@ function Carousel({
   )
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
+const CarouselContent = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { carouselRef, orientation } = useCarousel()
 
   return (
@@ -156,7 +153,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
         className={twMerge(
           'flex',
           orientation === 'horizontal' ? '-ms-4' : '-mt-4 flex-col',
-          className,
+          className
         )}
         {...props}
       />
@@ -164,7 +161,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
+const CarouselItem = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { orientation } = useCarousel()
 
   return (
@@ -172,14 +169,14 @@ function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
       className={twMerge(
         'group/carousel-item relative min-w-0 shrink-0 grow-0 basis-full focus:outline-hidden focus-visible:outline-hidden',
         orientation === 'horizontal' ? 'ps-4' : 'pt-4',
-        className,
+        className
       )}
       {...props}
     />
   )
 }
 
-function CarouselHandler({ ref, className, ...props }: React.ComponentProps<'div'>) {
+const CarouselHandler = ({ ref, className, ...props }: React.ComponentProps<'div'>) => {
   const { orientation } = useCarousel()
   return (
     <div
@@ -188,14 +185,14 @@ function CarouselHandler({ ref, className, ...props }: React.ComponentProps<'div
       className={twMerge(
         'relative z-10 mt-6 flex items-center gap-x-2',
         orientation === 'horizontal' ? 'justify-end' : 'justify-center',
-        className,
+        className
       )}
       {...props}
     />
   )
 }
 
-function CarouselButton({
+const CarouselButton = ({
   segment,
   className,
   intent = 'outline',
@@ -203,7 +200,7 @@ function CarouselButton({
   size = 'sq-sm',
   ref,
   ...props
-}: ButtonProps & { segment: 'previous' | 'next' }) {
+}: ButtonProps & { segment: 'previous' | 'next' }) => {
   const { orientation, scrollPrev, canScrollPrev, scrollNext, canScrollNext } = useCarousel()
   const isNext = segment === 'next'
   const canScroll = isNext ? canScrollNext : canScrollPrev

@@ -1,11 +1,10 @@
 'use client'
 
-import type { VariantProps } from 'tailwind-variants'
 import { twMerge } from 'tailwind-merge'
-import { tv } from 'tailwind-variants'
+import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonGroupStyles = tv({
-  base: 'flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-e-md [&>[data-slot=select-trigger]:not([class*=\'w-\'])]:w-fit [&>input]:flex-1',
+  base: "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-e-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
   variants: {
     orientation: {
       horizontal:
@@ -39,8 +38,8 @@ export function ButtonGroupText({ className, ...props }: React.ComponentProps<'d
   return (
     <div
       className={twMerge(
-        'flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs *:data-[slot=icon]:pointer-events-none [&_[data-slot=icon]:not([class*=\'size-\'])]:size-5 sm:[&_[data-slot=icon]:not([class*=\'size-\'])]:size-4',
-        className,
+        "flex items-center gap-2 rounded-md border bg-muted px-4 font-medium text-sm shadow-xs *:data-[slot=icon]:pointer-events-none [&_[data-slot=icon]:not([class*='size-'])]:size-5 sm:[&_[data-slot=icon]:not([class*='size-'])]:size-4",
+        className
       )}
       {...props}
     />

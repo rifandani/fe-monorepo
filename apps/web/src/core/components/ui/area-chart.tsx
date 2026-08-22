@@ -1,10 +1,9 @@
 'use client'
 
-import type { ComponentProps } from 'react'
-import type { BaseChartProps } from './chart'
-import { Fragment, useId, useMemo } from 'react'
+import { type ComponentProps, Fragment, useId, useMemo } from 'react'
 import { Area, AreaChart as AreaChartPrimitive } from 'recharts'
 import {
+  type BaseChartProps,
   CartesianGrid,
   Chart,
   ChartLegend,
@@ -19,7 +18,7 @@ import {
   YAxis,
 } from './chart'
 
-const slugRegExp = /[^a-z0-9]/gi
+const slugRegExp = /[^a-zA-Z0-9]/g
 
 const fillNone = <stop stopColor="currentColor" stopOpacity={0} />
 
@@ -96,7 +95,7 @@ export function AreaChart({
   const configKeys = useMemo(() => Object.keys(config), [config])
   const categoryColors = useMemo(
     () => constructCategoryColors(configKeys, colors),
-    [configKeys, colors],
+    [configKeys, colors]
   )
   const stacked = type === 'stacked' || type === 'percent'
   const areaId = useId()
@@ -145,24 +144,22 @@ export function AreaChart({
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === 'boolean'
-                  ? (
-                      <ChartTooltipContent
-                        {...{
-                          hideIndicator: tooltipProps?.hideIndicator,
-                          hideLabel: tooltipProps?.hideLabel,
-                          cursor: tooltipProps?.cursor,
-                          indicator: tooltipProps?.indicator,
-                          labelSeparator: tooltipProps?.labelSeparator,
-                          formatter: tooltipProps?.formatter,
-                          labelFormatter: tooltipProps?.labelFormatter,
-                        }}
-                        accessibilityLayer
-                      />
-                    )
-                  : (
-                      tooltip
-                    )
+                typeof tooltip === 'boolean' ? (
+                  <ChartTooltipContent
+                    {...{
+                      hideIndicator: tooltipProps?.hideIndicator,
+                      hideLabel: tooltipProps?.hideLabel,
+                      cursor: tooltipProps?.cursor,
+                      indicator: tooltipProps?.indicator,
+                      labelSeparator: tooltipProps?.labelSeparator,
+                      formatter: tooltipProps?.formatter,
+                      labelFormatter: tooltipProps?.labelFormatter,
+                    }}
+                    accessibilityLayer
+                  />
+                ) : (
+                  tooltip
+                )
               }
               {...tooltipProps}
             />

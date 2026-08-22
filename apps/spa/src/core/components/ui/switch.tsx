@@ -1,9 +1,8 @@
-import type { SwitchButtonProps, SwitchFieldProps } from 'react-aria-components/Switch'
 import {
   SwitchButton,
-
+  type SwitchButtonProps,
   SwitchField as SwitchFieldPrimitive,
-
+  type SwitchFieldProps,
 } from 'react-aria-components/Switch'
 import { twJoin, twMerge } from 'tailwind-merge'
 import { Label } from '@/core/components/ui/field'
@@ -33,50 +32,46 @@ export function Switch({ children, className, ...props }: SwitchButtonProps) {
         '*:data-[slot=control-label]:row-start-1 ltr:*:data-[slot=control-label]:col-start-1 rtl:*:data-[slot=control-label]:col-start-2',
         '*:[[slot=description]]:row-start-2 ltr:*:[[slot=description]]:col-start-1 rtl:*:[[slot=description]]:col-start-2',
         'disabled:opacity-50',
-        className,
+        className
       )}
       {...props}
     >
-      {values => (
+      {(values) => (
         <>
           <span
             data-slot="indicator"
             className={twMerge(
               'relative isolate inline-flex h-6 w-10 cursor-default self-start rounded-full p-0.75 sm:mt-0.5 sm:h-5 sm:w-8 ltr:col-start-2 rtl:col-start-1',
               'transition duration-200 ease-in-out',
-              'bg-input/30 inset-ring inset-ring-input',
+              'inset-ring inset-ring-input bg-input/30',
               'forced-colors:outline forced-colors:[--switch-bg:Highlight]',
               values.isHovered && 'inset-ring-muted-fg/30',
-              values.isFocusVisible
-              && 'bg-(--switch-bg)/20 ring-2 ring-(--switch-bg)/20 inset-ring-ring/70 dark:inset-ring-(--switch-bg)/70 selected:inset-ring-(--switch-bg)/30',
-              values.isSelected
-              && 'bg-(--switch-bg) inset-ring-(--switch-shadow) dark:bg-(--switch-bg) dark:inset-ring-(--switch-bg-ring)',
-              values.isDisabled
-              && 'dark:group-disabled:bg-muted-fg/30 dark:group-disabled:group-selected:bg-(--switch-bg) dark:group-disabled:group-selected:inset-ring-muted-fg/30',
+              values.isFocusVisible &&
+                'inset-ring-ring/70 selected:inset-ring-(--switch-bg)/30 bg-(--switch-bg)/20 ring-(--switch-bg)/20 ring-2 dark:inset-ring-(--switch-bg)/70',
+              values.isSelected &&
+                'inset-ring-(--switch-shadow) bg-(--switch-bg) dark:inset-ring-(--switch-bg-ring) dark:bg-(--switch-bg)',
+              values.isDisabled &&
+                'dark:group-disabled:bg-muted-fg/30 dark:group-disabled:group-selected:inset-ring-muted-fg/30 dark:group-disabled:group-selected:bg-(--switch-bg)'
             )}
           >
             <span
               aria-hidden="true"
               className={twJoin(
                 'pointer-events-none relative inline-block size-4.5 translate-x-0 rounded-full border border-transparent bg-white shadow-sm ring ring-fg/5 transition duration-200 ease-in-out sm:size-3.5',
-                values.isSelected
-                && 'bg-(--switch) shadow-(--switch-shadow) ring-(--switch-ring) group-disabled:shadow-sm group-disabled:ring-secondary-fg/5 ltr:translate-x-4 ltr:sm:translate-x-3 rtl:-translate-x-4 rtl:sm:-translate-x-3',
+                values.isSelected &&
+                  'bg-(--switch) shadow-(--switch-shadow) ring-(--switch-ring) group-disabled:shadow-sm group-disabled:ring-secondary-fg/5 ltr:translate-x-4 ltr:sm:translate-x-3 rtl:-translate-x-4 rtl:sm:-translate-x-3'
               )}
             />
           </span>
-          {typeof children === 'function'
-            ? (
-                children(values)
-              )
-            : typeof children === 'string'
-              ? (
-                  <Label elementType="span" data-slot="control-label">
-                    {children}
-                  </Label>
-                )
-              : (
-                  children
-                )}
+          {typeof children === 'function' ? (
+            children(values)
+          ) : typeof children === 'string' ? (
+            <Label elementType="span" data-slot="control-label">
+              {children}
+            </Label>
+          ) : (
+            children
+          )}
         </>
       )}
     </SwitchButton>

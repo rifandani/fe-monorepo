@@ -1,17 +1,15 @@
 'use client'
 
-import type { DialogProps, DialogTriggerProps } from 'react-aria-components/Dialog'
-import type { ModalOverlayProps } from 'react-aria-components/Modal'
-
 import {
-
+  type DialogProps,
   DialogTrigger as DialogTriggerPrimitive,
-
+  type DialogTriggerProps,
 } from 'react-aria-components/Dialog'
-import {
-  ModalOverlay,
 
+import {
   Modal as ModalPrimitive,
+  ModalOverlay,
+  type ModalOverlayProps,
 } from 'react-aria-components/Modal'
 import { cx } from '@/core/utils/primitive'
 import {
@@ -26,34 +24,34 @@ import {
   DialogTrigger,
 } from './dialog'
 
-function Modal(props: DialogTriggerProps) {
+const Modal = (props: DialogTriggerProps) => {
   return <DialogTriggerPrimitive {...props} />
 }
 
 const sizes = {
   '2xs': 'sm:max-w-2xs',
-  'xs': 'sm:max-w-xs',
-  'sm': 'sm:max-w-sm',
-  'md': 'sm:max-w-md',
-  'lg': 'sm:max-w-lg',
-  'xl': 'sm:max-w-xl',
+  xs: 'sm:max-w-xs',
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-lg',
+  xl: 'sm:max-w-xl',
   '2xl': 'sm:max-w-2xl',
   '3xl': 'sm:max-w-3xl',
   '4xl': 'sm:max-w-4xl',
   '5xl': 'sm:max-w-5xl',
-  'fullscreen': '',
+  fullscreen: '',
 }
 
 interface ModalContentProps
   extends
-  Omit<ModalOverlayProps, 'children'>,
-  Pick<DialogProps, 'aria-label' | 'aria-labelledby' | 'role' | 'children'> {
+    Omit<ModalOverlayProps, 'children'>,
+    Pick<DialogProps, 'aria-label' | 'aria-labelledby' | 'role' | 'children'> {
   size?: keyof typeof sizes
   closeButton?: boolean
   overlay?: Pick<ModalOverlayProps, 'className'>
 }
 
-function ModalContent({
+const ModalContent = ({
   className,
   isDismissable: isDismissableInternal,
   children,
@@ -62,7 +60,7 @@ function ModalContent({
   role = 'dialog',
   closeButton = true,
   ...props
-}: ModalContentProps) {
+}: ModalContentProps) => {
   const isDismissable = isDismissableInternal ?? role !== 'alertdialog'
   return (
     <ModalOverlay
@@ -75,7 +73,7 @@ function ModalContent({
         'entering:fade-in entering:animate-in entering:duration-300 entering:ease-out',
         'exiting:fade-out exiting:animate-out exiting:ease-in',
         size === 'fullscreen' ? 'md:p-3' : 'md:p-4',
-        overlay?.className,
+        overlay?.className
       )}
       {...props}
     >
@@ -92,11 +90,11 @@ function ModalContent({
           sizes[size],
           'entering:slide-in-from-bottom sm:entering:zoom-in-95 sm:entering:slide-in-from-bottom-0 entering:animate-in entering:duration-300 entering:ease-out',
           'exiting:slide-out-to-bottom sm:exiting:zoom-out-95 sm:exiting:slide-out-to-bottom-0 exiting:animate-out exiting:ease-in',
-          className,
+          className
         )}
       >
         <Dialog role={role}>
-          {values => (
+          {(values) => (
             <>
               {typeof children === 'function' ? children(values) : children}
               {closeButton && <DialogCloseIcon isDismissable={isDismissable} />}

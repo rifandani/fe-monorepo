@@ -1,11 +1,9 @@
 'use client'
 
-import type { GroupProps } from 'react-aria-components/Group'
-import type { InputProps as InputPrimitiveProps } from 'react-aria-components/Input'
-import { Group } from 'react-aria-components/Group'
+import { Group, type GroupProps } from 'react-aria-components/Group'
 import {
   Input as InputPrimitive,
-
+  type InputProps as InputPrimitiveProps,
 } from 'react-aria-components/Input'
 import { cx } from '@/core/utils/primitive'
 
@@ -26,7 +24,7 @@ export function Input({ className, ref, ...props }: InputProps) {
           'disabled:bg-muted forced-colors:in-disabled:text-[GrayText]',
           'in-disabled:bg-muted forced-colors:in-disabled:text-[GrayText]',
           'dark:scheme-dark',
-          className,
+          className
         )}
         ref={ref}
         {...props}
@@ -53,13 +51,13 @@ export function InputGroup({ className, ...props }: GroupProps) {
 
         // text
         'has-[[data-slot=text]:first-child]:[&_input]:ps-[calc(var(--input-gutter-start)+--spacing(2))] has-[[data-slot=text]:last-child]:[&_input]:pe-[calc(var(--input-gutter-end)+--spacing(2))] sm:has-[[data-slot=text]:first-child]:[&_input]:ps-(--input-gutter-start,--spacing(10)) sm:has-[[data-slot=text]:last-child]:[&_input]:pe-(--input-gutter-end,--spacing(10))',
-        '*:data-[slot=text]:absolute *:data-[slot=text]:top-0 *:data-[slot=text]:z-10 *:data-[slot=text]:h-full *:data-[slot=text]:max-w-fit *:data-[slot=text]:grow *:data-[slot=text]:content-center [&>[data-slot=\'text\']:not([class*=\'pointer-events\'])]:pointer-events-none',
-        '[&>[data-slot=text]:first-child:not([class*=\'start-\'])]:start-3 sm:[&>[data-slot=text]:first-child:not([class*=\'start-\'])]:start-2.5 [&>[data-slot=text]:last-child:not([class*=\'end-\'])]:end-3 sm:[&>[data-slot=text]:last-child:not([class*=\'end-\'])]:end-2.5',
+        "*:data-[slot=text]:absolute *:data-[slot=text]:top-0 *:data-[slot=text]:z-10 *:data-[slot=text]:h-full *:data-[slot=text]:max-w-fit *:data-[slot=text]:grow *:data-[slot=text]:content-center [&>[data-slot='text']:not([class*='pointer-events'])]:pointer-events-none",
+        "[&>[data-slot=text]:first-child:not([class*='start-'])]:start-3 sm:[&>[data-slot=text]:first-child:not([class*='start-'])]:start-2.5 [&>[data-slot=text]:last-child:not([class*='end-'])]:end-3 sm:[&>[data-slot=text]:last-child:not([class*='end-'])]:end-2.5",
 
         // keyboard
         'has-[[data-slot=keyboard]:first-child]:[&_input]:ps-[calc(var(--input-gutter-start)+--spacing(2))] has-[[data-slot=keyboard]:last-child]:[&_input]:pe-[calc(var(--input-gutter-end)+--spacing(2))] sm:has-[[data-slot=keyboard]:first-child]:[&_input]:ps-(--input-gutter-start,--spacing(10)) sm:has-[[data-slot=keyboard]:last-child]:[&_input]:pe-(--input-gutter-end,--spacing(10))',
-        '*:data-[slot=keyboard]:absolute *:data-[slot=keyboard]:top-0 *:data-[slot=keyboard]:z-10 *:data-[slot=keyboard]:h-full *:data-[slot=keyboard]:max-w-fit *:data-[slot=keyboard]:grow *:data-[slot=keyboard]:content-center [&>[data-slot=\'keyboard\']:not([class*=\'pointer-events\'])]:pointer-events-none',
-        '[&>[data-slot=keyboard]:first-child:not([class*=\'start-\'])]:start-3 sm:[&>[data-slot=keyboard]:first-child:not([class*=\'start-\'])]:start-2.5 [&>[data-slot=keyboard]:last-child:not([class*=\'end-\'])]:end-3 sm:[&>[data-slot=keyboard]:last-child:not([class*=\'end-\'])]:end-2.5',
+        "*:data-[slot=keyboard]:absolute *:data-[slot=keyboard]:top-0 *:data-[slot=keyboard]:z-10 *:data-[slot=keyboard]:h-full *:data-[slot=keyboard]:max-w-fit *:data-[slot=keyboard]:grow *:data-[slot=keyboard]:content-center [&>[data-slot='keyboard']:not([class*='pointer-events'])]:pointer-events-none",
+        "[&>[data-slot=keyboard]:first-child:not([class*='start-'])]:start-3 sm:[&>[data-slot=keyboard]:first-child:not([class*='start-'])]:start-2.5 [&>[data-slot=keyboard]:last-child:not([class*='end-'])]:end-3 sm:[&>[data-slot=keyboard]:last-child:not([class*='end-'])]:end-2.5",
 
         // button
         'has-[>button:first-child]:[&_input]:ps-(--input-gutter-start,--spacing(16)) has-[>button:last-child]:[&_input]:pe-(--input-gutter-end,--spacing(16)) sm:has-[>button:first-child]:[&_input]:ps-(--input-gutter-start,--spacing(14)) sm:has-[>button:last-child]:[&_input]:pe-(--input-gutter-end,--spacing(14))',
@@ -67,8 +65,8 @@ export function InputGroup({ className, ...props }: GroupProps) {
         '[&>button[data-intent=outline]]:border-input *:[button]:absolute *:[button]:top-0 *:[button]:z-10 *:[button]:min-h-11 sm:*:[button]:min-h-9',
         '[&>button:first-child]:start-0 [&>button:last-child]:end-0',
 
-        '[&>[data-slot=\'icon\']:not([class*=\'text-\'])]:text-muted-fg [&>[data-slot=\'loader\']:not([class*=\'text-\'])]:text-muted-fg [&>[data-slot=\'text\']:not([class*=\'text-\'])]:text-muted-fg',
-        className,
+        "[&>[data-slot='icon']:not([class*='text-'])]:text-muted-fg [&>[data-slot='loader']:not([class*='text-'])]:text-muted-fg [&>[data-slot='text']:not([class*='text-'])]:text-muted-fg",
+        className
       )}
       {...props}
     />

@@ -1,10 +1,10 @@
 'use client'
 
-import type { MeterProps as PrimitiveMeterProps, MeterRenderProps as PrimitiveMeterRenderProps } from 'react-aria-components/Meter'
 import { createContext, use } from 'react'
 import {
   Meter as PrimitiveMeter,
-
+  type MeterProps as PrimitiveMeterProps,
+  type MeterRenderProps as PrimitiveMeterRenderProps,
 } from 'react-aria-components/Meter'
 import { twMerge } from 'tailwind-merge'
 import { cx } from '@/core/utils/primitive'
@@ -26,15 +26,15 @@ export function Meter({ className, children, color, ...props }: MeterProps) {
         'w-full',
         '[&>[data-slot=meter-header]+[data-slot=meter-track]]:mt-2',
         '[&>[data-slot=meter-header]+[data-slot=meter-track]]:mt-2',
-        '[&>[data-slot=meter-header]+[slot=\'description\']]:mt-1',
-        '[&>[slot=\'description\']+[data-slot=meter-track]]:mt-2',
+        "[&>[data-slot=meter-header]+[slot='description']]:mt-1",
+        "[&>[slot='description']+[data-slot=meter-track]]:mt-2",
         '[&>[data-slot=meter-track]+[slot=description]]:mt-2',
         '[&>[data-slot=meter-track]+[slot=errorMessage]]:mt-2',
         '*:data-[slot=meter-header]:font-medium',
-        className,
+        className
       )}
     >
-      {values => (
+      {(values) => (
         <MeterContext value={{ ...values, color }}>
           {typeof children === 'function' ? children(values) : children}
         </MeterContext>
@@ -50,8 +50,8 @@ export function MeterTrack({ className, ...props }: React.ComponentProps<'div'>)
       data-slot="meter-track"
       className={twMerge(
         '[--meter-height:--spacing(1.5)]',
-        'relative h-(--meter-height) w-full overflow-hidden rounded-full bg-secondary outline -outline-offset-1 outline-transparent',
-        className,
+        'relative h-(--meter-height) w-full overflow-hidden rounded-full bg-secondary outline outline-transparent -outline-offset-1',
+        className
       )}
       {...props}
     >
@@ -91,9 +91,7 @@ export function MeterHeader({ className, ...props }: React.ComponentProps<'div'>
 }
 
 function getMeterColor(value: number): string {
-  if (value < 50)
-    return 'var(--color-success)'
-  if (value < 80)
-    return 'var(--color-warning)'
+  if (value < 50) return 'var(--color-success)'
+  if (value < 80) return 'var(--color-warning)'
   return 'var(--color-danger)'
 }
