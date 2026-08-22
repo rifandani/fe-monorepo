@@ -93,7 +93,6 @@
     "@types/pg": "8.23.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
-    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vite-pwa/assets-generator": "1.0.2",
     "@workspace/typescript-config": "workspace:*",
     "agentation": "3.0.2",
