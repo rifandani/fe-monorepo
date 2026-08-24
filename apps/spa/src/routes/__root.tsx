@@ -20,12 +20,14 @@ declare module "react-aria-components" {
   }
 }
 
-const Devtools = import.meta.env.DEV
-  ? lazy(async () => {
-      const m = await import("@/core/providers/devtools");
-      return { default: m.Devtools };
-    })
-  : null;
+// E2E runs must not mount devtools: their overlays intercept pointer events.
+const Devtools =
+  import.meta.env.DEV && import.meta.env.VITE_E2E !== "true"
+    ? lazy(async () => {
+        const m = await import("@/core/providers/devtools");
+        return { default: m.Devtools };
+      })
+    : null;
 
 const RootRoute = () => {
   const router = useRouter();

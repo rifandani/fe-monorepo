@@ -7,8 +7,16 @@ import { Agentation } from "agentation";
 
 import { getQueryClient } from "@/core/providers/query/client";
 
+// E2E runs must not mount devtools: their overlays intercept pointer events.
+const isE2E = process.env.NEXT_PUBLIC_E2E === "true";
+
 export const Devtools = () => {
   const queryClient = getQueryClient();
+
+  if (isE2E) {
+    return null;
+  }
+
   return (
     <>
       <TanStackDevtools
