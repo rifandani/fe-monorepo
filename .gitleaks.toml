@@ -14,3 +14,9 @@ paths = ['''(.*?)\\.env\\..*\\.example$''', '''(.*?)\\.env\\.example$''']
 [[allowlists]]
 description = "Playwright E2E auth storage-state mocks"
 paths = ['''(?i).*e2e/\.auth/.*''', '''(?i).*playwright/\.auth/.*''']
+
+# The ignore file only ever holds fingerprints and the notes explaining them, so
+# quoting a flagged line here must not itself become a finding in history.
+[[allowlists]]
+description = "gitleaks ignore file"
+paths = ['''^\.gitleaksignore$''']
