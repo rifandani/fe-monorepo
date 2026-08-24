@@ -36,5 +36,11 @@ export const ENV = createEnv({
       process.env.NEXT_PUBLIC_OTEL_EXPORTER_OTLP_ENDPOINT,
     NEXT_PUBLIC_OTEL_LOG_LEVEL: process.env.NEXT_PUBLIC_OTEL_LOG_LEVEL,
   },
+  /**
+   * Container images build without runtime secrets (DATABASE_URL etc. are
+   * injected when the container starts, not baked in). Validation still runs
+   * on the server at boot and in every normal build.
+   */
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "1",
   // extends: [vercel()],
 });

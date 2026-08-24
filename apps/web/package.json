@@ -29,7 +29,9 @@
     "dev:prod": "cp .env.prod .env.local && portless run --name web.fe-monorepo next dev",
     "build": "cp .env.dev .env.local && next build",
     "build:prod": "cp .env.prod .env.local && next build",
+    "build:standalone": "BUILD_STANDALONE=1 next build",
     "start": "next start",
+    "start:standalone": "node .next/standalone/apps/web/server.js",
     "build-and-preview": "bun run build && bun run start"
   },
   "dependencies": {

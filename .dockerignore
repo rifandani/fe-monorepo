@@ -1,0 +1,30 @@
+# Build context hygiene: keep the image build fast and free of host artifacts.
+**/node_modules
+**/.next
+**/dist
+**/build
+**/.turbo
+**/.expo
+**/.tamagui
+**/dev-dist
+**/playwright-report
+**/playwright-test-results
+**/playwright
+**/html
+.stryker-tmp
+.git
+.github
+.vscode
+.idea
+.claude
+.cursor
+.agents
+.fallow
+.evlog
+.changeset
+**/*.log
+# Secrets must be injected at runtime, never copied into the image.
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
