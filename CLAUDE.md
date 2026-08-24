@@ -1,3 +1,7 @@
+## Language
+
+Always talk in ASD-STE100 Simplified Technical English.
+
 ## Agent skills
 
 ### Issue tracker
