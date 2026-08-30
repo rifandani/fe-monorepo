@@ -182,6 +182,8 @@ Stryker copies the repo into `.stryker-tmp` and symlinks `node_modules`, so `nod
 
 We are saved by the alias: all four Vitest configs map `@workspace/core` to an absolute `packages/core/src` path built from `import.meta.dirname`, which re-resolves inside the sandbox. Replacing those path aliases with bare package resolution would silently stop mutants in `core` from ever reaching the app projects' tests.
 
+> [ADR-0004](./0004-module-resolution-has-a-single-source-of-truth.md) removed the equivalent aliases from the app tsconfigs and from `apps/spa/vite.config.ts`, in favour of `@workspace/core`'s `exports` map. The four **Vitest** aliases named above are deliberately exempt, for the reason in this section. Do not delete them for consistency with that ADR — no test would fail if you did.
+
 ## Considered Options
 
 - **PR gate on mutation score** — rejected; #6073 makes it flaky, and a flaky gate gets disabled.
