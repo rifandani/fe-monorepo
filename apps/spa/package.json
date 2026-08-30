@@ -10,6 +10,8 @@
     "sitemap:gen": "bun scripts/gen-sitemap.ts",
     "pwa-assets:gen": "pwa-assets-generator",
     "typecheck": "tsc --noEmit",
+    "typerange": "fr",
+    "typerange:audit": "fr --audit",
     "test:install": "playwright install --with-deps chromium",
     "test:report": "dotenvx run --env-file=.env.dev -- playwright show-report",
     "test": "dotenvx run --env-file=.env.dev -- playwright test",

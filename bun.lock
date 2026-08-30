@@ -6,6 +6,7 @@
       "name": "fe-monorepo",
       "devDependencies": {
         "@changesets/cli": "3.0.0",
+        "@chenglou/freerange": "0.0.4",
         "@stryker-mutator/core": "10.0.0",
         "@stryker-mutator/vitest-runner": "10.0.0",
         "@vitest/coverage-v8": "4.1.11",
@@ -577,6 +578,8 @@
     "@changesets/types": ["@changesets/types@7.0.0", "", {}, "sha512-c5GoiQyt3pxiXjrWSNoP8/GRf4kG+VnKzovx1OQM8dYYALlSwgedmkPmJ+ZqGxqwg9D3Bkj85Uo4KLd5BN3A0w=="],
 
     "@changesets/write": ["@changesets/write@1.0.0", "", { "dependencies": { "@changesets/format": "^0.1.1", "@changesets/types": "^7.0.0", "human-id": "^4.2.0" } }, "sha512-xCK3/4C7Z7muQB/wguE6HcbjtY9iOtaK9orZKE+7xi573cMGD8rLZz7qlo6IvK7s+SIUIKajzj1l+F1QuP97tw=="],
+
+    "@chenglou/freerange": ["@chenglou/freerange@0.0.4", "", { "dependencies": { "typescript": "^6.0.2" }, "bin": { "fr": "dist/fr.js" } }, "sha512-eq6K7izgp9uo3EQZ43NCY19hj7ZCFwk0+vY+xkeKv3O9BtdfNEmz5VnxDvFOs+wLrwd8rGYr/R6SHqrYy9hNbg=="],
 
     "@clack/core": ["@clack/core@1.4.3", "", { "dependencies": { "fast-wrap-ansi": "^0.2.0", "sisteransi": "^1.0.5" } }, "sha512-/kr3UWNtdJfxZtPgDqUOmG2pvwlmcLGheex5yiZKdwbzZJxhV+HMNR9QNmyY5cGwTNV6LrR7Jtp+KjhUAP1qBQ=="],
 
@@ -3719,6 +3722,8 @@
     "@babel/preset-react/@babel/plugin-transform-react-jsx": ["@babel/plugin-transform-react-jsx@8.0.1", "", { "dependencies": { "@babel/helper-annotate-as-pure": "^8.0.0", "@babel/helper-module-imports": "^8.0.0", "@babel/helper-plugin-utils": "^8.0.1", "@babel/plugin-syntax-jsx": "^8.0.1", "@babel/types": "^8.0.0" }, "peerDependencies": { "@babel/core": "^8.0.0" } }, "sha512-NgkoF7Uq+30TmOPDdNUimT0Nta02uVjqJRFNlVWKrbOCu/CkzfHa4aMnIs0lMpkMmZmWA1e42Va+F04i/pY1zw=="],
 
     "@changesets/format/package-manager-detector": ["package-manager-detector@1.8.0", "", {}, "sha512-yQA4H19AmPEoMUeavPMDIe1higySl/gH/yaQrkT/s07Qp+7pp2hYz30N3z2l5BkjVkF9Ow6o0wjJamm2y7Sn0A=="],
+
+    "@chenglou/freerange/typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 
     "@esbuild-kit/core-utils/esbuild": ["esbuild@0.18.20", "", { "optionalDependencies": { "@esbuild/android-arm": "0.18.20", "@esbuild/android-arm64": "0.18.20", "@esbuild/android-x64": "0.18.20", "@esbuild/darwin-arm64": "0.18.20", "@esbuild/darwin-x64": "0.18.20", "@esbuild/freebsd-arm64": "0.18.20", "@esbuild/freebsd-x64": "0.18.20", "@esbuild/linux-arm": "0.18.20", "@esbuild/linux-arm64": "0.18.20", "@esbuild/linux-ia32": "0.18.20", "@esbuild/linux-loong64": "0.18.20", "@esbuild/linux-mips64el": "0.18.20", "@esbuild/linux-ppc64": "0.18.20", "@esbuild/linux-riscv64": "0.18.20", "@esbuild/linux-s390x": "0.18.20", "@esbuild/linux-x64": "0.18.20", "@esbuild/netbsd-x64": "0.18.20", "@esbuild/openbsd-x64": "0.18.20", "@esbuild/sunos-x64": "0.18.20", "@esbuild/win32-arm64": "0.18.20", "@esbuild/win32-ia32": "0.18.20", "@esbuild/win32-x64": "0.18.20" }, "bin": { "esbuild": "bin/esbuild" } }, "sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA=="],
 
