@@ -1,0 +1,126 @@
+name: E2E
+
+# Playwright E2E, deliberately outside ci.yml.
+#
+# Two reasons for the separate file:
+#   1. Same trap mutation.yml documents in reverse — a `workflow_dispatch` on
+#      ci.yml would also fire sherif, gitleaks, fallow, lint-typecheck, unit and
+#      both builds on every manual e2e run.
+#   2. E2E no longer runs on pull requests at all. See docs/adr/0004-e2e-is-manual.md.
+#
+# Triggers: manual on any branch (`gh workflow run e2e.yml --ref <branch>`), and
+# automatic on push to main so the merged state still gets a signal.
+#
+# This gates nothing. `main` has no branch protection and no required status
+# checks, so a red run here is information, not a block.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  FORCE_COLOR: "1"
+
+# A superseded e2e run only reports on code that has already been replaced.
+# ci.yml deliberately has no equivalent block; this is scoped to e2e only.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dev-spa-e2e:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    environment: dev
+    # container:
+    #   image: mcr.microsoft.com/playwright:v1.42.0-focal
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Prepare env file
+        env:
+          SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
+        run: |
+          if [ -n "$SPA_ENV_FILE" ]; then
+            echo "$SPA_ENV_FILE" > apps/spa/.env.dev
+          else
+            cp apps/spa/.env.dev.example apps/spa/.env.dev
+          fi
+
+      # Keyed on the resolved Playwright version rather than the lockfile hash:
+      # bun.lock churns on any dependency change, but the browser binaries only
+      # change when Playwright does.
+      - name: Resolve playwright version
+        id: pw
+        run: |
+          echo "version=$(node -p "require('./apps/spa/node_modules/@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Restore playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      # Still run on a cache hit: the binaries are cached, the `--with-deps` OS
+      # packages are not, and Playwright skips a download it already has.
+      - name: Install playwright browsers
+        run: bun spa test:install
+
+      - name: Run playwright tests
+        run: bun spa test:ci
+
+      - name: Save playwright report as artifact
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: spa-playwright-report
+          path: apps/spa/playwright-report
+          retention-days: 7
+
+  # TODO: uncomment this when we are able to mock the auth api (better-auth) on the server-side
+  # dev-web-e2e:
+  #   timeout-minutes: 30
+  #   runs-on: ubuntu-latest
+  #   environment: dev
+  #   # container:
+  #   #   image: mcr.microsoft.com/playwright:v1.42.0-focal
+  #   steps:
+  #     - name: Checkout branch
+  #       uses: actions/checkout@v7
+
+  #     - name: Install bun
+  #       uses: oven-sh/setup-bun@v2
+
+  #     - name: Install deps and disallow changes to lockfile
+  #       run: bun ci
+
+  #     - name: Save github secrets as env file
+  #       run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
+
+  #     - name: Install playwright browsers
+  #       run: bun web test:install
+
+  #     - name: Run playwright tests
+  #       run: bun web test:ci
+
+  #     - name: Save playwright report as artifact
+  #       uses: actions/upload-artifact@v7
+  #       if: always()
+  #       with:
+  #         name: web-playwright-report
+  #         path: apps/web/playwright-report
+  #         retention-days: 7

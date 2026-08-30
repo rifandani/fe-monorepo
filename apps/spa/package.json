@@ -14,7 +14,7 @@
     "test:report": "dotenvx run --env-file=.env.dev -- playwright show-report",
     "test": "dotenvx run --env-file=.env.dev -- playwright test",
     "test:ui": "dotenvx run --env DEBUG=pw:api --env-file=.env.dev -- playwright test --ui --headed",
-    "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only --shard=$SHARD_INDEX/$SHARD_TOTAL",
+    "test:ci": "dotenvx run --env-file=.env.dev -- playwright test --forbid-only",
     "test:unit": "vitest run --project spa",
     "check-site-meta": "bunx check-site-meta 3001 -p 3051",
     "dev": "cp .env.dev .env.local && portless run --name spa.fe-monorepo vite dev",
