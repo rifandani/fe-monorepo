@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test:unit": "vitest run --project core",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typerange": "fr",
+    "typerange:audit": "fr --audit"
   },
   "devDependencies": {
     "@types/node": "26.2.0",

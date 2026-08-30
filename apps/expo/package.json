@@ -8,6 +8,8 @@
   "main": "index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "typerange": "fr",
+    "typerange:audit": "fr --audit",
     "test:unit": "vitest run --project expo",
     "install:check": "expo install --check",
     "install:fix": "expo install --fix",
