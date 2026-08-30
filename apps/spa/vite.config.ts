@@ -187,10 +187,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(import.meta.dirname, "./src"),
-        "@workspace/core": path.resolve(
-          import.meta.dirname,
-          "../../packages/core/src"
-        ),
       },
     },
     server: {

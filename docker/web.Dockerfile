@@ -44,7 +44,7 @@ ENV BUILD_STANDALONE=1 \
 RUN cd apps/web && bun run --bun next build
 
 # ---------- runner ----------
-FROM node:26-slim AS runner
+FROM node:26.8.1-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

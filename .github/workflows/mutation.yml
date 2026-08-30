@@ -1,7 +1,3 @@
-# Advisory mutation testing. Deliberately its own workflow rather than a job in
-# ci.yml: adding `workflow_dispatch` there would make every manual run also fire
-# the 4-shard e2e matrix and both builds.
-#
 # This never gates anything — `break: null` in stryker.config.mjs means Stryker
 # exits 0 whatever the score. See docs/adr/0003-mutation-testing-is-advisory.md.
 name: Mutation Testing
@@ -31,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 26
+          node-version-file: .node-version
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
