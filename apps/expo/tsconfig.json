@@ -1,6 +1,10 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    // `apps/expo` extends `expo/tsconfig.base`, so the repo-wide setting in
+    // `@workspace/typescript-config/base.json` does not reach it. Restated here
+    // so the rule holds everywhere rather than wherever inheritance happens to go.
+    "erasableSyntaxOnly": true,
     "module": "esnext",
     "paths": {
       // "react": [
