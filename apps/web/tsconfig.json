@@ -2,9 +2,7 @@
   "extends": "@workspace/typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "*": ["./*"],
-      "@/*": ["./src/*"],
-      "@workspace/core/*": ["../../packages/core/src/*"]
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "plugins": [

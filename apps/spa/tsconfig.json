@@ -3,9 +3,7 @@
   "compilerOptions": {
     "paths": {
       "react": ["./node_modules/@types/react"],
-      "*": ["./*"],
-      "@/*": ["./src/*"],
-      "@workspace/core/*": ["../../packages/core/src/*"]
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "types": ["vite/client", "react"]
