@@ -1,5 +1,5 @@
 ---
-name: settle-mr
+name: settle-pr
 description: Settle AI bot PR review comments via gh, then compound what they taught into CLAUDE.md.
 argument-hint: "PR number, branch, or GitHub PR URL"
 disable-model-invocation: true

@@ -1,17 +1,17 @@
 # Lessons
 
-A **lesson** is a settled thread that changes how the next MR gets written. Everything else is an implementation detail.
+A **lesson** is a settled thread that changes how the next PR gets written. Everything else is an implementation detail.
 
 ## Which settlements qualify
 
 - **apply** / **partial** — you agreed and changed the code.
-- **reject** whose rationale was intent that no doc records. The bot re-raises undocumented intent every MR; writing it down is what stops the loop. A reject citing an existing ADR, doc, comment, or lint rule teaches nothing — drop it.
+- **reject** whose rationale was intent that no doc records. The bot re-raises undocumented intent every PR; writing it down is what stops the loop. A reject citing an existing ADR, doc, comment, or lint rule teaches nothing — drop it.
 
 **defer** and **ask** produce no lesson.
 
 ## The prevention test
 
-Had this rule been in `CLAUDE.md` before the MR, would the code have been written differently?
+Had this rule been in `CLAUDE.md` before the PR, would the code have been written differently?
 
 - **Yes** — lesson. It steers writing, which is the only thing the ledger is for.
 - **No** — implementation detail. Drop it.
@@ -64,7 +64,7 @@ Read the target file before proposing anything.
 
 ## Shape
 
-One imperative bullet in the file's own voice, phrased positively. No MR reference, no rationale clause — indistinguishable from the rules already there.
+One imperative bullet in the file's own voice, phrased positively. No PR reference, no rationale clause — indistinguishable from the rules already there.
 
 ```markdown
 ### Feature boundaries

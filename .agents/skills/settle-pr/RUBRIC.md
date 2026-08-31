@@ -12,12 +12,12 @@ Assign **reject** when:
 - The suggestion is stylistic and the repo has no standard for it
 - The bot assumes behaviour the spec doesn't require
 
-A reject resting on "this is intentional" while no ADR, doc, comment, or lint rule says so is the bot's cue to raise it again next MR. Mark it undocumented — step 6 turns it into a rule.
+A reject resting on "this is intentional" while no ADR, doc, comment, or lint rule says so is the bot's cue to raise it again next PR. Mark it undocumented — step 6 turns it into a rule.
 
-Assign **defer** when the concern is valid but fixing it belongs in a follow-up (different layer, pre-existing debt, scope the MR never claimed).
+Assign **defer** when the concern is valid but fixing it belongs in a follow-up (different layer, pre-existing debt, scope the PR never claimed).
 
 Assign **ask** only when the trade-off is genuinely yours — architectural direction, product call, ambiguous spec — not when more reading would settle it.
 
 When two threads contradict each other, settle both explicitly and pick one direction with rationale.
 
-Each **partial**, **reject**, or **defer** settlement needs a reply on the MR before the thread is resolved — state the reason, not just the label.
+Each **partial**, **reject**, or **defer** settlement needs a reply on the PR before the thread is resolved — state the reason, not just the label.
