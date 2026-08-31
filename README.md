@@ -6,6 +6,7 @@
 
 ## 🎯 Todo
 
+- [ ] `/settle-mr` skill with support of compounding knowledge for every settled/rejected PR comments
 - [ ] consider moving `web` app into another repository `fs-monorepo` (fullstack monorepo) as i don't really like next.js and it's fullstack not pure client side
 
 ## 🏁 Getting Started

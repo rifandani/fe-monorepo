@@ -1,4 +1,4 @@
-# Cursor Agents Window / CLI worktree setup for fe-monorepo (SPA + web + expo + portless).
+# Worktree bootstrap for SPA + web + expo + portless (`/wt` skill).
 # Runs inside the new worktree. ROOT_WORKTREE_PATH = main checkout.
 $ErrorActionPreference = 'Stop'
 

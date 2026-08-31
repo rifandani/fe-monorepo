@@ -3,7 +3,7 @@
 #
 # Note: when `.claude/settings.json` defines a WorktreeCreate hook, Claude skips
 # this file and the hook must copy envs itself (our hook calls
-# `.cursor/setup-worktree-unix.sh`, which does).
+# `.agents/skills/wt/scripts/setup-worktree-unix.sh`, which does).
 
 apps/spa/.env.dev
 apps/spa/.env.prod

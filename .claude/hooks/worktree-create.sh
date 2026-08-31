@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code WorktreeCreate hook.
 # Replaces default `git worktree` creation so we can install deps + sync envs
-# (same as Cursor `.cursor/worktrees.json` → setup-worktree-unix.sh).
+# (same bootstrap as `/wt` → `.agents/skills/wt/scripts/setup-worktree-unix.sh`).
 #
 # Contract: JSON on stdin with `.name`; absolute worktree path on stdout only.
 # All other output → stderr. Non-zero exit aborts creation.
@@ -26,7 +26,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 WORKTREES_DIR="${REPO_ROOT}/.claude/worktrees"
 WORKTREE_PATH="${WORKTREES_DIR}/${NAME}"
 BRANCH="worktree-${NAME}"
-SETUP="${REPO_ROOT}/.cursor/setup-worktree-unix.sh" # claude code only support bash (not powershell)
+SETUP="${REPO_ROOT}/.agents/skills/wt/scripts/setup-worktree-unix.sh"
 
 mkdir -p "$WORKTREES_DIR"
 
