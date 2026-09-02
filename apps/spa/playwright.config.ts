@@ -6,13 +6,8 @@ interface TestOptions {
     password: string;
   };
 }
-/**
- * http://localhost:3001
- * http://localhost:4173
- * http://127.0.0.1:3001
- * http://127.0.0.1:4173
- */
-const port = process.env.CI ? 4173 : 3001;
+// Overridable so a worktree can run E2E while the main checkout holds :4000.
+const port = Number(process.env.PW_PORT ?? 4000);
 const baseURL = `http://localhost:${port}`;
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -77,11 +72,16 @@ export default defineConfig<TestOptions>({
   /* Run your local dev server before starting the tests */
   webServer: {
     timeout: 5 * 60 * 1000, // default is 60s
-    // Keeps TanStack Devtools and Agentation unmounted during E2E runs
-    env: { VITE_E2E: "true" },
+    // Skip portless: bind localhost, match Playwright baseURL, hide TanStack Devtools.
+    env: {
+      VITE_E2E: "true",
+      VITE_APP_URL: baseURL,
+    },
     url: baseURL,
-    // in CI, we run `build-and-preview` instead of `dev`
-    command: process.env.CI ? "bun build-and-preview" : "bun dev",
+    // CI: build + preview on :port. Local: vite dev on :port (not `bun dev` / portless).
+    command: process.env.CI
+      ? `bun run build && bunx vite preview --port ${port} --strictPort`
+      : `cp .env.dev .env.local && bunx vite --port ${port} --strictPort`,
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
     stderr: "pipe",

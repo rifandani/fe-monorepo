@@ -7,11 +7,8 @@ interface TestOptions {
     password: string;
   };
 }
-/**
- * http://localhost:3002
- * http://127.0.0.1:3002
- */
-const port = process.env.CI ? 3000 : 3002;
+// Overridable so a worktree can run E2E while the main checkout holds :4001.
+const port = Number(process.env.PW_PORT ?? 4001);
 const baseURL = `http://localhost:${port}`;
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -76,11 +73,17 @@ export default defineConfig<TestOptions>({
   /* Run your local dev server before starting the tests */
   webServer: {
     timeout: 5 * 60 * 1000, // default is 60s
-    // Keeps TanStack Devtools and Agentation unmounted during E2E runs
-    env: { NEXT_PUBLIC_E2E: "true" },
+    // Skip portless: bind localhost, match Playwright baseURL, hide TanStack Devtools.
+    env: {
+      NEXT_PUBLIC_E2E: "true",
+      NEXT_PUBLIC_APP_URL: baseURL,
+      PORT: String(port),
+    },
     url: baseURL,
-    // in CI, we run `build-and-preview` instead of `dev`
-    command: process.env.CI ? "bun build-and-preview" : "bun dev",
+    // CI: build + start on :port. Local: next dev on :port (not `bun dev` / portless).
+    command: process.env.CI
+      ? `bun run build && bunx next start -p ${port}`
+      : `cp .env.dev .env.local && bunx next dev -p ${port}`,
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
     stderr: "pipe",
