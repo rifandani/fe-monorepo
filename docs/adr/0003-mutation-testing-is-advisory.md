@@ -2,6 +2,8 @@
 
 We run [StrykerJS](https://stryker-mutator.io/) with the Vitest runner over the same allowlist coverage measures, to answer the question coverage cannot: *would a test notice if this line were wrong?* It is on-demand and gates nothing — `break: null`, a `workflow_dispatch` job of its own, no PR gate, and no place in `ci.yml`.
 
+> **Note (2026-09-02):** `@workspace/web` was removed from the monorepo. Tables and file paths below that name `apps/web/...` are historical measurements from when that app existed; they are not current mutate targets.
+
 Precisely: **no mutation score can fail anything.** `break: null` means Stryker exits 0 whatever the score, and the job is never triggered by a push or pull request. A crash or a broken config will still red-X that dispatched run, which is intended — you want to know the tool is broken.
 
 Depends on [ADR-0001](./0001-unit-tests-are-pure-module-logic.md), revises nothing in it.

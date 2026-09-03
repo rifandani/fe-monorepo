@@ -3,7 +3,7 @@
 A workspace package resolves through its own `exports` map and nothing else. `@workspace/core` is a declared `workspace:*` dependency of all three apps, so Bun symlinks it into `node_modules` and every bundler, `tsc`, and Node reach the same files by the same route. The tsconfig `paths` mappings and the Vite alias that pointed at `packages/core/src` are removed. Alongside this, the Node version is stated once and read from one file, and `erasableSyntaxOnly` is on repo-wide.
 
 > Adapted from the backend monorepo's `6434761`, which reached the same resolution rule as a consequence of dropping its build step. The half of that commit this repo cannot use — running TypeScript natively on Node — is recorded under [Considered Options](#considered-options).
-> Exception: the four Vitest configs keep their `@workspace/core` alias on purpose — see [The exception that stays](#the-exception-that-stays).
+> Exception: the three Vitest configs keep their `@workspace/core` alias on purpose — see [The exception that stays](#the-exception-that-stays).
 
 ## Vocabulary
 
@@ -15,7 +15,7 @@ A workspace package resolves through its own `exports` map and nothing else. `@w
 
 ## What was removed
 
-**The `@workspace/core/*` tsconfig mapping**, from `apps/spa`, `apps/web`, and `apps/expo`, and **the matching Vite alias** in `apps/spa/vite.config.ts`. All 85 imports across the repo use subpaths the `exports` map already covers, so the alias added nothing but a second answer to the same question. All three apps resolve `bundler`, which reads `exports` — `apps/expo` included, via `expo/tsconfig.base`.
+**The `@workspace/core/*` tsconfig mapping**, from `apps/spa` and `apps/expo`, and **the matching Vite alias** in `apps/spa/vite.config.ts`. All imports across the repo use subpaths the `exports` map already covers, so the alias added nothing but a second answer to the same question. Both apps resolve `bundler`, which reads `exports` — `apps/expo` included, via `expo/tsconfig.base`.
 
 **`"*": ["./*"]`**, from all three app tsconfigs. It let any bare specifier resolve against the app root for `tsc` alone. No bundler does this, so a genuinely missing dependency would typecheck and then fail to build. It was covering nothing: of 154 bare specifiers across the three apps, none resolved through it.
 
@@ -39,17 +39,17 @@ This is the argument for the whole change in one file: a parallel route does not
 
 ## The exception that stays
 
-The four Vitest configs (`packages/core`, `apps/spa`, `apps/web`, `apps/expo`) **keep** their `@workspace/core` alias, built from `import.meta.dirname`. This is not an oversight. [ADR-0003](./0003-mutation-testing-is-advisory.md) depends on it: Stryker copies the repo into `.stryker-tmp` and symlinks `node_modules`, so bare package resolution inside the sandbox reaches the real, **unmutated** `packages/core`. The alias re-resolves to the sandbox copy; without it, mutants in `core` would silently stop reaching the app projects' tests and the mutation score would quietly overstate itself.
+The three Vitest configs (`packages/core`, `apps/spa`, `apps/expo`) **keep** their `@workspace/core` alias, built from `import.meta.dirname`. This is not an oversight. [ADR-0003](./0003-mutation-testing-is-advisory.md) depends on it: Stryker copies the repo into `.stryker-tmp` and symlinks `node_modules`, so bare package resolution inside the sandbox reaches the real, **unmutated** `packages/core`. The alias re-resolves to the sandbox copy; without it, mutants in `core` would silently stop reaching the app projects' tests and the mutation score would quietly overstate itself.
 
 So the rule has a stated boundary: **build and typecheck resolve through `exports`; the mutation sandbox resolves by path.** Anyone deleting the Vitest aliases for consistency with this ADR would break ADR-0003 without a failing test to say so.
 
-## One version, three files
+## One version, one pin
 
-`.node-version` pins `26.8.1`, and all five workflows read it via `node-version-file` in place of ten hardcoded `node-version: 26` entries. `docker/web.Dockerfile` moves to `node:26.8.1-slim`.
+`.node-version` pins `26.8.1`, and all workflows read it via `node-version-file`.
 
-The two numbers say different things, and the split is deliberate: **`engines.node` (`>=26.0.0`) is a support policy — what will run. `.node-version` is a pin — what we check.** `engines` is on the root and on `apps/web` only, that being the sole workspace with a Node runtime; `apps/spa` ships static assets, `apps/expo` ships to a device, and `packages/core` is source only. Asserting a Node floor for those would state a constraint their artifacts do not have. Bun does not enforce `engines` on install in any case — the floor is enforced by CI reading `.node-version`, not by the package manager. `packageManager: bun@1.3.14` pins Bun, and the Dockerfile's `oven/bun` stages match it.
+The two numbers say different things, and the split is deliberate: **`engines.node` (`>=26.0.0`) is a support policy — what will run. `.node-version` is a pin — what we check.** `engines` is on the root. `apps/spa` ships static assets, `apps/expo` ships to a device, and `packages/core` is source only. Asserting a Node floor for those would state a constraint their artifacts do not have. Bun does not enforce `engines` on install in any case — the floor is enforced by CI reading `.node-version`, not by the package manager. `packageManager: bun@1.3.14` pins Bun.
 
-Two consequences worth keeping in mind. An exact pin means CI no longer picks up 26.x patch releases on its own. And the version now lives in **three** files that must move together — `.node-version`, `apps/web/package.json`, and `docker/web.Dockerfile` — while `bump:deps` is an `npm-check-updates` invocation that touches none of them.
+An exact pin means CI no longer picks up 26.x patch releases on its own. The version lives in `.node-version`; `bump:deps` is an `npm-check-updates` invocation that does not touch it.
 
 ## Erasable syntax
 
@@ -68,4 +68,4 @@ Two consequences worth keeping in mind. An exact pin means CI no longer picks up
 
 ## Verification
 
-`bun run typecheck` and `bun run test:unit` (51 files, 343 tests) pass. `bun spa build` passes. `bun web build` fails in the local sandbox — Turbopack's PostCSS worker cannot spawn a process or bind a port — **identically before and after this change**, confirmed by building the stashed tree; it is unrelated and unaffected.
+`bun run typecheck` and `bun run test:unit` pass. `bun spa build` passes.

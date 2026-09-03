@@ -6,8 +6,6 @@
   },
   "ignoreExports": [
     { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
-    { "file": "apps/web/**/components/ui/**", "exports": ["*"] },
-    { "file": "apps/web/src/core/utils/evlog.ts", "exports": ["*"] },
     {
       "file": "vitest.msw.ts",
       "exports": ["*"]
@@ -15,19 +13,11 @@
     {
       "file": "apps/spa/src/master-design/**",
       "exports": ["*"]
-    },
-    {
-      "file": "apps/web/src/core/utils/i18n.ts",
-      "exports": ["default"]
-    },
-    {
-      "file": "apps/web/src/core/middlewares/rate-limit/rate-limit.ts",
-      "exports": ["rateLimit"]
     }
   ],
   "overrides": [
     {
-      "files": ["apps/spa/**/components/ui/**", "apps/web/**/components/ui/**"],
+      "files": ["apps/spa/**/components/ui/**"],
       "rules": {
         "unused-files": "off",
         "unused-types": "off"
@@ -38,12 +28,6 @@
         "apps/spa/pwa-assets.config.ts",
         "apps/spa/src/sw.ts",
         "apps/spa/src/core/hooks/**",
-        "apps/web/pwa-assets.config.ts",
-        "apps/web/src/test/server-only-stub.ts",
-        "apps/web/src/app/api/rate-limit.ts",
-        "apps/web/src/core/components/typed-links.client.tsx",
-        "apps/web/src/core/hooks/**",
-        "apps/web/src/core/middlewares/rate-limit/**",
         "apps/expo/src/test/react-native-mmkv-stub.ts",
         "apps/expo/src/core/constants/**",
         "oxfmt.config.ts",
@@ -67,16 +51,6 @@
   "duplicates": {
     "minOccurrences": 3,
     "ignore": [
-      "apps/web/playwright.config.ts",
-      "apps/web/vitest.config.ts",
-      "apps/web/src/core/styles/globals.css",
-      "apps/web/src/core/utils/telemetry.ts",
-      "apps/web/src/core/hooks/use-cdn-file-mutation.ts",
-      "apps/web/src/core/hooks/use-cdn-file-query.ts",
-      "apps/web/src/core/hooks/use-clipboard.ts",
-      "apps/web/src/core/hooks/use-lazy-query.ts",
-      "apps/web/src/core/hooks/use-mobile.ts",
-      "apps/web/src/core/providers/toast/context.client.tsx",
       "apps/spa/src/auth/hooks/use-auth-login.ts",
       "apps/spa/src/core/providers/i18n/context.tsx"
     ]
@@ -93,21 +67,7 @@
       "**/e2e/**",
       "scripts/security/**"
     ],
-    "thresholdOverrides": [
-      {
-        "files": ["apps/web/src/app/api/og/route.tsx"],
-        "functions": ["LightNextSvg", "DarkNextSvg"],
-        "maxUnitSize": 200,
-        "reason": "Inline OG SVG markup is declarative length, not control-flow complexity"
-      },
-      {
-        "files": ["apps/web/src/core/middlewares/rate-limit/store.ts"],
-        "functions": ["increment"],
-        "maxCrap": 50,
-        "maxCyclomatic": 15,
-        "reason": "Drizzle upsert with sliding-window expiry is branchy by design; covered by store.unit.test.ts"
-      }
-    ]
+    "thresholdOverrides": []
   },
   "ignoreDependencies": [
     "@stryker-mutator/core",

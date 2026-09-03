@@ -38,53 +38,25 @@
       "reason": "Transitive via ajv / dotenvx / expo; awaiting upstream"
     },
     {
-      "id": "GHSA-89xv-2m56-2m9x",
-      "package": "next",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Bump apps/web next to >=16.2.11"
-    },
-    {
-      "id": "GHSA-6gpp-xcg3-4w24",
-      "package": "next",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Bump apps/web next to >=16.2.11"
-    },
-    {
-      "id": "GHSA-m99w-x7hq-7vfj",
-      "package": "next",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Bump apps/web next to >=16.2.11"
-    },
-    {
-      "id": "GHSA-p9j2-gv94-2wf4",
-      "package": "next",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Bump apps/web next to >=16.2.11"
-    },
-    {
       "id": "GHSA-6g55-p6wh-862q",
       "package": "postcss",
       "severity": "high",
       "expires": "2026-11-06",
-      "reason": "Transitive via next/vite; bump with framework releases"
+      "reason": "Transitive via vite; bump with framework releases"
     },
     {
       "id": "GHSA-r28c-9q8g-f849",
       "package": "postcss",
       "severity": "high",
       "expires": "2026-11-06",
-      "reason": "Transitive via next/vite; bump with framework releases"
+      "reason": "Transitive via vite; bump with framework releases"
     },
     {
       "id": "GHSA-f88m-g3jw-g9cj",
       "package": "sharp",
       "severity": "high",
       "expires": "2026-11-06",
-      "reason": "Transitive via next / vite-pwa; bump sharp >=0.35.0 when available"
+      "reason": "Transitive via vite-pwa; bump sharp >=0.35.0 when available"
     },
     {
       "id": "GHSA-4cwx-7wf7-3272",

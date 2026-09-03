@@ -8,7 +8,4 @@
 apps/spa/.env.dev
 apps/spa/.env.prod
 apps/spa/.env.local
-apps/web/.env.dev
-apps/web/.env.prod
-apps/web/.env.local
 apps/expo/.env.local

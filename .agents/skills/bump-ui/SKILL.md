@@ -1,12 +1,12 @@
 ---
 name: bump-ui
-description: Bump IntentUI via spa shadcn add, adapt, mirror to web, green the gates, hand off to commit + /release.
+description: Bump IntentUI via spa shadcn add, adapt, green the gates, hand off to commit + /release.
 disable-model-invocation: true
 ---
 
 # Bump UI
 
-Leading word: **bump**. Universe is root `bump:ui` (`shadcn add @intentui/all -o -c apps/spa`), then mirror into `apps/web`.
+Leading word: **bump**. Universe is root `bump:ui` (`shadcn add @intentui/all -o -c apps/spa`).
 
 ## 1. Apply
 
@@ -30,28 +30,20 @@ Apply every rule below to every touched spa UI file (and toast/globals where nam
 
 **Done when:** every rule is checked against every matching spa file; toast merge + chart CSS done; generated `toast.tsx` gone.
 
-## 3. Mirror (web)
-
-1. Overwrite `apps/web/src/core/components/ui` from `apps/spa/src/core/components/ui` (full tree replace).
-2. Merge toast prop changes into `apps/web/src/core/providers/toast/context.client.tsx` (keep web theme/`"use client"` wiring); delete generated web `toast.tsx` if present.
-3. Copy the same chart className tokens into `apps/web/src/core/styles/globals.css`.
-
-**Done when:** web `ui/` matches spa `ui/`; web toast + chart CSS updated; no leftover `toast.tsx`.
-
-## 4. Gates
+## 3. Gates
 
 Loop until all green, in parallel/subagent:
 
 1. `bun lint-typecheck`
 2. `bun test:unit:cov`
-3. `bun spa build` and `bun web build`
+3. `bun spa build`
 4. `bun check:all`
 
 **Done when:** all commands pass.
 
-## 5. Hand off
+## 4. Hand off
 
-Report: IntentUI release/version if known, adapt/mirror edits, any skipped generator noise.
+Report: IntentUI release/version if known, adapt edits, any skipped generator noise.
 
 Leave the diff uncommitted. Tell the user the next step is: **check the report → commit → `/release`**.
 

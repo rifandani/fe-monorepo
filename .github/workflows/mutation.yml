@@ -38,17 +38,11 @@ jobs:
       - name: Prepare env file
         env:
           SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
-          WEB_ENV_FILE: ${{ secrets.WEB_ENV_FILE }}
         run: |
           if [ -n "$SPA_ENV_FILE" ]; then
             echo "$SPA_ENV_FILE" > apps/spa/.env.dev
           else
             cp apps/spa/.env.dev.example apps/spa/.env.dev
-          fi
-          if [ -n "$WEB_ENV_FILE" ]; then
-            echo "$WEB_ENV_FILE" > apps/web/.env.dev
-          else
-            cp apps/web/.env.dev.example apps/web/.env.dev
           fi
 
       - name: Run mutation testing
