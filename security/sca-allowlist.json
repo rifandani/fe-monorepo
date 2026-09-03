@@ -24,20 +24,6 @@
       "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
     },
     {
-      "id": "GHSA-7p8r-x3mc-p8w7",
-      "package": "fast-uri",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via ajv / dotenvx / expo; awaiting upstream"
-    },
-    {
-      "id": "GHSA-v2hh-gcrm-f6hx",
-      "package": "fast-uri",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via ajv / dotenvx / expo; awaiting upstream"
-    },
-    {
       "id": "GHSA-6g55-p6wh-862q",
       "package": "postcss",
       "severity": "high",
