@@ -3,7 +3,6 @@
 ## Contexts
 
 - [spa](./apps/spa/CONTEXT.md) — React SPA
-- [web](./apps/web/CONTEXT.md) — web app
 - [expo](./apps/expo/CONTEXT.md) — Expo / React Native app
 - [core](./packages/core/CONTEXT.md) — shared libraries and cross-app vocabulary
 

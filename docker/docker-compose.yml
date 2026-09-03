@@ -1,20 +1,6 @@
 name: fe-monorepo
 
 services:
-  pg:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: pg
-      POSTGRES_USER: pg
-      POSTGRES_PASSWORD: pg
-    # From another Compose service: postgres://pg:pg@pg:5432/pg
-    # From the host: use localhost:5442 (host port below)
-    ports:
-      - "5442:5432"
-    volumes:
-      - pg_data:/var/lib/postgresql
-    restart: always
-
   otel-lgtm:
     image: docker.io/grafana/otel-lgtm:latest
     ports:
@@ -31,6 +17,3 @@ services:
       - ./.env
     # stdin_open: true
     # tty: true
-
-volumes:
-  pg_data:

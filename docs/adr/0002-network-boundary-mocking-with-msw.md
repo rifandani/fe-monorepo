@@ -1,6 +1,6 @@
 # Network-boundary mocking with MSW
 
-The four unit tests covering the API layer faked HTTP by replacing imports (`vi.mock("ky")`, `vi.mock("@/core/services/http")`, hand-rolled `{ instance: { post } }` objects), so real ky never ran and a wrong prefix, dropped header, or bad path template could not fail a test. They now fake at the network boundary with `msw@2` (`setupServer`, Node only), which runs real ky, real URL construction, and real Zod parsing. This does **not** widen ADR-0001's scope: unit tests remain pure module logic under `environment: "node"` — no jsdom, no RTL, no browser mode, no `msw/browser`. Playwright mocking is unchanged (`apps/web` keeps `next/experimental/testmode/playwright`; `apps/spa` keeps hitting the real API).
+The four unit tests covering the API layer faked HTTP by replacing imports (`vi.mock("ky")`, `vi.mock("@/core/services/http")`, hand-rolled `{ instance: { post } }` objects), so real ky never ran and a wrong prefix, dropped header, or bad path template could not fail a test. They now fake at the network boundary with `msw@2` (`setupServer`, Node only), which runs real ky, real URL construction, and real Zod parsing. This does **not** widen ADR-0001's scope: unit tests remain pure module logic under `environment: "node"` — no jsdom, no RTL, no browser mode, no `msw/browser`. Playwright mocking is unchanged (`apps/spa` keeps hitting the real API).
 
 ## Vocabulary
 
@@ -12,7 +12,7 @@ The four unit tests covering the API layer faked HTTP by replacing imports (`vi.
 
 ## Scope
 
-MSW applies to exactly four files — `packages/core/src/apis/{auth,better-auth,cdn}.unit.test.ts` and `apps/expo/src/user/apis/user.unit.test.ts`. That is the complete set: `apps/spa/src` and `apps/web/src` have no `apis/` directory and consume core's repositories, and no other test in the suite touches the network.
+MSW applies to exactly four files — `packages/core/src/apis/{auth,better-auth,cdn}.unit.test.ts` and `apps/expo/src/user/apis/user.unit.test.ts`. That is the complete set: `apps/spa/src` has no `apis/` directory and consumes core's repositories, and no other test in the suite touches the network.
 
 ## Considered Options
 

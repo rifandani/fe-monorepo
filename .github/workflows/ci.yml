@@ -90,7 +90,7 @@ jobs:
       - name: Lint and typecheck
         run: bun lint-typecheck
 
-  # Single gate for all four Vitest projects (core, spa, web, expo)
+  # Single gate for all three Vitest projects (core, spa, expo)
   unit:
     runs-on: ubuntu-latest
     steps:
@@ -158,27 +158,3 @@ jobs:
 
       - name: Build
         run: bun spa build
-
-  dev-web-build:
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-
-      - name: Install bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Install deps and disallow changes to lockfile
-        run: bun ci
-
-      - name: Save github secrets as env file
-        run: echo "${{ secrets.WEB_ENV_FILE }}" > apps/web/.env.dev
-
-      - name: Build
-        run: bun web build

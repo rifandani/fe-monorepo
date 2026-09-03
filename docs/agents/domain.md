@@ -21,9 +21,6 @@ Multi-context monorepo:
 │   ├── spa/
 │   │   ├── CONTEXT.md
 │   │   └── docs/adr/
-│   ├── web/
-│   │   ├── CONTEXT.md
-│   │   └── docs/adr/
 │   └── expo/
 │       ├── CONTEXT.md
 │       └── docs/adr/
@@ -38,7 +35,6 @@ Multi-context monorepo:
 | Context | `CONTEXT.md` | Context-scoped ADRs |
 | ------- | ------------ | ------------------- |
 | `spa`   | `apps/spa/CONTEXT.md` | `apps/spa/docs/adr/` |
-| `web`   | `apps/web/CONTEXT.md` | `apps/web/docs/adr/` |
 | `expo`  | `apps/expo/CONTEXT.md` | `apps/expo/docs/adr/` |
 | `core`  | `packages/core/CONTEXT.md` | `packages/core/docs/adr/` |
 

@@ -1,6 +1,6 @@
 # Unit tests are pure module logic only
 
-We run Vitest projects (`core`, `spa`, `web`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Zustand stores via `.getState()`. React components/hooks (RTL, hook harnesses), plain Zod shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; all four projects run in a single CI job, `unit`.
+We run Vitest projects (`core`, `spa`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Zustand stores via `.getState()`. React components/hooks (RTL, hook harnesses), plain Zod shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; all three projects run in a single CI job, `unit`.
 
 > Coverage was originally out of scope too. That clause was reversed on 2026-07-28 — see [Amendments](#amendments).
 > The four per-project CI jobs were collapsed into one on 2026-07-29 — same section.
@@ -36,7 +36,7 @@ Mutation testing is what surfaced it — that file scored 9.09%, the worst in th
 
 Scope is narrow and structural: **modules that contain only schema declarations**. Files that mix schemas with functions — `apis/{auth,better-auth,cdn}.ts`, whose `authKeys`/`authRepositories` are MSW-tested per [ADR-0002](./0002-network-boundary-mocking-with-msw.md) — stay in. Their Zod-constraint mutants survive and are accepted noise, recorded as such in ADR-0003.
 
-`coverage` is root-only (Vitest's `NonProjectOptions`), so `--project <name> --coverage` measures the global include list against a partial run and reports the other projects at 0%. There is deliberately no `web:test:unit:cov`-style script despite the symmetry with the per-project ones: coverage is whole-suite only, via `bun test:unit:cov`.
+`coverage` is root-only (Vitest's `NonProjectOptions`), so `--project <name> --coverage` measures the global include list against a partial run and reports the other projects at 0%. There is deliberately no per-project `*:test:unit:cov`-style script despite the symmetry with the per-project ones: coverage is whole-suite only, via `bun test:unit:cov`.
 
 **2026-08-30 — the E2E this ADR defers UI behavior to no longer runs before a merge.** [ADR-0004](./0004-e2e-is-manual.md) moved Playwright out of `ci.yml` into a `workflow_dispatch` workflow that also runs on push to `main`. It runs on no pull request.
 

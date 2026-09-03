@@ -2,7 +2,7 @@
   "name": "fe-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "React.js, Next.js, and Expo Monorepo Template",
+  "description": "React.js and Expo Monorepo Template",
   "author": "Tri Rizeki Rifandani",
   "workspaces": [
     "apps/*",
@@ -29,19 +29,16 @@
     "check:all": "fallow --quiet",
     "check:viz": "fallow viz --out .fallow/map.html",
     "check:fix": "fallow fix --yes --no-create-config",
-    "typecheck": "bun run --parallel core:typecheck web:typecheck spa:typecheck expo:typecheck",
-    "typerange": "bun run --parallel core:typerange web:typerange spa:typerange expo:typerange",
-    "lint-typecheck": "bun run --parallel lint core:typecheck web:typecheck spa:typecheck expo:typecheck core:typerange web:typerange spa:typerange expo:typerange",
+    "typecheck": "bun run --parallel core:typecheck spa:typecheck expo:typecheck",
+    "typerange": "bun run --parallel core:typerange spa:typerange expo:typerange",
+    "lint-typecheck": "bun run --parallel lint core:typecheck spa:typecheck expo:typecheck core:typerange spa:typerange expo:typerange",
     "core": "bun --elide-lines=0 --filter @workspace/core",
     "spa": "bun --elide-lines=0 --filter @workspace/spa",
-    "web": "bun --elide-lines=0 --filter @workspace/web",
     "expo": "bun --elide-lines=0 --filter @workspace/expo",
     "core:typecheck": "bun core typecheck",
     "core:typerange": "bun core typerange",
     "spa:typecheck": "bun spa typecheck",
     "spa:typerange": "bun spa typerange",
-    "web:typecheck": "bun web typecheck",
-    "web:typerange": "bun web typerange",
     "expo:typecheck": "bun expo typecheck",
     "expo:typerange": "bun expo typerange",
     "test:unit": "vitest run",
@@ -51,7 +48,6 @@
     "test:mutate:inc": "stryker run --incremental",
     "core:test:unit": "vitest run --project core",
     "spa:test:unit": "vitest run --project spa",
-    "web:test:unit": "vitest run --project web",
     "expo:test:unit": "vitest run --project expo"
   },
   "devDependencies": {
@@ -72,6 +68,10 @@
     "typescript": "7.0.2",
     "ultracite": "7.10.6",
     "vitest": "4.1.11"
+  },
+  "overrides": {
+    "browserslist": "4.28.8",
+    "fast-uri": "3.1.7"
   },
   "engines": {
     "node": ">=26.0.0"

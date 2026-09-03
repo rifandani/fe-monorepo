@@ -7,8 +7,7 @@
       "@workspace/core",
       "@workspace/expo",
       "@workspace/spa",
-      "@workspace/typescript-config",
-      "@workspace/web"
+      "@workspace/typescript-config"
     ]
   ],
   "linked": [],

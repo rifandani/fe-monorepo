@@ -44,9 +44,9 @@ export default {
   // runner never loads and `vitest` below is reported as an unknown option.
   plugins: ["@stryker-mutator/vitest-runner"],
 
-  // Points at the *root* config so all four projects (core, spa, web, expo) load.
+  // Points at the *root* config so all three projects (core, spa, expo) load.
   // That is deliberate, not incidental: `@workspace/core` is aliased by path into
-  // spa, web and expo, so a mutant in packages/core is covered by all four
+  // spa and expo, so a mutant in packages/core is covered by all three
   // projects' tests. Per-project Stryker configs would hide those cross-context
   // kills — and the per-project configs use `defineProject`, so they carry none of
   // the root options (`pool`, `isolate`, `fileParallelism`) anyway.
