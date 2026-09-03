@@ -70,7 +70,7 @@ jobs:
           echo "version=$(node -p "require('./apps/spa/node_modules/@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Restore playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ms-playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
