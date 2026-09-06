@@ -153,7 +153,7 @@ jobs:
           if [ -n "$SPA_ENV_FILE" ]; then
             echo "$SPA_ENV_FILE" > apps/spa/.env.dev
           else
-            cp apps/spa/.env.dev.example apps/spa/.env.dev
+            cp apps/spa/.env.example apps/spa/.env.dev
           fi
 
       - name: Build

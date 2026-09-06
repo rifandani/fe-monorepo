@@ -56,7 +56,7 @@ eas init
 
 > The source of truth is the EAS project env, so the process is whenever we change the EAS project env / when we want to change the app environment, we need to pull EAS project env to our local env files, not the other way around (we change our local env files, then we run `eas env:push` to update the EAS project env)
 
-- `.env.local.example` is just an example to show the available env variables, it's not used in any possible way
+- `.env.example` is just an example to show the available env variables, it's not used in any possible way
 - Set EAS project env from the dashboard, with key `APP_VARIANT` with value `development`, `preview`, or `production`, and `EXPO_PUBLIC_APP_VARIANT` with value `https://dummyjson.com`
 - Pull EAS project env into local env every time you want to change the app environment by running `bun env:pull:dev`, `bun env:pull:preview`, or `bun env:pull:prod`
 

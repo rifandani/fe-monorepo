@@ -6,7 +6,7 @@
 
 ## 🎯 Todo
 
--
+- [ ] risk-based system PR, if we change public APIs/MCP, auth, design system, db schema changes, agent skills, etc, we need human review, enforced with scripts to add github labels (or adjust `/ship`). and we could also re-think our folder structure based on this
 
 ## 🏁 Getting Started
 
