@@ -146,3 +146,6 @@ otel-lgtm
 # agent worktrees
 .worktrees/
 .claude/worktrees/
+
+# PR Lens writes its previews here. They are rebuilt on demand.
+.pr-lens/

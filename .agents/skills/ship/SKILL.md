@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Commit (if dirty), push, and open or refresh a PR with the repo template, Test plan, and PR Lens diagrams.
+description: Commit (if dirty), push, and open or refresh a PR — template-strict body when a PR/MR template exists, freeform otherwise — plus PR Lens diagrams.
 disable-model-invocation: true
 argument-hint: "[commit message | PR title hint]"
 ---
@@ -39,7 +39,7 @@ EOF
 
 **Hook reject:** fix the failure, stage the fix, run **one** successful `git commit` with the same message. Never `--no-verify`.
 
-**Hook rewrites files and the commit succeeded:** if HEAD is this session’s commit and the branch has not been pushed with that commit, `git add` the hook’s rewrites and `git commit --amend --no-edit` once. Otherwise leavex a follow-up for the user — do not amend a pushed commit.
+**Hook rewrites files and the commit succeeded:** if HEAD is this session’s commit and the branch has not been pushed with that commit, `git add` the hook’s rewrites and `git commit --amend --no-edit` once. Otherwise leave a follow-up for the user — do not amend a pushed commit.
 
 **Done when:** working tree clean (aside from ignored paths), or step skipped because it already was.
 
@@ -66,20 +66,25 @@ Never `--force` or `--force-with-lease`. On rejection, stop and report remote ou
 
 ## 5. PR body
 
-Write `.pr-lens/body.md` from [`.github/PULL_REQUEST_TEMPLATE.md`](../../../.github/PULL_REQUEST_TEMPLATE.md):
+Resolve the repo’s PR/MR **template** (first hit wins):
 
-| Section | Rule |
+1. `.github/PULL_REQUEST_TEMPLATE.md` / `.github/pull_request_template.md`
+2. `PULL_REQUEST_TEMPLATE.md` / `docs/pull_request_template.md`
+3. One `.md` under `.github/PULL_REQUEST_TEMPLATE/` (prefer `Default.md`, else first alphabetically)
+4. `.gitlab/merge_request_templates/Default.md`, else the sole `.md` in that folder
+
+Then write `.pr-lens/body.md` on one branch:
+
+| Branch | Rule |
 | --- | --- |
-| **Description** | Why the change exists — the summary. Immediately after it, Markdown image(s) for each attach: `![<one-line what it shows>](.pr-lens/<file>.svg)` |
-| **Test plan** | New section after Description (and diagrams): checklist of how to verify |
-| **Related Issue** | `Fixes #N` only when the issue is clear from branch name, commits, or this session; else leave the template placeholder |
-| **Type of change** | Check the one box that fits; delete the rest |
-| **Checklist** | Leave every box unchecked |
-| **Screenshots / Additional Notes** | Keep if useful; otherwise leave template stubs |
+| **Template** | **Strict fill:** keep every heading, checkbox block, HTML comment, and section order. Replace only placeholders / blank slots with real content from the diff and session. Check boxes the template asks you to; leave optional stubs and unchecked items that the template leaves open. Only the template’s sections. **Description pseudocode:** replace the `<!-- Pseudocode: before→after -->` comment with a before→after sketch (greenfield Before = `N/A — new path`; no behavior = `N/A — no behavior change`). |
+| **Blank** (no template) | **Freeform:** invent a short reviewer-first body — why, what changed, how to verify — shaped to the change. No fixed section list. |
+
+**Diagrams (both branches):** Markdown image(s) for each attach: `![<one-line what it shows>](.pr-lens/<file>.svg)`. On **template**, put them under `## Diagram` when that section exists; else the first section that fits screenshots/description/summary; if none fits, append after the filled template. On **blank**, put them under the summary.
 
 Title: `$ARGUMENTS` when the tree was already clean at step 2 and args are set; else draft from commits + diff.
 
-**Done when:** `.pr-lens/body.md` and title are ready; every attached SVG is referenced as `![alt](path)`.
+**Done when:** `.pr-lens/body.md` and title are ready; template branch preserved structure (or blank branch is freeform); every attached SVG is referenced as `![alt](path)`.
 
 ## 6. Open or refresh PR
 
