@@ -58,6 +58,8 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -83,6 +85,8 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -104,6 +108,8 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
@@ -142,6 +148,8 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
