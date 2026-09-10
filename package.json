@@ -70,8 +70,17 @@
     "vitest": "4.1.11"
   },
   "overrides": {
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "3.15.2"
+    },
+    "@xmldom/xmldom": "0.9.12",
     "browserslist": "4.28.8",
-    "fast-uri": "3.1.7"
+    "cosmiconfig": {
+      "js-yaml": "3.15.2"
+    },
+    "fast-uri": "3.1.7",
+    "js-yaml": "4.3.2",
+    "sharp": "0.35.4"
   },
   "engines": {
     "node": ">=26.0.0"
