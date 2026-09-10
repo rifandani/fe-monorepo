@@ -38,13 +38,6 @@
       "reason": "Transitive via vite; bump with framework releases"
     },
     {
-      "id": "GHSA-f88m-g3jw-g9cj",
-      "package": "sharp",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via vite-pwa; bump sharp >=0.35.0 when available"
-    },
-    {
       "id": "GHSA-4cwx-7wf7-3272",
       "package": "undici",
       "severity": "high",
@@ -64,13 +57,6 @@
       "severity": "high",
       "expires": "2026-11-12",
       "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
-    },
-    {
-      "id": "GHSA-5p4m-2wfm-xmqj",
-      "package": "js-yaml",
-      "severity": "high",
-      "expires": "2026-11-12",
-      "reason": "Transitive via expo/changesets/istanbul; awaiting upstream bumps"
     },
     {
       "id": "GHSA-28wg-ghj8-5hjv",

@@ -28,28 +28,19 @@ sync_app_envs() {
     fi
   done
 
-  local env_name target example
-  for env_name in dev prod; do
-    target="$app_dir/.env.$env_name"
-    example="$app_dir/.env.$env_name.example"
-    if [[ ! -f "$target" && -f "$example" ]]; then
-      cp "$example" "$target"
-      echo "    seeded $app_dir/.env.$env_name from example"
-      copied=$((copied + 1))
-    fi
-  done
-
-  # expo only ships .env.local(.example)
-  local local_target="$app_dir/.env.local"
-  local local_example="$app_dir/.env.local.example"
-  if [[ ! -f "$local_target" && -f "$local_example" ]]; then
-    cp "$local_example" "$local_target"
-    echo "    seeded $app_dir/.env.local from example"
-    copied=$((copied + 1))
+  local example="$app_dir/.env.example"
+  if [[ -f "$example" ]]; then
+    for f in "${files[@]}"; do
+      if [[ ! -f "$app_dir/$f" ]]; then
+        cp "$example" "$app_dir/$f"
+        echo "    seeded $app_dir/$f from example"
+        copied=$((copied + 1))
+      fi
+    done
   fi
 
   if [[ "$copied" -eq 0 ]]; then
-    echo "    warning: no env files found in $ROOT/$app_dir (copy *.example manually)"
+    echo "    warning: no env files found in $ROOT/$app_dir (copy .env.example manually)"
   fi
 }
 

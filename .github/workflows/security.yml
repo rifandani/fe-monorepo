@@ -99,6 +99,8 @@ jobs:
 
       - name: Install bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
 
       - name: Fail on High/Critical CodeQL findings
         env:

@@ -32,26 +32,20 @@ function Sync-AppEnvs {
     }
   }
 
-  foreach ($envName in @('dev', 'prod')) {
-    $target = Join-Path $AppDir ".env.$envName"
-    $example = Join-Path $AppDir ".env.$envName.example"
-    if (-not (Test-Path $target) -and (Test-Path $example)) {
-      Copy-Item $example $target -Force
-      Write-Host "    seeded $AppDir/.env.$envName from example"
-      $copied++
+  $example = Join-Path $AppDir '.env.example'
+  if (Test-Path $example) {
+    foreach ($f in $Files) {
+      $target = Join-Path $AppDir $f
+      if (-not (Test-Path $target)) {
+        Copy-Item $example $target -Force
+        Write-Host "    seeded $AppDir/$f from example"
+        $copied++
+      }
     }
   }
 
-  $localTarget = Join-Path $AppDir '.env.local'
-  $localExample = Join-Path $AppDir '.env.local.example'
-  if (-not (Test-Path $localTarget) -and (Test-Path $localExample)) {
-    Copy-Item $localExample $localTarget -Force
-    Write-Host "    seeded $AppDir/.env.local from example"
-    $copied++
-  }
-
   if ($copied -eq 0) {
-    Write-Host "    warning: no env files found in $Root/$AppDir (copy *.example manually)"
+    Write-Host "    warning: no env files found in $Root/$AppDir (copy .env.example manually)"
   }
 }
 
