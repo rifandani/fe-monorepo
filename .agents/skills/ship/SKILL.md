@@ -77,7 +77,7 @@ Then write `.pr-lens/body.md` on one branch:
 
 | Branch | Rule |
 | --- | --- |
-| **Template** | **Strict fill:** keep every heading, checkbox block, HTML comment, and section order. Replace only placeholders / blank slots with real content from the diff and session. Check boxes the template asks you to; leave optional stubs and unchecked items that the template leaves open. Only the template’s sections. **Description pseudocode:** replace the `<!-- Pseudocode: before→after -->` comment with a before→after sketch (greenfield Before = `N/A — new path`; no behavior = `N/A — no behavior change`). |
+| **Template** | **Strict fill:** keep every heading, checkbox block, HTML comment, and section order. Replace only placeholders / blank slots with real content from the diff and session. Check boxes the template asks you to; leave optional stubs and unchecked items that the template leaves open. Only the template’s sections. **Description pseudocode:** read [pseudocode.md](pseudocode.md), then replace `<!-- Pseudocode: before→after -->` with a before→after `diff` (greenfield Before = `N/A — new path`; no behavior = `N/A — no behavior change`). |
 | **Blank** (no template) | **Freeform:** invent a short reviewer-first body — why, what changed, how to verify — shaped to the change. No fixed section list. |
 
 **Diagrams (both branches):** Markdown image(s) for each attach: `![<one-line what it shows>](.pr-lens/<file>.svg)`. On **template**, put them under `## Diagram` when that section exists; else the first section that fits screenshots/description/summary; if none fits, append after the filled template. On **blank**, put them under the summary.
