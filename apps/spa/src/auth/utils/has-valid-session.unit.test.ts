@@ -18,8 +18,7 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("hasValidSession", () => {
   beforeEach(() => {
-    localStorage.clear();
-    useAuthUserStore.setState({ user: null });
+    useAuthUserStore.getState().clearUser();
   });
 
   it("is false when there is no Session", () => {

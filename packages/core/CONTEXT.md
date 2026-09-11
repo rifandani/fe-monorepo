@@ -24,4 +24,4 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Access Token**: The credential sent with a request to prove the Session. Held inside the Session, never read by a caller. _Avoid_: token, bearer, jwt, auth header
 
-**End Session**: The single flow that discards a Session, whether the person signed out or the server rejected the Access Token. _Avoid_: logout, clearUser, resetUser, sign out
+**End Session**: The single flow that discards a Session, whether the person signed out or the server rejected the Access Token. Distinct from the store setter it calls. _Avoid_: logout, sign out, log off

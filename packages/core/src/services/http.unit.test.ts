@@ -89,6 +89,32 @@ describe("Http", () => {
     expect(ended).toBe(0);
   });
 
+  it("does not end the Session over a header it did not attach", async () => {
+    // The module's contract is "the credential *I* sent was rejected". A header
+    // the caller set themselves proves no Session and must not end one.
+    let ended = 0;
+    server.use(
+      http.get(resourceUrl, () => new HttpResponse(null, { status: 401 }))
+    );
+
+    const instance = new Http({
+      prefix: MOCK_API_BASE_URL,
+      auth: {
+        getToken: () => null,
+        onUnauthorized: () => {
+          ended += 1;
+        },
+      },
+    });
+
+    await expect(
+      instance.instance
+        .get("things", { headers: { Authorization: "Bearer theirs" } })
+        .json()
+    ).rejects.toThrow();
+    expect(ended).toBe(0);
+  });
+
   it("carries the Access Token in whatever scheme the caller names", async () => {
     let captured: Request | undefined;
     server.use(

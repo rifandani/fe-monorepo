@@ -12,26 +12,10 @@ import type { GetUserApiResponseSchema } from "./user";
 // (ADR-0002). The singleton coupling is what ADR-0002 already records as a
 // deferred follow-up: `userApi` should take `http` by parameter, as
 // `authRepositories(http)` does.
-const mmkv = vi.hoisted(() => {
-  const store = new Map<string, string>();
-  return {
-    appStorageId: "app-storage" as const,
-    appStateStorage: {
-      getItem: (name: string) => store.get(name) ?? null,
-      removeItem: (name: string) => {
-        store.delete(name);
-      },
-      setItem: (name: string, value: string) => {
-        store.set(name, value);
-      },
-    },
-  };
+vi.mock("@/core/services/mmkv", async () => {
+  const { createMmkvFake } = await import("@test/mmkv");
+  return createMmkvFake();
 });
-
-vi.mock("@/core/services/mmkv", () => ({
-  appStorageId: mmkv.appStorageId,
-  appStateStorage: mmkv.appStateStorage,
-}));
 
 const detailUrl = `${MOCK_API_BASE_URL}/users/:id`;
 

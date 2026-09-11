@@ -40,6 +40,16 @@ export default defineConfig({
       },
     },
     {
+      // `toErrorMessage` is the parser at a boundary where the input is
+      // definitionally unparsed: a caught failure. It runs a schema against
+      // every shape before trusting it, and a narrower parameter would only
+      // move the cast to each caller.
+      files: ["packages/core/src/utils/error.ts"],
+      rules: {
+        "anti-slop/no-unknown-parameters": "off",
+      },
+    },
+    {
       files: [
         "packages/core/src/libs/i18n/locales/en-US.ts",
         "packages/core/src/libs/i18n/locales/id-ID.ts",

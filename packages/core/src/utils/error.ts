@@ -2,7 +2,11 @@ import { errorResponseSchema } from "@workspace/core/apis/core";
 import { HTTPError } from "ky";
 import { z } from "zod";
 
-/** A non-JSON error body arrives as text; empty or unparseable arrives absent. */
+/**
+ * A non-JSON error body arrives as text; empty or unparseable arrives absent.
+ * A schema rather than a `typeof` check because `anti-slop/no-runtime-typeof`
+ * asks for exactly that — parse the shape, do not sniff it.
+ */
 const textBodySchema = z.string().min(1);
 
 /**
@@ -27,10 +31,6 @@ export const genericErrorMessage = "Something went wrong. Please try again.";
  * union that nothing verifies at runtime, and callers that hand-rolled
  * `error instanceof Error ? error.message : String(error)` have no union at all.
  */
-// SAFETY: a caught failure is definitionally unparsed — this function IS the
-// parser at that boundary, and runs a schema against every shape before
-// trusting it. A narrower parameter would just move the cast to each caller.
-// oxlint-disable-next-line anti-slop/no-unknown-parameters
 export const toErrorMessage = (error: unknown): string => {
   if (error instanceof HTTPError) {
     const parsed = errorResponseSchema.safeParse(error.data);

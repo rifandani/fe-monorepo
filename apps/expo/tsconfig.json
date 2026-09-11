@@ -11,7 +11,8 @@
       //   "./node_modules/@types/react"
       // ],
       "@/*": ["./src/*"],
-      // Mirrors the `@test/msw` alias in vitest.config.ts.
+      // Mirrors the `@test/*` aliases in vitest.config.ts.
+      "@test/mmkv": ["../../vitest.mmkv.ts"],
       "@test/msw": ["../../vitest.msw.ts"]
     },
     "strict": true
