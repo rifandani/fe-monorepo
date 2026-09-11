@@ -56,6 +56,10 @@ export default defineConfig({
         // (`auth.ts`, `better-auth.ts`, `cdn.ts`) stay in — their functions are tested.
         "packages/core/src/apis/core.ts",
         "packages/core/src/libs/i18n/locales/**",
+        // Composition roots: one `new Http(...)` declaration each. The wiring
+        // that can be wrong — reading the Access Token, responding to a
+        // rejected one — lives in `auth/utils/session-auth.ts`, which is
+        // measured.
         "apps/*/src/core/services/http.ts",
         "apps/expo/src/core/hooks/use-app-store.tsx",
         "apps/expo/src/core/services/mmkv.ts",

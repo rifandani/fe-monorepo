@@ -1,9 +1,37 @@
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { http, HttpResponse } from "msw";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { userApi, userKeys } from "./user";
 import type { GetUserApiResponseSchema } from "./user";
+
+// `userApi` closes over the `http` singleton, which now reads the Access Token
+// from the store, which persists through `react-native-mmkv` — unloadable in
+// Node. Faked at the Module Boundary; nothing about the request under test runs
+// through it, and the request itself is still faked at the Network Boundary
+// (ADR-0002). The singleton coupling is what ADR-0002 already records as a
+// deferred follow-up: `userApi` should take `http` by parameter, as
+// `authRepositories(http)` does.
+const mmkv = vi.hoisted(() => {
+  const store = new Map<string, string>();
+  return {
+    appStorageId: "app-storage" as const,
+    appStateStorage: {
+      getItem: (name: string) => store.get(name) ?? null,
+      removeItem: (name: string) => {
+        store.delete(name);
+      },
+      setItem: (name: string, value: string) => {
+        store.set(name, value);
+      },
+    },
+  };
+});
+
+vi.mock("@/core/services/mmkv", () => ({
+  appStorageId: mmkv.appStorageId,
+  appStateStorage: mmkv.appStateStorage,
+}));
 
 const detailUrl = `${MOCK_API_BASE_URL}/users/:id`;
 

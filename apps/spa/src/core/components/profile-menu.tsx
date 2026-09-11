@@ -6,6 +6,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 
 import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { endSession } from "@/auth/utils/end-session";
 import { Avatar } from "@/core/components/ui/avatar";
 import {
   Menu,
@@ -21,7 +22,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
 export const ProfileMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, clearUser } = useAuthUserStore();
+  const user = useAuthUserStore((state) => state.user);
   return (
     <Menu>
       <MenuTrigger>
@@ -33,7 +34,7 @@ export const ProfileMenu = () => {
           // SAFETY: the three menu items below are the only keys this menu emits.
           const currentKey = key as "profile" | "settings" | "logout";
           if (currentKey === "logout") {
-            clearUser();
+            endSession();
             navigate({
               to: "/login",
             });
