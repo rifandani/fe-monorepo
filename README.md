@@ -6,8 +6,6 @@
 
 ## 🎯 Todo
 
-- [ ] risk-based system PR, if we change public APIs/MCP, auth, design system, db schema changes, agent skills, etc, we need human review, enforced with scripts to add github labels (or adjust `/ship`). and we could also re-think our folder structure based on this
-- [ ] `/improve-codebase-architecture focus on restructuring spa app folder/structure to optimize for deep modules, seams, adapters`
 - [ ] optional DAST owasp zap
 
 ## 🏁 Getting Started

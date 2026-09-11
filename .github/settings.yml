@@ -25,3 +25,9 @@ labels:
     color: b60205
   - name: security-exception
     color: e4e669
+  - name: high-risk
+    color: b60205
+  - name: medium-risk
+    color: d87616
+  - name: low-risk
+    color: 0e8a16
