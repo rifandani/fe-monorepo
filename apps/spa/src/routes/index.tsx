@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { validateAuthUser } from "@/auth/utils/storage";
+import { hasValidSession } from "@/auth/utils/has-valid-session";
 import { LanguageToggle } from "@/core/components/language-toggle";
 import { ProfileMenu } from "@/core/components/profile-menu";
 import { ThemeToggle } from "@/core/components/theme-toggle";
@@ -30,7 +30,7 @@ const HomeRoute = () => {
 };
 export const Route = createFileRoute("/")({
   beforeLoad: ({ location }) => {
-    const authed = validateAuthUser();
+    const authed = hasValidSession();
     if (!authed) {
       // redirect unauthorized user to login
       toast.error("Unauthorized");

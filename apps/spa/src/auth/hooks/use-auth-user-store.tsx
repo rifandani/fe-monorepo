@@ -5,7 +5,7 @@ import { z } from "zod";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
-export type UserStoreState = z.infer<typeof userStoreStateSchema>;
+type UserStoreState = z.infer<typeof userStoreStateSchema>;
 interface UserStoreAction {
   setUser: (user: AuthLoginResponseSchema) => void;
   clearUser: () => void;
@@ -14,10 +14,6 @@ type UserStore = UserStoreState & UserStoreAction;
 export const userStoreName = "app-user" as const;
 const userStoreStateSchema = z.object({
   user: authLoginResponseSchema.nullable(),
-});
-export const userStoreLocalStorageSchema = z.object({
-  state: userStoreStateSchema,
-  version: z.number(),
 });
 /**
  * Hooks to manipulate user store
