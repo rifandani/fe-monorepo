@@ -84,14 +84,21 @@ describe("authRepositories", () => {
     await expect(repositories().login({ json: credentials })).rejects.toThrow();
   });
 
-  it("login rejects on a 401", async () => {
+  it("login rejects on a 401, carrying the Error Envelope", async () => {
     server.use(
       http.post(loginUrl, () =>
         HttpResponse.json({ message: "Invalid credentials" }, { status: 401 })
       )
     );
 
-    await expect(repositories().login({ json: credentials })).rejects.toThrow();
+    // Asserting the rejection alone would pass whether or not the envelope
+    // survived. `toErrorMessage` reads `data`, and only a real ky against a
+    // real response proves ky populates it.
+    await expect(
+      repositories().login({ json: credentials })
+    ).rejects.toMatchObject({
+      data: { message: "Invalid credentials" },
+    });
   });
 
   it("login rejects on a 500", async () => {

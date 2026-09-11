@@ -5,10 +5,8 @@ import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { authKeys, authRepositories } from "@workspace/core/apis/auth";
 import type { ErrorResponseSchema } from "@workspace/core/apis/core";
-import { errorResponseSchema } from "@workspace/core/apis/core";
-import type { TimeoutError } from "ky";
-import { HTTPError } from "ky";
-import { match, P } from "ts-pattern";
+import { toErrorMessage } from "@workspace/core/utils/error";
+import type { HTTPError, TimeoutError } from "ky";
 import type { Except } from "type-fest";
 import type { z } from "zod";
 
@@ -34,13 +32,7 @@ export const useAuthLogin = (
     mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
-      const message = match(error)
-        .with(P.instanceOf(HTTPError), (err) => {
-          const parsed = errorResponseSchema.safeParse(err.data);
-          return parsed.success ? parsed.data.message : err.message;
-        })
-        .otherwise((err) => err.message);
-      toast.show(message, {
+      toast.show(toErrorMessage(error), {
         customData: {
           preset: "error",
         } satisfies ToastCustomData,
