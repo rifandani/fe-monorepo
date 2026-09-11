@@ -53,7 +53,7 @@ export default defineConfig({
         // scored 100% statements/branches/lines with no test file in existence.
         // Mutation testing is what exposed it (9.09%, ADR-0003). Excluded so the
         // coverage figure means something. Modules that mix schemas with repositories
-        // (`auth.ts`, `better-auth.ts`, `cdn.ts`) stay in — their functions are tested.
+        // (`auth.ts`, `cdn.ts`) stay in — their functions are tested.
         "packages/core/src/apis/core.ts",
         "packages/core/src/libs/i18n/locales/**",
         // Composition roots: one `new Http(...)` declaration each. The wiring
