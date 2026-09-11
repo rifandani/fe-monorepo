@@ -6,7 +6,7 @@
 
 ## 🎯 Todo
 
-- [ ] optional DAST owasp zap
+- [ ] optional DAST owasp zap with baseline and full scans for both local and prod env
 
 ## 🏁 Getting Started
 
