@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { LoginTextField } from "@/auth/components/login-text-field";
 import { useLoginForm } from "@/auth/hooks/use-login-form";
-import { validateAuthUser } from "@/auth/utils/storage";
+import { hasValidSession } from "@/auth/utils/has-valid-session";
 import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { Note } from "@/core/components/ui/note";
@@ -125,7 +125,7 @@ const LoginRoute = () => {
 };
 export const Route = createFileRoute("/login")({
   beforeLoad: ({ location }) => {
-    const authed = validateAuthUser();
+    const authed = hasValidSession();
     if (authed) {
       // redirect authorized user to login
       toast.info("Already Logged In");

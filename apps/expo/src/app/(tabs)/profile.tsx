@@ -20,6 +20,7 @@ import {
   YStack,
 } from "tamagui";
 
+import { endSession } from "@/auth/utils/end-session";
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
 import { useAppStore } from "@/core/hooks/use-app-store";
@@ -130,7 +131,6 @@ const CheckForUpdatesListItem = () => {
 const LogoutListItem = () => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const resetUser = useAppStore((state) => state.resetUser);
   const $red10 = theme?.red10?.get() || "";
   return (
     <ProfileListItem
@@ -141,7 +141,7 @@ const LogoutListItem = () => {
       icon={<Feather name="log-out" color={$red10} />}
       iconAfter={<Feather name="chevron-right" color={$red10} />}
       onPress={() => {
-        resetUser();
+        endSession();
       }}
     >
       <ListItem.Text color="$red10">{t("logout")}</ListItem.Text>

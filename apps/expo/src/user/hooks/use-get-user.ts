@@ -2,11 +2,11 @@
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
+import { toErrorMessage } from "@workspace/core/utils/error";
 import type { HTTPError, TimeoutError } from "ky";
 import { useEffect } from "react";
-import { match, P } from "ts-pattern";
 import type { Except } from "type-fest";
-import { z } from "zod";
+import type { z } from "zod";
 
 import type { ToastCustomData } from "@/core/utils/toast";
 import { userApi, userKeys } from "@/user/apis/user";
@@ -32,10 +32,7 @@ export const useGetUser = (
     if (!query.error) {
       return;
     }
-    const message = match(query.error)
-      .with(P.instanceOf(z.ZodError), (err) => z.prettifyError(err))
-      .otherwise((err) => err.message);
-    toast.show(message, {
+    toast.show(toErrorMessage(query.error), {
       customData: {
         preset: "error",
       } satisfies ToastCustomData,

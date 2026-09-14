@@ -10,6 +10,7 @@ export default defineProject({
   resolve: {
     alias: {
       "@": path.join(root, "src"),
+      "@test/mmkv": path.join(root, "../../vitest.mmkv.ts"),
       "@test/msw": path.join(root, "../../vitest.msw.ts"),
       "@workspace/core": path.join(root, "../../packages/core/src"),
     },

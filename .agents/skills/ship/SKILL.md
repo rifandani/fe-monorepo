@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Commit (if dirty), push, and open or refresh a PR — template-strict body when a PR/MR template exists, freeform otherwise — plus PR Lens diagrams.
+description: Commit (if dirty), push, and open or refresh a PR — template-strict body when a PR/MR template exists, freeform otherwise — plus PR Lens diagrams, catalog labels, one risk label, and self-assign.
 disable-model-invocation: true
 argument-hint: "[commit message | PR title hint]"
 ---
@@ -90,29 +90,49 @@ Title: `$ARGUMENTS` when the tree was already clean at step 2 and args are set; 
 
 Detect an existing PR for this head branch: `gh pr view --json number,url`.
 
+**Labels (catalog) + assignee:** every create and refresh applies both.
+
+1. **Catalog** — load allowed label *names* from the host’s settings file (environment is source of truth; do not invent names):
+   - **GitHub:** `.github/settings.yml` → each `labels[].name`
+   - **GitLab:** `.gitlab/labels.yml` → each entry’s `name` (or `title`), when present
+   - **Other / missing file:** `gh label list --json name -q '.[].name'` (GitHub) or the host CLI’s label list; if that fails too, skip labels and still assign
+2. **Pick kind** — from the catalog only, every name that classifies this change (feature work, bug fix, docs, tests, chore, security — including `security-exception` only when the change is an approved exception). Leave triage/workflow names alone (`needs-*`, `ready-for-*`, `wontfix`, `WIP`) — this PR is ready for review. Multiple kind labels when the diff spans them.
+3. **Pick risk** — read [risk.md](risk.md). From the catalog, exactly one of `high-risk` / `medium-risk` / `low-risk` (skip risk and say so if those names are absent). Highest match wins.
+4. **Assignee** — the user who triggered this skill: `@me`.
+
 **None — create** (only if the branch has commits not in the base; otherwise stop with status, no empty PR):
 
 ```bash
-gh pr create --title "<title>" --body-file .pr-lens/body.md --attach <svg>...
+gh pr create --title "<title>" --body-file .pr-lens/body.md \
+  --assignee @me \
+  --label <name>... \
+  --attach <svg>...
 ```
 
-Ready for review (not draft). Base defaults to the repo default unless `gh` requires `--base`.
+Ready for review (not draft). Base defaults to the repo default unless `gh` requires `--base`. Omit `--label` when the catalog yielded none.
 
 **Exists — refresh:**
 
 ```bash
-gh pr edit <number> --title "<title>" --body-file .pr-lens/body.md --attach <svg>...
+gh pr edit <number> --title "<title>" --body-file .pr-lens/body.md \
+  --add-assignee @me \
+  --add-label <name>... \
+  --attach <svg>...
 ```
 
-If `gh` < 2.99: create/edit with `--body-file` only; say attaches need `gh` ≥ 2.99 (or publish SVGs and use pr-lens `comment`).
+Omit `--add-label` when none were picked. Keep existing labels **except risk:** after create/refresh, add the picked risk name and drop the other two risk names if they are on the PR.
 
-**Done when:** PR URL known; create or edit exited 0 (or attach limitation reported with URL still valid).
+**Auto-merge:** `low-risk` → `gh pr merge <number> --auto --squash` (report if the host rejects). `high-risk` or `medium-risk` → `gh pr merge <number> --disable-auto` when auto-merge is already on.
+
+If `gh` < 2.99: create/edit with body + labels + assignee only; say attaches need `gh` ≥ 2.99 (or publish SVGs and use pr-lens `comment`).
+
+**Done when:** PR URL known; create or edit exited 0; `@me` assigned; kind labels applied; exactly one risk label on the PR (or risk skipped with reason); auto-merge armed only for `low-risk`; attach limitation reported only when URL still valid.
 
 ## 7. Hand off
 
-Print: branch, commit short SHA (if step 2 ran), PR URL, which diagrams attached.
+Print: branch, commit short SHA (if step 2 ran), PR URL, kind labels, **risk** (`high-risk` extra / `medium-risk` regular / `low-risk` none + auto-merge), assignee, which diagrams attached.
 
-**Done when:** the user has the PR URL and attach list.
+**Done when:** the user has the PR URL, kind labels, risk (and merge posture), assignee, and attach list.
 
 ## Nothing left to ship
 
