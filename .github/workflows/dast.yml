@@ -1,0 +1,121 @@
+# Dynamic application security testing for `apps/spa`.
+#
+# The plan lives in `security/zap/spa-baseline.yaml` and is the same file
+# `bun zap:spa` runs locally. `zaproxy/action-af` issues the same `docker run`
+# that `scripts/security/zap.ts` does — repository root at `/zap/wrk`, host
+# network — so a plan that passes on a laptop behaves the same here.
+#
+# Scope: `apps/spa` only. `apps/expo` is a React Native bundle with no HTTP
+# surface for a proxy to scan; it is not an oversight.
+#
+# What is scanned, and why it is not built here:
+#   The target is the deployed SPA, taken from the `SPA_TARGET_URL` repository
+#   variable. Building and serving `vite preview` in the runner would be cheaper
+#   and hermetic, and would also be a lie: `vite preview` does not replay the
+#   deployment's response headers, so it emits none of the headers we actually
+#   ship and none of the ones a baseline scan is here to find. See
+#   docs/adr/0005-dast-scans-the-deployed-spa.md.
+#
+#   A URL is not a credential, so this is a variable and not a secret. Set it
+#   under Settings → Secrets and variables → Actions → Variables. While it is
+#   empty the job skips and the workflow is green.
+#
+# Passive only. The spider submits no forms, no active scanner runs, and the
+# app's JavaScript is never executed, so nothing here reaches the backend that
+# the deployed origin proxies `/api` to. There is no active plan in this
+# repository; active scanning belongs where the API lives.
+#
+# There is no PR trigger and so no `security-exception` escape hatch: nothing
+# here can block a merge. A PR-time scan would test the previous deployment and
+# report on code that is not in the pull request, which is worse than no signal.
+# A Medium finding fails a scheduled or manual run only.
+name: DAST
+
+on:
+  schedule:
+    # Weekly, an hour after the Security workflow so the two do not collide.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "Override the scan target (defaults to the SPA_TARGET_URL variable)"
+        required: false
+        type: string
+
+env:
+  FORCE_COLOR: "1"
+
+permissions:
+  contents: read
+
+# A superseded scan only reports on a URL that has since been redeployed.
+concurrency:
+  group: dast-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: Baseline (spa)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Resolve the target
+        id: target
+        env:
+          TARGET: ${{ inputs.target_url || vars.SPA_TARGET_URL }}
+        run: |
+          if [ -z "$TARGET" ]; then
+            echo "No SPA_TARGET_URL variable set and no target_url input given; nothing to scan." \
+              >> "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Scanning $TARGET" >> "$GITHUB_STEP_SUMMARY"
+            echo "url=$TARGET" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.target.outputs.skip == 'false'
+        uses: actions/checkout@v7
+
+      - name: Baseline scan
+        if: steps.target.outputs.skip == 'false'
+        uses: zaproxy/action-af@v0.3.0
+        env:
+          ZAP_TARGET: ${{ steps.target.outputs.url }}
+        with:
+          plan: security/zap/spa-baseline.yaml
+          # A list of variable NAMES, not assignments. The action turns each into
+          # a `-e NAME` and Docker copies the value from the step env above.
+          docker_env_vars: |
+            ZAP_TARGET
+
+      - name: Locate the SARIF report
+        id: sarif
+        if: always() && steps.target.outputs.skip == 'false'
+        run: |
+          FILE=$(find .zap-reports -name 'spa-baseline.sarif*' 2>/dev/null | head -1)
+          echo "file=${FILE}" >> "$GITHUB_OUTPUT"
+
+      # Best-effort, exactly as security.yml treats its CodeQL upload: code
+      # scanning needs a public repo or GitHub Code Security on a private one,
+      # and a repo without it should still get the artifact and the exit gate.
+      # The scan's own Medium threshold is what fails the job; losing the
+      # code-scanning record does not.
+      - name: Upload SARIF to code scanning
+        if: always() && steps.sarif.outputs.file != ''
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.sarif.outputs.file }}
+          category: "/dast:spa-baseline"
+
+      - name: Save reports as artifact
+        if: always() && steps.target.outputs.skip == 'false'
+        uses: actions/upload-artifact@v7
+        with:
+          name: dast-spa-baseline
+          path: .zap-reports
+          retention-days: 7

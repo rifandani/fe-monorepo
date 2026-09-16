@@ -6,7 +6,8 @@
 
 ## 🎯 Todo
 
-- [ ] optional DAST owasp zap with baseline and full scans for both local and prod env
+- [ ] https://github.com/shadcn-ui/lint
+- [ ] https://github.com/kettanaito/playwright-persona
 
 ## 🏁 Getting Started
 
@@ -77,6 +78,26 @@ Login to dashboard at `http://localhost:3111` with credentials:
 - [What PWA Can Do Today](https://whatpwacando.today/)
 
 ### Security
+
+| Control | Runs in | Docs |
+| --- | --- | --- |
+| SCA (osv-scanner) | `.github/workflows/security.yml` | — |
+| SAST (CodeQL) | `.github/workflows/security.yml` | — |
+| Secret detection (gitleaks) | `.github/workflows/ci.yml` | — |
+| DAST (OWASP ZAP) | `.github/workflows/dast.yml` | [docs/security/dast.md](./docs/security/dast.md) |
+
+### DAST (OWASP ZAP)
+
+Passive baseline scan of `apps/spa`. CI scans the deployed URL held in the `SPA_TARGET_URL` repository variable, weekly and on demand; it gates nothing.
+
+```sh
+bun zap:spa:serve                                          # terminal 1
+ZAP_TARGET=http://spa.fe-monorepo.localhost:4100 bun zap:spa   # terminal 2
+
+gh workflow run dast.yml -f target_url=https://your-deployment.example.com
+```
+
+Reports land in `.zap-reports/`, which is gitignored. Why this scans a deployment instead of building and serving locally: [ADR-0005](./docs/adr/0005-dast-scans-the-deployed-spa.md).
 
 - [web.dev](https://web.dev/learn/privacy/welcome)
 
