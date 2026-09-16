@@ -74,7 +74,7 @@ belongs in the repository that owns the API, where it already exists.
 - **Routes are enumerated by hand.** The app is client-rendered, so the spider
   discovers nothing and the plan carries explicit seed paths. A new route is
   invisible to the scan until someone adds it to
-  `security/zap/spa-baseline.yaml`.
+  `.github/security/zap/spa-baseline.yaml`.
 
 ## Considered Options
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Local runner for the OWASP ZAP Automation Framework plans in `security/zap/`.
+ * Local runner for the OWASP ZAP Automation Framework plans in `.github/security/zap/`.
  *
  * This exists so a laptop run and a CI run are the same run. `zaproxy/action-af`
  * issues a `docker run` that mounts the repository root at `/zap/wrk` and puts
@@ -21,7 +21,7 @@ import { chmodSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
-const PLAN_DIR = path.join(REPO_ROOT, "security", "zap");
+const PLAN_DIR = path.join(REPO_ROOT, ".github", "security", "zap");
 const REPORT_DIR = path.join(REPO_ROOT, ".zap-reports");
 const DEFAULT_IMAGE = "ghcr.io/zaproxy/zaproxy:stable";
 
@@ -43,7 +43,7 @@ if (!plan) {
 }
 
 if (!existsSync(path.join(PLAN_DIR, `${plan}.yaml`))) {
-  fail(`no such plan: security/zap/${plan}.yaml`);
+  fail(`no such plan: .github/security/zap/${plan}.yaml`);
 }
 
 const target = process.env.ZAP_TARGET;
@@ -116,7 +116,7 @@ const args = [
   "zap.sh",
   "-cmd",
   "-autorun",
-  `/zap/wrk/security/zap/${plan}.yaml`,
+  `/zap/wrk/.github/security/zap/${plan}.yaml`,
 ];
 
 console.log(`zap: ${plan} → ${target}`);

@@ -1,6 +1,6 @@
 # Dynamic application security testing for `apps/spa`.
 #
-# The plan lives in `security/zap/spa-baseline.yaml` and is the same file
+# The plan lives in `.github/security/zap/spa-baseline.yaml` and is the same file
 # `bun zap:spa` runs locally. `zaproxy/action-af` issues the same `docker run`
 # that `scripts/security/zap.ts` does — repository root at `/zap/wrk`, host
 # network — so a plan that passes on a laptop behaves the same here.
@@ -86,7 +86,7 @@ jobs:
         env:
           ZAP_TARGET: ${{ steps.target.outputs.url }}
         with:
-          plan: security/zap/spa-baseline.yaml
+          plan: .github/security/zap/spa-baseline.yaml
           # A list of variable NAMES, not assignments. The action turns each into
           # a `-e NAME` and Docker copies the value from the step env above.
           docker_env_vars: |

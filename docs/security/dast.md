@@ -7,7 +7,7 @@ One Automation Framework plan drives both the laptop and CI, so there is nothing
 
 | What | Where |
 | --- | --- |
-| Plan | `security/zap/spa-baseline.yaml` |
+| Plan | `.github/security/zap/spa-baseline.yaml` |
 | Local runner | `scripts/security/zap.ts` |
 | Workflow | `.github/workflows/dast.yml` |
 | Reports | `.zap-reports/` (gitignored, rebuilt on demand) |
@@ -53,7 +53,7 @@ Set it under **Settings → Secrets and variables → Actions → Variables**.
 
 - **Passive only.** The spider requests the seeded URLs, submits no forms, and the active scanner never runs. `/api` is excluded in the plan's context.
 - **No active scan, by design.** `apps/spa` is a static bundle whose forms post to an API in another repository.
-- **The crawl is deliberately shallow.** The seeds in the plan are the whole crawl. Adding a route to the app means adding it to `security/zap/spa-baseline.yaml`. Not switching on `ajaxSpider`, which would execute the app's JavaScript and is the one thing that would put the scan in touch with that other backend.
+- **The crawl is deliberately shallow.** The seeds in the plan are the whole crawl. Adding a route to the app means adding it to `.github/security/zap/spa-baseline.yaml`. Not switching on `ajaxSpider`, which would execute the app's JavaScript and is the one thing that would put the scan in touch with that other backend.
 - **Not the sitemap.** `apps/spa/public/sitemap.xml` bakes its domain in at generation time and currently points at `http://localhost:3001`.
 
 ## Triage a finding
@@ -68,7 +68,7 @@ Header findings from a local run tell you nothing about the deployment either wa
 ## Suppress a finding
 
 Only after triage, and never globally. 
-Add a dated, reasoned, URL-scoped entry to the `alertFilter` job in `security/zap/spa-baseline.yaml`, the same shape as the timed entries in the SCA allowlist:
+Add a dated, reasoned, URL-scoped entry to the `alertFilter` job in `.github/security/zap/spa-baseline.yaml`, the same shape as the timed entries in the SCA allowlist:
 
 ```yaml
     alertFilters:

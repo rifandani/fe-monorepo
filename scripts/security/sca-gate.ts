@@ -6,7 +6,7 @@
  *
  * Usage: node scripts/security/sca-gate.ts
  * Env:
- *   SCA_ALLOWLIST_PATH   default: security/sca-allowlist.json
+ *   SCA_ALLOWLIST_PATH   default: .github/security/sca-allowlist.json
  *   SCA_AUDIT_LEVEL      default: high  (low|moderate|high|critical)
  *   OSV_SCANNER_BIN      path to osv-scanner (default: osv-scanner on PATH)
  *   OSV_SCANNER_VERSION  pinned download version if binary missing (default: 2.4.0)
@@ -86,7 +86,7 @@ const isSeverityBand = (value: string): value is SeverityBand =>
 const root = path.resolve(import.meta.dirname, "../..");
 const allowlistPath = path.resolve(
   root,
-  process.env.SCA_ALLOWLIST_PATH ?? "security/sca-allowlist.json"
+  process.env.SCA_ALLOWLIST_PATH ?? ".github/security/sca-allowlist.json"
 );
 const auditLevel = (process.env.SCA_AUDIT_LEVEL ?? "high").toLowerCase();
 const today = new Date().toISOString().slice(0, 10);

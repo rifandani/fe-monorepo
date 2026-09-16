@@ -29,7 +29,7 @@ Dependabot (`.github/dependabot.yml`) opens monthly update PRs; it does not repl
 | Severity | Gate | Exception |
 | --- | --- | --- |
 | Critical | Blocks | Not allowlistable. PR label `security-exception` only, Application lead approval |
-| High | Blocks | Timed entry in `security/sca-allowlist.json` (SCA) and/or `security-exception` label |
+| High | Blocks | Timed entry in `.github/security/sca-allowlist.json` (SCA) and/or `security-exception` label |
 | Medium / Low | Does not block | Track and fix in normal backlog |
 
 **Exception approval:** Application lead applies the `security-exception` label on the PR (or renews an SCA allowlist entry with a new `expires` date and reason). Infrastructure owns pipeline capability; Application lead owns risk acceptance.
