@@ -75,7 +75,7 @@
     "expo-localization": "16.1.5",
     "expo-router": "5.1.0",
     "expo-splash-screen": "0.30.9",
-    "expo-status-bar": "2.2.3",
+    "expo-status-bar": "57.0.1",
     "expo-system-ui": "5.0.8",
     "expo-updates": "0.28.14",
     "ky": "2.0.2",
