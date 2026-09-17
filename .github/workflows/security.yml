@@ -5,9 +5,11 @@
 #   - SAST → CodeQL javascript-typescript (fail on security-severity >= 7.0)
 #
 # Secret detection (gitleaks) lives in ci.yml so it stays on every PR/push.
+# DAST (OWASP ZAP) lives in dast.yml — it scans a deployed URL on a weekly
+# schedule, so it has nothing to do with this workflow's PR/push triggers.
 #
 # Explicitly out of scope here (align with item 10):
-#   - DAST / web app assessment / platform assessment / penetration testing
+#   - Web app assessment / platform assessment / penetration testing
 #   - Container / IaC scanning (no production images or Terraform in this repo)
 #
 # Exception: apply PR label `security-exception` (Application lead only).

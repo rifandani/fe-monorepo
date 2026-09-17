@@ -26,6 +26,8 @@
     "check:security": "fallow security --surface  --quiet",
     "check:security:survivors": "fallow security --format json --quiet -o node_modules/.cache/fallow-security.json && fallow security survivors --candidates node_modules/.cache/fallow-security.json --verdicts .fallow/security-verdicts.json --require-verdict-for-each-candidate",
     "audit:sca": "node scripts/security/sca-gate.ts",
+    "zap:spa:serve": "VITE_API_BASE_URL=http://127.0.0.1:9/api bun spa build && bun spa preview --port 4100 --strictPort --host",
+    "zap:spa": "bun scripts/security/zap.ts spa-baseline",
     "check:all": "fallow --quiet",
     "check:viz": "fallow viz --out .fallow/map.html",
     "check:fix": "fallow fix --yes --no-create-config",

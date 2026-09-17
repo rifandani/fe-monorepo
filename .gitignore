@@ -149,3 +149,6 @@ otel-lgtm
 
 # PR Lens writes its previews here. They are rebuilt on demand.
 .pr-lens/
+
+# OWASP ZAP writes DAST reports here. They are rebuilt on demand.
+.zap-reports/

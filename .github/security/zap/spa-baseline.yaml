@@ -1,0 +1,97 @@
+# OWASP ZAP Automation Framework plan — passive baseline for `apps/spa`.
+#
+# This one file is the whole scan. `.github/workflows/dast.yml` runs it through
+# `zaproxy/action-af`, and `bun zap:spa` runs it through `scripts/security/zap.ts`;
+# both issue the same `docker run` with the repository root mounted at
+# `/zap/wrk`, so a plan that passes on a laptop behaves the same in CI.
+#
+# Three things here are deliberate and look like omissions. The reasoning lives
+# once in docs/adr/0005-dast-scans-the-deployed-spa.md; read it before undoing
+# any of them:
+#   1. Passive only, and no `spa-active.yaml`. The API lives in another repo.
+#   2. No `ajaxSpider`. Not executing the app's JavaScript is a containment
+#      control — it is what keeps the scan off the proxied backend.
+#   3. Seeds are paths on ${ZAP_TARGET}, not `apps/spa/public/sitemap.xml`.
+#
+# Adding a route to the app means adding it below.
+
+env:
+  contexts:
+    - name: spa
+      urls:
+        - ${ZAP_TARGET}/
+        - ${ZAP_TARGET}/login
+        - ${ZAP_TARGET}/master-design
+      includePaths:
+        - "\\Q${ZAP_TARGET}\\E.*"
+      excludePaths:
+        # The deployed origin proxies `/api` to a backend this repository does
+        # not own. Scanning someone else's host is not an "oops", so this stays
+        # even though the passive-only configuration above already makes a
+        # request here harmless.
+        - ".*/api/.*"
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+
+jobs:
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+      scanOnlyInScope: true
+
+  # Triaged findings go here, with a reason and a date — the same convention as
+  # the timed entries in the SCA allowlist. Entries must name a `ruleName` and
+  # be URL-scoped; a global suppression is never the answer.
+  #
+  # `deleteGlobalAlerts` clears filters left in the ZAP session before applying
+  # this list. It resets, it does not suppress — it is what makes the run
+  # reproducible from an empty list.
+  - type: alertFilter
+    parameters:
+      deleteGlobalAlerts: true
+    alertFilters: []
+
+  - type: spider
+    parameters:
+      context: spa
+      maxDuration: 5
+      # Read-only. Both default to `true`, so both are stated: a form submit
+      # against a deployed environment would post real data through whatever
+      # sits behind the proxy.
+      postForm: false
+      processForm: false
+
+  - type: passiveScan-wait
+    parameters:
+      maxDuration: 10
+
+  - type: report
+    parameters:
+      template: sarif-json
+      reportDir: /zap/wrk/.zap-reports
+      reportFile: spa-baseline.sarif
+      reportTitle: "spa — DAST baseline"
+
+  - type: report
+    parameters:
+      template: traditional-html
+      reportDir: /zap/wrk/.zap-reports
+      reportFile: spa-baseline.html
+      reportTitle: "spa — DAST baseline"
+
+  # Medium, not High. A static SPA served by a CDN has no server-side logic, so
+  # it will essentially never produce a High — copying that threshold would give
+  # a gate that cannot fire and therefore reads as assurance it does not provide.
+  # This app's real findings (missing CSP, frame options, referrer policy —
+  # configured at the hosting layer) are Mediums. `warnExitValue: 0` keeps Low
+  # findings reportable without failing the run.
+  - type: exitStatus
+    parameters:
+      errorLevel: Medium
+      warnLevel: Low
+      okExitValue: 0
+      errorExitValue: 1
+      warnExitValue: 0
+    alwaysRun: true

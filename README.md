@@ -6,7 +6,8 @@
 
 ## 🎯 Todo
 
-- [ ] optional DAST owasp zap with baseline and full scans for both local and prod env
+- [ ] https://github.com/shadcn-ui/lint
+- [ ] https://github.com/kettanaito/playwright-persona
 
 ## 🏁 Getting Started
 
@@ -78,6 +79,7 @@ Login to dashboard at `http://localhost:3111` with credentials:
 
 ### Security
 
+- [DAST (OWASP ZAP)](./docs/security/dast.md) |
 - [web.dev](https://web.dev/learn/privacy/welcome)
 
 ### SEO
