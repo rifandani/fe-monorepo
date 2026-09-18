@@ -57,3 +57,32 @@ The SDK approach means:
 - No conditional logic in test setup
 - Easier to see which endpoints a test exercises
 - Type safety per endpoint
+
+## Clear vs reset vs restore
+
+The three verbs are not interchangeable. Picking the wrong one leaks state between tests, which is the most common cause of a suite that passes alone and fails in order.
+
+| Method | Clears recorded calls | Removes the implementation | Puts the original back |
+| --- | --- | --- | --- |
+| `.mockClear()` | yes | no | no |
+| `.mockReset()` | yes | yes | no |
+| `.mockRestore()` | yes | yes | yes (spies only) |
+
+- **Clear** — mid-test, when you want to count calls only from the step that follows. Keeps the implementation you set up.
+- **Reset** — between tests. Removes call history *and* the implementation, so no test inherits a stub from the one before it.
+- **Restore** — only works on `vi.spyOn()` spies. Puts the real function back. Use it when the spy patched something global that later tests need intact.
+
+`vi.fn()` mocks cannot be restored — there is no original. Only spies can.
+
+This repo restores globally in `vitest.setup.ts`:
+
+```typescript
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllEnvs();
+});
+```
+
+So spies are undone for you. Do not repeat the teardown per file. If a `vi.fn()` is shared across tests in one file, reset it yourself in a `beforeEach` — the global restore does not remove its implementation.
+
+Prefer configuration over per-test bookkeeping: `mockReset: true` in the Vitest config removes the whole class of "I forgot to clean up" bugs.

@@ -75,3 +75,43 @@ test("calculateTotal sums line items", () => {
   expect(calculateTotal([{ price: 10 }, { price: 5 }])).toBe(15);
 });
 ```
+
+## Setup: flat, and self-cleaning
+
+Keep setup inside the test that needs it. A flat setup lets you read one test top to bottom without chasing hooks in three parent `describe` blocks. But flat setup has a cleanup problem: if an assertion throws before the teardown line, the resource leaks into the next test.
+
+```typescript
+// BAD: an early failure skips close(), and the port stays held
+test("shows the saved suggestion", async () => {
+  const testServer = createTestServer();
+  await testServer.listen();
+  expect(await getSuggestion()).toBe("alice@example.com"); // throws here
+  await testServer.close(); // never runs
+});
+```
+
+Use a disposable object. `await using` guarantees the cleanup when the binding leaves scope, whatever the outcome.
+
+```typescript
+export function createTestServer() {
+  const testServer = new Server();
+  return {
+    instance: testServer,
+    async [Symbol.asyncDispose]() {
+      await testServer.close();
+    },
+  };
+}
+
+// GOOD: cleanup is guaranteed, and it is one line
+test("shows the saved suggestion", async () => {
+  await using testServer = createTestServer();
+  testServer.instance.get("/user", userHandler);
+  await testServer.instance.listen();
+  expect(await getSuggestion()).toBe("alice@example.com");
+});
+```
+
+Use `Symbol.dispose` with `using` for synchronous cleanup, `Symbol.asyncDispose` with `await using` for asynchronous cleanup. TypeScript 5.2+ supports both; the `disposablestack` package polyfills the runtime side where needed.
+
+Reach for `afterEach` only for teardown that is genuinely global (the repo's `vitest.setup.ts`). Per-test resources belong with the test.
