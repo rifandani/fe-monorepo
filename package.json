@@ -33,7 +33,7 @@
     "check:fix": "fallow fix --yes --no-create-config",
     "typecheck": "bun run --parallel core:typecheck spa:typecheck expo:typecheck",
     "typerange": "bun run --parallel core:typerange spa:typerange expo:typerange",
-    "lint-typecheck": "bun run --parallel lint core:typecheck spa:typecheck expo:typecheck core:typerange spa:typerange expo:typerange",
+    "lint-typecheck": "bun run --parallel lint core:typecheck spa:typecheck expo:typecheck",
     "core": "bun --elide-lines=0 --filter @workspace/core",
     "spa": "bun --elide-lines=0 --filter @workspace/spa",
     "expo": "bun --elide-lines=0 --filter @workspace/expo",

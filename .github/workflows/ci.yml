@@ -94,6 +94,28 @@ jobs:
       - name: Lint and typecheck
         run: bun lint-typecheck
 
+  typerange:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+
+      - name: Install deps and disallow changes to lockfile
+        run: bun ci
+
+      - name: Typerange
+        run: bun typerange
+
   # Single gate for all three Vitest projects (core, spa, expo)
   unit:
     runs-on: ubuntu-latest
