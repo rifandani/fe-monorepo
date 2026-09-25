@@ -6,7 +6,6 @@
 
 ## 🎯 Todo
 
-- [ ] https://github.com/shadcn-ui/lint
 - [ ] https://github.com/kettanaito/playwright-persona
 
 ## 🏁 Getting Started

@@ -12,7 +12,7 @@ The four unit tests covering the API layer faked HTTP by replacing imports (`vi.
 
 ## Scope
 
-MSW applies to exactly four files — `packages/core/src/apis/{auth,better-auth,cdn}.unit.test.ts` and `apps/expo/src/user/apis/user.unit.test.ts`. That is the complete set: `apps/spa/src` has no `apis/` directory and consumes core's repositories, and no other test in the suite touches the network.
+MSW applies to exactly four files — `packages/core/src/apis/{auth,cdn}.unit.test.ts`, `packages/core/src/services/http.unit.test.ts`, and `apps/expo/src/user/apis/user.unit.test.ts`. That is the complete set: `apps/spa/src` has no `apis/` directory and consumes core's repositories, and no other test in the suite touches the network.
 
 ## Considered Options
 
@@ -48,12 +48,12 @@ Interceptor install costs ~140ms per *file*, so the bill scales with files touch
 - **`apps/expo/vitest.config.ts` gained an `env` block.** Faking at the Network Boundary means `user.ts`'s import graph really loads, including `createEnv({ EXPO_PUBLIC_API_BASE_URL: z.url() })`, which throws without a valid URL. It imports `MOCK_API_BASE_URL` from `vitest.msw.ts` so the value is defined once. Expo-only: its `createEnv` reads `process.env`, which is what Vitest's `env` populates, whereas spa and web read `import.meta.env`/`experimental__runtimeEnv`.
 - **Follow-up not taken:** `userApi` should accept `http` as a parameter like `authRepositories(http)` does, removing the singleton/env coupling at the source. Deliberately deferred — bundling a production refactor into a testing change makes the diff hard to review.
 - **`@test/msw` is aliased twice per project** — in `vitest.config.ts` (`resolve.alias`) and `tsconfig.json` (`paths`) — for `core` and `expo` only. Not added to spa/web, which would be dead config.
-- **ky retries GET twice by default** on 408/413/429/500/502/503/504, so the cdn 500 case passes `retry: 0` to avoid ~0.9s of backoff. POST is not retried by default, so the auth/better-auth 500 cases need nothing.
+- **ky retries GET twice by default** on 408/413/429/500/502/503/504, so the cdn 500 case passes `retry: 0` to avoid ~0.9s of backoff. POST is not retried by default, so the auth 500 cases need nothing.
 - **fallow:** `vitest.msw-setup.ts` needs `unused-files: "off"` in `.fallowrc.json`, since `setupFiles` loads it by path and no import edge reaches it. Separately, `fallow dead-code` reports `msw` under "dev dependencies used in production" because it counts `*.unit.test.ts` under `src/` as production; every `msw` import site is a test file or `vitest.msw.ts`, it must stay a devDependency, and the finding is not suppressible via rule severity (the same limitation already noted for `fallow security`). Both `check:dead-code` and `check:audit` exit 0, so it is informational.
 
 ## Amendments
 
-**2026-09-11 — the set is four files, and a different four.** `packages/core/src/services/http.unit.test.ts` now fakes at the Network Boundary, and `better-auth.unit.test.ts` was deleted with the module it covered (see below). The list under [Scope](#scope) is therefore `packages/core/src/apis/{auth,cdn}.unit.test.ts`, `apps/expo/src/user/apis/user.unit.test.ts`, and `packages/core/src/services/http.unit.test.ts`. References to `better-auth` elsewhere in this document, and in ADR-0001 and ADR-0003, are historical.
+**2026-09-11 — the set is four files, and a different four.** `packages/core/src/services/http.unit.test.ts` now fakes at the Network Boundary, and the test of the second auth module was deleted with the module it covered (see below). The list under [Scope](#scope) shows the current set.
 
 The scope rule is unchanged; the file moved across it. `Http` used to be a constructor call that built no request of its own — it handed a configured ky instance to the `apis/` modules and they did the building, which is why its test asserted object identity (`expect(http.instance).not.toBe(before)`) and sent nothing. It now attaches the Access Token in a `beforeRequest` hook and ends the Session on a 401 in `afterResponse`, so it builds and inspects requests, and **the rule of thumb selects it**: fake at the Network Boundary, because everything the module does to the request really executes.
 
@@ -61,4 +61,4 @@ That is not a stylistic preference here. The [Consequences](#consequences) secti
 
 `updateConfig` and `resetConfig` were deleted in the same change. With the Access Token read per request via `getToken`, nothing needs to mutate a live instance, and their only callers in the repo were the two identity assertions above.
 
-**2026-09-11 — `apis/better-auth.ts` deleted.** A second auth scheme — cookie/session, its own `authKeys`/`authRepositories` — with zero importers since `@workspace/web` was removed. It was allowlisted for coverage and carried an MSW test, so it contributed measured, tested, unreachable surface: every future reader of `apis/` had to work out which of two schemes the apps actually use. Recoverable from git if that migration happens, at which point it would be rewritten against whatever the backend then exposes.
+**2026-09-11 — the second auth module in `apis/` deleted.** A second auth scheme — cookie/session, its own `authKeys`/`authRepositories` — with zero importers since `@workspace/web` was removed. It was allowlisted for coverage and carried an MSW test, so it contributed measured, tested, unreachable surface: every future reader of `apis/` had to work out which of two schemes the apps actually use. Recoverable from git if that migration happens, at which point it would be rewritten against whatever the backend then exposes.

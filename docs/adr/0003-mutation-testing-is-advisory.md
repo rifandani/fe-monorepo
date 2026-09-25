@@ -148,7 +148,7 @@ The point of the fourth column: a low score is not automatically a finding. Four
 
 Against all that, `apps/web/src/core/utils/{security,error-helper,field-error-message,server-form-error,net,primitive}.ts` all score 100%, as do `apps/web/src/app/robots.ts` and `og-params.ts`. This is not a uniform "the tests are weak" signal; it is specific, which is what makes it actionable.
 
-The second accepted-noise class, alongside the name constants above: **Zod constraint mutants in mixed schema/repository modules** (`apis/{auth,better-auth}.ts`) — `z.string().min(6)` → `.max(6)`, and similar. ADR-0001 puts plain Zod shapes out of test scope, and these files stay in the allowlist only because their `authKeys`/`authRepositories` functions are MSW-tested. The schema half is therefore unasserted by policy, not by accident. Pure-schema modules were removed from the allowlist outright on 2026-08-03 (ADR-0001 amendment) — this report is what caused that.
+The second accepted-noise class, alongside the name constants above: **Zod constraint mutants in mixed schema/repository modules** (`apis/auth.ts`) — `z.string().min(6)` → `.max(6)`, and similar. ADR-0001 puts plain Zod shapes out of test scope, and these files stay in the allowlist only because their `authKeys`/`authRepositories` functions are MSW-tested. The schema half is therefore unasserted by policy, not by accident. Pure-schema modules were removed from the allowlist outright on 2026-08-03 (ADR-0001 amendment) — this report is what caused that.
 
 Two findings confirmed and fixed on adoption, as the worked example of the loop:
 

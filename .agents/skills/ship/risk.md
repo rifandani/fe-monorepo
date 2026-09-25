@@ -8,7 +8,7 @@ Any path or behavior in:
 
 | Surface | Where it usually lives |
 | --- | --- |
-| Auth / Session / credentials | `**/auth/**`, `packages/core/src/apis/auth.ts`, `packages/core/src/apis/better-auth.ts`, session storage |
+| Auth / Session / credentials | `**/auth/**`, `packages/core/src/apis/auth.ts`, session storage |
 | Public API / HTTP contracts | `packages/core/src/apis/**`, `packages/core/src/services/http.ts` |
 | MCP | `.mcp.json`, MCP server configs |
 | Design system | `**/components/ui/**`, design tokens, `globals.css` that define the system |

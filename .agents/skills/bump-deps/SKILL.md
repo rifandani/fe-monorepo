@@ -19,7 +19,7 @@ Leading word: **bump**. Universe is the root `bump:deps` script (Expo/RN/Tamagui
 Diff old → new versions.
 
 - **Major** — GitHub changelog. If the package ships an upgrade blog (React, Vite/Vitest, Tailwind, TypeScript), read that too. Brief breaking changes that bite *this* repo, then continue.
-- **Minor** — same, but only for the **popular** set, or a package that later fails a gate: React, React DOM, TypeScript, Vitest, Tailwind, Ultracite/oxlint, Better Auth.
+- **Minor** — same, but only for the **popular** set, or a package that later fails a gate: React, React DOM, TypeScript, Vitest, Tailwind, Ultracite/oxlint.
 - **Patch** — skip notes.
 
 **Done when:** every major and every popular-minor is accounted for — notes read, bites briefed, required code listed.
