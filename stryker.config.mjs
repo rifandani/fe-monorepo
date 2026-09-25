@@ -137,7 +137,6 @@ export default {
     "**/build/**",
     "**/.tamagui/**",
     "**/.tanstack/**",
-    "**/.evlog/**",
     "**/.vercel/**",
     "**/.repos/**",
   ],

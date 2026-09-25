@@ -18,9 +18,11 @@
 - [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
 - [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
 - [ ] [Expo Launch](https://expo.dev/blog/introducing-expo-launch) (check on the config from the examples app, it should have the correct config to be able to deploy app just by github url)
+- [ ] https://github.com/software-mansion/argent or https://github.com/callstack/agent-device
 - [ ] Expo v55
 - [ ] AGENTS.md
 - [ ] Otel for observability (embrace sdk)
+- [ ] https://github.com/appeeky/aso-skills
 
 ## 📦 Prerequisite
 

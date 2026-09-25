@@ -38,7 +38,7 @@ The global alternative was preferred on design grounds — it would make "no uni
 
 Interceptor install costs ~140ms per *file*, so the bill scales with files touched, not tests. Paying +21–40% to guard 33 files that make no requests at all was poor value; ADR-0001's coverage amendment accepted +29% for something every file benefits from.
 
-`onUnhandledRequest: "error"` (not `"warn"`) — verified by probe: an undeclared request hard-fails with `[MSW] Error: intercepted a request without a matching request handler`. Nothing in the suite trips it, because every OTLP exporter and evlog transport is already `vi.mock`ed.
+`onUnhandledRequest: "error"` (not `"warn"`) — verified by probe: an undeclared request hard-fails with `[MSW] Error: intercepted a request without a matching request handler`. Nothing in the suite trips it, because every OTLP exporter is already `vi.mock`ed.
 
 **Consequence:** the guardrail covers `core` and `expo` (22 files), not `spa` and `web` (33). Extending it is one line in that project's `setupFiles`, and any spa/web test that needs the network must add it.
 

@@ -141,7 +141,6 @@ It is also why `mutator.excludedMutations` stays empty rather than dropping `Str
 | `packages/core/src/constants/date.ts` | 33.33% | 3 | accepted noise (format strings) |
 | `packages/core/src/apis/auth.ts` | 50.00% | 12 | accepted noise (Zod half of a mixed module) |
 | `apps/web/src/core/utils/seo.tsx` | 54.69% | 64 | **Candidate Survivors** |
-| `apps/web/src/core/utils/evlog.ts` | 56.00% | 25 | **Candidate Survivors** |
 | `apps/expo/src/core/hooks/use-app-store.tsx` | 62.50% | 16 | **Candidate Survivors** |
 | `packages/core/src/utils/logger.ts` | 62.96% | 27 | mostly accepted noise |
 
@@ -164,7 +163,7 @@ The `primitive.ts` case is the argument for mutation testing in one line: the br
 
 `store.ts` also lost a redundant guard. `if (result.length === 0) return;` sat directly above `if (!record) return;`, and destructuring an empty array already yields `undefined`, so every mutant of the length check survived: no input can reach one guard without the other producing the same result. The right response to provably redundant code is deletion, not a `// Stryker disable`.
 
-Findings left open deliberately: `packages/core/src/utils/core.ts` (17 logic survivors, 13 of them `Regex` — each pattern is exercised by one happy input), `packages/core/src/libs/i18n/init.ts` (11, all `OptionalChaining` on plural/date/list fallbacks), and `packages/core/src/utils/cookie.ts` (9, including the same dropped-`.trim()` shape already fixed in `net.ts`). The `ObjectLiteral → {}` survivors across `evlog.ts` mean nothing asserts the shape of emitted telemetry payloads — real, but asserting telemetry bodies is brittle enough to defer. Working through survivors is the tool's ongoing job, not part of adopting it.
+Findings left open deliberately: `packages/core/src/utils/core.ts` (17 logic survivors, 13 of them `Regex` — each pattern is exercised by one happy input), `packages/core/src/libs/i18n/init.ts` (11, all `OptionalChaining` on plural/date/list fallbacks), and `packages/core/src/utils/cookie.ts` (9, including the same dropped-`.trim()` shape already fixed in `net.ts`). Working through survivors is the tool's ongoing job, not part of adopting it.
 
 Stryker also warns that 251 mutants (16%) are *static* — evaluated at module load — and estimates them at 95% of run time. `ignoreStatic` would skip them, but they are skipped as **Ignored**, not killed, so it buys speed by discarding signal. At a 3-minute run there is nothing to buy. Left off.
 

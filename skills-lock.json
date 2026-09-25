@@ -13,21 +13,11 @@
       "skillPath": "skills/agentation-self-driving/SKILL.md",
       "computedHash": "4a543f93d3edc770a684aa554321ca113debc74b276e1cdc4b8a5a8c44932ab7"
     },
-    "analyze-logs": {
-      "source": "evlog.dev",
-      "sourceType": "well-known",
-      "computedHash": "28bd8254997b767ebba1f7f2cf4567ddb6c51b1fcdca9baf9b9cd7ee3ca51d7c"
-    },
     "ask-matt": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
       "computedHash": "b2e8ef5ffc2f142022c1e1e1bba68073f0821356a8e1cf1b23670f61d13fe50b"
-    },
-    "build-audit-logs": {
-      "source": "evlog.dev",
-      "sourceType": "well-known",
-      "computedHash": "10e462fd3fea48c1868fd81cf4e2fcc28bc4cc35e3351c61fdb0bb0b50adb48a"
     },
     "code-review": {
       "source": "mattpocock/skills",
@@ -118,11 +108,6 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/resolving-merge-conflicts/SKILL.md",
       "computedHash": "28aad6f8b1b7025abc8892fa8890f68fe1533499b28a565f416b159131d22fad"
-    },
-    "review-logging-patterns": {
-      "source": "evlog.dev",
-      "sourceType": "well-known",
-      "computedHash": "16ec9091a37cfce1089d137da6c4d2997d771a8eb914a952df7654afbcdd1f36"
     },
     "setup-matt-pocock-skills": {
       "source": "mattpocock/skills",

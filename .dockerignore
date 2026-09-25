@@ -20,7 +20,6 @@
 .cursor
 .agents
 .fallow
-.evlog
 .changeset
 **/*.log
 # Secrets must be injected at runtime, never copied into the image.
