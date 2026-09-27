@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun lint:fix",
+            "timeout": 600,
+            "statusMessage": "Linting the workspace"
+          },
+          {
+            "type": "command",
+            "command": "bun check:fix",
+            "timeout": 600,
+            "statusMessage": "Checking the workspace for errors"
+          }
+        ]
+      }
+    ]
+  }
+}
