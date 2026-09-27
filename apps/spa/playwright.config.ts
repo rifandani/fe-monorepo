@@ -81,7 +81,7 @@ export default defineConfig<TestOptions>({
     // CI: build + preview on :port. Local: vite dev on :port (not `bun dev` / portless).
     command: process.env.CI
       ? `bun run build && bunx vite preview --port ${port} --strictPort`
-      : `cp .env.dev .env.local && bunx vite --port ${port} --strictPort`,
+      : `bunx vite --port ${port} --strictPort`,
     reuseExistingServer: !process.env.CI,
     stdout: "pipe",
     stderr: "pipe",

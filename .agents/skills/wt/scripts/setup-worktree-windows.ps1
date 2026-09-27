@@ -50,7 +50,7 @@ function Sync-AppEnvs {
 }
 
 Write-Host '==> Syncing app env files from main checkout'
-Sync-AppEnvs -AppDir 'apps/spa' -Files @('.env.dev', '.env.prod', '.env.local')
+Sync-AppEnvs -AppDir 'apps/spa' -Files @('.env.local', '.env.prod')
 Sync-AppEnvs -AppDir 'apps/expo' -Files @('.env.local')
 
 Write-Host '==> Checking portless (required for bun spa)'

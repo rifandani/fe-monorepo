@@ -58,9 +58,9 @@ jobs:
           SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
         run: |
           if [ -n "$SPA_ENV_FILE" ]; then
-            echo "$SPA_ENV_FILE" > apps/spa/.env.dev
+            echo "$SPA_ENV_FILE" > apps/spa/.env.local
           else
-            cp apps/spa/.env.example apps/spa/.env.dev
+            cp apps/spa/.env.example apps/spa/.env.local
           fi
 
       # Keyed on the resolved Playwright version rather than the lockfile hash:

@@ -5,7 +5,6 @@
 # this file and the hook must copy envs itself (our hook calls
 # `.agents/skills/wt/scripts/setup-worktree-unix.sh`, which does).
 
-apps/spa/.env.dev
 apps/spa/.env.prod
 apps/spa/.env.local
 apps/expo/.env.local

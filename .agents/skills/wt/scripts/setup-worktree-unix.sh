@@ -45,7 +45,7 @@ sync_app_envs() {
 }
 
 echo "==> Syncing app env files from main checkout"
-sync_app_envs apps/spa .env.dev .env.prod .env.local
+sync_app_envs apps/spa .env.local .env.prod
 sync_app_envs apps/expo .env.local
 
 echo "==> Checking portless (required for bun spa)"

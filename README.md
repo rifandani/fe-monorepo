@@ -55,7 +55,7 @@ The ADRs in `docs/adr/` and `packages/core/docs/adr/` record past decisions of t
 
 For first timer, you need to create the 2 environments in your github repo. First is `dev` environment, and second is `prod` environment (that's why in `.github/workflows/ci.yml` we stated `environment: dev`). In both environments, name it `SPA_ENV_FILE` (that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE`).
 
-The value for `SPA_ENV_FILE` in `dev` environment is `.env.dev`, and the value for `SPA_ENV_FILE` in `prod` environment is `.env.prod` for `@workspace/spa`.
+The value for `SPA_ENV_FILE` in `dev` environment is the content of `apps/spa/.env.local`, and the value for `SPA_ENV_FILE` in `prod` environment is the content of `apps/spa/.env.prod`. CI writes the secret to `apps/spa/.env.local`. If the secret is empty, CI copies `apps/spa/.env.example` to `apps/spa/.env.local`.
 
 Source of truth is local env files. When changing them, update deployment/CI project env too.
 
@@ -66,8 +66,8 @@ To push our local env variables to the github repo, run:
 
 ```bash
 # that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE`
-gh secret set SPA_ENV_FILE -e dev -f ./apps/spa/.env.dev
-gh secret set SPA_ENV_FILE -e prod -f ./apps/spa/.env.prod
+gh secret set SPA_ENV_FILE -e dev < ./apps/spa/.env.local
+gh secret set SPA_ENV_FILE -e prod < ./apps/spa/.env.prod
 ```
 
 Source of truth is local env files. When changing them, update deployment/CI project env too. -->
