@@ -25,4 +25,4 @@ body:
     attributes:
       value: |
         ## Before creating a feature request make sure that:
-        - This hasn't been [requested before](https://github.com/rifandani/react-app/issues).
+        - This hasn't been [requested before](https://github.com/rifandani/fe-monorepo/issues).

@@ -35,4 +35,4 @@ body:
     attributes:
       value: |
         ## Before creating an issue make sure that:
-        - This hasn't been [reported before](https://github.com/rifandani/react-app/issues).
+        - This hasn't been [reported before](https://github.com/rifandani/fe-monorepo/issues).

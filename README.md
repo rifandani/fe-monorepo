@@ -6,11 +6,50 @@
 
 ## 🎯 Todo
 
-- [ ] https://github.com/kettanaito/playwright-persona
+~
 
 ## 🏁 Getting Started
 
-For new project, run `/impeccable init` then `/impeccable shape` to update PRODUCT.md and DESIGN.md. More [here](https://impeccable.style/designing/).
+This repo is a boilerplate. When you start a new project from it, do the steps below. Each step names the files that contain placeholder values.
+
+### 1. Repo identity
+
+- [ ] `package.json` (root): `name`, `description`, `author`.
+- [ ] `apps/*/package.json` and `packages/*/package.json`: `description`, `author`, `license`. Set `version` back to `0.0.0` or `1.0.0` if you want a fresh start.
+- [ ] `apps/*/CHANGELOG.md` and `packages/*/CHANGELOG.md`: delete the old entries.
+- [ ] The `@workspace/*` package scope is internal. You can keep it. If you change it, also change `.changeset/config.json`, the root `package.json` scripts (`core`, `spa`, `expo`), every `workspace:*` dependency, every `tsconfig.json` `extends`, the `@workspace/core` alias in each `vitest.config.ts`, and all imports.
+- [ ] `README.md`: title, DeepWiki badge and Mintlify link (they point to `rifandani/fe-monorepo`).
+- [ ] `CLAUDE.md`: the GitHub repo in the "Issue tracker" section.
+- [ ] `.github/ISSUE_TEMPLATE/bug_report.yml` and `feature_request.yml`: the issues link (points to `rifandani/fe-monorepo`).
+- [ ] `.github/SECURITY.md` and `.github/CODE_OF_CONDUCT.md`: the contact for reports.
+- [ ] `.gitleaks.toml`: `title`.
+- [ ] `docker/docker-compose.yml`: `name`.
+- [ ] `.claude/settings.json`: remove the `Read(//Users/rizeki.rifandani/...)` permissions, or change them to your home folder.
+- [ ] Add a `LICENSE` file that agrees with the `license` field in each `package.json`.
+
+### 2. Apps
+
+Each app has its own "Getting Started" checklist. Do the steps for the apps that you keep, and delete the apps that you do not need.
+
+- [ ] [`@workspace/spa`](./apps/spa/README.md#-getting-started)
+- [ ] [`@workspace/expo`](./apps/expo/README.md#-getting-started)
+
+### 3. GitHub and CI
+
+- [ ] Create the `dev` and `prod` environments and the `SPA_ENV_FILE` secret. See [Environment Variables](#-environment-variables).
+- [ ] Set the `SPA_TARGET_URL` repository variable to your deployed SPA URL (`.github/workflows/dast.yml` uses it).
+- [ ] `.github/settings.yml`: change the labels if your triage labels are different (see `docs/agents/triage-labels.md`).
+
+### 4. Check that nothing is left
+
+Run this from the repo root. Each result is a placeholder that you must examine (the README files also match until you rewrite them):
+
+```bash
+git grep -n -i -E 'rifandani|rizeki|tri_rizeki|fe-monorepo|bulletproof|spa\.com|expoapp|Expo App|dummyjson|emilys' \
+  -- ':!*CHANGELOG.md' ':!bun.lock' ':!skills-lock.json' ':!.agents' ':!.claude/skills' ':!.cursor/skills' ':!docs/adr'
+```
+
+The ADRs in `docs/adr/` and `packages/core/docs/adr/` record past decisions of this template. Keep the ones that still apply to your project and delete the others.
 
 ## 📝 Environment Variables
 

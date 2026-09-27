@@ -24,6 +24,21 @@
 - [ ] Otel for observability (embrace sdk)
 - [ ] https://github.com/appeeky/aso-skills
 
+## 🏁 Getting Started
+
+When you start a new project from this template, change the placeholder values below. Paths are relative to `apps/expo`, unless they start with "repo root". Do the repo-level steps in the [root README](../../README.md#-getting-started) too.
+
+- [ ] Run `eas init` (see [Setup EAS](#setup-eas)), then set these in `app.config.ts`: `EAS_PROJECT_ID`, `PROJECT_SLUG`, `OWNER`, `APP_NAME`, `BUNDLE_IDENTIFIER` (`com.rifandani.expoapp`), `SCHEME`, and the `appleTeamId` / app group comments.
+- [ ] `package.json`: `MAESTRO_APP_ID` in the `test:dev` and `test:prod` scripts, and the `/tmp/fe-monorepo-expo` folder in `ios:sim:install`.
+- [ ] This README: the bundle IDs in the uninstall and Maestro commands, and the `/tmp/fe-monorepo-expo` folder.
+- [ ] `src/core/services/mmkv.ts` and `src/core/services/mmkv.unit.test.ts`: `encryptionKey` (`"fe-monorepo/expo"`).
+- [ ] Repo root `packages/core/src/libs/i18n/locales/en-US.ts` and `id-ID.ts`: `appName` (`"Expo App"`).
+- [ ] `src/core/assets/icons/*`: app icons and splash image. Also the splash and adaptive icon `backgroundColor` in `app.config.ts`.
+- [ ] `.env.example` and the EAS project env: `EXPO_PUBLIC_API_BASE_URL` (`https://dummyjson.com`).
+- [ ] Repo root `packages/core/src/apis/*`: change the endpoints and schemas to your API.
+- [ ] `.maestro/shared/_login.yaml` and `.maestro/flows/profile.yaml`: the test user and email. `.maestro/flows/home.yaml`: the `"Expo App using:"` text (it comes from `appName`).
+- [ ] `eas.json`: the `submit.production` values when you are ready to publish to the stores.
+
 ## 📦 Prerequisite
 
 - Java 17+ (as of Expo SDK 50)
