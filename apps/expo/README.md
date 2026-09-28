@@ -1,29 +1,5 @@
 # @workspace/expo
 
-## 🔧 Fixme
-
-- [ ] tsconfig `expo/tsconfig.base` not found
-- [ ] Can not open preview build on Android device & simulator. Maybe try to use only 1 route first.
-- [ ] `Error: Unable to parse color from object: {"dynamic":{"dark":"hsla(0, 0%, 100%, 1)","light":"hsla(0, 0%, 9%, 1)"}}`. Error occurs only on iOS simulator. Resolved by deleting `(authed)/(tabs)/_layout.tsx` and `useCheckAuth`, and use `Stack.Protected` instead. Happens again on 19 May 2025.
-- [x] `Invalid hook call. Hooks can only be called inside of the body of a function component. Call Stack - AppI18nProvider (apps/expo/src/core/providers/i18n/provider.tsx:49:43)`. Resolved by not preserving the original code in `metro.config.js`
-- [x] running `bun build:android:dev:local` successfully created a development build, but failed when running `bun dev` (`ERROR  Warning: TypeError: Cannot convert undefined value to object. Call Stack - CheckAuthWrapper (apps/expo/src/core/components/check-auth-wrapper.tsx:7:44)`). Resolved by not using `BaseSpinner` component, instead using `Spinner` component from `tamagui`
-- [x] `Unable to resolve "react" from "apps/expo/src/app/[...unmatched].tsx"`. Resolved by removing `node_modules` folder inside `apps/expo`
-
-## 🎯 Todo
-
-- [ ] consider using `@tanstack/react-form` instead of `react-hook-form`
-- [ ] Use `expo-secure-store` to store sensitive data in android keystore or ios keychain instead of encrypted `mmkv`
-- [ ] Use [Rozenite](https://www.rozenite.dev/) devtools for debugging
-- [ ] [EAS insights](https://docs.expo.dev/eas-insights/introduction/)
-- [ ] [EAS submit](https://docs.expo.dev/submit/introduction/)
-- [ ] [EAS metadata](https://docs.expo.dev/eas/metadata/)
-- [ ] [Expo Launch](https://expo.dev/blog/introducing-expo-launch) (check on the config from the examples app, it should have the correct config to be able to deploy app just by github url)
-- [ ] https://github.com/software-mansion/argent or https://github.com/callstack/agent-device
-- [ ] Expo v55
-- [ ] AGENTS.md
-- [ ] Otel for observability (embrace sdk)
-- [ ] https://github.com/appeeky/aso-skills
-
 ## 🏁 Getting Started
 
 When you start a new project from this template, change the placeholder values below. Paths are relative to `apps/expo`, unless they start with "repo root". Do the repo-level steps in the [root README](../../README.md#-getting-started) too.

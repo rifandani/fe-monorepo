@@ -1,13 +1,5 @@
 # @workspace/spa
 
-## 🔧 Fixme
-
-~
-
-## 🎯 Todo
-
-~
-
 ## 🏁 Getting Started
 
 When you start a new project from this template, change the placeholder values below. Paths are relative to `apps/spa`, unless they start with "repo root". Do the repo-level steps in the [root README](../../README.md#-getting-started) too.

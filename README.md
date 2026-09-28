@@ -2,11 +2,7 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rifandani/fe-monorepo)
 
-[![Mintlify Docs]](https://rifandani-fe-monorepo.mintlify.app)
-
-## 🎯 Todo
-
-~
+[![Mintlify Docs](https://img.shields.io/badge/mintlify-docs-green?logo=mintlify)](https://rifandani-fe-monorepo.mintlify.app)
 
 ## 🏁 Getting Started
 
