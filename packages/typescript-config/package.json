@@ -1,6 +1,6 @@
 {
   "name": "@workspace/typescript-config",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Shared TypeScript configuration for React Monorepo",
   "license": "MIT",
