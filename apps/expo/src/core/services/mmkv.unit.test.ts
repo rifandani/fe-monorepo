@@ -34,7 +34,10 @@ describe("appStorageId", () => {
 });
 
 describe("appStorage", () => {
-  it("constructs MMKV with the storage id and encryption key", () => {
+  it("constructs MMKV with the storage id and encryption key", async () => {
+    vi.resetModules();
+    MockMMKV.mockClear();
+    await import("./mmkv");
     expect(MockMMKV).toHaveBeenCalledWith({
       encryptionKey: "fe-monorepo/expo",
       id: "app-storage",

@@ -1,7 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { logger } from "./logger";
-
 const { mockCreateLogger, mockLoggerInstance } = vi.hoisted(() => {
   const loggerInstance = {
     debug: vi.fn(),
@@ -20,12 +18,14 @@ vi.mock("react-native-logs", () => ({
 }));
 
 describe("logger", () => {
-  it("is created via react-native-logs createLogger", () => {
+  it("is created via react-native-logs createLogger", async () => {
+    const { logger } = await import("./logger");
     expect(mockCreateLogger).toHaveBeenCalledOnce();
     expect(logger).toBe(mockLoggerInstance);
   });
 
-  it("exposes log methods from createLogger", () => {
+  it("exposes log methods from createLogger", async () => {
+    const { logger } = await import("./logger");
     logger.debug("d");
     logger.info("i");
     logger.warn("w");

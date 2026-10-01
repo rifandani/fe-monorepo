@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   METRICS_METER_WEB_VITALS,
@@ -19,6 +19,7 @@ const {
   getMeter,
   forceFlush,
   records,
+  resetHistogramIndex,
 } = vi.hoisted(() => {
   const webVitalsRecords = {
     lcp: vi.fn(),
@@ -50,6 +51,9 @@ const {
     getMeter: vi.fn(() => ({ createHistogram: mockCreateHistogram })),
     forceFlush: vi.fn(() => Promise.resolve()),
     records: webVitalsRecords,
+    resetHistogramIndex: () => {
+      i = 0;
+    },
   };
 });
 
@@ -91,7 +95,6 @@ const capture = (
   }
 };
 
-// `environment: "node"`, so the browser globals the module touches don't exist.
 interface DocumentStub {
   addEventListener: typeof capture;
   visibilityState: DocumentVisibilityState;
@@ -102,24 +105,42 @@ const documentStub: DocumentStub = {
   visibilityState: "visible",
 };
 
-/**
- * SAFETY: web-vitals' `Metric` is a per-metric discriminated union carrying
- * `entries` arrays of `PerformanceEntry`. The reporter under test reads only the
- * five fields below, so the fixtures supply those and the cast stands in for the
- * performance-timeline data no assertion here depends on.
- */
 const asMetric = (metric: {
   id: string;
   value: number;
   delta: number;
   navigationType: string;
   rating: string;
-}) => metric as never;
+}) =>
+  // SAFETY: the callback only reads fields present on this stub; `Metric` adds
+  // entries and attribution the test never supplies.
+  metric as never;
 
-vi.stubGlobal("document", documentStub);
-vi.stubGlobal("addEventListener", capture);
+const resetHarness = () => {
+  listeners.pagehide.length = 0;
+  listeners.visibilitychange.length = 0;
+  documentStub.visibilityState = "visible";
+  resetHistogramIndex();
+  getMeter.mockClear();
+  createHistogram.mockClear();
+  onLCP.mockClear();
+  onINP.mockClear();
+  onCLS.mockClear();
+  onFCP.mockClear();
+  onTTFB.mockClear();
+  forceFlush.mockClear();
+  for (const record of Object.values(records)) {
+    record.mockClear();
+  }
+  vi.stubGlobal("document", documentStub);
+  vi.stubGlobal("addEventListener", capture);
+  vi.resetModules();
+};
 
-const { reportWebVitals } = await import("./web-vitals");
+const loadModule = () => {
+  resetHarness();
+  return import("./web-vitals");
+};
 
 const fire = (type: HideEvent) => {
   for (const listener of listeners[type]) {
@@ -138,10 +159,6 @@ const show = () => {
 };
 
 describe("reportWebVitals", () => {
-  beforeAll(() => {
-    reportWebVitals();
-  });
-
   beforeEach(() => {
     forceFlush.mockClear();
     for (const record of Object.values(records)) {
@@ -149,7 +166,8 @@ describe("reportWebVitals", () => {
     }
   });
 
-  it("registers meters at import", () => {
+  it("registers meters at import", async () => {
+    await loadModule();
     expect(getMeter).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS);
     expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_LCP, {
       description: "Largest Contentful Paint",
@@ -176,7 +194,8 @@ describe("reportWebVitals", () => {
     );
   });
 
-  it("wires listeners once and is idempotent", () => {
+  it("wires listeners once and is idempotent", async () => {
+    const { reportWebVitals } = await loadModule();
     reportWebVitals();
 
     expect(onLCP).toHaveBeenCalledOnce();
@@ -184,12 +203,17 @@ describe("reportWebVitals", () => {
     expect(onCLS).toHaveBeenCalledOnce();
     expect(onFCP).toHaveBeenCalledOnce();
     expect(onTTFB).toHaveBeenCalledOnce();
-    // web-vitals finalizes CLS/INP/LCP on visibilitychange; pagehide is a backup
     expect(listeners.visibilitychange).toHaveLength(1);
     expect(listeners.pagehide).toHaveLength(1);
+
+    reportWebVitals();
+    expect(onLCP).toHaveBeenCalledOnce();
   });
 
-  it("records LCP/FCP/TTFB immediately with semconv attrs", () => {
+  it("records LCP/FCP/TTFB immediately with semconv attrs", async () => {
+    const { reportWebVitals } = await loadModule();
+    reportWebVitals();
+
     const metric = {
       id: "v1",
       value: 120,
@@ -210,12 +234,14 @@ describe("reportWebVitals", () => {
     expect(records.fcp).toHaveBeenCalledWith(120, attrs);
     expect(records.ttfb).toHaveBeenCalledWith(120, attrs);
 
-    // same id must not double-record
     onLCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, value: 200 }));
     expect(records.lcp).toHaveBeenCalledOnce();
   });
 
-  it("defers CLS/INP until the page hides and records the latest value once", () => {
+  it("defers CLS/INP until the page hides and records the latest value once", async () => {
+    const { reportWebVitals } = await loadModule();
+    reportWebVitals();
+
     const clsCb = onCLS.mock.calls[0]?.[0];
     const inpCb = onINP.mock.calls[0]?.[0];
 
@@ -250,7 +276,6 @@ describe("reportWebVitals", () => {
     expect(records.cls).not.toHaveBeenCalled();
     expect(records.inp).not.toHaveBeenCalled();
 
-    // a visibilitychange back to visible must not flush
     show();
     expect(records.cls).not.toHaveBeenCalled();
     expect(forceFlush).not.toHaveBeenCalled();
@@ -269,8 +294,6 @@ describe("reportWebVitals", () => {
     });
     expect(forceFlush).toHaveBeenCalledOnce();
 
-    // a CLS increase under an already-exported id is dropped: a histogram
-    // sample cannot be retracted, so the first hidden-time value wins
     clsCb?.(
       asMetric({
         id: "cls-1",
@@ -284,16 +307,21 @@ describe("reportWebVitals", () => {
     expect(records.cls).toHaveBeenCalledOnce();
   });
 
-  it("flushes the reader on hide even when nothing is pending", () => {
+  it("flushes the reader on hide even when nothing is pending", async () => {
+    const { reportWebVitals } = await loadModule();
+    reportWebVitals();
+
     hide();
 
     expect(records.cls).not.toHaveBeenCalled();
     expect(records.inp).not.toHaveBeenCalled();
-    // LCP/FCP/TTFB are recorded immediately but only leave on the reader tick
     expect(forceFlush).toHaveBeenCalledOnce();
   });
 
-  it("still flushes on pagehide as a backup", () => {
+  it("still flushes on pagehide as a backup", async () => {
+    const { reportWebVitals } = await loadModule();
+    reportWebVitals();
+
     const inpCb = onINP.mock.calls[0]?.[0];
 
     inpCb?.(

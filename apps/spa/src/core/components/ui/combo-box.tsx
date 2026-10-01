@@ -1,34 +1,34 @@
 'use client'
 
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { Button } from 'react-aria-components/Button'
+import { HiChevronUpDown } from "react-icons/hi2"
+import { Button } from "react-aria-components/Button"
 import type {
   ComboBoxProps as ComboBoxPrimitiveProps,
   ComboBoxValueProps,
-} from 'react-aria-components/ComboBox'
+} from "react-aria-components/ComboBox"
 import {
   ComboBox as ComboBoxPrimitive,
   ComboBoxContext,
   ComboBoxValue as ComboBoxValuePrimitive,
-} from 'react-aria-components/ComboBox'
-import type { InputProps } from 'react-aria-components/Input'
-import { ListBox, type ListBoxProps } from 'react-aria-components/ListBox'
-import type { PopoverProps } from 'react-aria-components/Popover'
-import { useSlottedContext } from 'react-aria-components/slots'
-import { fieldStyles } from '@/core/components/ui/field'
-import { Input } from '@/core/components/ui/input'
-import { cx } from '@/core/utils/primitive'
-import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from './dropdown'
-import { PopoverContent } from './popover'
+} from "react-aria-components/ComboBox"
+import type { InputProps } from "react-aria-components/Input"
+import { ListBox, type ListBoxProps } from "react-aria-components/ListBox"
+import type { PopoverProps } from "react-aria-components/Popover"
+import { useSlottedContext } from "react-aria-components/slots"
+import { fieldStyles } from "@/core/components/ui/field"
+import { Input } from "@/core/components/ui/input"
+import { cx } from "@/core/utils/primitive"
+import { DropdownDescription, DropdownItem, DropdownLabel, DropdownSection } from "./dropdown"
+import { PopoverContent } from "./popover"
 
-interface ComboBoxProps<T extends object, M extends 'single' | 'multiple' = 'single'> extends Omit<
+interface ComboBoxProps<T extends object, M extends "single" | "multiple" = "single"> extends Omit<
   ComboBoxPrimitiveProps<T, M>,
-  'children'
+  "children"
 > {
   children: React.ReactNode
 }
 
-const ComboBox = <T extends object, M extends 'single' | 'multiple' = 'single'>({
+const ComboBox = <T extends object, M extends "single" | "multiple" = "single">({
   className,
   ...props
 }: ComboBoxProps<T, M>) => {
@@ -38,8 +38,8 @@ const ComboBox = <T extends object, M extends 'single' | 'multiple' = 'single'>(
 }
 
 interface ComboBoxListProps<T extends object>
-  extends Omit<ListBoxProps<T>, 'layout' | 'orientation'>, Pick<PopoverProps, 'placement'> {
-  popover?: Omit<PopoverProps, 'children'>
+  extends Omit<ListBoxProps<T>, "layout" | "orientation">, Pick<PopoverProps, "placement"> {
+  popover?: Omit<PopoverProps, "children">
 }
 
 const ComboBoxContent = <T extends object>({
@@ -51,9 +51,9 @@ const ComboBoxContent = <T extends object>({
 }: ComboBoxListProps<T>) => {
   return (
     <PopoverContent
-      placement={popover?.placement ?? 'bottom'}
+      placement={popover?.placement ?? "bottom"}
       className={cx(
-        'min-w-(--trigger-width) overflow-hidden *:data-[slot=popover-inner]:overflow-hidden',
+        "min-w-(--trigger-width) overflow-hidden *:data-[slot=popover-inner]:overflow-hidden",
         popover?.className
       )}
       {...popover}
@@ -84,7 +84,7 @@ const ComboBoxInput = (props: InputProps) => {
       <Input {...props} placeholder={props?.placeholder} />
       <Button className="absolute end-0 top-0 grid h-full w-11 cursor-default place-content-center sm:w-9">
         {!context?.inputValue && (
-          <ChevronUpDownIcon data-slot="chevron" className="-me-1 size-5 text-muted-fg sm:size-4" />
+          <HiChevronUpDown data-slot="chevron" className="-me-1 size-5 text-muted-fg sm:size-4" />
         )}
       </Button>
     </span>

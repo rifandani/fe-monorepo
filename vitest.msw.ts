@@ -17,7 +17,7 @@ export const MOCK_API_BASE_URL = "https://api.test";
  *
  * Every test declares the requests it expects via `server.use()`, and anything
  * unhandled fails the run — `vitest.setup.ts` owns the lifecycle and passes
- * `onUnhandledRequest: "error"`. A single instance is not merely tidy here: the
+ * `onUnhandledFrame: "error"`. A single instance is not merely tidy here: the
  * root `vitest.config.ts` runs `pool: "threads"` with `isolate: false`, so files
  * in a worker share globals, and two `setupServer` instances would contend for the
  * same patched `fetch`/`http`/`XHR`.

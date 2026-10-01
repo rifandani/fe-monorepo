@@ -1,5 +1,5 @@
+import { cn } from "cn";
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
 
 import {
   Disclosure,
@@ -41,7 +41,7 @@ const CatalogNavItem = ({
 }) => (
   <li>
     <button
-      className={twMerge(
+      className={cn(
         "text-muted-fg hover:bg-secondary hover:text-fg w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
         isActive &&
           "bg-primary text-primary-fg hover:bg-primary hover:text-primary-fg font-medium"

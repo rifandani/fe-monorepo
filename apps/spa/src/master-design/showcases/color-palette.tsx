@@ -1,5 +1,5 @@
+import { cn } from "cn";
 import { useLayoutEffect, useRef, useState } from "react";
-import { twMerge } from "tailwind-merge";
 
 import { Variant, VariantGrid } from "../variant";
 
@@ -180,7 +180,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
   return (
     <div
       aria-label={name}
-      className={twMerge(
+      className={cn(
         "border-border flex h-16 min-w-24 items-center justify-center rounded-lg border px-1.5 font-mono text-[10px]",
         bg
       )}

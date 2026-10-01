@@ -1,5 +1,5 @@
-import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
+import { HiGlobeAlt } from "react-icons/hi2";
 import type { Selection } from "react-stately";
 import { match } from "ts-pattern";
 
@@ -18,7 +18,7 @@ export const LanguageToggle = () => {
   return (
     <Menu>
       <Button intent="plain">
-        <GlobeAltIcon className="size-6" />
+        <HiGlobeAlt className="size-6" />
         {match(locale)
           .with("en-us", () => "English")
           .with("id-id", () => "Indonesia")

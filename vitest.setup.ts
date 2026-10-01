@@ -48,6 +48,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.restoreAllMocks();
+  // Do not call `vi.restoreAllMocks()` here. With `pool: "threads"` and
+  // `isolate: false`, files in a worker share hoisted `vi.mock` state; restoring
+  // after one file clears call history module-init tests in another.
   vi.unstubAllEnvs();
 });
