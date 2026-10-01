@@ -173,7 +173,7 @@ const Navbar = ({
       >
         <div
           data-navbar="content"
-          className="mx-auto w-full max-w-(--breakpoint-2xl) items-center md:flex"
+          className="mx-auto w-full max-w-(--breakpoint-2xl) items-center md:flex md:gap-2.5"
         >
           {children}
         </div>
@@ -189,7 +189,7 @@ const NavbarSection = ({ className, ...props }: React.ComponentProps<"div">) => 
       <div
         data-slot="navbar-section"
         className={cn(
-          "col-span-full grid grid-cols-[auto_1fr] flex-col gap-3 gap-y-0.5 md:flex md:flex-none md:grid-cols-none md:flex-row md:items-center md:gap-2.5",
+          "col-span-full gap-y-0.5 max-md:grid max-md:grid-cols-[auto_1fr] max-md:flex-col max-md:gap-3 md:flex md:flex-none md:flex-row md:items-center md:gap-2.5",
           className
         )}
         {...props}
@@ -255,7 +255,16 @@ const NavbarSpacer = ({ className, ref, ...props }: React.ComponentProps<"div">)
 }
 
 const NavbarStart = ({ className, ref, ...props }: React.ComponentProps<"div">) => {
-  return <div ref={ref} className={cn("relative p-2 py-4 md:p-0.5", className)} {...props} />
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "relative p-2 py-4 md:px-(--navbar-gutter) md:py-[calc(var(--navbar-gutter)---spacing(0.5))]",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 const NavbarGap = ({ className, ref, ...props }: React.ComponentProps<"div">) => {
