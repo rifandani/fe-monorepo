@@ -17,7 +17,7 @@
     "utils": "@/core/utils",
     "ui": "@/core/components/ui"
   },
-  "iconLibrary": "@heroicons/react",
+  "iconLibrary": "react-icons",
   "registries": {
     "@intentui": "https://intentui.com/r/{name}"
   }

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { type ComponentProps, startTransition, useMemo } from 'react'
-import { Bar, BarChart as BarChartPrimitive } from 'recharts'
+import { type ComponentProps, startTransition, useMemo } from "react"
+import { Bar, BarChart as BarChartPrimitive } from "recharts"
 import {
   type BaseChartProps,
   CartesianGrid,
@@ -16,26 +16,26 @@ import {
   valueToPercent,
   XAxis,
   YAxis,
-} from './chart'
+} from "./chart"
 
 export interface BarChartProps extends BaseChartProps {
   barCategoryGap?: number
   barRadius?: number
   barGap?: number
   barSize?: number
+  cartesianGridProps?: ComponentProps<typeof CartesianGrid>
   barProps?: Partial<React.ComponentProps<typeof Bar>>
-
-  chartProps?: Omit<ComponentProps<typeof BarChartPrimitive>, 'data' | 'stackOffset'>
+  chartProps?: Omit<ComponentProps<typeof BarChartPrimitive>, "data" | "stackOffset">
 }
 
 export function BarChart({
   data = [],
   dataKey,
   colors = DEFAULT_COLORS,
-  type = 'default',
+  type = "default",
   config,
   children,
-  layout = 'horizontal',
+  layout = "horizontal",
 
   // Components
   tooltip = true,
@@ -44,7 +44,7 @@ export function BarChart({
   legend = true,
   legendProps,
 
-  intervalType = 'equidistantPreserveStart',
+  intervalType = "equidistantPreserveStart",
 
   barCategoryGap = 5,
   barGap,
@@ -64,6 +64,7 @@ export function BarChart({
   hideYAxis = false,
 
   hideGridLines = false,
+  cartesianGridProps,
   chartProps,
 
   ...props
@@ -76,7 +77,7 @@ export function BarChart({
 
   const configEntries = useMemo(() => Object.entries(config), [config])
 
-  const stacked = type === 'stacked' || type === 'percent'
+  const stacked = type === "stacked" || type === "percent"
   const defaultBarRadius = stacked ? undefined : 4
 
   return (
@@ -93,14 +94,14 @@ export function BarChart({
             right: 0,
             top: 5,
           }}
-          layout={layout === 'radial' ? 'horizontal' : layout}
+          layout={layout === "radial" ? "horizontal" : layout}
           barGap={barGap}
           barSize={barSize}
           barCategoryGap={barCategoryGap}
-          stackOffset={type === 'percent' ? 'expand' : stacked ? 'sign' : undefined}
+          stackOffset={type === "percent" ? "expand" : stacked ? "sign" : undefined}
           {...chartProps}
         >
-          {!hideGridLines && <CartesianGrid strokeDasharray="4 4" />}
+          {!hideGridLines && <CartesianGrid strokeDasharray="4 4" {...cartesianGridProps} />}
           <XAxis
             hide={hideXAxis}
             className="**:[text]:fill-muted-fg"
@@ -111,13 +112,13 @@ export function BarChart({
           <YAxis
             hide={hideYAxis}
             className="**:[text]:fill-muted-fg"
-            tickFormatter={type === 'percent' ? valueToPercent : valueFormatter}
+            tickFormatter={type === "percent" ? valueToPercent : valueFormatter}
             {...yAxisProps}
           />
 
           {legend && (
             <ChartLegend
-              content={typeof legend === 'boolean' ? <ChartLegendContent /> : legend}
+              content={typeof legend === "boolean" ? <ChartLegendContent /> : legend}
               {...legendProps}
             />
           )}
@@ -125,7 +126,7 @@ export function BarChart({
           {tooltip && (
             <ChartTooltip
               content={
-                typeof tooltip === 'boolean' ? <ChartTooltipContent accessibilityLayer /> : tooltip
+                typeof tooltip === "boolean" ? <ChartTooltipContent accessibilityLayer /> : tooltip
               }
               {...tooltipProps}
             />
@@ -144,7 +145,7 @@ export function BarChart({
                     dataKey={category}
                     stroke={color}
                     strokeWidth={1}
-                    stackId={stacked ? 'stack' : undefined}
+                    stackId={stacked ? "stack" : undefined}
                     onClick={(_item, _number, event) => {
                       event.stopPropagation()
 

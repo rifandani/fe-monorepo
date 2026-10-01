@@ -1,7 +1,7 @@
-import { ArrowPathIcon } from "@heroicons/react/16/solid";
+import { twJoin } from "cn";
 import { useState } from "react";
 import { SwitchButton, SwitchField } from "react-aria-components/Switch";
-import { twJoin } from "tailwind-merge";
+import { HiArrowPath } from "react-icons/hi2";
 
 import { Button } from "@/core/components/ui/button";
 import { isFeatureEnabled } from "@/core/feature-flags/is-enabled";
@@ -114,7 +114,7 @@ const OverrideResetButton = ({
         });
       }}
     >
-      <ArrowPathIcon className="size-3" />
+      <HiArrowPath className="size-3" />
     </Button>
   );
 };

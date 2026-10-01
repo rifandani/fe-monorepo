@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Key, Selection } from 'react-aria-components/TagGroup'
-import type { TextFieldProps } from 'react-aria-components/TextField'
-import { twMerge } from 'tailwind-merge'
-import { FieldError } from '@/core/components/ui/field'
-import { Tag, TagGroup, TagList } from '@/core/components/ui/tag-group'
-import { TextField } from '@/core/components/ui/text-field'
+import { useEffect, useMemo, useRef, useState } from "react"
+import type { Key, Selection } from "react-aria-components/TagGroup"
+import type { TextFieldProps } from "react-aria-components/TextField"
+import { cn } from "cn"
+import { FieldError } from "@/core/components/ui/field"
+import { Tag, TagGroup, TagList } from "@/core/components/ui/tag-group"
+import { TextField } from "@/core/components/ui/text-field"
 
 const splitPatternRegex = /[,;]/
 const whitespaceRegex = /\s{2,}/g
@@ -14,7 +14,7 @@ const tabRegex = /[\t\r\n]|\\t|\\r|\\n/g
 
 interface TagInputProps extends Pick<
   TextFieldProps,
-  'isDisabled' | 'isReadOnly' | 'children' | 'aria-label' | 'aria-labelledby'
+  "isDisabled" | "isReadOnly" | "children" | "aria-label" | "aria-labelledby"
 > {
   value?: Selection
   onChange?: (next: Selection) => void
@@ -38,12 +38,12 @@ export function TagField({
   onInputValueChange,
   isRequired,
   requiredMessage,
-  name = 'tags',
+  name = "tags",
   children,
   ...props
 }: TagInputProps) {
   const [internalSelection, setInternalSelection] = useState<Selection>(new Set(defaultValue))
-  const [uncontrolledInput, setUncontrolledInput] = useState('')
+  const [uncontrolledInput, setUncontrolledInput] = useState("")
   const [touched, setTouched] = useState(false)
   const hiddenRef = useRef<HTMLInputElement>(null)
 
@@ -53,11 +53,11 @@ export function TagField({
   const applySelection = (next: Selection) => (onChange ?? setInternalSelection)(next as Selection)
 
   const list = useMemo(() => {
-    return selection === 'all' ? [] : Array.from(selection).map((v) => String(v))
+    return selection === "all" ? [] : Array.from(selection).map((v) => String(v))
   }, [selection])
 
   const isInvalid = Boolean(isRequired && list.length === 0 && touched)
-  const errorText = requiredMessage ?? 'At least one item is required'
+  const errorText = requiredMessage ?? "At least one item is required"
 
   useEffect(() => {
     const input = hiddenRef.current
@@ -70,43 +70,43 @@ export function TagField({
         input.setCustomValidity(errorText)
         form.reportValidity()
       } else {
-        input.setCustomValidity('')
+        input.setCustomValidity("")
       }
     }
-    form.addEventListener('submit', onSubmit)
-    return () => form.removeEventListener('submit', onSubmit)
+    form.addEventListener("submit", onSubmit)
+    return () => form.removeEventListener("submit", onSubmit)
   }, [isRequired, list.length, errorText])
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
+    if (e.key === "Enter" || e.key === "," || e.key === ";") {
       e.preventDefault()
       addTag()
     }
   }
 
   function addTag() {
-    if (selection === 'all') return
+    if (selection === "all") return
     const next = new Set<Key>(Array.from(selection))
     inputValue.split(splitPattern).forEach((raw) => {
       const formatted = raw
         .trim()
-        .replace(whitespaceRegex, ' ')
-        .replace(tabRegex, '')
-      if (formatted === '') return
+        .replace(whitespaceRegex, " ")
+        .replace(tabRegex, "")
+      if (formatted === "") return
       const exists = Array.from(next).some(
         (id) => String(id).toLocaleLowerCase() === formatted.toLocaleLowerCase()
       )
       if (!exists) next.add(formatted)
     })
     applySelection(next)
-    setInputValue('')
+    setInputValue("")
     setTouched(true)
   }
 
   function removeKeys(keys: Selection) {
-    if (selection === 'all') return
+    if (selection === "all") return
     const next = new Set<Key>(Array.from(selection))
-    if (keys !== 'all') {
+    if (keys !== "all") {
       for (const k of keys) next.delete(k)
     }
     applySelection(next)
@@ -114,7 +114,7 @@ export function TagField({
   }
 
   return (
-    <div className={twMerge('flex flex-col gap-y-1', className)}>
+    <div className={cn("flex flex-col gap-y-1", className)}>
       <TextField
         value={inputValue}
         onChange={setInputValue}
@@ -125,7 +125,7 @@ export function TagField({
       >
         {(values) => (
           <>
-            {typeof children === 'function' ? children(values) : children}
+            {typeof children === "function" ? children(values) : children}
             <FieldError>{isInvalid ? errorText : undefined}</FieldError>
           </>
         )}
@@ -149,12 +149,12 @@ export function TagField({
       <input
         ref={hiddenRef}
         name={name}
-        value={list.join(',')}
+        value={list.join(",")}
         required={Boolean(isRequired)}
         readOnly
         aria-hidden="true"
         tabIndex={-1}
-        className="sr-only absolute -z-10 size-0 opacity-0"
+        className="sr-only absolute -z-10 h-0 w-0 opacity-0"
       />
     </div>
   )

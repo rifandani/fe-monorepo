@@ -1,9 +1,5 @@
-import {
-  ComputerDesktopIcon,
-  MoonIcon,
-  SunIcon,
-} from "@heroicons/react/24/outline";
 import { useLocalStorage } from "@reactuses/core";
+import { HiComputerDesktop, HiMoon, HiSun } from "react-icons/hi2";
 import type { Selection } from "react-stately";
 import { match } from "ts-pattern";
 
@@ -30,11 +26,11 @@ export const ThemeToggle = () => {
     <Menu>
       <Button intent="outline">
         {match(theme)
-          .with("auto", () => <ComputerDesktopIcon className="size-6" />)
-          .with("light", () => <SunIcon className="size-6" />)
-          .with("dark", () => <MoonIcon className="size-6" />)
+          .with("auto", () => <HiComputerDesktop className="size-6" />)
+          .with("light", () => <HiSun className="size-6" />)
+          .with("dark", () => <HiMoon className="size-6" />)
           .otherwise(() => (
-            <ComputerDesktopIcon className="size-6" />
+            <HiComputerDesktop className="size-6" />
           ))}
       </Button>
 

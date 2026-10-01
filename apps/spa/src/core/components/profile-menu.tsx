@@ -1,9 +1,9 @@
-import {
-  ArrowRightStartOnRectangleIcon,
-  Cog6ToothIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
 import { useNavigate } from "@tanstack/react-router";
+import {
+  HiArrowRightStartOnRectangle,
+  HiCog6Tooth,
+  HiUser,
+} from "react-icons/hi2";
 
 import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
 import { endSession } from "@/auth/utils/end-session";
@@ -45,11 +45,11 @@ export const ProfileMenu = () => {
           <MenuHeader separator>{t("account")}</MenuHeader>
 
           <MenuItem id="profile" className="mt-1 gap-x-2">
-            <UserIcon className="size-6" />
+            <HiUser className="size-6" />
             <span>{t("profile")}</span>
           </MenuItem>
           <MenuItem id="settings" className="gap-x-2">
-            <Cog6ToothIcon className="size-6" />
+            <HiCog6Tooth className="size-6" />
             <span>{t("settings")}</span>
           </MenuItem>
         </MenuSection>
@@ -58,7 +58,7 @@ export const ProfileMenu = () => {
 
         <MenuSection>
           <MenuItem id="logout" className="gap-x-2">
-            <ArrowRightStartOnRectangleIcon className="size-6" />
+            <HiArrowRightStartOnRectangle className="size-6" />
             <p>{t("logout")}</p>
           </MenuItem>
         </MenuSection>

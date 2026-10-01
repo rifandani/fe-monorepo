@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import { ChevronRightIcon } from '@heroicons/react/20/solid'
-import { createContext, use } from 'react'
-import type { BreadcrumbProps, BreadcrumbsProps } from 'react-aria-components/Breadcrumbs'
-import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from 'react-aria-components/Breadcrumbs'
-import type { LinkProps } from 'react-aria-components/Link'
-import { twJoin, twMerge } from 'tailwind-merge'
-import { cx } from '@/core/utils/primitive'
-import { Link } from './link'
+import { HiChevronRight } from "react-icons/hi2"
+import { createContext, use } from "react"
+import type { BreadcrumbProps, BreadcrumbsProps } from "react-aria-components/Breadcrumbs"
+import { Breadcrumb, Breadcrumbs as BreadcrumbsPrimitive } from "react-aria-components/Breadcrumbs"
+import type { LinkProps } from "react-aria-components/Link"
+import { cn } from "cn"
+import { cx } from "@/core/utils/primitive"
+import { Link } from "./link"
 
-type BreadcrumbsContextProps = { separator?: 'chevron' | 'slash' | boolean }
+type BreadcrumbsContextProps = { separator?: "chevron" | "slash" | boolean }
 const BreadcrumbsProvider = createContext<BreadcrumbsContextProps>({
-  separator: 'chevron',
+  separator: "chevron",
 })
 
 const Breadcrumbs = <T extends object>({
@@ -20,7 +20,7 @@ const Breadcrumbs = <T extends object>({
 }: BreadcrumbsProps<T> & BreadcrumbsContextProps) => {
   return (
     <BreadcrumbsProvider value={{ separator: props.separator }}>
-      <BreadcrumbsPrimitive {...props} className={twMerge('flex items-center gap-2', className)} />
+      <BreadcrumbsPrimitive {...props} className={cn("flex items-center gap-2", className)} />
     </BreadcrumbsProvider>
   )
 }
@@ -31,25 +31,21 @@ const BreadcrumbsItem = ({
   separator = true,
   className,
   ...props
-}: BreadcrumbsItemProps & Partial<Omit<LinkProps, 'className'>>) => {
+}: BreadcrumbsItemProps & Partial<Omit<LinkProps, "className">>) => {
   const { separator: contextSeparator } = use(BreadcrumbsProvider)
   separator = contextSeparator ?? separator
-  const separatorValue = separator === true ? 'chevron' : separator
+  const separatorValue = separator === true ? "chevron" : separator
 
   return (
     <Breadcrumb
-      className={cx('flex items-center gap-2 text-sm', className)}
+      className={cx("flex items-center gap-2 text-sm", className)}
       data-slot="breadcrumb-item"
       {...props}
     >
       {({ isCurrent }) => (
         <>
           <Link
-            className={twJoin(
-              'has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2',
-              '*:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4',
-              '*:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg'
-            )}
+            className="has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4 *:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg"
             {...props}
           />
           {!isCurrent && separator !== false && <Separator separator={separatorValue} />}
@@ -60,14 +56,14 @@ const BreadcrumbsItem = ({
 }
 
 const Separator = ({
-  separator = 'chevron',
+  separator = "chevron",
 }: {
-  separator?: BreadcrumbsItemProps['separator']
+  separator?: BreadcrumbsItemProps["separator"]
 }) => {
   return (
     <span className="*:shrink-0 *:text-muted-fg *:data-[slot=icon]:size-3.5">
-      {separator === 'chevron' && <ChevronRightIcon />}
-      {separator === 'slash' && <span className="text-muted-fg">/</span>}
+      {separator === "chevron" && <HiChevronRight />}
+      {separator === "slash" && <span className="text-muted-fg">/</span>}
     </span>
   )
 }

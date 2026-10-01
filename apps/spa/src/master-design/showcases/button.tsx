@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "@heroicons/react/16/solid";
+import { HiArrowRight } from "react-icons/hi2";
 
 import { Button } from "@/core/components/ui/button";
 
@@ -38,7 +38,7 @@ export const ButtonShowcase = () => (
       <Variant label="with icon">
         <Button>
           Continue
-          <ArrowRightIcon />
+          <HiArrowRight />
         </Button>
       </Variant>
       <Variant label="isCircle">

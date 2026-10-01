@@ -22,6 +22,7 @@ Apply every rule below to every touched spa UI file (and toast/globals where nam
 - Merge new toast/Toaster props into `apps/spa/src/core/providers/toast/context.tsx`; delete generated `apps/spa/src/core/components/ui/toast.tsx` if present.
 - Import `react-stately` (not `@react-stately/color`).
 - Import `react-aria` (not `@react-aria/i18n`).
+- Import icons from `react-icons/hi2` (not `@heroicons/react`); map Heroicon names to `Hi*` exports to match already-adapted UI files.
 - Rewrite `@/hooks/use-mobile` → `@/core/hooks/use-mobile`.
 - Rewrite `@/hooks/use-clipboard` → `@/core/hooks/use-clipboard`.
 - Copy chart `className` tokens from `chart.tsx` into `apps/spa/src/core/styles/globals.css`.

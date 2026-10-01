@@ -1,9 +1,9 @@
 import { useLocalStorage } from "@reactuses/core";
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
+import { twJoin } from "cn";
 import { createContext } from "react";
 import type { ComponentPropsWithoutRef, CSSProperties } from "react";
 import type { Toaster } from "sonner";
-import { twJoin } from "tailwind-merge";
 
 import type { ColorMode } from "@/core/constants/global";
 import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
