@@ -446,7 +446,7 @@ Creates `.fallowrc.json` with mapped settings:
   hidden, but matching files remain in the module graph; leading `!` exceptions
   are preserved; multi-source findings stay visible unless every source owner
   matches)
-- knip `ignoreDependencies` → fallow `ignoreDependencies`
+- knip `ignoreDependencies` → fallow `ignoreDependencies` (a regex such as `@org/.+` becomes the glob `@org/*` when the glob matches the same packages; other regexes are skipped with a warning)
 - knip `ignoreExportsUsedInFile` → fallow `ignoreExportsUsedInFile` (boolean and `{ type, interface }` object form both supported; fallow groups type aliases and interfaces under one issue, so the two type-kind fields behave identically)
 - Unmappable fields generate warnings with suggestions
 
@@ -645,7 +645,7 @@ Focus on findings that are BOTH dead code and duplicated:
 
 ## Custom Plugin Setup
 
-For frameworks not covered by the 123 built-in plugins.
+For frameworks not covered by the current built-in registry from `fallow schema.plugins`.
 
 ### Option 1: Inline framework config
 
@@ -717,7 +717,7 @@ fallow dead-code --format sarif --quiet > fallow.sarif
 fallow dead-code --ci > fallow.sarif
 ```
 
-The `--ci` flag is equivalent to `--format sarif --fail-on-issues --quiet`. Note: `--fail-on-issues` means exit code 1 if issues exist, in CI scripts use `continue-on-error: true` or `|| true` to ensure the SARIF upload step still runs.
+The `--ci` flag is equivalent to `--format sarif --fail-on-issues --quiet`. Exit code 1 means findings exist. Capture that status, let the SARIF upload step run, then reapply the captured status in a final gate step. Do not discard every outcome, because validation and execution failures need to remain distinguishable from findings.
 
 ---
 
@@ -780,9 +780,9 @@ Manual files:
 Prefer `fallow hooks install --target agent` to install this file. The script is written and maintained by fallow itself; the canonical source is [`crates/cli/src/setup_hooks/fallow-gate.sh`](https://github.com/fallow-rs/fallow/blob/main/crates/cli/src/setup_hooks/fallow-gate.sh).
 
 Behavior you can rely on:
-- Runs only when the intercepted command matches `git commit` or `git push`; otherwise exits 0.
+- Runs only when the intercepted command is a `git commit` or `git push`, including invocations that pass git-level options before the subcommand (`git -c user.name=x commit`, `git --no-pager commit`, `git -C dir push`, `git --git-dir=/x push`); anything else exits 0. Set `FALLOW_GATE_DEBUG=1` to log skipped commands to stderr.
 - Resolves `fallow` from PATH first, then `npx --no-install fallow` as a fallback. Skips with a stderr notice if neither is available or if `jq` is missing.
-- Enforces a version floor via `FALLOW_GATE_MIN_VERSION` (default `2.85.0`). Binaries below the floor are blocked with an upgrade hint. Set the env var to the empty string to disable the check.
+- Enforces a version floor via `FALLOW_GATE_MIN_VERSION`. The installed gate script holds the default floor (currently `2.85.0`). Fallow maintainers raise that default by hand; `fallow hooks install` does not set it to the installed version. Binaries below the floor are blocked with an upgrade hint. Set the env var to the empty string to disable the check.
 - Runs `fallow audit --format json --quiet --explain --gate-marker agent` and, on verdict=`fail`, writes the full JSON envelope to stderr preceded by `fallow-gate: blocked by fallow <version> at <binary>` so the responsible binary is always identifiable. The gate marker lets local Impact record blocked-then-cleared agent gate events when Impact is enabled.
 - On runtime error (`{"error": true, ...}`) or unexpected non-zero exit, fails open with a one-line stderr notice; warn verdicts pass through silently.
 

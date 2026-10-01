@@ -23,7 +23,7 @@ Always preview with `--dry-run` before applying. This is a destructive operation
 
 ## Don't Create Config Unless Needed
 
-Fallow works with zero configuration for most projects thanks to 123 auto-detecting framework plugins. Creating an unnecessary config file can mask issues or override detection behavior.
+Fallow works with zero configuration for most projects thanks to auto-detecting framework plugins. Read `fallow schema.plugins` for the current registry. Creating an unnecessary config file can mask issues or override detection behavior.
 
 ```bash
 # WRONG: creating config for a standard Next.js project
@@ -237,6 +237,10 @@ fallow dupes --format json --quiet --mode semantic
 
 `semantic` mode produces the most findings but may include false positives where similar structure is coincidental.
 
+Use `--near` separately when you want function-level clones with small inserted,
+removed, or changed regions. Exact detection still follows `--mode`; near
+detection uses semantic shingles and reports a `similarity` value.
+
 ---
 
 ## Workspace Flag Scopes Output, Not Analysis
@@ -333,7 +337,7 @@ If you use utility decorators that DO NOT imply reflective use (Playwright's `@s
 
 Conservative semantics: a method carrying any decorator NOT in the list still gets skipped. So `@step` + `@Inject` on the same method stays treated as framework-managed. Matching rule: entries containing `.` (`"decorators.log"`) match the full dotted path; bare entries (`"step"` or `"decorators"`) match the leftmost segment, so a single bare `"decorators"` entry collapses an entire `@decorators.*` namespace. Both `"@step"` and `"step"` round-trip equivalently. Unmatched entries (a decorator name in the config that never appears in your codebase) surface as a one-time warning at end of run.
 
-The default empty list preserves today's skip-all behavior, so existing NestJS / Angular / TypeORM projects see no change.
+With the default empty list every decorated method is treated as framework-managed, which is what NestJS, Angular, and TypeORM projects need.
 
 ### Angular `@Input()` / `@Output()` are still covered by the component rules
 
@@ -436,6 +440,30 @@ Fallow treats `Config` and `Result` in `./types.ts` as used. Works with `@param`
 
 ---
 
+## Command File Arguments Are Entry Points
+
+A file that a command names in a `package.json` script, a CI file (GitHub Actions, GitLab CI), a Dockerfile, a Procfile, or `fly.toml` becomes an entry point: `node scripts/seed.ts` keeps `scripts/seed.ts` and its imports reachable.
+
+Formatters, linters, and checkers are the exception. They read their file arguments but do not run them, so `eslint src/a.ts`, `prettier --check "**/*.ts"`, `oxlint src/`, `biome check`, `stylelint`, `textlint`, and similar tools make no entry points. This applies to the common package-manager and wrapper forms (`npx`, `pnpm exec`, `pnpm --filter web exec`, `pnpm -r exec`, `yarn run`, `cross-env`, `dotenv -e .env --`, `varlock run --`), and to a call of a script that runs the tool (`npm run lint -- src/a.ts`, `npm run lint src/a.ts`, `yarn lint src/a.ts`). The tool stays a used dependency, its `--config` file stays tracked, and a module that it loads through a flag (`eslint -f ./fmt.js`, `prettier --plugin=./plugin.mjs`) stays reachable.
+
+A command in a workspace package that the command selects resolves its file arguments against the directory of that package. `yarn workspace web node scripts/a.ts`, `pnpm --filter web exec tsx scripts/a.ts`, `npm exec -w web -- tsx scripts/a.ts`, and a call of a script of that package (`npm run -w web gen -- scripts/a.ts`) make `scripts/a.ts` of the `web` package an entry point. A pnpm filter can be a name, a name glob (`'@acme/*'`), a directory (`./packages/*`, `{packages/web}`), or an exclusion (`'!web'`). A selection of several packages resolves the file in each package where the file exists. This includes every package: `pnpm -r exec tsx scripts/a.ts`, `yarn workspaces foreach -A exec tsx scripts/a.ts` (narrowed by `--include` and `--exclude`), `yarn workspaces run gen scripts/a.ts`, and `npm --workspaces run gen -- scripts/a.ts`. `yarn workspaces foreach -A` also runs in the root package, as yarn berry does, and its `--include` and `--exclude` match a workspace name or directory (`.` is the root). `pnpm -w` also selects the root package. `--include-workspace-root` adds the root package: in pnpm to `-r` and to a filter that only excludes packages (`--filter '!web'`), and in npm to every workspace selection (`-w web`, `--workspaces`). Without it, `pnpm -r`, `yarn workspaces run`, and `npm --workspaces` leave out the root package. From a workspace package, `npm --workspaces` selects only that package. A `start` script that calls a script in selected packages (`pnpm -r run serve`, `pnpm -C packages/web run serve`) makes that script a runtime script of each package. A script call in the directory of a workspace package (`pnpm -C packages/web run gen scripts/a.ts`, `npm --prefix packages/web run gen -- scripts/a.ts`, `yarn --cwd packages/web gen scripts/a.ts`) runs the script of that package with the forwarded arguments. The formatter and linter rule above still applies in each selected package.
+
+A command that runs in workspace packages that Fallow cannot resolve makes no entry points, because those packages resolve the paths against their own directories. This covers the pnpm dependency and changed-package filters (`web...`, `[origin/main]`), the other `yarn workspaces foreach` selections (`--since`, `--recursive`, `--from`, `--worktree`, `--no-private`), and task runners (`turbo run lint -- src/a.ts`, `nx`, `lerna`). The binary stays a used dependency. A command in another directory (`pnpm -C docs exec tsx scripts/a.ts`, `npm --prefix`, `yarn --cwd`) resolves its file arguments against that directory. `yarn node <file>` runs the file with Node.js, also after `yarn --cwd <dir>` and `yarn workspace <name>`.
+
+A declared script with the name of a tool runs instead of the tool. With `"eslint": "node tools/check.js"`, `yarn eslint src/a.ts` keeps `src/a.ts` as an entry point.
+
+For another command whose file arguments are data, list it in `ignoreCommandEntries`:
+
+```jsonc
+{
+  "ignoreCommandEntries": ["my-codegen"]
+}
+```
+
+`["*"]` turns off entry points from all commands, including modules that a linter loads through a flag (`eslint -f ./fmt.js`); declare the real entries in `entry` instead.
+
+---
+
 ## JSX `<script src>` and `<link href>` Are Asset References
 
 Inside JSX/TSX files, lowercase intrinsic `<script src="...">` and `<link rel="stylesheet|modulepreload" href="...">` are tracked as asset references, same as in plain HTML files. This is needed for SSR frameworks like Hono where layout components emit HTML via JSX.
@@ -486,7 +514,7 @@ The detector intentionally abstains when a Tailwind plugin or published CSS surf
 
 The same Tailwind v4 projects also get `css_analytics.token_consumers`, the reverse index: per `@theme` token, where it is consumed (a `consumer_count` plus a located `consumers[]` sample tagged `theme-var` / `css-var` / `utility` / `apply`), so you can read a token's blast radius before changing it. Treat `consumer_count` as a static lower bound: a computed class name such as `bg-${color}` is invisible to the scan, so a `0` here is the same "nothing fallow can see consumes this" population as `unused_theme_tokens`, not a deletion proof. `token_consumers` is descriptive context with no `actions[]`; drive any deletion off `unused_theme_tokens` and its verification command.
 
-`token_consumers` also covers CSS-in-JS token DEFINITIONS (StyleX `defineVars`, vanilla-extract `createTheme` / `createThemeContract` / `createGlobalTheme`, and PandaCSS `defineTokens`), disambiguated by the consumer `kind`: StyleX and vanilla-extract entries use `kind` `js-member`, `token` is the binding-qualified dotted access path (`vars.color.primary`), and `namespace` is the defining binding (`vars`); PandaCSS entries use the defining binding plus token path (`tokens.colors.brand`) and `token(...)` consumers are tagged `js-call`. The cross-file scan uses fallow's shared import resolver, so relative imports, tsconfig `paths` aliases, and workspace package imports can resolve to the token definition. Dynamic import strings, unresolved aliases, generated package state, and computed token access still keep `consumer_count` a lower bound, and unlike Tailwind there is no corroborating dead-token finding, so a CSS-in-JS `consumer_count` of `0` is a weaker signal. Gated on a declared CSS-in-JS library (`@stylexjs/stylex`, `@vanilla-extract/css`, or `@pandacss/dev`).
+`token_consumers` also covers CSS-in-JS token DEFINITIONS (StyleX `defineVars` / `unstable_defineVarsNested`, vanilla-extract `createTheme` / `createThemeContract` / `createGlobalTheme`, and PandaCSS `defineTokens`). Member reads use `kind` `js-member`; StyleX `createTheme` / `unstable_createThemeNested` calls apply the complete resolved variable group and use `kind` `js-call`, including partial overrides and empty reset themes. `token` is the binding-qualified dotted access path (`vars.color.primary`) and `namespace` is the defining binding (`vars`). PandaCSS entries use the defining binding plus token path (`tokens.colors.brand`) and `token(...)` consumers are also tagged `js-call`. The cross-file scan uses fallow's shared import resolver, so direct named token-contract imports through relative paths, tsconfig `paths` aliases, and workspace packages can resolve to the token definition. Same-file StyleX reads are included. Dynamic import strings, unresolved aliases, generated package state, dynamic computed token access, and dynamic token-object structure still keep `consumer_count` a lower bound, and unlike Tailwind there is no corroborating dead-token finding, so a CSS-in-JS `consumer_count` of `0` is a weaker signal. Detection is gated on imports in the analyzed source files, including workspace packages whose root manifest does not declare the styling library. StyleX's built-in `@stylexjs/stylex` and `stylex` sources are recognized, with named aliases plus namespace/default imports supported for calls to the StyleX API itself. Barrel re-exports and default or namespace imports of token contracts conservatively abstain. Compiler-configured `importSources`, custom package aliases, CommonJS, and `stylex.env`-backed token structures are outside the current support boundary.
 
 ## CSS Health Candidates Are Advisory
 
@@ -630,14 +658,14 @@ Both require a `GITLAB_TOKEN` CI/CD variable (project access token with `api` sc
 `fallow license refresh` and `fallow license activate --trial` can fail with a backend error. The CLI always appends the raw HTTP status and the backend error code after the human hint, so scripts can grep for the code without parsing prose:
 
 ```
-fallow license refresh: your stored license is too stale to refresh. Reactivate with: fallow license activate --trial --email <addr> (HTTP 401, code token_stale)
+fallow license refresh: your stored license is too stale to refresh: set FALLOW_API_KEY to a full-access key and run `fallow license refresh` again (generate one at https://fallow.cloud/settings#api-keys) (HTTP 401, code token_stale)
 ```
 
 Stable codes the CLI surfaces today:
 
 | Code | Operation | Meaning |
 |------|-----------|---------|
-| `token_stale` | `refresh` | Stored JWT is more than 45 days past its `exp`. Reactivate. |
+| `token_stale` | `refresh` | Stored JWT is more than 45 days past its `exp`. Surfaced only when no full-access API key was available to retry with. |
 | `invalid_token` | `refresh` | Stored JWT is missing required claims (e.g. `sub`). Reactivate. |
 | `unauthorized` | `refresh` or `trial` | Auth failed. Reactivate. |
 | `rate_limit_exceeded` | `trial` | Trial endpoint is capped at 5 per hour per IP. Wait or use a different network. |

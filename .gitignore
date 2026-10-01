@@ -35,6 +35,8 @@ dist
 dist-ssr
 *.local
 *.pem
+.npm-cache
+.tmp-skills
 
 # debug
 npm-debug.log*

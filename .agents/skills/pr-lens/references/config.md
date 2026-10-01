@@ -3,7 +3,7 @@
 The generated document is regenerated on every run, so editing it is pointless. Corrections live in `.github/pr-lens.yml`, an overlay applied over fresh inference every time. Inference never writes back into this file, which is why a correction keeps holding as the code moves.
 
 ```yaml
-schemaVersion: 0.1.0          # required
+schemaVersion: 0.2.0          # required
 lenses: [architecture, data-flow]
 branding: true
 map:
@@ -80,6 +80,16 @@ map:
 ```yaml
 lenses: [architecture]
 ```
+
+## Hosted GitHub App comments
+
+The hosted App reads `github` settings from the PR's head commit. Other options apply to the CLI.
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| `github.comment.collapsed` | `false` | Start diagrams and details closed. Drawing still runs automatically. |
+| `github.draw` | `auto` | `on-demand` leaves a pull request undrawn, with a short notice, until someone comments `@pr-lens draw`. |
+| `github.comment.notice` | `true` | `false` drops that notice, so an on-demand repository hears nothing until someone asks. |
 
 ## Check it
 
