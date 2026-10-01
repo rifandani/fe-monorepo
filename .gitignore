@@ -20,6 +20,7 @@ out
 stats.html
 .react-router
 .tanstack
+.vitest
 
 # misc
 .DS_Store

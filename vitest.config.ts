@@ -2,6 +2,9 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    // Vitest 5 clears mock history before each test by default.
+    // Several unit files assert side effects from module init or `beforeAll` (MSW, web-vitals, expo composition roots).
+    clearMocks: false,
     pool: "threads",
     isolate: false,
     fileParallelism: true,

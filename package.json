@@ -53,23 +53,23 @@
     "expo:test:unit": "vitest run --project expo"
   },
   "devDependencies": {
-    "@changesets/cli": "3.0.0",
-    "@chenglou/freerange": "0.0.4",
+    "@changesets/cli": "3.0.3",
+    "@chenglou/freerange": "0.0.5",
     "@stryker-mutator/core": "10.0.0",
     "@stryker-mutator/vitest-runner": "10.0.0",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "5.0.3",
     "@workspace/typescript-config": "workspace:*",
-    "fallow": "3.20.0",
+    "fallow": "3.31.0",
     "husky": "9.1.7",
-    "msw": "2.15.0",
-    "oxfmt": "0.64.0",
-    "oxlint": "1.79.0",
-    "oxlint-plugin-react-doctor": "0.9.12",
+    "msw": "3.0.1",
+    "oxfmt": "0.71.0",
+    "oxlint": "1.86.0",
+    "oxlint-plugin-react-doctor": "0.9.14",
     "rimraf": "6.1.3",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
-    "ultracite": "7.10.6",
-    "vitest": "4.1.11"
+    "ultracite": "7.12.2",
+    "vitest": "5.0.3"
   },
   "overrides": {
     "@istanbuljs/load-nyc-config": {
@@ -87,7 +87,7 @@
   "engines": {
     "node": ">=26.0.0"
   },
-  "packageManager": "bun@1.4.0",
+  "packageManager": "bun@1.4.2",
   "trustedDependencies": [
     "@tailwindcss/oxide",
     "esbuild",
