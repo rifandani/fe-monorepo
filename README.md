@@ -22,6 +22,7 @@ This repo is a boilerplate. When you start a new project from it, do the steps b
 - [ ] `docker/docker-compose.yml`: `name`.
 - [ ] `.claude/settings.json`: remove the `Read(//Users/rizeki.rifandani/...)` permissions, or change them to your home folder.
 - [ ] Add a `LICENSE` file that agrees with the `license` field in each `package.json`.
+- [ ] Init husky
 
 ### 2. Apps
 

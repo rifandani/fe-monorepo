@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "React.js and Expo Monorepo Template",
+  "license": "MIT",
   "author": "Tri Rizeki Rifandani",
   "workspaces": [
     "apps/*",
