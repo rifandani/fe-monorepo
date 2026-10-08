@@ -12,9 +12,9 @@
           },
           {
             "type": "command",
-            "command": "bun check:fix",
+            "command": "bun check:dupes",
             "timeout": 600,
-            "statusMessage": "Checking the workspace for errors"
+            "statusMessage": "Finding duplicate code"
           }
         ]
       }

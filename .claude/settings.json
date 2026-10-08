@@ -119,7 +119,7 @@
             "type": "command"
           },
           {
-            "command": "bun check:fix",
+            "command": "bun check:dupes",
             "type": "command"
           }
         ]
@@ -148,5 +148,7 @@
   "statusLine": {
     "type": "command",
     "command": "bun x ccusage statusline"
-  }
+  },
+  "syncClaudeAiSkills": false,
+  "disableBundledSkills": true
 }

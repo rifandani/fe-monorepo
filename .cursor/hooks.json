@@ -6,7 +6,7 @@
         "command": "bun lint:fix"
       },
       {
-        "command": "bun check:fix"
+        "command": "bun check:dupes"
       }
     ],
     "preToolUse": [
