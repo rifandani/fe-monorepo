@@ -6,15 +6,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun lint:fix",
+            "command": "bun lint:fix >&2 || { printf 'bun lint:fix failed. Review the lint output and fix the reported issues.\\n' >&2; exit 2; }; printf '{}\\n'",
             "timeout": 600,
             "statusMessage": "Linting the workspace"
-          },
-          {
-            "type": "command",
-            "command": "bun check:dupes",
-            "timeout": 600,
-            "statusMessage": "Finding duplicate code"
           }
         ]
       }

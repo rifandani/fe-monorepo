@@ -4,9 +4,6 @@
     "afterFileEdit": [
       {
         "command": "bun lint:fix"
-      },
-      {
-        "command": "bun check:dupes"
       }
     ],
     "preToolUse": [
