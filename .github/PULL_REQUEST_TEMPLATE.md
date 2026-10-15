@@ -1,23 +1,22 @@
-# Pull Request Template
+## Summary
 
-## Description
+<!-- Pick the smallest view that makes the key point clear: pseudocode, call tree, component tree, file tree, Mermaid, or diff. -->
 
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
+## Evidence
 
-<!-- Pseudocode: before→after -->
+- **Before:**
+- **After:**
 
-## Diagram
+<!-- Screenshots when visual; test or console output when execution-based. -->
 
-<!-- /ship + pr-lens: attach architecture view always; add a data-flow view only when the change has a sequence worth following. Paste ![alt](.pr-lens/<file>.svg) here. -->
+## Merge Danger
+
+**Door:** <!-- one-way or two-way -->
+
+**Blast Radius:** <!-- one-word scope -->
+
+<!-- Optional: rollback notes and potential ramifications. -->
 
 ## Related Issue (if applicable)
 
 <!-- Fixes #<issue_number> -->
-
-## Screenshots (if applicable)
-
-<!-- Add screenshots to help explain your changes, especially if this is a UI-related PR. -->
-
-## Additional Notes (if necessary)
-
-<!-- Add any additional information or context about the pull request here. -->

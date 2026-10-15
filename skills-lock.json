@@ -85,12 +85,6 @@
       "skillPath": "skills/engineering/pr/SKILL.md",
       "computedHash": "22a15d4d469344b38e03eb0e95772478393975836289393b1bad3c0febcdc679"
     },
-    "pr-lens": {
-      "source": "coldteadotai/pr-lens",
-      "sourceType": "github",
-      "skillPath": "skills/pr-lens/SKILL.md",
-      "computedHash": "5354b4030e376c6640ec4e08a26558e796c176145e9ff34adfd495435373afec"
-    },
     "prototype": {
       "source": "mattpocock/skills",
       "sourceType": "github",
