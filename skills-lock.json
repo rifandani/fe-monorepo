@@ -163,12 +163,6 @@
       "skillPath": "skills/engineering/wayfinder/SKILL.md",
       "computedHash": "fa790eb4255b13d24d7e33ff4891ccd3d621558cc0ab87ae226777538ea16a8f"
     },
-    "wizard": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "skillPath": "skills/engineering/wizard/SKILL.md",
-      "computedHash": "dee7f1a523994a1e063c69fe09c2f5b4da97a41ad68107722664e6e472cb2423"
-    },
     "writing-for-agents": {
       "source": "mattpocock/skills",
       "sourceType": "github",
