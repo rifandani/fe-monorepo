@@ -83,7 +83,6 @@
     "@vite-pwa/assets-generator": "1.0.4",
     "@vitejs/plugin-react": "6.1.1",
     "@workspace/typescript-config": "workspace:*",
-    "agentation": "3.1.2",
     "babel-plugin-react-compiler": "1.0.0",
     "rollup-plugin-visualizer": "7.1.1",
     "sitemap": "9.0.1",
