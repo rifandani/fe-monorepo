@@ -4,7 +4,7 @@ React SPA.
 
 ## Language
 
-(See [core](../../packages/core/CONTEXT.md) for Locale, Message Catalog, Translation Key, Translation Provider.)
+(See [core](../../packages/core/GLOSSARY.md) for Locale, Message Catalog, Translation Key, Translation Provider.)
 
 ### Component Catalog
 

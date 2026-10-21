@@ -38,7 +38,7 @@ Route on scope, then on depth.
 |-------|--------|
 | Cross-cutting (monorepo, tooling, React, any package) | root `CLAUDE.md` |
 | `spa` only | `apps/spa/CLAUDE.md` |
-| `design-system` only | `packages/design-system/CONTEXT.md` |
+| `design-system` only | `packages/design-system/GLOSSARY.md` |
 
 **Depth** — the routed `CLAUDE.md` is an index. Read its links and follow the pointer when one owns the topic:
 
@@ -47,7 +47,7 @@ Route on scope, then on depth.
 | Tailwind, tokens, dark mode | `apps/spa/docs/styling.md` |
 | Layering, module boundaries, data flow | `apps/spa/docs/architecture.md` |
 | Logging, tracing, error reporting | `apps/spa/docs/observability.md` |
-| Domain terms, context relationships | the context's `CONTEXT.md` |
+| Domain terms, context relationships | the context's `GLOSSARY.md` |
 | No linked doc owns it | inline in the routed `CLAUDE.md` |
 
 Write inline under an existing `###` heading when one fits; otherwise add a new one.

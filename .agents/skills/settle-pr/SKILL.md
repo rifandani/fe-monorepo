@@ -70,7 +70,7 @@ Assign exactly one **settlement** using the rubric in [`RUBRIC.md`](RUBRIC.md):
 | **defer** | Valid but out of this PR's scope |
 | **ask** | Genuinely unclear — stop and ask the user |
 
-Do the **legwork** — trace call paths, check tests, read ADRs/`CONTEXT.md` — before assigning. A settlement without evidence is incomplete.
+Do the **legwork** — trace call paths, check tests, read ADRs/`GLOSSARY.md` — before assigning. A settlement without evidence is incomplete.
 
 On a **reject**, record whether the rationale cited something already written down — an ADR, a doc, a code comment, a lint rule — or rested on intent no file states. Step 6 turns the undocumented ones into rules.
 

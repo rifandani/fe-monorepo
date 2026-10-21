@@ -1,10 +1,10 @@
-# Context Map
+# Glossary Map
 
 ## Contexts
 
-- [spa](./apps/spa/CONTEXT.md) — React SPA
-- [expo](./apps/expo/CONTEXT.md) — Expo / React Native app
-- [core](./packages/core/CONTEXT.md) — shared libraries and cross-app vocabulary
+- [spa](./apps/spa/GLOSSARY.md) — React SPA
+- [expo](./apps/expo/GLOSSARY.md) — Expo / React Native app
+- [core](./packages/core/GLOSSARY.md) — shared libraries and cross-app vocabulary
 
 ## Relationships
 
