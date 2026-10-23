@@ -8,11 +8,11 @@ Assign **reject** when:
 
 - The bot misread the diff or commented on code that doesn't exist on this branch
 - The flagged pattern is intentional and documented (ADR, comment, established convention)
-- Tooling already enforces the rule (linter, typechecker, formatter)
+- Tooling already enforces the rule (linter, formatter, typechecker, fallow policy)
 - The suggestion is stylistic and the repo has no standard for it
 - The bot assumes behaviour the spec doesn't require
 
-A reject resting on "this is intentional" while no ADR, doc, comment, or lint rule says so is the bot's cue to raise it again next PR. Mark it undocumented — step 6 turns it into a rule.
+A reject resting on "this is intentional" while no ADR, doc, comment, lint rule, or fallow policy says so is the bot's cue to raise it again next PR. Mark it undocumented — step 6 turns it into a guard.
 
 Assign **defer** when the concern is valid but fixing it belongs in a follow-up (different layer, pre-existing debt, scope the PR never claimed).
 

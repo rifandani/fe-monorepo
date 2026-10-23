@@ -1,11 +1,11 @@
 ---
 name: settle-pr
-description: Settle AI bot PR review comments via gh, then compound what they taught into CLAUDE.md.
+description: Settle AI bot PR review comments via gh, then compound them into lint rules, tool config, or docs.
 argument-hint: "PR number, branch, or GitHub PR URL"
 disable-model-invocation: true
 ---
 
-**Settle** each bot comment before any code changes — valid feedback applied minimally, invalid feedback rejected with evidence. Then **compound**: a settled thread that would have changed how the code was written becomes a standing rule, so the next PR starts where this one ended.
+**Settle** each bot comment before any code changes — valid feedback applied minimally, invalid feedback rejected with evidence. Then **compound**: a settled thread that would have changed how the code was written becomes a **guard** — a lint rule, a tool-config entry — or, when nothing executable can see it, a line of prose.
 
 GitHub PR operations use [`gh`](https://cli.github.com/) per [`docs/agents/issue-tracker.md`](../../../docs/agents/issue-tracker.md). Review threads, replies, and resolve need GraphQL via `gh api` — see [`../gh/SKILL.md`](../gh/SKILL.md).
 
@@ -123,29 +123,44 @@ Resolve **apply** and **partial** only after the fix is on the PR (pushed, or us
 
 ## 6. Compound
 
-Turn what the PR taught into rules the next PR inherits. Full criteria, routing tables, and collision handling: [`LESSONS.md`](LESSONS.md).
+Turn what the PR taught into a **guard**, not a paragraph the next PR must remember. Layers, routing, and collision handling: [`LESSONS.md`](LESSONS.md).
 
-Walk every **apply**, **partial**, and undocumented **reject**. Put each through the **prevention test** — *had this rule been in `CLAUDE.md` before the PR, would the code have been written differently?* Yes makes it a **lesson**; no makes it an implementation detail, and detail is dropped.
+Walk every **apply**, **partial**, and undocumented **reject**. Put each through the **prevention test** — *would the code have been written differently if this rule had been enforced?* No makes it an implementation detail, and detail is dropped. Yes makes it a lesson, which lands on the first layer that can catch it:
 
-For each lesson, route it (scope, then follow the owning doc's pointer), read that file, and reconcile against what is already there — drop a duplicate, sharpen an existing line in place, escalate a contradiction.
+1. An existing oxlint or oxfmt rule, switched on or scoped.
+2. A custom oxlint rule for single-file syntax no shipped rule names.
+3. A fallow policy for boundaries, banned calls, duplication, complexity, or dead code.
+4. Prose in `AGENTS.md` or a doc it links — only when no checker can see the intent.
 
-Then present all candidates at once for approval, each as target file plus the exact text to write:
+Read the target config and reconcile against what is already there — enable or sharpen in place; never duplicate a rule that already covers it.
+
+Then present all candidates at once for approval, each as layer, target file, and the exact change:
 
 ```
-3 lessons from 7 threads
+4 lessons from 9 threads
 
-1. `apps/spa/docs/styling.md` — "Arbitrary Tailwind values need a token."
-2. root `CLAUDE.md`, ### React hooks — sharpens "Do not add useMemo by default"
-   to "Derive state at render time."
-3. `apps/spa/docs/architecture.md` — CONTRADICTS "Barrels are a smell". Which stands?
+oxlint rule (existing)
+1. `oxlint.config.ts` — `unicorn/no-array-reduce` from `off` to `error`;
+   the bot flagged the reduce.
+
+oxlint rule (custom)
+2. `scripts/oxlint-plugins/local.ts` — `local/no-date-now`: the bot flagged
+   `Date.now()` outside `core/clock`.
+
+fallow policy
+3. `.fallowrc.json`, `boundaries` — `features/*` may import `core/*` and
+   `shared/*`, never another feature.
+
+prose
+4. `apps/web/docs/rendering.md` — "A route loader returns data; it does not redirect."
 ```
 
-Write only what the user approves.
+Write only what the user approves, then prove each executable guard: it reports on the pattern from its thread, and the repo's checks stay green.
 
-**Done when:** every qualifying settlement has been through the prevention test, each lesson is written to its routed file or explicitly declined, and no lesson contradicts a rule left standing.
+**Done when:** every qualifying settlement has been through the prevention test, every guard is written and fires on the pattern that motivated it, every prose rule is written or explicitly declined, and no lesson contradicts a rule left standing.
 
 ## 7. Report
 
-Summarize for the user: settlement counts, files changed, lessons written, threads still open. If the user asked to commit or push, do so; otherwise stop after local fixes.
+Summarize for the user: settlement counts, files changed, guards added by layer, threads still open. If the user asked to commit or push, do so; otherwise stop after local fixes.
 
 **Done when:** summary delivered, every bot thread is resolved on GitHub or explicitly blocked on **ask**, and no thread lacks a settlement.
