@@ -51,7 +51,7 @@ export const TheToast = () => {
 
       <YStack gap="$1">
         <Toast.Title>{currentToast.title}</Toast.Title>
-        {!!currentToast.message && (
+        {currentToast.message !== undefined && currentToast.message !== "" && (
           <Toast.Description>{currentToast.message}</Toast.Description>
         )}
       </YStack>

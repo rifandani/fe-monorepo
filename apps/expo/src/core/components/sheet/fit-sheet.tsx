@@ -18,10 +18,14 @@ export const FitSheet = ({ state, setState, children }: FitSheetProps) => (
     sheetProps={{ snapPointsMode: "fit" }}
     frameProps={{ p: "$5" }}
   >
-    <YGroup verticalAlign="center" bordered separator={<Separator />}>
+    <YGroup verticalAlign="center" bordered>
       {children}
     </YGroup>
   </BaseSheet>
 );
 
 FitSheet.Item = YGroup.Item;
+
+// `YGroup`'s `separator` prop is deprecated, so callers put separators
+// between the items.
+FitSheet.Separator = Separator;

@@ -8,6 +8,36 @@ import { isOffline, resolveSwPrompt } from "@/core/utils/sw";
 /** How often to poll the server for a new service worker. */
 const UPDATE_CHECK_PERIOD_MS = 60 * 60 * 1000;
 
+/** Fetch the service worker script, and update the registration when it changed. */
+const checkForSwUpdate = async (
+  swUrl: string,
+  r: ServiceWorkerRegistration
+) => {
+  if (isOffline()) {
+    return;
+  }
+
+  try {
+    console.log("🔵 Checking for SW updates...");
+
+    // fallow-ignore-next-line security-sink -- swUrl comes from vite-plugin-pwa's onRegisteredSW; SW scripts are same-origin by spec
+    const resp = await fetch(swUrl, {
+      cache: "no-store",
+      headers: {
+        cache: "no-store",
+        "cache-control": "no-cache",
+      },
+    });
+
+    if (resp.status === 200) {
+      console.log("🔵 Updating SW...");
+      await r.update();
+    }
+  } catch (error) {
+    console.warn("SW update check failed:", error);
+  }
+};
+
 const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
   console.log("✅ SW activated", r);
 
@@ -15,39 +45,15 @@ const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
     return;
   }
 
-  setInterval(async () => {
-    if (isOffline()) {
-      return;
-    }
-
-    try {
-      console.log("🔵 Checking for SW updates...");
-
-      // fallow-ignore-next-line security-sink -- swUrl comes from vite-plugin-pwa's onRegisteredSW; SW scripts are same-origin by spec
-      const resp = await fetch(swUrl, {
-        cache: "no-store",
-        headers: {
-          cache: "no-store",
-          "cache-control": "no-cache",
-        },
-      });
-
-      if (resp.status === 200) {
-        console.log("🔵 Updating SW...");
-        await r.update();
-      }
-    } catch (error) {
-      console.warn("SW update check failed:", error);
-    }
+  setInterval(() => {
+    void checkForSwUpdate(swUrl, r);
   }, UPDATE_CHECK_PERIOD_MS);
 };
 
 /** Run `run` once this worker reaches the `activated` state. */
 const whenActivated = (sw: ServiceWorker | null, run: () => void) => {
-  sw?.addEventListener("statechange", (event) => {
-    // SAFETY: a `statechange` listener bound to a ServiceWorker is only ever
-    // dispatched with that worker as the target.
-    if ((event.target as ServiceWorker).state === "activated") {
+  sw?.addEventListener("statechange", () => {
+    if (sw.state === "activated") {
       run();
     }
   });
@@ -85,8 +91,8 @@ const onRegisteredSW = (
   });
 };
 
-const onRegisterError = <T,>(error: T) => {
-  console.error("🛑 Service Worker registration error", error);
+const onRegisterError = (cause: unknown) => {
+  console.error("🛑 Service Worker registration error", cause);
 };
 
 export const ReloadPromptSw = () => {
@@ -120,7 +126,9 @@ export const ReloadPromptSw = () => {
       ...(prompt.canReload && {
         action: {
           label: t("reload"),
-          onClick: () => updateServiceWorker(true),
+          onClick: () => {
+            void updateServiceWorker(true);
+          },
         },
       }),
     });

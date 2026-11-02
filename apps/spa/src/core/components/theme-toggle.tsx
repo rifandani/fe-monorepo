@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@reactuses/core";
 import { Match } from "effect";
 import { HiComputerDesktop, HiMoon, HiSun } from "react-icons/hi2";
-import type { Selection } from "react-stately";
+import type { Key } from "react-stately";
 
 import { Button } from "@/core/components/ui/button";
 import {
@@ -14,6 +14,9 @@ import {
 import type { ColorMode } from "@/core/constants/global";
 import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
 import { useTranslation } from "@/core/providers/i18n/context";
+
+const isColorMode = (key: Key): key is ColorMode =>
+  key === "auto" || key === "light" || key === "dark";
 
 export const ThemeToggle = () => {
   const { t } = useTranslation();
@@ -37,14 +40,13 @@ export const ThemeToggle = () => {
       <Menu
         selectionMode="single"
         selectedKeys={new Set([theme ?? "auto"])}
-        onSelectionChange={(_selection) => {
-          // SAFETY: `selectionMode="single"` rules out the "all" sentinel, and every
-          // menu item below is keyed by one of the values named here.
-          const selection = _selection as Exclude<Selection, "all"> & {
-            currentKey: ColorMode;
-          };
+        onSelectionChange={(selection) => {
+          // `selectionMode="single"` rules out the "all" sentinel.
+          const [key] = selection === "all" ? [] : selection;
 
-          setTheme(selection.currentKey);
+          if (key !== undefined && isColorMode(key)) {
+            setTheme(key);
+          }
         }}
       >
         <MenuSection>

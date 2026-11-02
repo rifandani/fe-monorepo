@@ -27,8 +27,8 @@ export const useCdnFileMutation = (
   >
 ) => {
   const mutation = useMutation<GetCdnFileSuccessSchema, CdnError, string>({
-    mutationFn: (url) =>
-      appRuntime.runPromise(cdnRepositories.getCdnFile({ url })),
+    mutationFn: async (url) =>
+      await appRuntime.runPromise(cdnRepositories.getCdnFile({ url })),
     mutationKey: cdnKeys[opt.key](opt.url),
     ...mutationOptions,
   });

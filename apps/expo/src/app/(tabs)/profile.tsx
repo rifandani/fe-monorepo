@@ -61,7 +61,7 @@ const EditProfileSection = () => {
       <YStack flex={1}>
         <H6 size="$4">{username}</H6>
         <Paragraph size="$3">{email}</Paragraph>
-        {!!birthDate && (
+        {birthDate !== undefined && birthDate !== "" && (
           <Paragraph size="$2" opacity={0.7}>
             {formatDisplayDate(birthDate, locale)}
           </Paragraph>
@@ -80,7 +80,7 @@ const CheckForUpdatesListItem = () => {
   const { t } = useTranslation();
   const { isUpdateAvailable, isUpdatePending } = useUpdates();
   useFocusEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         await checkForUpdateAsync();
       } catch (error) {
@@ -94,7 +94,7 @@ const CheckForUpdatesListItem = () => {
   });
   useFocusEffect(() => {
     if (isUpdatePending) {
-      (async () => {
+      void (async () => {
         try {
           await reloadAsync();
         } catch (error) {
@@ -116,7 +116,7 @@ const CheckForUpdatesListItem = () => {
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
       onPress={() => {
-        (async () => {
+        void (async () => {
           try {
             await fetchUpdateAsync();
           } catch (error) {

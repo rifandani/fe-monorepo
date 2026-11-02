@@ -7,13 +7,13 @@ import { Schema } from "effect";
  * is not, and absent when it is empty. `toErrorMessage` reads the Error Envelope
  * from it.
  */
-export class HttpResponseError extends Schema.TaggedError<HttpResponseError>()(
-  "HttpResponseError",
-  {
-    status: Schema.Number,
-    method: Schema.String,
-    url: Schema.String,
-    data: Schema.Unknown,
-    message: Schema.String,
-  }
-) {}
+export class HttpResponseError extends Schema.TaggedError<
+  HttpResponseError,
+  { readonly brand: unique symbol }
+>()("HttpResponseError", {
+  status: Schema.Finite,
+  method: Schema.String,
+  url: Schema.String,
+  data: Schema.Unknown,
+  message: Schema.String,
+}) {}

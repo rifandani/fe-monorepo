@@ -18,7 +18,7 @@ const fruits = [
 export const SelectShowcase = () => (
   <VariantGrid>
     <Variant label="default">
-      <Select className="w-56" defaultSelectedKey="apple">
+      <Select className="w-56" defaultValue="apple">
         <Label>Fruit</Label>
         <SelectTrigger />
         <SelectContent items={fruits}>
@@ -40,7 +40,7 @@ export const SelectShowcase = () => (
       <Select
         aria-label="Fruit"
         className="w-56"
-        defaultSelectedKey="banana"
+        defaultValue="banana"
         isDisabled
       >
         <SelectTrigger />

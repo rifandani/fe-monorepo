@@ -31,8 +31,8 @@ export const useGetUser = (
   const query = useQuery({
     // `signal` interrupts the Effect, which aborts the underlying fetch.
     queryFn: params
-      ? ({ signal }) =>
-          appRuntime.runPromise(userApi.getDetail(params), { signal })
+      ? async ({ signal }) =>
+          await appRuntime.runPromise(userApi.getDetail(params), { signal })
       : skipToken,
     queryKey: userKeys.detail(params),
     ...options,

@@ -29,7 +29,7 @@ export const AppHeadProvider = ({
 }: {
   children: React.ReactNode;
 }) => (
-  <UnheadProvider head={head}>
+  <UnheadProvider value={head}>
     <HeadDefaults />
     {children}
   </UnheadProvider>

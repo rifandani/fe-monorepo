@@ -12,6 +12,32 @@ type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
 
+/**
+ * Sonner forwards `style` to the DOM. React's `CSSProperties` does not model
+ * custom properties, so the type adds them.
+ */
+const toasterStyle: CSSProperties & Record<`--${string}`, string> = {
+  "--error-bg": "var(--color-danger-subtle)",
+  "--error-border":
+    "color-mix(in oklab, var(--danger-subtle-foreground) 20%, transparent)",
+  "--error-text": "var(--color-danger-subtle-foreground)",
+  "--info-bg": "var(--color-info-subtle)",
+  "--info-border":
+    "color-mix(in oklab, var(--info-subtle-foreground) 20%, transparent)",
+  "--info-text": "var(--color-info-subtle-foreground)",
+  "--normal-bg": "var(--color-overlay)",
+  "--normal-border": "var(--color-border)",
+  "--normal-text": "var(--color-overlay-foreground)",
+  "--success-bg": "var(--color-success-subtle)",
+  "--success-border":
+    "color-mix(in oklab, var(--success-subtle-foreground) 20%, transparent)",
+  "--success-text": "var(--color-success-subtle-foreground)",
+  "--warning-bg": "var(--color-warning-subtle)",
+  "--warning-border":
+    "color-mix(in oklab, var(--warning-subtle-foreground) 20%, transparent)",
+  "--warning-text": "var(--color-warning-subtle-foreground)",
+};
+
 export const useCreateToastContext = () => {
   // `Entry` owns applying the mode to `<html>`; this only needs to read it back
   const [colorMode] = useLocalStorage<ColorMode>(
@@ -27,29 +53,7 @@ export const useCreateToastContext = () => {
       duration: 3000,
       position: "bottom-right",
       richColors: true,
-      // SAFETY: sonner forwards `style` to the DOM, so the custom properties below
-      // are valid CSS - React's `CSSProperties` just does not model them.
-      style: {
-        "--error-bg": "var(--color-danger-subtle)",
-        "--error-border":
-          "color-mix(in oklab, var(--danger-subtle-foreground) 20%, transparent)",
-        "--error-text": "var(--color-danger-subtle-foreground)",
-        "--info-bg": "var(--color-info-subtle)",
-        "--info-border":
-          "color-mix(in oklab, var(--info-subtle-foreground) 20%, transparent)",
-        "--info-text": "var(--color-info-subtle-foreground)",
-        "--normal-bg": "var(--color-overlay)",
-        "--normal-border": "var(--color-border)",
-        "--normal-text": "var(--color-overlay-foreground)",
-        "--success-bg": "var(--color-success-subtle)",
-        "--success-border":
-          "color-mix(in oklab, var(--success-subtle-foreground) 20%, transparent)",
-        "--success-text": "var(--color-success-subtle-foreground)",
-        "--warning-bg": "var(--color-warning-subtle)",
-        "--warning-border":
-          "color-mix(in oklab, var(--warning-subtle-foreground) 20%, transparent)",
-        "--warning-text": "var(--color-warning-subtle-foreground)",
-      } as CSSProperties,
+      style: toasterStyle,
       theme: theme === "auto" ? "system" : theme,
       toastOptions: {
         className: twJoin(
@@ -67,8 +71,5 @@ export const useCreateToastContext = () => {
   return [toastConfig, actions] as const;
 };
 
-export const ToastContext = createContext<ToastContextInterface>(
-  // SAFETY: the provider always supplies a real value; a consumer outside it is a
-  // programming error rather than a supported state.
-  {} as ToastContextInterface
-);
+// `null` outside the provider, so `useToaster` can report the mistake.
+export const ToastContext = createContext<ToastContextInterface | null>(null);

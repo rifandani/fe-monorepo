@@ -47,7 +47,7 @@ interface Blocker {
 const [arg] = process.argv.slice(2);
 const minSeverity = Number(process.env.SAST_MIN_SECURITY_SEVERITY ?? "7.0");
 
-if (!arg) {
+if (arg === undefined || arg === "") {
   console.error(
     "Usage: bun scripts/security/sarif-severity-gate.ts <sarif-path>"
   );
@@ -78,7 +78,7 @@ if (files.length === 0) {
 }
 
 const parseSarifLog = (text: string): SarifLog => {
-  const parsed = JSON.parse(text);
+  const parsed: unknown = JSON.parse(text);
 
   if (!(parsed instanceof Object) || Array.isArray(parsed)) {
     return {};
@@ -146,7 +146,7 @@ console.error(
 
 for (const b of blockers) {
   console.error(
-    `- ${b.ruleId} (severity=${b.severity})${b.file ? ` @ ${b.file}` : ""}: ${b.message}`
+    `- ${b.ruleId} (severity=${b.severity})${b.file === undefined || b.file === "" ? "" : ` @ ${b.file}`}: ${b.message}`
   );
 }
 

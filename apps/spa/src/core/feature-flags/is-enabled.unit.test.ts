@@ -7,10 +7,10 @@ import {
 } from "@/core/feature-flags/is-enabled";
 
 /** A fresh module graph, so the atom reads storage before anything writes. */
-const loadFresh = () => {
+const loadFresh = async () => {
   vi.resetModules();
 
-  return import("@/core/feature-flags/feature-flag-store");
+  return await import("@/core/feature-flags/feature-flag-store");
 };
 
 describe("resolveFeatureEnabled", () => {

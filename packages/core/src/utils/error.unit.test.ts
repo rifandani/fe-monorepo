@@ -52,7 +52,7 @@ describe("toErrorMessage", () => {
     // leaks our internals into a toast.
     const failure = Effect.runSync(
       Effect.flip(
-        Schema.decodeUnknownEffect(Schema.Struct({ email: Schema.Number }))({
+        Schema.decodeUnknownEffect(Schema.Struct({ email: Schema.Finite }))({
           email: "nope",
         })
       )

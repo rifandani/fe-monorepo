@@ -3,7 +3,7 @@ import { format, isValid, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
 import { Match } from "effect";
 
-const resolveDateFnsLocale = (locale: LocaleDictLanguage | string) =>
+const resolveDateFnsLocale = (locale: string) =>
   Match.value(locale).pipe(
     Match.when("id-id", () => id),
     Match.orElse(() => enUS)
@@ -15,7 +15,7 @@ const resolveDateFnsLocale = (locale: LocaleDictLanguage | string) =>
  */
 export const formatDisplayDate = (
   value: string,
-  locale: LocaleDictLanguage | string = "en-us"
+  locale: string = "en-us" satisfies LocaleDictLanguage
 ): string => {
   const parsed = parseISO(value);
   const date = isValid(parsed) ? parsed : new Date(value);

@@ -13,11 +13,13 @@ export const cx = <T = unknown>(
 ): string | ((v: T) => string) => {
   // SAFETY: the single-array overload of `CxArgs` wraps exactly the variadic form,
   // so unwrapping it yields the same tuple.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const flat = (
     args.length === 1 && Array.isArray(args[0]) ? args[0] : args
   ) as [...ClassNameValue[], Render<T>];
 
   // SAFETY: `CxArgs` puts the render prop last, so the last element is the render prop.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const renderProp = flat.pop() as Render<T>;
 
   return composeRenderProps(renderProp, (resolved) => cn(flat, resolved));

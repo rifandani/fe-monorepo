@@ -30,7 +30,7 @@ const RememberMeCheckbox = () => {
         id="rememberMe"
         checked={state.rememberMe}
         onCheckedChange={(checked) => {
-          setState((prev) => ({ ...prev, rememberMe: !!checked }));
+          setState((prev) => ({ ...prev, rememberMe: checked === true }));
         }}
       >
         <Checkbox.Indicator>
@@ -86,7 +86,7 @@ const LoginTextField = ({
             onBlur={onBlur}
             onChangeText={onChange}
           />
-          {error?.message ? (
+          {error?.message !== undefined && error.message !== "" ? (
             <Paragraph testID={`login-form-${name}-error`} color="$red10">
               {error.message}
             </Paragraph>
@@ -117,9 +117,11 @@ export const LoginForm = () => {
 
   return (
     <Form
-      onSubmit={form.handleSubmit((values) => {
-        loginMutation.mutate(values);
-      })}
+      onSubmit={() => {
+        void form.handleSubmit((values) => {
+          loginMutation.mutate(values);
+        })();
+      }}
     >
       <LoginTextField
         control={form.control}

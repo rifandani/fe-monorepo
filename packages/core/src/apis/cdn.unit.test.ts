@@ -45,7 +45,9 @@ describe("cdnRepositories", () => {
       // No request assertion here: `url` is this method's only input, and the
       // handler matching on it *is* the assertion — a wrong URL means no handler
       // matches, which `onUnhandledRequest: "error"` turns into a failure.
-      expect(yield* Effect.promise(() => result.blob.text())).toBe("img");
+      expect(yield* Effect.promise(async () => await result.blob.text())).toBe(
+        "img"
+      );
       expect(result.blob.type).toBe("image/png");
       expect(result.headers["content-type"]).toBe("image/png");
       expect(result.response.status).toBe(200);

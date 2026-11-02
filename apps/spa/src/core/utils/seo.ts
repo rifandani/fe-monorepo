@@ -4,7 +4,11 @@ import { assign } from "radashi";
 import { ENV } from "@/core/constants/env";
 import { SERVICE_NAME } from "@/core/constants/global";
 
-export type SeoMetaInput = Parameters<typeof useSeoMeta>[0];
+/** unhead's meta input, with plain-string `title` and `description` we can template. */
+export type SeoMetaInput = Parameters<typeof useSeoMeta>[0] & {
+  title?: string;
+  description?: string;
+};
 
 /** unhead's image fields accept a path, or an already-complete object/array form. */
 const isImagePath = <T>(image: T): image is T & string =>
@@ -42,9 +46,9 @@ export const resolveOgImage = (image?: string) =>
  * `useSeoMeta`/`useSchemaOrg` — see the Logic Seam convention in
  * `docs/adr/0001-unit-tests-are-pure-module-logic.md`.
  */
-export const buildSeoMetadata = (params: SeoMetaInput) => {
+export const buildSeoMetadata = (params?: SeoMetaInput) => {
   const title = `${params?.title ?? "Layout"} | ${appName}`;
-  const description = `${params?.description ?? appDescription}`;
+  const description = params?.description ?? appDescription;
 
   const defaultMetadata: SeoMetaInput = {
     title,

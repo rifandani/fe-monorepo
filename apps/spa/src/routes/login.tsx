@@ -20,7 +20,7 @@ const LoginForm = () => {
       className="flex flex-col pt-3 md:pt-8"
       onSubmit={(ev) => {
         ev.preventDefault();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
     >
       <form.Field name="username">
@@ -61,7 +61,7 @@ const LoginForm = () => {
       )}
 
       <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
+        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
           <Button

@@ -134,33 +134,30 @@ const getOrderedLocaleAndParentLocales = (locale: string) => {
   return locales;
 };
 
-const getTranslationByKey = (obj: LanguageMessages, key: string) => {
-  const keys = key.split(".");
-  let currentObj = obj;
+const getTranslationByKey = (
+  obj: LanguageMessages,
+  key: string
+): I18nMessage | undefined => {
+  let current: I18nMessage | LanguageMessages | undefined = obj;
 
-  for (let i = 0; i <= keys.length - 1; i += 1) {
-    const k = keys[i];
-
-    if (!k) {
+  for (const k of key.split(".")) {
+    if (k === "") {
       throw new Error("[getTranslationByKey]: Invalid key!");
     }
 
-    const newObj = currentObj[k];
-
-    if (!newObj) {
-      return;
+    // A message before the last key segment means the key does not exist.
+    if (current === undefined || isRenderableMessage(current)) {
+      current = undefined;
+      break;
     }
 
-    if (isRenderableMessage(newObj)) {
-      if (i < keys.length - 1) {
-        return;
-      }
-
-      return newObj;
-    }
-
-    currentObj = newObj;
+    current = current[k];
   }
+
+  // An empty message counts as missing, so the next locale can supply it.
+  return current !== undefined && current !== "" && isRenderableMessage(current)
+    ? current
+    : undefined;
 };
 
 interface SubstitutionContext {
@@ -193,7 +190,7 @@ const substitutePlural = ({
   const replacement =
     pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other;
 
-  if (!replacement) {
+  if (replacement === undefined || replacement === "") {
     throw new Error("Missing replacement value");
   }
 
@@ -218,7 +215,7 @@ const substituteEnum = ({
 
   const replacement = translationParams.enum?.[argKey]?.[argValue];
 
-  if (!replacement) {
+  if (replacement === undefined || replacement === "") {
     throw new Error("Missing replacement value");
   }
 
@@ -288,9 +285,13 @@ const performSubstitution = (
   translationParams: ParamOptions
 ): string =>
   Object.entries(args).reduce((result, [argKey, argValue]) => {
-    const match = result.match(`{${argKey}:?([^}]*)?}`);
-    const [replaceKey, argType] = match || [`{${argKey}}`, undefined];
-    const substitute = argType ? substituters[argType] : undefined;
+    const match = new RegExp(`\\{${argKey}:?([^}]*)?\\}`, "u").exec(result);
+    const [replaceKey, argType] = match ?? [`{${argKey}}`, undefined];
+
+    const substitute =
+      argType === undefined || argType === ""
+        ? undefined
+        : substituters[argType];
 
     if (!substitute) {
       return result.replace(replaceKey, String(argValue));
@@ -306,17 +307,17 @@ const performSubstitution = (
     });
   }, str);
 
-const getTranslation = <S extends DotPathsFor, A extends Params<S>>(
+const getTranslation = <S extends DotPathsFor>(
   locale: string,
   translations: LanguageMessages,
   key: S,
-  args?: A
-) => {
+  args?: Params<S>
+): string | undefined => {
   const translation = getTranslationByKey(translations, key);
-  const argObj = args || {};
+  const argObj = args ?? {};
 
   if (translation === undefined) {
-    return;
+    return translation;
   }
 
   if (isPlainMessage(translation)) {
@@ -331,6 +332,7 @@ const getTranslation = <S extends DotPathsFor, A extends Params<S>>(
     locale,
     str,
     argObj,
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     translationParams as ParamOptions
   );
 };
@@ -353,17 +355,14 @@ export const initI18n = ({
     ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
   ]);
 
-  function t<S extends PathsWithNoParams>(key: S): string;
-  function t<S extends PathsWithParams, A extends Params<S>>(
-    key: S,
-    args: A
-  ): string;
-  function t<S extends DotPathsFor, A extends Params<S>>(key: S, args?: A) {
+  // The catalog is keyed by lowercase locale, so look it up by plain string.
+  const translationsByLocale = new Map(Object.entries(translations));
+
+  function t(key: PathsWithNoParams): string;
+  function t<S extends PathsWithParams>(key: S, args: Params<S>): string;
+  function t<S extends DotPathsFor>(key: S, args?: Params<S>) {
     for (const _locale of orderedLocales) {
-      // SAFETY: `toLowerCase()` returns exactly the `Lowercase<string>` the
-      // catalog is keyed by; TypeScript does not track that through the call.
-      const translationFile =
-        translations[_locale.toLowerCase() as Lowercase<string>];
+      const translationFile = translationsByLocale.get(_locale.toLowerCase());
 
       if (!translationFile) {
         continue;
@@ -371,7 +370,7 @@ export const initI18n = ({
 
       const translation = getTranslation(_locale, translationFile, key, args);
 
-      if (translation) {
+      if (translation !== undefined && translation !== "") {
         return translation;
       }
     }

@@ -27,7 +27,7 @@ const attempt = <A>(
       new KeyValueStore.KeyValueStoreError({
         method,
         key,
-        message: `MMKV ${method} failed${key ? ` for key ${key}` : ""}`,
+        message: `MMKV ${method} failed${key === undefined || key === "" ? "" : ` for key ${key}`}`,
         cause,
       }),
   });
@@ -39,9 +39,17 @@ const attempt = <A>(
 export const makeMmkvKeyValueStore = (storage: MmkvLike) =>
   KeyValueStore.makeStringOnly({
     get: (key) => attempt("get", key, () => storage.getString(key)),
-    set: (key, value) => attempt("set", key, () => storage.set(key, value)),
-    remove: (key) => attempt("remove", key, () => storage.delete(key)),
-    clear: attempt("clear", undefined, () => storage.clearAll()),
+    set: (key, value) =>
+      attempt("set", key, () => {
+        storage.set(key, value);
+      }),
+    remove: (key) =>
+      attempt("remove", key, () => {
+        storage.delete(key);
+      }),
+    clear: attempt("clear", undefined, () => {
+      storage.clearAll();
+    }),
     size: attempt("size", undefined, () => storage.getAllKeys().length),
     keys: attempt("keys", undefined, () => storage.getAllKeys()),
   });

@@ -1,4 +1,5 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
+import { Schema } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { appRegistry } from "@/core/services/atom-registry";
@@ -52,10 +53,12 @@ const loadFresh = async (seed: Record<string, string> = {}) => {
 };
 
 /** What MMKV holds under `key` in the app storage, decoded. */
-const persisted = (key: string) => {
+const decodeJson = Schema.decodeSync(Schema.fromJsonString(Schema.Json));
+
+const persisted = (key: string): Schema.Json | undefined => {
   const raw = mmkv.stores.get("app-storage")?.get(key);
 
-  return raw === undefined ? undefined : JSON.parse(raw);
+  return raw === undefined ? undefined : decodeJson(raw);
 };
 
 describe("appStoreDefaults", () => {

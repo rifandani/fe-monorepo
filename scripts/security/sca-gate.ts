@@ -105,6 +105,7 @@ const minRank = LEVEL_RANK[auditLevel];
 
 // SAFETY: the allowlist is a repo-owned file; every field read below is optional
 // and validated in the loop that follows.
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const raw = JSON.parse(readFileSync(allowlistPath, "utf-8")) as {
   entries?: AllowEntry[];
 };
@@ -213,13 +214,13 @@ const which = (cmd: string): string | null => {
 const ensureOsvScanner = (): string => {
   const fromEnv = process.env.OSV_SCANNER_BIN;
 
-  if (fromEnv) {
+  if (fromEnv !== undefined && fromEnv !== "") {
     return fromEnv;
   }
 
   const onPath = which("osv-scanner");
 
-  if (onPath) {
+  if (onPath !== null && onPath !== "") {
     return onPath;
   }
 
@@ -232,7 +233,7 @@ const ensureOsvScanner = (): string => {
 
   const arch = isOsvArch(process.arch) ? OSV_ARCHES[process.arch] : undefined;
 
-  if (!(platform && arch)) {
+  if (platform === undefined || arch === undefined) {
     throw new Error(
       `osv-scanner not found and no binary for ${process.platform}/${process.arch}`
     );
@@ -283,7 +284,7 @@ const writeConfig = (activeEntries: AllowEntry[]): string => {
       `ignoreUntil = ${e.expires}`
     );
 
-    if (e.reason) {
+    if (e.reason !== undefined && e.reason !== "") {
       lines.push(`reason = ${JSON.stringify(e.reason)}`);
     }
 
@@ -295,7 +296,7 @@ const writeConfig = (activeEntries: AllowEntry[]): string => {
     `osv-scanner-config-${process.pid}.toml`
   );
 
-  writeFileSync(configPath, `${lines.join("\n")}`);
+  writeFileSync(configPath, lines.join("\n"));
 
   return configPath;
 };
@@ -440,6 +441,7 @@ try {
   // SAFETY: osv-scanner's JSON schema is mirrored in `OsvDocument`, and every
   // field it declares is optional, so a schema drift degrades to "no findings"
   // rather than a bad read.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   doc = JSON.parse(stdout || "{}") as OsvDocument;
 } catch {
   console.error("::error::failed to parse osv-scanner JSON output");

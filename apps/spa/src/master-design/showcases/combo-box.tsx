@@ -17,7 +17,7 @@ const fruits = [
 export const ComboBoxShowcase = () => (
   <VariantGrid>
     <Variant label="default">
-      <ComboBox className="w-56" defaultSelectedKey="apple">
+      <ComboBox className="w-56" defaultValue="apple">
         <Label>Fruit</Label>
         <ComboBoxInput />
         <ComboBoxContent items={fruits}>
@@ -39,7 +39,7 @@ export const ComboBoxShowcase = () => (
       <ComboBox
         aria-label="Fruit"
         className="w-56"
-        defaultSelectedKey="banana"
+        defaultValue="banana"
         isDisabled
       >
         <ComboBoxInput />

@@ -3,5 +3,10 @@
   "compilerOptions": {
     "moduleResolution": "bundler"
   },
-  "include": ["vitest.config.ts", "vitest.setup.ts", "vitest.env-mock.ts"]
+  "include": [
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "vitest.env-mock.ts",
+    "scripts/**/*.ts"
+  ]
 }

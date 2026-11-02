@@ -1,12 +1,14 @@
 import { urlStringSchema } from "@workspace/core/apis/core";
 import { Schema } from "effect";
 
-const portlessUrl = import.meta.env.PORTLESS_URL || undefined;
+const portlessUrlEnv = import.meta.env.PORTLESS_URL;
+const portlessUrl = portlessUrlEnv === "" ? undefined : portlessUrlEnv;
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const resolvedApiBaseUrl =
-  portlessUrl && apiBaseUrl?.includes("fe-monorepo.localhost")
+  portlessUrl !== undefined &&
+  apiBaseUrl?.includes("fe-monorepo.localhost") === true
     ? `${portlessUrl}/api`
     : apiBaseUrl;
 

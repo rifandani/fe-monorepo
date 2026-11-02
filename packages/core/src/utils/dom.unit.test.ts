@@ -136,7 +136,9 @@ describe("platform helpers", () => {
   it("getPlatformAsync falls back when getHighEntropyValues rejects", async () => {
     vi.stubGlobal("navigator", {
       userAgentData: {
-        getHighEntropyValues: vi.fn(() => Promise.reject(new Error("denied"))),
+        getHighEntropyValues: vi.fn(
+          async () => await Promise.reject(new Error("denied"))
+        ),
       },
       platform: "Win32",
     });

@@ -1,5 +1,6 @@
 import { useAtom } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
+import { Fragment } from "react";
 import { ListItem } from "tamagui";
 
 import { FitSheet } from "@/core/components/sheet/fit-sheet";
@@ -28,24 +29,29 @@ export const ProfileThemeChanger = () => {
       />
 
       <FitSheet state={state} setState={setState}>
-        {THEME_OPTIONS.map((option) => (
-          <FitSheet.Item key={option.value}>
-            <ListItem
-              pressTheme
-              title={t(option.value)}
-              icon={<Feather name={option.icon} size={20} />}
-              iconAfter={
-                theme === option.value ? (
-                  <Feather
-                    testID={`profile-theme-${option.value}-checked`}
-                    name="check-circle"
-                    size={20}
-                  />
-                ) : undefined
-              }
-              onPress={() => setTheme(option.value)}
-            />
-          </FitSheet.Item>
+        {THEME_OPTIONS.map((option, index) => (
+          <Fragment key={option.value}>
+            {index > 0 && <FitSheet.Separator />}
+            <FitSheet.Item>
+              <ListItem
+                pressTheme
+                title={t(option.value)}
+                icon={<Feather name={option.icon} size={20} />}
+                iconAfter={
+                  theme === option.value ? (
+                    <Feather
+                      testID={`profile-theme-${option.value}-checked`}
+                      name="check-circle"
+                      size={20}
+                    />
+                  ) : undefined
+                }
+                onPress={() => {
+                  setTheme(option.value);
+                }}
+              />
+            </FitSheet.Item>
+          </Fragment>
         ))}
       </FitSheet>
     </>

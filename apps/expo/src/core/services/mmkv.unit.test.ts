@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Effect } from "effect";
+import { Effect, Schema } from "effect";
 import { vi } from "vitest";
 
 import { appStorageId, makeMmkvKeyValueStore } from "./mmkv";
@@ -24,6 +24,8 @@ vi.mock("react-native-mmkv", () => ({
   MMKV: MockMMKV,
 }));
 
+const decodeString = Schema.decodeUnknownSync(Schema.String);
+
 /** An in-memory `MmkvLike`, so the adapter runs against real reads and writes. */
 const memoryMmkv = (): MmkvLike => {
   const memory = new Map<string, string>();
@@ -38,7 +40,8 @@ const memoryMmkv = (): MmkvLike => {
     getAllKeys: () => [...memory.keys()],
     getString: (key) => memory.get(key),
     set: (key, value) => {
-      memory.set(key, String(value));
+      // The adapter is `makeStringOnly`, so it only ever writes strings.
+      memory.set(key, decodeString(value));
     },
   };
 };

@@ -17,7 +17,7 @@ const fruits = [
 export const MultipleSelectShowcase = () => (
   <VariantGrid>
     <Variant label="default">
-      <MultipleSelect className="w-64" defaultSelectedKey="apple">
+      <MultipleSelect className="w-64" defaultValue={["apple"]}>
         <Label>Fruits</Label>
         <MultipleSelectContent items={fruits}>
           {(item) => <MultipleSelectItem>{item.name}</MultipleSelectItem>}
@@ -41,7 +41,7 @@ export const MultipleSelectShowcase = () => (
       <MultipleSelect
         aria-label="Fruits"
         className="w-64"
-        defaultSelectedKey="banana"
+        defaultValue={["banana"]}
         isDisabled
       >
         <MultipleSelectContent items={fruits}>

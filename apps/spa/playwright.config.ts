@@ -15,18 +15,21 @@ const baseURL = `http://localhost:${port}`;
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+// Any non-empty `CI` value means a CI run.
+const isCI = process.env.CI !== undefined && process.env.CI !== "";
+
 export default defineConfig<TestOptions>({
   testDir: "./e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: isCI,
   // Timeout for each test in milliseconds.
   timeout: 20 * 1000,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: isCI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: isCI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   outputDir: "playwright-test-results",
@@ -82,10 +85,10 @@ export default defineConfig<TestOptions>({
     },
     url: baseURL,
     // CI: build + preview on :port. Local: vite dev on :port (not `bun dev` / portless).
-    command: process.env.CI
+    command: isCI
       ? `bun run build && bunx vite preview --port ${port} --strictPort`
       : `bunx vite --port ${port} --strictPort`,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
     stdout: "pipe",
     stderr: "pipe",
   },

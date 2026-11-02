@@ -55,7 +55,9 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
             className="flex items-center"
             onClick={
               // Attempt to recover by trying to re-render the segment
-              () => reset()
+              () => {
+                reset();
+              }
             }
           >
             Try again

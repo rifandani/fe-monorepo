@@ -113,4 +113,12 @@ export type StatusCode =
 
 export type ContentlessStatusCode = 101 | 204 | 205 | 304;
 
-export type ContentfulStatusCode = Exclude<StatusCode, ContentlessStatusCode>;
+export type ContentfulStatusCode = Exclude<
+  | InfoStatusCode
+  | SuccessStatusCode
+  | RedirectStatusCode
+  | ClientErrorStatusCode
+  | ServerErrorStatusCode
+  | UnofficialStatusCode,
+  ContentlessStatusCode
+>;

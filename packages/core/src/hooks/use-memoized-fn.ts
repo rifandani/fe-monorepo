@@ -20,13 +20,21 @@ export const useMemoizedFn = <T extends AnyFunction>(fn: T) => {
   // why not write `fnRef.current = fn`?
   // https://github.com/alibaba/hooks/issues/728
   fnRef.current = useMemo(() => fn, [fn]);
-  const memoizedFnRef = useRef<AnyFunction>(null);
+  const memoizedFnRef = useRef<T>(null);
 
-  if (!memoizedFnRef.current) {
-    memoizedFnRef.current = (...args: Parameters<T>) => fnRef.current(...args);
+  // The React Compiler does not support `??=`, so this stays an `if`.
+  // oxlint-disable-next-line typescript/prefer-nullish-coalescing
+  if (memoizedFnRef.current === null) {
+    const forward = (...args: Parameters<T>): ReturnType<T> =>
+      // `AnyFunction` returns `any`, so the call result is `any` too.
+      // oxlint-disable-next-line typescript/no-unsafe-return
+      fnRef.current(...args);
+
+    // SAFETY: the wrapper forwards every argument to the latest `fn` and returns
+    // its result, so it is call-compatible with `T` while keeping a stable identity.
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    memoizedFnRef.current = forward as T;
   }
 
-  // SAFETY: the wrapper forwards every argument to the latest `fn` and returns
-  // its result, so it is call-compatible with `T` while keeping a stable identity.
-  return memoizedFnRef.current as T;
+  return memoizedFnRef.current;
 };

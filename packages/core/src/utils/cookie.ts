@@ -19,6 +19,11 @@ type CookieAttrHandler = (attrObj: CookieAttributes, attrValue: string) => void;
 const trimOrUndefined = (value: string): string | undefined =>
   value ? value.trim() : undefined;
 
+const isSameSite = (
+  value: string
+): value is NonNullable<CookieAttributes["samesite"]> =>
+  value === "strict" || value === "lax" || value === "none";
+
 const COOKIE_ATTR_HANDLERS = {
   "max-age": (attrObj, attrValue) => {
     attrObj["max-age"] = attrValue
@@ -41,11 +46,10 @@ const COOKIE_ATTR_HANDLERS = {
     attrObj.httponly = true;
   },
   samesite: (attrObj, attrValue) => {
-    // SAFETY: `SameSite` is validated by the consumer, not the parser - the
-    // header value is echoed through lowercased so callers see what was sent.
-    attrObj.samesite = attrValue
-      ? (attrValue.trim().toLowerCase() as "strict" | "lax" | "none")
-      : undefined;
+    // An unknown `SameSite` value is dropped, the same as a missing one.
+    const sameSite = attrValue.trim().toLowerCase();
+
+    attrObj.samesite = isSameSite(sameSite) ? sameSite : undefined;
   },
 } satisfies Record<string, CookieAttrHandler>;
 

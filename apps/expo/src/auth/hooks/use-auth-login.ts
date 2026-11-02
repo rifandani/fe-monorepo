@@ -31,7 +31,8 @@ export const useAuthLogin = (
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
 
   return useMutation<Success, MutationError, Exclude<Params, undefined>>({
-    mutationFn: (json) => appRuntime.runPromise(authRepositories.login(json)),
+    mutationFn: async (json) =>
+      await appRuntime.runPromise(authRepositories.login(json)),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
       toast.show(toErrorMessage(error), {

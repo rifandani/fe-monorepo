@@ -7,11 +7,11 @@ import { HttpClientResponse } from "effect/http";
 // Stryker disable all: Schema shapes — ADR-0001 plain Schema out of unit-test
 // scope; file stays allowlisted for userKeys / userApi (ADR-0003).
 const userSchema = Schema.Struct({
-  id: Schema.Number,
+  id: Schema.Finite,
   firstName: Schema.String,
   lastName: Schema.String,
   maidenName: Schema.String,
-  age: Schema.Number,
+  age: Schema.Finite,
   gender: Schema.Literals(["male", "female"]),
   email: emailStringSchema,
   phone: Schema.String,
@@ -20,14 +20,14 @@ const userSchema = Schema.Struct({
   birthDate: Schema.String,
   image: urlStringSchema,
   bloodGroup: Schema.String,
-  height: Schema.Number,
-  weight: Schema.Number,
+  height: Schema.Finite,
+  weight: Schema.Finite,
   eyeColor: Schema.String,
   // ... and a lot more
 });
 
 const getUserApiRequestSchema = Schema.Struct({
-  id: Schema.Number,
+  id: Schema.Finite,
 });
 
 // Stryker restore all

@@ -8,7 +8,7 @@ import { HttpClientRequest, HttpClientResponse } from "effect/http";
 // Schema shapes out of test scope; this file stays allowlisted for authKeys /
 // authRepositories only (ADR-0003 accepted noise).
 export const authLoginRequestSchema = Schema.Struct({
-  expiresInMins: Schema.optionalKey(Schema.Number),
+  expiresInMins: Schema.optionalKey(Schema.Finite),
   password: Schema.String.check(
     Schema.isMinLength(6, {
       message: "password must contain at least 6 characters",
@@ -26,7 +26,7 @@ export const authLoginResponseSchema = Schema.Struct({
   email: emailStringSchema,
   firstName: Schema.String,
   gender: Schema.Literals(["male", "female"]),
-  id: Schema.Number.check(Schema.isGreaterThan(0)),
+  id: Schema.Finite.check(Schema.isGreaterThan(0)),
   image: urlStringSchema,
   lastName: Schema.String,
   refreshToken: Schema.String,

@@ -1,6 +1,6 @@
 /* oxlint-disable node/callback-return promise/prefer-await-to-callbacks */
 import { useLatest } from "@workspace/core/hooks/use-latest";
-import { isNumber } from "radashi";
+import { isNumber, noop } from "radashi";
 import { useEffect, useRef } from "react";
 
 interface FrameHandle {
@@ -63,7 +63,7 @@ export const useRafTimeout = (fn: () => void, delay: number | undefined) => {
   useEffect(() => {
     // radashi 13 `isNumber(NaN)` is true; `NaN >= 0` is false, so NaN still bails.
     if (!(isNumber(delay) && delay >= 0)) {
-      return;
+      return noop;
     }
 
     timerRef.current = setRafTimeout(() => {

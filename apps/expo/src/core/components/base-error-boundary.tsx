@@ -9,7 +9,12 @@ export const BaseErrorBoundary = ({ error, retry }: ErrorBoundaryProps) => (
     <H5 color="$red10">{error.name}</H5>
     <Paragraph fontStyle="italic">{error.message}</Paragraph>
 
-    <BaseButton icon={<Feather name="repeat" />} onPress={retry}>
+    <BaseButton
+      icon={<Feather name="repeat" />}
+      onPress={() => {
+        void retry();
+      }}
+    >
       Try Again
     </BaseButton>
   </YStack>

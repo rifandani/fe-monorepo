@@ -34,12 +34,13 @@ export const useCdnFileQuery = (
 
   const query = useQuery({
     // `signal` interrupts the Effect, which aborts the underlying fetch.
-    queryFn: url
-      ? ({ signal }) =>
-          appRuntime.runPromise(cdnRepositories.getCdnFile({ url }), {
-            signal,
-          })
-      : skipToken,
+    queryFn:
+      url === undefined || url === ""
+        ? skipToken
+        : async ({ signal }) =>
+            await appRuntime.runPromise(cdnRepositories.getCdnFile({ url }), {
+              signal,
+            }),
     queryKey: cdnKeys[opt.key](url),
     ...queryOptions,
   });

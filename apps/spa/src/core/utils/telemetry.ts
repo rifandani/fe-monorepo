@@ -1,4 +1,4 @@
-import { Cause, Effect } from "effect";
+import { Effect } from "effect";
 
 /** Value of an extra field recorded next to an error; each is stringified. */
 type ErrorAttributeValue = boolean | null | number | string | undefined;
@@ -52,7 +52,7 @@ export const recordException = (name: string, error: ReportedError) => {
     stack: error.stack,
   });
 
-  return Effect.failCause(Cause.die(defect)).pipe(
+  return Effect.die(defect).pipe(
     Effect.withSpan(name, { attributes: errorAttributes(error) }),
     Effect.exit,
     Effect.asVoid

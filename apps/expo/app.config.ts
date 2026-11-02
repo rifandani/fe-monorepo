@@ -111,7 +111,6 @@ const STATIC_CONFIG = {
   orientation: "portrait",
   userInterfaceStyle: "automatic", // to support dark mode
   platforms: ["android", "ios"],
-  assetBundlePatterns: ["**/*"],
   updates: {
     fallbackToCacheTimeout: 0,
     url: `https://u.expo.dev/${EAS_PROJECT_ID}`,

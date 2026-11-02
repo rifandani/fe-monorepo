@@ -34,9 +34,12 @@ export const ProfileLanguageChanger = () => {
                 />
               ) : undefined
             }
-            onPress={() => setLocale("en-us" satisfies LocaleDictLanguage)}
+            onPress={() => {
+              setLocale("en-us" satisfies LocaleDictLanguage);
+            }}
           />
         </FitSheet.Item>
+        <FitSheet.Separator />
         <FitSheet.Item>
           <ListItem
             pressTheme
@@ -50,7 +53,9 @@ export const ProfileLanguageChanger = () => {
                 />
               ) : undefined
             }
-            onPress={() => setLocale("id-id" satisfies LocaleDictLanguage)}
+            onPress={() => {
+              setLocale("id-id" satisfies LocaleDictLanguage);
+            }}
           />
         </FitSheet.Item>
       </FitSheet>

@@ -27,23 +27,23 @@ export const errorResponseSchema = Schema.Struct({
 
 export const resourceListRequestSchema = Schema.Struct({
   /** artificial delay in ms. */
-  delay: Schema.optionalKey(Schema.Number),
+  delay: Schema.optionalKey(Schema.Finite),
   /** limit per page. limit=0 to clear */
   limit: Schema.optionalKey(
-    Schema.Number.check(Schema.isBetween({ minimum: 1, maximum: 100 }))
+    Schema.Finite.check(Schema.isBetween({ minimum: 1, maximum: 100 }))
   ),
   /** select fields. could be comma separated */
   select: Schema.optionalKey(Schema.String),
   /** skip the first n items. */
   skip: Schema.optionalKey(
-    Schema.Number.check(Schema.isBetween({ minimum: 0, maximum: 100 }))
+    Schema.Finite.check(Schema.isBetween({ minimum: 0, maximum: 100 }))
   ),
 });
 
 export const resourceListResponseSchema = Schema.Struct({
-  limit: Schema.Number,
-  skip: Schema.Number,
-  total: Schema.Number,
+  limit: Schema.Finite,
+  skip: Schema.Finite,
+  total: Schema.Finite,
 });
 
 // #endregion COMMON SCHEMAS

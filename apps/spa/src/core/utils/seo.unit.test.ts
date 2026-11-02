@@ -71,11 +71,7 @@ describe("buildSeoMetadata", () => {
   });
 
   it("handles a missing params object", () => {
-    // SAFETY: the cast exists to exercise the runtime guard for callers that
-    // reach this from untyped JS - the signature itself requires the params.
-    expect(buildSeoMetadata(undefined as never).title).toBe(
-      "Layout | Test App"
-    );
+    expect(buildSeoMetadata().title).toBe("Layout | Test App");
   });
 
   it("absolutizes caller-supplied image paths", () => {

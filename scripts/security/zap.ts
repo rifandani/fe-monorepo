@@ -34,7 +34,7 @@ const fail: (message: string) => never = (message) => {
 
 const [plan] = process.argv.slice(2);
 
-if (!plan) {
+if (plan === undefined || plan === "") {
   fail(
     `no plan given. Available: ${readdirSync(PLAN_DIR)
       .filter((file) => file.endsWith(".yaml"))
@@ -49,7 +49,7 @@ if (!existsSync(path.join(PLAN_DIR, `${plan}.yaml`))) {
 
 const target = process.env.ZAP_TARGET;
 
-if (!target) {
+if (target === undefined || target === "") {
   fail(
     `ZAP_TARGET is not set. Start the app with \`bun zap:spa:serve\`, then:\n` +
       `  ZAP_TARGET=${LOCAL_TARGET_HINT} bun zap:${plan.replace(/-baseline$/u, "")}`

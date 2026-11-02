@@ -1,3 +1,4 @@
+import { strict as effectStrict } from "@effect/tsgo/oxlint-presets";
 import { defineConfig } from "oxlint";
 import antiSlop from "ultracite/oxlint/anti-slop";
 import core from "ultracite/oxlint/core";
@@ -15,6 +16,10 @@ export default defineConfig({
     react,
     tanstack,
     tanstackJsPlugins,
+    // Effect diagnostics through the `effecttsgo` plugin. The `prepare` script
+    // patches the oxlint and oxlint-tsgolint binaries to include it. The preset
+    // turns on type-aware mode, so core's type-aware rules also run.
+    effectStrict,
   ],
   // oxlint does not merge `settings` or `env` from extends; curated react-doctor mode.
   env: core.env,
@@ -38,6 +43,27 @@ export default defineConfig({
     // `Effect.gen(function* () {…})` and `Effect.fn("name")(function* () {…})`
     // are the Effect idiom; the span or the enclosing binding names them.
     "func-names": ["error", "always", { generators: "never" }],
+    // Upstream keeps the `*-in-effect` family off. Use the Effect services
+    // (`Console`, `Clock`/`DateTime`) inside an Effect.
+    "effecttsgo/global-console-in-effect": "error",
+    "effecttsgo/global-date-in-effect": "error",
+    // Effect 4 ships `@effect/vitest`, `@effect/atom-react` and the HTTP
+    // client as unstable modules. The app uses them on purpose.
+    "effecttsgo/unstable-api-usage": "off",
+    // TanStack Router redirects and 404s by throwing `redirect()` and
+    // `notFound()`, which are not `Error` objects.
+    "typescript/only-throw-error": [
+      "error",
+      {
+        allow: [
+          {
+            from: "package",
+            package: "@tanstack/router-core",
+            name: ["Redirect", "NotFoundError"],
+          },
+        ],
+      },
+    ],
   },
   overrides: [
     {

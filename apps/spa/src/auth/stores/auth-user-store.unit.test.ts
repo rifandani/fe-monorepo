@@ -20,10 +20,10 @@ const validUser = {
 };
 
 /** A fresh module graph, so the atom reads storage before anything writes. */
-const loadFresh = () => {
+const loadFresh = async () => {
   vi.resetModules();
 
-  return import("@/auth/stores/auth-user-store");
+  return await import("@/auth/stores/auth-user-store");
 };
 
 describe("authUserStore", () => {

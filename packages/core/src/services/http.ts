@@ -111,9 +111,9 @@ const withAuth =
       HttpClient.mapRequest((request) => {
         const token = auth.getToken();
 
-        return token
-          ? HttpClientRequest.setHeader(request, header, format(token))
-          : request;
+        return token === null || token === ""
+          ? request
+          : HttpClientRequest.setHeader(request, header, format(token));
       }),
       HttpClient.tap((response) =>
         Effect.sync(() => {
@@ -129,7 +129,11 @@ const withAuth =
           const token = auth.getToken();
           const sent = Headers.get(response.request.headers, header);
 
-          if (!token || Option.getOrUndefined(sent) !== format(token)) {
+          if (
+            token === null ||
+            token === "" ||
+            Option.getOrUndefined(sent) !== format(token)
+          ) {
             return;
           }
 

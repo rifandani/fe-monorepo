@@ -36,12 +36,9 @@ export const ProfileMenu = () => {
 
       <Menu
         onAction={(key) => {
-          // SAFETY: the three menu items below are the only keys this menu emits.
-          const currentKey = key as "profile" | "settings" | "logout";
-
-          if (currentKey === "logout") {
+          if (key === "logout") {
             endSession();
-            navigate({
+            void navigate({
               to: "/login",
             });
           }

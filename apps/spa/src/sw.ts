@@ -10,9 +10,33 @@ declare let self: ServiceWorkerGlobalScope;
 
 const OFFLINE_CACHE = "spa-offline-v1";
 
+/** A `postMessage` from the page that asks this worker to activate now. */
+const isSkipWaitingMessage = (
+  data: unknown
+): data is { type: "SKIP_WAITING" } =>
+  typeof data === "object" &&
+  data !== null &&
+  "type" in data &&
+  data.type === "SKIP_WAITING";
+
+interface PushPayload {
+  body?: string;
+  title?: string;
+}
+
+const isOptionalString = (value: unknown): value is string | undefined =>
+  value === undefined || typeof value === "string";
+
+/** The push payload is attacker-visible JSON, so every field is checked. */
+const isPushPayload = (data: unknown): data is PushPayload =>
+  typeof data === "object" &&
+  data !== null &&
+  isOptionalString("body" in data ? data.body : undefined) &&
+  isOptionalString("title" in data ? data.title : undefined);
+
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
+  if (isSkipWaitingMessage(event.data)) {
+    void self.skipWaiting();
   }
 });
 
@@ -62,12 +86,8 @@ registerRoute(
 );
 
 self.addEventListener("push", (event) => {
-  // SAFETY: the push payload is attacker-visible JSON, so both fields stay
-  // optional and every read below falls back to a literal default.
-  const data = (event.data?.json() ?? {}) as {
-    body?: string;
-    title?: string;
-  };
+  const payload: unknown = event.data?.json();
+  const data: PushPayload = isPushPayload(payload) ? payload : {};
 
   event.waitUntil(
     self.registration.showNotification(data.title ?? "@workspace/spa", {

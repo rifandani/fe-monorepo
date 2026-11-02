@@ -21,7 +21,9 @@ export const invariant = (
   condition: any,
   message?: string | (() => string)
 ): asserts condition => {
-  if (condition) {
+  const passed = Boolean(condition);
+
+  if (passed) {
     return;
   }
 
@@ -39,6 +41,10 @@ export const invariant = (
   // Options:
   // 1. message provided: `${prefix}: ${provided}`
   // 2. message not provided: prefix
-  const value: string = provided ? `${prefix}: ${provided}` : prefix;
+  const value: string =
+    provided === undefined || provided === ""
+      ? prefix
+      : `${prefix}: ${provided}`;
+
   throw new Error(value);
 };

@@ -1,5 +1,6 @@
 import { Effect, Metric } from "effect";
 import { describe, expect, it, vi } from "vitest";
+import type { Metric as WebVitalsMetric } from "web-vitals";
 
 import {
   METRICS_METER_WEB_VITALS_CLS,
@@ -9,13 +10,18 @@ import {
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/core/constants/global";
 
+/** The shape of `onLCP`, `onINP` and the other `web-vitals` reporters. */
+type OnMetric = (callback: (metric: WebVitalsMetric) => void) => void;
+
 const harness = vi.hoisted(() => ({
-  onLCP: vi.fn(),
-  onINP: vi.fn(),
-  onCLS: vi.fn(),
-  onFCP: vi.fn(),
-  onTTFB: vi.fn(),
-  forceFlush: vi.fn(() => Promise.resolve()),
+  onLCP: vi.fn<OnMetric>(),
+  onINP: vi.fn<OnMetric>(),
+  onCLS: vi.fn<OnMetric>(),
+  onFCP: vi.fn<OnMetric>(),
+  onTTFB: vi.fn<OnMetric>(),
+  forceFlush: vi.fn(async () => {
+    await Promise.resolve();
+  }),
   /** A fresh metric registry per module load, so samples never leak between tests. */
   registry: { current: new Map() } satisfies { current: Metric.MetricRegistry },
 }));
@@ -71,7 +77,11 @@ const capture = (
 ) => {
   if (type === "pagehide" || type === "visibilitychange") {
     listeners[type].push(
-      "handleEvent" in listener ? listener.handleEvent : listener
+      "handleEvent" in listener
+        ? (event) => {
+            listener.handleEvent(event);
+          }
+        : listener
     );
   }
 };
@@ -95,6 +105,7 @@ const asMetric = (metric: {
 }) =>
   // SAFETY: the callback only reads fields present on this stub; `Metric` adds
   // entries and attribution the test never supplies.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   metric as never;
 
 const resetHarness = () => {
@@ -114,10 +125,10 @@ const resetHarness = () => {
   vi.resetModules();
 };
 
-const loadModule = () => {
+const loadModule = async () => {
   resetHarness();
 
-  return import("./web-vitals");
+  return await import("./web-vitals");
 };
 
 type WebVitalsModule = Awaited<ReturnType<typeof loadModule>>;
@@ -362,9 +373,9 @@ describe("reportWebVitals", () => {
   it("swallows a failed export, since the page is going away", async () => {
     const module = await loadModule();
     module.reportWebVitals();
-    forceFlush.mockImplementationOnce(() =>
-      Promise.reject(new Error("offline"))
-    );
+    forceFlush.mockImplementationOnce(async () => {
+      await Promise.reject(new Error("offline"));
+    });
 
     hide();
 
