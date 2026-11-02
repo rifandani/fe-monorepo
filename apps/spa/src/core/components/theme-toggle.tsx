@@ -6,7 +6,7 @@ import { match } from "ts-pattern";
 import { Button } from "@/core/components/ui/button";
 import {
   Menu,
-  MenuContent,
+  MenuTrigger,
   MenuHeader,
   MenuItem,
   MenuSection,
@@ -17,13 +17,15 @@ import { useTranslation } from "@/core/providers/i18n/context";
 
 export const ThemeToggle = () => {
   const { t } = useTranslation();
+
   // `Entry` owns applying the mode to `<html>`; this only reads and writes the pick
   const [theme, setTheme] = useLocalStorage<ColorMode>(
     COLOR_MODE_STORAGE_KEY,
     "auto"
   );
+
   return (
-    <Menu>
+    <MenuTrigger>
       <Button intent="outline">
         {match(theme)
           .with("auto", () => <HiComputerDesktop className="size-6" />)
@@ -34,7 +36,7 @@ export const ThemeToggle = () => {
           ))}
       </Button>
 
-      <MenuContent
+      <Menu
         selectionMode="single"
         selectedKeys={new Set([theme ?? "auto"])}
         onSelectionChange={(_selection) => {
@@ -43,6 +45,7 @@ export const ThemeToggle = () => {
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: ColorMode;
           };
+
           setTheme(selection.currentKey);
         }}
       >
@@ -55,7 +58,7 @@ export const ThemeToggle = () => {
           <MenuItem id="light">{t("light")}</MenuItem>
           <MenuItem id="dark">{t("dark")}</MenuItem>
         </MenuSection>
-      </MenuContent>
-    </Menu>
+      </Menu>
+    </MenuTrigger>
   );
 };

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { HiChevronRight } from "react-icons/hi2"
 import { createContext, use } from "react"
@@ -9,15 +9,15 @@ import { cn } from "cn"
 import { cx } from "@/core/utils/primitive"
 import { Link } from "./link"
 
-type BreadcrumbsContextProps = { separator?: "chevron" | "slash" | boolean }
+export type BreadcrumbsContextProps = { separator?: "chevron" | "slash" | boolean }
 const BreadcrumbsProvider = createContext<BreadcrumbsContextProps>({
   separator: "chevron",
 })
 
-const Breadcrumbs = <T extends object>({
+export function Breadcrumbs<T extends object>({
   className,
   ...props
-}: BreadcrumbsProps<T> & BreadcrumbsContextProps) => {
+}: BreadcrumbsProps<T> & BreadcrumbsContextProps) {
   return (
     <BreadcrumbsProvider value={{ separator: props.separator }}>
       <BreadcrumbsPrimitive {...props} className={cn("flex items-center gap-2", className)} />
@@ -25,13 +25,13 @@ const Breadcrumbs = <T extends object>({
   )
 }
 
-interface BreadcrumbsItemProps extends BreadcrumbProps, BreadcrumbsContextProps {}
+export interface BreadcrumbsItemProps extends BreadcrumbProps, BreadcrumbsContextProps {}
 
-const BreadcrumbsItem = ({
+export function BreadcrumbsItem({
   separator = true,
   className,
   ...props
-}: BreadcrumbsItemProps & Partial<Omit<LinkProps, "className">>) => {
+}: BreadcrumbsItemProps & Partial<Omit<LinkProps, "className">>) {
   const { separator: contextSeparator } = use(BreadcrumbsProvider)
   separator = contextSeparator ?? separator
   const separatorValue = separator === true ? "chevron" : separator
@@ -45,7 +45,7 @@ const BreadcrumbsItem = ({
       {({ isCurrent }) => (
         <>
           <Link
-            className="has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4 *:data-[slot=icon]:text-muted-fg hover:*:data-[slot=icon]:text-fg"
+            className="has-data-[slot=icon]:inline-flex has-data-[slot=icon]:items-center has-data-[slot=icon]:gap-x-2 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:size-4 *:data-[slot=icon]:text-muted-foreground hover:*:data-[slot=icon]:text-foreground"
             {...props}
           />
           {!isCurrent && separator !== false && <Separator separator={separatorValue} />}
@@ -55,18 +55,13 @@ const BreadcrumbsItem = ({
   )
 }
 
-const Separator = ({
-  separator = "chevron",
-}: {
-  separator?: BreadcrumbsItemProps["separator"]
-}) => {
+function Separator({ separator = "chevron" }: { separator?: BreadcrumbsItemProps["separator"] }) {
   return (
-    <span className="*:shrink-0 *:text-muted-fg *:data-[slot=icon]:size-3.5">
+    <span className="*:shrink-0 *:text-muted-foreground *:data-[slot=icon]:size-3.5">
       {separator === "chevron" && <HiChevronRight />}
-      {separator === "slash" && <span className="text-muted-fg">/</span>}
+      {separator === "slash" && <span className="text-muted-foreground">/</span>}
     </span>
   )
 }
 
-export type { BreadcrumbsItemProps, BreadcrumbsProps }
-export { Breadcrumbs, BreadcrumbsItem }
+export type { BreadcrumbsProps }

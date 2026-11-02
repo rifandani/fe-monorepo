@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { Button } from "react-aria-components/Button"
 import type { GridListItemProps, GridListProps } from "react-aria-components/GridList"
@@ -13,21 +13,23 @@ import { cn } from "cn"
 import { cx } from "@/core/utils/primitive"
 import { Checkbox, CheckboxField } from "./checkbox"
 
-const GridList = <T extends object>({ className, ...props }: GridListProps<T>) => (
-  <GridListPrimitive
-    data-slot="grid-list"
-    className={cx(
-      "relative divide-y overflow-hidden rounded-lg border bg-bg *:drop-target:border-accent sm:text-sm/6 dark:bg-muted",
-      className
-    )}
-    {...props}
-  />
-)
+export function GridList<T extends object>({ className, ...props }: GridListProps<T>) {
+  return (
+    <GridListPrimitive
+      data-slot="grid-list"
+      className={cx(
+        "relative divide-y overflow-hidden rounded-lg border bg-background *:drop-target:border-accent sm:text-sm/6 dark:bg-muted",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-const GridListSection = <T extends object>({
+export function GridListSection<T extends object>({
   className,
   ...props
-}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) => {
+}: React.ComponentProps<typeof GridListSectionPrimitive<T>>) {
   return (
     <GridListSectionPrimitive
       data-slot="grid-list-section"
@@ -37,10 +39,10 @@ const GridListSection = <T extends object>({
   )
 }
 
-const GridListHeader = ({
+export function GridListHeader({
   className,
   ...props
-}: React.ComponentProps<typeof GridListHeaderPrimitive>) => {
+}: React.ComponentProps<typeof GridListHeaderPrimitive>) {
   return (
     <GridListHeaderPrimitive
       data-slot="grid-list-header"
@@ -50,7 +52,7 @@ const GridListHeader = ({
   )
 }
 
-const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
+export function GridListItem({ className, children, ...props }: GridListItemProps) {
   const textValue = typeof children === "string" ? children : undefined
   return (
     <GridListItemPrimitive
@@ -59,9 +61,9 @@ const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
       className={cx(
         "group relative min-w-0 px-3 py-2.5 outline-hidden [--me-icon:--spacing(2)]",
         "flex min-w-0 cursor-default items-center gap-2 sm:gap-2.5",
-        "dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-fg",
-        "hover:bg-accent/50 **:[svg:not([data-slot='check-indicator'])]:size-5 **:[svg:not([data-slot='check-indicator'])]:shrink-0 **:[svg:not([data-slot='check-indicator'])]:text-muted-fg sm:**:[svg:not([data-slot='check-indicator'])]:size-4",
-        "selected:bg-accent/40 selected:text-fg selected:hover:bg-accent/80 selected:**:[.text-muted-fg]:text-accent-fg/80",
+        "dragging:cursor-grab dragging:opacity-70 dragging:**:[[slot=drag]]:text-foreground",
+        "hover:bg-accent/50 **:[svg:not([data-slot='check-indicator'])]:size-5 **:[svg:not([data-slot='check-indicator'])]:shrink-0 **:[svg:not([data-slot='check-indicator'])]:text-muted-foreground sm:**:[svg:not([data-slot='check-indicator'])]:size-4",
+        "selected:bg-accent/40 selected:text-foreground selected:hover:bg-accent/80 selected:**:[.text-muted-foreground]:text-accent-foreground/80",
         "href" in props && "cursor-pointer",
         className
       )}
@@ -72,7 +74,7 @@ const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
             <Button slot="drag">
               <svg
                 data-slot="drag-icon"
-                className="size-5 text-muted-fg sm:size-4"
+                className="size-5 text-muted-foreground sm:size-4"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -117,15 +119,15 @@ const GridListItem = ({ className, children, ...props }: GridListItemProps) => {
   )
 }
 
-const GridListEmptyState = ({ ref, className, ...props }: React.ComponentProps<"div">) => (
-  <div ref={ref} className={cn("p-6", className)} {...props} />
-)
+export function GridListEmptyState({ ref, className, ...props }: React.ComponentProps<"div">) {
+  return <div ref={ref} className={cn("p-6", className)} {...props} />
+}
 
-const GridListSpacer = ({ className, ref, ...props }: React.ComponentProps<"div">) => {
+export function GridListSpacer({ className, ref, ...props }: React.ComponentProps<"div">) {
   return <div ref={ref} aria-hidden className={cn("-ms-4 flex-1", className)} {...props} />
 }
 
-const GridListStart = ({ className, ref, ...props }: React.ComponentProps<"div">) => {
+export function GridListStart({ className, ref, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       ref={ref}
@@ -135,32 +137,23 @@ const GridListStart = ({ className, ref, ...props }: React.ComponentProps<"div">
   )
 }
 
-interface GridListTextProps extends TextProps {
+export interface GridListTextProps extends TextProps {
   ref?: React.Ref<HTMLDivElement>
 }
 
-const GridListLabel = ({ className, ref, ...props }: GridListTextProps) => (
-  <Text ref={ref} className={cn("font-medium", className)} {...props} />
-)
+export function GridListLabel({ className, ref, ...props }: GridListTextProps) {
+  return <Text ref={ref} className={cn("font-medium", className)} {...props} />
+}
 
-const GridListDescription = ({ className, ref, ...props }: GridListTextProps) => (
-  <Text
-    slot="description"
-    ref={ref}
-    className={cn("font-normal text-muted-fg text-sm", className)}
-    {...props}
-  />
-)
+export function GridListDescription({ className, ref, ...props }: GridListTextProps) {
+  return (
+    <Text
+      slot="description"
+      ref={ref}
+      className={cn("font-normal text-muted-foreground text-sm", className)}
+      {...props}
+    />
+  )
+}
 
 export type { GridListItemProps, GridListProps }
-export {
-  GridList,
-  GridListDescription,
-  GridListEmptyState,
-  GridListHeader,
-  GridListItem,
-  GridListLabel,
-  GridListSection,
-  GridListSpacer,
-  GridListStart,
-}

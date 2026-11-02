@@ -14,6 +14,7 @@ import type { GetUserApiResponseSchema } from "./user";
 // `authRepositories(http)` does.
 vi.mock("@/core/services/mmkv", async () => {
   const { createMmkvFake } = await import("@test/mmkv");
+
   return createMmkvFake();
 });
 
@@ -62,6 +63,7 @@ describe("userApi.getDetail", () => {
       http.get(detailUrl, ({ params, request }) => {
         capturedId = params.id;
         capturedRequest = request;
+
         return HttpResponse.json(sampleUser);
       })
     );

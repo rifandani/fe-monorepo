@@ -13,7 +13,9 @@ export const HTTP_STATUS_CODES = {
   UNAUTHORIZED: 401,
   UNPROCESSABLE_ENTITY: 422,
 } as const;
+
 export type InfoStatusCode = 100 | 101 | 102 | 103;
+
 export type SuccessStatusCode =
   | 200
   | 201
@@ -25,7 +27,9 @@ export type SuccessStatusCode =
   | 207
   | 208
   | 226;
+
 export type DeprecatedStatusCode = 305 | 306;
+
 export type RedirectStatusCode =
   | 300
   | 301
@@ -35,6 +39,7 @@ export type RedirectStatusCode =
   | DeprecatedStatusCode
   | 307
   | 308;
+
 export type ClientErrorStatusCode =
   | 400
   | 401
@@ -65,6 +70,7 @@ export type ClientErrorStatusCode =
   | 429
   | 431
   | 451;
+
 export type ServerErrorStatusCode =
   | 500
   | 501
@@ -77,6 +83,7 @@ export type ServerErrorStatusCode =
   | 508
   | 510
   | 511;
+
 /**
  * `UnofficialStatusCode` can be used to specify an unofficial status code.
  * @example
@@ -88,6 +95,7 @@ export type ServerErrorStatusCode =
  * ```
  */
 export type UnofficialStatusCode = -1;
+
 /**
  * @deprecated
  * Use `UnofficialStatusCode` instead.
@@ -102,5 +110,7 @@ export type StatusCode =
   | ClientErrorStatusCode
   | ServerErrorStatusCode
   | UnofficialStatusCode;
+
 export type ContentlessStatusCode = 101 | 204 | 205 | 304;
+
 export type ContentfulStatusCode = Exclude<StatusCode, ContentlessStatusCode>;

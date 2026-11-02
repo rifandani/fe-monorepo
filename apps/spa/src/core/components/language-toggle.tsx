@@ -6,7 +6,7 @@ import { match } from "ts-pattern";
 import { Button } from "@/core/components/ui/button";
 import {
   Menu,
-  MenuContent,
+  MenuTrigger,
   MenuHeader,
   MenuItem,
   MenuSection,
@@ -15,8 +15,9 @@ import { useTranslation } from "@/core/providers/i18n/context";
 
 export const LanguageToggle = () => {
   const { t, setLocale, locale } = useTranslation();
+
   return (
-    <Menu>
+    <MenuTrigger>
       <Button intent="plain">
         <HiGlobeAlt className="size-6" />
         {match(locale)
@@ -25,7 +26,7 @@ export const LanguageToggle = () => {
           .otherwise(() => "Indonesia")}
       </Button>
 
-      <MenuContent
+      <Menu
         selectionMode="single"
         selectedKeys={new Set([locale])}
         onSelectionChange={(_selection) => {
@@ -34,6 +35,7 @@ export const LanguageToggle = () => {
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: LocaleDictLanguage;
           };
+
           setLocale(selection.currentKey);
         }}
       >
@@ -43,7 +45,7 @@ export const LanguageToggle = () => {
           <MenuItem id="en-us">English</MenuItem>
           <MenuItem id="id-id">Indonesia</MenuItem>
         </MenuSection>
-      </MenuContent>
-    </Menu>
+      </Menu>
+    </MenuTrigger>
   );
 };

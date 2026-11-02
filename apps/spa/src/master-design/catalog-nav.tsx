@@ -27,6 +27,7 @@ const visibleCategories = (needle: string): Category[] =>
           entry.name.toLowerCase().includes(needle)
         )
       : category.entries;
+
     return entries.length === 0 ? [] : [{ ...category, entries }];
   });
 
@@ -42,9 +43,9 @@ const CatalogNavItem = ({
   <li>
     <button
       className={cn(
-        "text-muted-fg hover:bg-secondary hover:text-fg w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
+        "text-muted-foreground hover:bg-secondary hover:text-foreground w-full rounded-md px-3 py-1.5 text-left text-sm transition-colors",
         isActive &&
-          "bg-primary text-primary-fg hover:bg-primary hover:text-primary-fg font-medium"
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground font-medium"
       )}
       data-active={isActive || undefined}
       onClick={() => {
@@ -69,6 +70,7 @@ export const CatalogNav = ({
 }: CatalogNavProps) => {
   const query = filter.trim().toLowerCase();
   const visible = visibleCategories(query);
+
   const [expanded, setExpanded] = useState<Set<string>>(() =>
     categoryIds(categories)
   );
@@ -79,7 +81,7 @@ export const CatalogNav = ({
   if (visible.length === 0) {
     return (
       <nav aria-label="Components" className="p-3">
-        <p className="text-muted-fg px-3 py-2 text-sm">No matches.</p>
+        <p className="text-muted-foreground px-3 py-2 text-sm">No matches.</p>
       </nav>
     );
   }

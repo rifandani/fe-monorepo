@@ -2,6 +2,7 @@ import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { isNumber } from "radashi";
 import { useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
+
 /**
  * Interface representing the history data structure
  * @template T Type of the value being tracked
@@ -24,12 +25,15 @@ const dumpIndex = <T>(step: number, arr: T[]) => {
     step > 0
       ? step - 1 // move forward
       : arr.length + step; // move backward
+
   if (index >= arr.length - 1) {
     index = arr.length - 1;
   }
+
   if (index < 0) {
     index = 0;
   }
+
   return index;
 };
 
@@ -42,6 +46,7 @@ const dumpIndex = <T>(step: number, arr: T[]) => {
  */
 const split = <T>(step: number, targetArr: T[]) => {
   const index = dumpIndex(step, targetArr);
+
   return {
     _after: targetArr.slice(index + 1),
     _before: targetArr.slice(0, index),
@@ -62,11 +67,13 @@ const pushValue = <T>(
   // caller of this helper has already committed one.
   const _past = [...history.past, history.present as T];
   const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
+
   // maximum number of records exceeded
   if (maxLengthNum > 0 && _past.length > maxLengthNum) {
     // delete first
     _past.splice(0, 1);
   }
+
   return {
     future: [],
     past: _past,
@@ -80,6 +87,7 @@ const pushValue = <T>(
  */
 const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.future);
+
   return {
     future: _after,
     // SAFETY: travelling implies a committed `present` - see `updateHistory`.
@@ -94,6 +102,7 @@ const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
  */
 const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.past);
+
   return {
     // SAFETY: travelling implies a committed `present` - see `updateHistory`.
     future: [..._after, history.present as T, ...history.future],
@@ -120,15 +129,18 @@ const createHistoryActions = <T>(
     // `Number` is identity for numbers and coerces stray string callers, so it
     // subsumes the `isNumber` guard this used to branch on.
     const stepNum = Number(step);
+
     // Travelling forward consumes `future`, backward consumes `past`; a zero
     // step, or an empty source stack, is a no-op.
     const [source, travel] =
       stepNum > 0
         ? ([history.future, travelForward] as const)
         : ([history.past, travelBackward] as const);
+
     if (stepNum === 0 || source.length === 0) {
       return;
     }
+
     setHistory(travel(history, stepNum));
   },
   /**
@@ -165,14 +177,17 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     past: [],
     present: initialValue,
   });
+
   const { present, past, future } = history;
   // Reference to track initial value for reset functionality
   const initialValueRef = useRef(initialValue);
+
   const { go, updateValue } = createHistoryActions<T>(
     history,
     setHistory,
     maxLength
   );
+
   // Stays in the hook body: the react-compiler rule forbids handing a ref
   // across a function boundary during render.
   // oxlint-disable-next-line typescript/no-explicit-any
@@ -185,6 +200,7 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
       present: _initial,
     });
   };
+
   return {
     back: useMemoizedFn(() => {
       go(-1);
@@ -200,4 +216,5 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     value: present,
   };
 };
+
 export default useHistoryTravel;

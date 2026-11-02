@@ -45,6 +45,7 @@ export const useMultipleRefs = <T>(initialValue: T) => {
       const ref = cache.current[index] ?? { current: initialValue };
       cache.current[index] = ref;
       callIndex.current = index + 1;
+
       return {
         done: false,
         value: ref,
@@ -52,8 +53,10 @@ export const useMultipleRefs = <T>(initialValue: T) => {
     },
     [Symbol.iterator]: () => {
       callIndex.current = 0;
+
       return iterator;
     },
   };
+
   return iterator;
 };

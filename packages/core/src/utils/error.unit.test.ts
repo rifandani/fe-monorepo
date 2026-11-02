@@ -13,12 +13,15 @@ const httpError = (data?: string | Record<string, string>, status = 401) => {
   // SAFETY: `toErrorMessage` reads only `data` and `message`; ky's normalized
   // options are untouched by this module, so an empty object stands in.
   const options = {} as NormalizedOptions;
+
   const error = new HTTPError(
     new Response(null, { status }),
     new Request("https://api.test/things"),
     options
   );
+
   error.data = data;
+
   return error;
 };
 

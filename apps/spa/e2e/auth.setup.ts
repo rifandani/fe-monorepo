@@ -3,6 +3,7 @@ import { expect, test } from "./_base";
 const usernameRegex = /username/iu;
 const passwordRegex = /password/iu;
 const loginRegex = /login|masuk/iu;
+
 test("auth setup", async ({ page }) => {
   // when we're not authenticated, the app redirects to the login page
   await page.goto("");

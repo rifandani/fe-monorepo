@@ -28,7 +28,7 @@ export const TableShowcase = () => (
       {(user) => (
         <TableRow id={user.id}>
           <TableCell className="font-medium">{user.name}</TableCell>
-          <TableCell className="text-muted-fg">{user.email}</TableCell>
+          <TableCell className="text-muted-foreground">{user.email}</TableCell>
           <TableCell>{user.role}</TableCell>
           <TableCell>
             <Badge intent={statusIntent[user.status]}>{user.status}</Badge>

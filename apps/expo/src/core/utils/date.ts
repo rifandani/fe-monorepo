@@ -18,8 +18,10 @@ export const formatDisplayDate = (
 ): string => {
   const parsed = parseISO(value);
   const date = isValid(parsed) ? parsed : new Date(value);
+
   if (!isValid(date)) {
     return value;
   }
+
   return format(date, "PPP", { locale: resolveDateFnsLocale(locale) });
 };

@@ -89,6 +89,7 @@ describe("buildSeoMetadata", () => {
 
   it("leaves the structured image form untouched", () => {
     const ogImage = [{ url: "https://cdn.test/a.png", width: 1, height: 2 }];
+
     const { metadata } = buildSeoMetadata({
       title: "Post",
       ogImage,

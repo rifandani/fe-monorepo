@@ -1,4 +1,5 @@
 import { createUseStorageState } from "@workspace/core/hooks/create-use-storage-state";
+
 /**
  * A Hook that store state into `localStorage`.
  *

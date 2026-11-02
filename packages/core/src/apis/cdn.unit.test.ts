@@ -59,6 +59,7 @@ describe("cdnRepositories", () => {
     server.use(
       http.get(fileUrl, ({ request }) => {
         captured = request;
+
         return HttpResponse.text("");
       })
     );

@@ -1,8 +1,8 @@
 import { Button } from "@/core/components/ui/button";
 import {
   Popover,
+  PopoverTrigger,
   PopoverBody,
-  PopoverContent,
   PopoverHeader,
   PopoverTitle,
 } from "@/core/components/ui/popover";
@@ -12,17 +12,17 @@ import { Variant, VariantGrid } from "../variant";
 export const PopoverShowcase = () => (
   <VariantGrid>
     <Variant label="default">
-      <Popover>
+      <PopoverTrigger>
         <Button intent="outline">Open</Button>
-        <PopoverContent>
+        <Popover>
           <PopoverHeader>
             <PopoverTitle>Popover</PopoverTitle>
           </PopoverHeader>
           <PopoverBody>
             Short contextual content next to the trigger.
           </PopoverBody>
-        </PopoverContent>
-      </Popover>
+        </Popover>
+      </PopoverTrigger>
     </Variant>
   </VariantGrid>
 );

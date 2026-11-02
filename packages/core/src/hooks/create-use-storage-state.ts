@@ -4,6 +4,7 @@ import { isFunction } from "radashi";
 import { useState } from "react";
 
 export type SetState<S> = S | ((prevState?: S) => S);
+
 export interface Options<T> {
   defaultValue?: T | (() => T);
   serializer?: (value: T) => string;
@@ -27,6 +28,7 @@ const serialize = <T>(value: T, options: Options<T>) => {
   if (options.serializer) {
     return options.serializer(value);
   }
+
   return JSON.stringify(value);
 };
 
@@ -38,6 +40,7 @@ const deserialize = <T>(value: string, options: Options<T>): T => {
   if (options.deserializer) {
     return options.deserializer(value);
   }
+
   return JSON.parse(value);
 };
 
@@ -46,6 +49,7 @@ const resolveDefaultValue = <T>(options: Options<T>) => {
   if (isFunction(options.defaultValue)) {
     return options.defaultValue();
   }
+
   return options.defaultValue;
 };
 
@@ -61,12 +65,14 @@ const readStoredValue = <T>(
 ) => {
   try {
     const raw = storage?.getItem(key);
+
     if (raw) {
       return deserialize(raw, options);
     }
   } catch (error) {
     onError(toError(error));
   }
+
   return resolveDefaultValue(options);
 };
 
@@ -87,6 +93,7 @@ export const createUseStorageState = (
   const useStorageState = <T>(key: string, options: Options<T> = {}) => {
     let storage: Storage | undefined;
     const { onError = logError } = options;
+
     // Try to get storage instance, with error handling
     // https://github.com/alibaba/hooks/issues/800
     try {
@@ -94,13 +101,16 @@ export const createUseStorageState = (
     } catch (error) {
       onError(toError(error));
     }
+
     const getStoredValue = () =>
       readStoredValue(storage, key, options, onError);
+
     const [state, setState] = useState(getStoredValue);
     // Update state when key changes
     useUpdateEffect(() => {
       setState(getStoredValue());
     }, [key]);
+
     /**
      * Updates both the React state and storage value
      * @param value New value or function to update current value
@@ -108,6 +118,7 @@ export const createUseStorageState = (
     const updateState = (value?: SetState<T>) => {
       const currentState = isFunction(value) ? value(state) : value;
       setState(currentState);
+
       if (currentState === undefined) {
         storage?.removeItem(key);
       } else {
@@ -118,7 +129,9 @@ export const createUseStorageState = (
         }
       }
     };
+
     return [state, useMemoizedFn(updateState)] as const;
   };
+
   return useStorageState;
 };

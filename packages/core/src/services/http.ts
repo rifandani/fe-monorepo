@@ -38,6 +38,7 @@ export type HttpConfig = Options & {
 const withAuth = (config: Options, auth: HttpAuthConfig): Options => {
   const header = auth.header ?? defaultHeader;
   const format = auth.format ?? defaultFormat;
+
   return {
     ...config,
     hooks: {
@@ -46,6 +47,7 @@ const withAuth = (config: Options, auth: HttpAuthConfig): Options => {
         ...(config.hooks?.beforeRequest ?? []),
         ({ request }) => {
           const token = auth.getToken();
+
           if (token) {
             request.headers.set(header, format(token));
           }
@@ -57,6 +59,7 @@ const withAuth = (config: Options, auth: HttpAuthConfig): Options => {
           if (response.status !== 401) {
             return;
           }
+
           // Only the credential *this instance* sent can be the one rejected.
           // Header presence is a weaker question than that: a caller may set
           // their own, and a 401 answering someone else's credential says
@@ -64,9 +67,11 @@ const withAuth = (config: Options, auth: HttpAuthConfig): Options => {
           // `Request` object than `beforeRequest` mutated, so identity cannot
           // be tracked — the header value is compared instead.
           const token = auth.getToken();
+
           if (!token || request.headers.get(header) !== format(token)) {
             return;
           }
+
           auth.onUnauthorized?.();
         },
       ],

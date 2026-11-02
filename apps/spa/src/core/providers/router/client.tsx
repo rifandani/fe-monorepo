@@ -20,7 +20,9 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
 const tracer = trace.getTracer(TRACER_ROUTER);
+
 const PendingRoute = () => (
   <div className="flex items-center justify-center">
     <svg
@@ -33,8 +35,10 @@ const PendingRoute = () => (
     </svg>
   </div>
 );
+
 const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
   logger.error("[ErrorRoute]: Error", { error, info });
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
@@ -42,7 +46,7 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-fg">Something went wrong</p>
+          <p className="text-muted-foreground">Something went wrong</p>
         </div>
 
         {/* Quick Actions */}
@@ -62,9 +66,11 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
     </div>
   );
 };
+
 const NotFoundRoute = () => {
   const userStore = useAuthUserStore();
   const { t } = useTranslation();
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
@@ -72,7 +78,7 @@ const NotFoundRoute = () => {
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">404</h1>
           <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
-          <p className="text-muted-fg">{t("gone")}</p>
+          <p className="text-muted-foreground">{t("gone")}</p>
         </div>
 
         {/* Quick Actions */}
@@ -90,6 +96,7 @@ const NotFoundRoute = () => {
     </div>
   );
 };
+
 // Create a new router instance
 export const router = createRouter({
   routeTree,

@@ -19,10 +19,13 @@ export const AppTranslationProvider = ({ children }: PropsWithChildren) => (
     {children}
   </TranslationProvider>
 );
+
 export const AppI18nProvider = ({ children }: PropsWithChildren) => {
   const { locale } = useTranslation();
+
   return <AriaI18nProvider locale={locale}>{children}</AriaI18nProvider>;
 };
+
 declare module "@workspace/core/libs/i18n/my-translations" {
   interface Register {
     translations: typeof enUS;

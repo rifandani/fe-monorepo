@@ -16,6 +16,7 @@ describe("defineTranslation", () => {
         },
       },
     });
+
     expect(result[0]).toContain("{count:plural}");
     expect(result[1].plural?.count.other).toBe("{?} messages");
   });

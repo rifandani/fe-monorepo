@@ -74,6 +74,7 @@ const setup = (
     fallbackLocale,
     translations: translations as never,
   });
+
   // SAFETY: likewise, the fixture's keys and params are absent from the
   // registered catalog `t` is typed against.
   return (key: string, params?: FixtureParams) =>

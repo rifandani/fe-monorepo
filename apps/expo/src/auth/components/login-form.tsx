@@ -23,6 +23,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
 const RememberMeCheckbox = () => {
   const { t } = useTranslation();
   const [state, setState] = useState({ rememberMe: false });
+
   return (
     <XStack my="$2" items="center" gap="$2">
       <Checkbox
@@ -41,6 +42,7 @@ const RememberMeCheckbox = () => {
     </XStack>
   );
 };
+
 interface LoginFormValues {
   password: string;
   username: string;
@@ -98,6 +100,7 @@ const LoginTextField = ({
 export const LoginForm = () => {
   const { t } = useTranslation();
   const setUser = useAppStore((state) => state.setUser);
+
   const form = useForm({
     defaultValues: {
       password: "",
@@ -106,11 +109,13 @@ export const LoginForm = () => {
     mode: "onChange",
     resolver: zodResolver(authLoginRequestSchema),
   });
+
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: (user) => {
       setUser(user);
     },
   });
+
   return (
     <Form
       onSubmit={form.handleSubmit((values) => {

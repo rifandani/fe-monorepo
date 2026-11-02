@@ -10,6 +10,7 @@ import { queryClient } from "@/core/providers/query/client";
 // builds an HTTP request.
 vi.mock("@/core/services/mmkv", async () => {
   const { createMmkvFake } = await import("@test/mmkv");
+
   return createMmkvFake();
 });
 

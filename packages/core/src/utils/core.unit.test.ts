@@ -119,6 +119,7 @@ describe("objectToFormData", () => {
       nested: { key: "v" },
       array: [{ nested_key1: { name: "key1" } }],
     });
+
     expect(formData.get("num")).toBe("1");
     expect(formData.get("name")).toBe("str");
     expect(formData.get("nested.key")).toBe("v");
@@ -130,6 +131,7 @@ describe("objectToFormData", () => {
       { keep: "a", drop: "b" },
       { ignoreList: ["drop"] }
     );
+
     expect(formData.get("keep")).toBe("a");
     expect(formData.get("drop")).toBeNull();
   });
@@ -148,6 +150,7 @@ describe("objectToFormData", () => {
       missing: undefined,
       kept: "yes",
     });
+
     expect(formData.get("empty")).toBeNull();
     expect(formData.get("missing")).toBeNull();
     expect(formData.get("kept")).toBe("yes");
@@ -169,6 +172,7 @@ describe("objectToFormDataArrayWithComma", () => {
     const formData = objectToFormDataArrayWithComma({
       filters: ["model", "category"],
     });
+
     expect(formData.get("filters")).toBe("model,category");
   });
 });

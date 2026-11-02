@@ -33,6 +33,7 @@ const fail: (message: string) => never = (message) => {
 };
 
 const [plan] = process.argv.slice(2);
+
 if (!plan) {
   fail(
     `no plan given. Available: ${readdirSync(PLAN_DIR)
@@ -47,6 +48,7 @@ if (!existsSync(path.join(PLAN_DIR, `${plan}.yaml`))) {
 }
 
 const target = process.env.ZAP_TARGET;
+
 if (!target) {
   fail(
     `ZAP_TARGET is not set. Start the app with \`bun zap:spa:serve\`, then:\n` +
@@ -87,9 +89,11 @@ const resolveNetworkArgs = (url: URL): string[] => {
   if (process.platform === "linux") {
     return ["--network", "host"];
   }
+
   if (url.hostname.endsWith(".localhost")) {
     return ["--add-host", `${url.hostname}:host-gateway`];
   }
+
   return [];
 };
 
@@ -99,6 +103,7 @@ const platformArgs =
   process.arch === "arm64" ? ["--platform", "linux/amd64"] : [];
 
 mkdirSync(REPORT_DIR, { recursive: true });
+
 // ZAP runs as uid 1000 in the container and has to write into the mount.
 chmodSync(REPORT_DIR, 0o777);
 
@@ -120,6 +125,7 @@ const args = [
 ];
 
 console.log(`zap: ${plan} → ${target}`);
+
 const result = spawnSync("docker", args, { stdio: "inherit" });
 
 if (readdirSync(REPORT_DIR).length > 0) {

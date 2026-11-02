@@ -16,7 +16,7 @@ export const CardShowcase = () => (
         description="Manage who has access to this project."
         title="Team members"
       />
-      <CardContent className="text-muted-fg text-sm/6">
+      <CardContent className="text-muted-foreground text-sm/6">
         Invite collaborators and control their permissions from one place.
       </CardContent>
       <CardFooter className="gap-2">
@@ -34,7 +34,7 @@ export const CardShowcase = () => (
       </CardHeader>
       <CardContent className="flex items-center gap-2">
         <Badge intent="success">Active</Badge>
-        <span className="text-muted-fg text-sm/6">Pro · $29/mo</span>
+        <span className="text-muted-foreground text-sm/6">Pro · $29/mo</span>
       </CardContent>
     </Card>
   </div>

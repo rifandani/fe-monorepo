@@ -7,7 +7,9 @@ const { mockCreateLogger, mockLoggerInstance } = vi.hoisted(() => {
     info: vi.fn(),
     warn: vi.fn(),
   };
+
   const createLogger = vi.fn(() => loggerInstance);
+
   return { mockCreateLogger: createLogger, mockLoggerInstance: loggerInstance };
 });
 

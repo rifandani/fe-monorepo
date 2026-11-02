@@ -35,6 +35,7 @@ import { useGetUser } from "@/user/hooks/use-get-user";
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
   const user = useAppStore((state) => state.user);
+
   const { data } = useGetUser(
     user
       ? {
@@ -42,6 +43,7 @@ const EditProfileSection = () => {
         }
       : undefined
   );
+
   const { birthDate, email, image, username } = data ?? {};
 
   return (
@@ -71,6 +73,7 @@ const EditProfileSection = () => {
     </XStack>
   );
 };
+
 const CheckForUpdatesListItem = () => {
   const { show } = useToastController();
   const { t } = useTranslation();
@@ -103,9 +106,11 @@ const CheckForUpdatesListItem = () => {
       })();
     }
   });
+
   if (!isUpdateAvailable) {
     return null;
   }
+
   return (
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
@@ -128,10 +133,12 @@ const CheckForUpdatesListItem = () => {
     </ProfileListItem>
   );
 };
+
 const LogoutListItem = () => {
   const theme = useTheme();
   const { t } = useTranslation();
   const $red10 = theme?.red10?.get() || "";
+
   return (
     <ProfileListItem
       pressStyle={{
@@ -148,7 +155,9 @@ const LogoutListItem = () => {
     </ProfileListItem>
   );
 };
+
 export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
+
 const TabsProfileScreen = () => (
   <YStack flex={1} p="$3" pt={Platform.select({ android: "$6", ios: "$9" })}>
     <EditProfileSection />
@@ -167,4 +176,5 @@ const TabsProfileScreen = () => (
     </Paragraph>
   </YStack>
 );
+
 export default TabsProfileScreen;

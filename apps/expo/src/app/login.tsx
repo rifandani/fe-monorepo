@@ -6,8 +6,10 @@ import { LoginForm } from "@/auth/components/login-form";
 import { useTranslation } from "@/core/providers/i18n/context";
 
 export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
+
 const LoginScreen = () => {
   const { t } = useTranslation();
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <YStack flex={1} px="$3" justify="center">
@@ -31,4 +33,5 @@ const LoginScreen = () => {
     </KeyboardAvoidingView>
   );
 };
+
 export default LoginScreen;

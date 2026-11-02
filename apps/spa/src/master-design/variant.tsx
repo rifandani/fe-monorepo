@@ -17,7 +17,7 @@ export const Variant = ({
   children: ReactNode;
 }) => (
   <div className={cn("flex flex-col items-start gap-2", className)}>
-    <span className="text-muted-fg font-mono text-xs">{label}</span>
+    <span className="text-muted-foreground font-mono text-xs">{label}</span>
     {children}
   </div>
 );

@@ -45,6 +45,7 @@ export const resolveOgImage = (image?: string) =>
 export const buildSeoMetadata = (params: SeoMetaInput) => {
   const title = `${params?.title ?? "Layout"} | ${appName}`;
   const description = `${params?.description ?? appDescription}`;
+
   const defaultMetadata: SeoMetaInput = {
     title,
     description,
@@ -57,12 +58,15 @@ export const buildSeoMetadata = (params: SeoMetaInput) => {
     ogImageHeight: 441,
     ogImageWidth: 843,
   };
+
   // Merge the default metadata with any additional properties passed in
   const metadata = assign(defaultMetadata, params ?? { title: "Layout" });
+
   // Only the plain-string form is a path we can absolutize; unhead also accepts
   // an object/array form, which is already fully specified by the caller.
   if (isImagePath(metadata.ogImage)) {
     metadata.ogImage = resolveOgImage(metadata.ogImage);
   }
+
   return { description, metadata, title };
 };

@@ -18,6 +18,7 @@ const ProfileTabIcon = ({ color }: { color: string }) => (
 
 const TabsLayout = () => {
   const { t } = useTranslation();
+
   return (
     <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
@@ -39,4 +40,5 @@ const TabsLayout = () => {
     </Tabs>
   );
 };
+
 export default TabsLayout;

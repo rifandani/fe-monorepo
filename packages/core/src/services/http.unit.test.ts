@@ -17,6 +17,7 @@ describe("Http", () => {
     server.use(
       http.get(resourceUrl, ({ request }) => {
         captured = request;
+
         return HttpResponse.json({});
       })
     );
@@ -25,6 +26,7 @@ describe("Http", () => {
       prefix: MOCK_API_BASE_URL,
       auth: { getToken: () => "abc123" },
     });
+
     await instance.instance.get("things").json();
 
     expect(captured?.headers.get("Authorization")).toBe("Bearer abc123");
@@ -35,6 +37,7 @@ describe("Http", () => {
     server.use(
       http.get(resourceUrl, ({ request }) => {
         captured = request;
+
         return HttpResponse.json({});
       })
     );
@@ -43,6 +46,7 @@ describe("Http", () => {
       prefix: MOCK_API_BASE_URL,
       auth: { getToken: () => null },
     });
+
     await instance.instance.get("things").json();
 
     expect(captured?.headers.get("Authorization")).toBeNull();
@@ -120,6 +124,7 @@ describe("Http", () => {
     server.use(
       http.get(resourceUrl, ({ request }) => {
         captured = request;
+
         return HttpResponse.json({});
       })
     );
@@ -132,6 +137,7 @@ describe("Http", () => {
         format: (token) => `Token ${token}`,
       },
     });
+
     await instance.instance.get("things").json();
 
     expect(captured?.headers.get("X-Session")).toBe("Token abc123");
@@ -153,6 +159,7 @@ describe("Http", () => {
       },
       auth: { getToken: () => "abc123" },
     });
+
     await instance.instance.get("things").json();
 
     expect(seen).toEqual(["caller"]);

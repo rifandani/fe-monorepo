@@ -16,7 +16,8 @@ export default defineConfig({
     tanstack,
     tanstackJsPlugins,
   ],
-  // oxlint does not merge `settings` from extends; curated react-doctor mode.
+  // oxlint does not merge `settings` or `env` from extends; curated react-doctor mode.
+  env: core.env,
   settings: jsPluginSettings,
   rules: {
     "sort-keys": "off",
@@ -32,6 +33,15 @@ export default defineConfig({
     "react/rule-suppression": "off",
   },
   overrides: [
+    {
+      // React Aria wires `<Label>` to its control through the parent field's
+      // context (`TextField`, `Select`, ...), not `htmlFor` or nesting, so
+      // ultracite 8's `label-has-associated-control` reports every field.
+      files: ["apps/spa/src/**"],
+      rules: {
+        "jsx-a11y/label-has-associated-control": "off",
+      },
+    },
     {
       // Server actions, `next/headers`, `server-only` and the otel singletons are module-scoped by design, so their unit tests mock the module rather than reshaping production code around injection. Every other anti-slop rule stays on for test files.
       files: ["**/*.unit.test.ts", "**/*.unit.test.tsx", "**/e2e/**"],

@@ -20,9 +20,11 @@ const serveDevServiceWorker = (): Plugin => ({
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
       const url = req.url?.split("?")[0] ?? "";
+
       if (url === "/sw.js") {
         req.url = "/dev-sw.js?dev-sw";
       }
+
       next();
     });
   },
@@ -31,6 +33,7 @@ const serveDevServiceWorker = (): Plugin => ({
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, import.meta.dirname, "");
+
   const otlpTarget =
     env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 

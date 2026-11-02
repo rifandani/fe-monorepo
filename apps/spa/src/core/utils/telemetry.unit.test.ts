@@ -19,6 +19,7 @@ const { getTracerMock } = vi.hoisted(() => ({
 
 vi.mock("@opentelemetry/api", async (importOriginal) => {
   const actual = await importOriginal<typeof OtelApi>();
+
   return {
     ...actual,
     trace: {
@@ -54,6 +55,7 @@ const createMockTracer = (span: Span = createMockSpan()): Tracer => {
     ),
     startSpan: vi.fn().mockReturnValue(span),
   };
+
   // SAFETY: the code under test calls only these two members, so the stub covers
   // its whole surface; the cast stands in for the rest of otel's `Tracer`.
   return tracer as never;

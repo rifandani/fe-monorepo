@@ -6,6 +6,7 @@ describe("parseSetCookieHeader", () => {
     const cookies = parseSetCookieHeader(
       "session=abc123; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600"
     );
+
     const session = cookies.get("session");
     expect(session?.value).toBe("abc123");
     expect(session?.path).toBe("/");
@@ -19,6 +20,7 @@ describe("parseSetCookieHeader", () => {
     const cookies = parseSetCookieHeader(
       "token=xyz; Expires=Wed, 21 Oct 2015 07:28:00 GMT"
     );
+
     expect(cookies.get("token")?.expires).toBeInstanceOf(Date);
   });
 
@@ -32,6 +34,7 @@ describe("parseSetCookieHeader", () => {
     const cookies = parseSetCookieHeader(
       "id=1; Max-Age=; Expires=; Domain=; Path="
     );
+
     const cookie = cookies.get("id");
     expect(cookie?.["max-age"]).toBeUndefined();
     expect(cookie?.expires).toBeUndefined();

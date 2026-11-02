@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { HiChevronRight } from "react-icons/hi2"
 import { Button } from "react-aria-components/Button"
@@ -17,13 +17,13 @@ import { twJoin, cn } from "cn"
 import { cx } from "@/core/utils/primitive"
 import { Checkbox, CheckboxField } from "./checkbox"
 
-const Tree = <T extends object>({ className, ...props }: TreeProps<T>) => {
+export function Tree<T extends object>({ className, ...props }: TreeProps<T>) {
   return (
     <TreePrimitive
       className={cx(
         twJoin(
           "flex cursor-default flex-col gap-y-2 overflow-auto outline-hidden forced-color-adjust-none",
-          "[--tree-active-bg:var(--color-primary-subtle)] [--tree-active-fg:var(--color-primary-subtle-fg)]"
+          "[--tree-active-bg:var(--color-primary-subtle)] [--tree-active-foreground:var(--color-primary-subtle-foreground)]"
         ),
         className
       )}
@@ -32,18 +32,18 @@ const Tree = <T extends object>({ className, ...props }: TreeProps<T>) => {
   )
 }
 
-const TreeItem = <T extends object>({ className, ...props }: TreeItemProps<T>) => {
+export function TreeItem<T extends object>({ className, ...props }: TreeItemProps<T>) {
   return (
     <TreeItemPrimitive
       className={cx(
         [
           "shrink-0 rounded-lg px-2 py-1.5 pe-2",
           "group/tree-item relative flex select-none rounded-lg focus:outline-hidden",
-          "focus:bg-(--tree-active-bg) focus:text-(--tree-active-fg) focus:**:[.text-muted-fg]:text-(--tree-active-fg)",
+          "focus:bg-(--tree-active-bg) focus:text-(--tree-active-foreground) focus:**:[.text-muted-foreground]:text-(--tree-active-foreground)",
           "**:data-[slot=avatar]:*:size-6 **:data-[slot=avatar]:size-6 sm:**:data-[slot=avatar]:*:size-5 sm:**:data-[slot=avatar]:size-5",
           "**:[svg]:size-5 **:[svg]:shrink-0 sm:**:[svg]:size-4",
           "**:[svg:not([data-slot=check-indicator]):not([data-slot=chevron])]:me-1",
-          "disabled:opacity-50 forced-colors:[",
+          "disabled:opacity-50 forced-colors:text-[GrayText]",
           "href" in props ? "cursor-pointer" : "cursor-default",
         ],
         className
@@ -53,11 +53,11 @@ const TreeItem = <T extends object>({ className, ...props }: TreeItemProps<T>) =
   )
 }
 
-interface TreeContentProps extends TreeItemContentProps {
+export interface TreeContentProps extends TreeItemContentProps {
   className?: string
 }
 
-const TreeContent = ({ className, children, ...props }: TreeContentProps) => {
+export function TreeContent({ className, children, ...props }: TreeContentProps) {
   return (
     <TreeItemContent {...props}>
       {(values) => (
@@ -96,18 +96,18 @@ const TreeContent = ({ className, children, ...props }: TreeContentProps) => {
   )
 }
 
-const TreeIndicator = ({
+export function TreeIndicator({
   values,
 }: {
   values: Pick<TreeItemContentRenderProps, "isDisabled" | "isExpanded">
-}) => {
+}) {
   return (
     <Button
       slot="chevron"
       isDisabled={values.isDisabled}
       className={twJoin(
-        "shrink-0 content-center text-muted-fg hover:text-fg",
-        values.isExpanded && "text-fg"
+        "shrink-0 content-center text-muted-foreground hover:text-foreground",
+        values.isExpanded && "text-foreground"
       )}
     >
       <HiChevronRight
@@ -122,4 +122,3 @@ const TreeIndicator = ({
 }
 
 export type { TreeItemProps, TreeProps }
-export { Tree, TreeContent, TreeIndicator, TreeItem }

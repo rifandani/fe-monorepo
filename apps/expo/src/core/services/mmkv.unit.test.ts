@@ -4,6 +4,7 @@ import { appStateStorage, appStorageId } from "./mmkv";
 
 const { mockMMKV, MockMMKV, store } = vi.hoisted(() => {
   const memory = new Map<string, string>();
+
   const mmkv = {
     delete: vi.fn((key: string) => {
       memory.delete(key);
@@ -13,6 +14,7 @@ const { mockMMKV, MockMMKV, store } = vi.hoisted(() => {
       memory.set(key, value);
     }),
   };
+
   // `new MMKV()` needs a real constructor — arrow `vi.fn(() => …)` is not one.
   const mmkvCtor = function mmkvCtor(_options?: {
     encryptionKey: string;
@@ -20,6 +22,7 @@ const { mockMMKV, MockMMKV, store } = vi.hoisted(() => {
   }) {
     return mmkv;
   };
+
   return { mockMMKV: mmkv, MockMMKV: vi.fn(mmkvCtor), store: memory };
 });
 

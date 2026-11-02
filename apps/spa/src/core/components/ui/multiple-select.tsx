@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Children, isValidElement, useMemo, useRef } from "react"
 import { Autocomplete, useFilter } from "react-aria-components/Autocomplete"
@@ -8,16 +8,16 @@ import { cx } from "@/core/utils/primitive"
 import { Button } from "./button"
 import { fieldStyles } from "./field"
 import { ListBoxItem } from "./list-box"
-import { PopoverContent } from "./popover"
+import { Popover } from "./popover"
 import { SearchField, SearchInput } from "./search-field"
 import { Tag, TagGroup, TagList } from "./tag-group"
 
-interface OptionBase {
+export interface OptionBase {
   id: string | number
   name: string
 }
 
-interface MultipleSelectProps<T extends OptionBase> extends Omit<
+export interface MultipleSelectProps<T extends OptionBase> extends Omit<
   SelectProps<T, "multiple">,
   "selectionMode" | "children"
 > {
@@ -30,17 +30,17 @@ interface MultipleSelectProps<T extends OptionBase> extends Omit<
   onSearchChange?: (value: string) => void
 }
 
-interface MultipleSelectContentProps<T extends OptionBase> {
+export interface MultipleSelectContentProps<T extends OptionBase> {
   items: Iterable<T>
   children: (item: T) => React.ReactNode
 }
 
-function MultipleSelectContent<T extends OptionBase>(_props: MultipleSelectContentProps<T>) {
+export function MultipleSelectContent<T extends OptionBase>(_props: MultipleSelectContentProps<T>) {
   return null
 }
 ;(MultipleSelectContent as any).displayName = "MultipleSelectContent"
 
-function MultipleSelect<T extends OptionBase>({
+export function MultipleSelect<T extends OptionBase>({
   placeholder = "No selected items",
   className,
   children,
@@ -94,7 +94,7 @@ function MultipleSelect<T extends OptionBase>({
                   <TagList
                     items={selectedItems.filter((i) => i != null)}
                     renderEmptyState={() => (
-                      <i className="ps-2 text-muted-fg text-sm">{placeholder}</i>
+                      <i className="ps-2 text-muted-foreground text-sm">{placeholder}</i>
                     )}
                   >
                     {(item) => <Tag className="rounded-md">{item.name}</Tag>}
@@ -121,7 +121,7 @@ function MultipleSelect<T extends OptionBase>({
               </svg>
             </Button>
           </div>
-          <PopoverContent
+          <Popover
             triggerRef={triggerRef}
             placement="bottom"
             className="flex w-full min-w-(--trigger-width) flex-col overflow-hidden *:data-[slot=popover-inner]:flex *:data-[slot=popover-inner]:flex-col *:data-[slot=popover-inner]:overflow-hidden"
@@ -145,7 +145,7 @@ function MultipleSelect<T extends OptionBase>({
                 {list.children}
               </ListBox>
             </Autocomplete>
-          </PopoverContent>
+          </Popover>
         </>
       )}
       {after}
@@ -153,6 +153,4 @@ function MultipleSelect<T extends OptionBase>({
   )
 }
 
-const MultipleSelectItem = ListBoxItem
-
-export { MultipleSelect, MultipleSelectContent, MultipleSelectItem }
+export const MultipleSelectItem = ListBoxItem

@@ -10,15 +10,19 @@ const UPDATE_CHECK_PERIOD_MS = 60 * 60 * 1000;
 
 const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
   console.log("✅ SW activated", r);
+
   if (UPDATE_CHECK_PERIOD_MS <= 0) {
     return;
   }
+
   setInterval(async () => {
     if (isOffline()) {
       return;
     }
+
     try {
       console.log("🔵 Checking for SW updates...");
+
       // fallow-ignore-next-line security-sink -- swUrl comes from vite-plugin-pwa's onRegisteredSW; SW scripts are same-origin by spec
       const resp = await fetch(swUrl, {
         cache: "no-store",
@@ -27,6 +31,7 @@ const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
           "cache-control": "no-cache",
         },
       });
+
       if (resp.status === 200) {
         console.log("🔵 Updating SW...");
         await r.update();
@@ -59,10 +64,13 @@ const onSwActivated = (
   if (!r) {
     return;
   }
+
   if (r.active?.state === "activated") {
     run(r);
+
     return;
   }
+
   whenActivated(r.installing, () => {
     run(r);
   });
@@ -76,11 +84,14 @@ const onRegisteredSW = (
     registerPeriodicSync(swUrl, registration);
   });
 };
+
 const onRegisterError = <T,>(error: T) => {
   console.error("🛑 Service Worker registration error", error);
 };
+
 export const ReloadPromptSw = () => {
   const { t } = useTranslation();
+
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
@@ -90,12 +101,15 @@ export const ReloadPromptSw = () => {
     onRegisteredSW,
     onRegisterError,
   });
+
   // listens to reload prompt SW
   useEffect(() => {
     const prompt = resolveSwPrompt({ needRefresh, offlineReady });
+
     if (!prompt) {
       return;
     }
+
     toast(t(prompt.messageKey), {
       closeButton: true,
       duration: 60 * 1000, // 1 minute
@@ -112,5 +126,6 @@ export const ReloadPromptSw = () => {
     });
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [offlineReady, needRefresh]);
+
   return <aside id="ReloadPromptSW" className="hidden" />;
 };

@@ -17,6 +17,7 @@
  */
 export const createMmkvFake = () => {
   const store = new Map<string, string>();
+
   return {
     store,
     appStorageId: "app-storage" as const,

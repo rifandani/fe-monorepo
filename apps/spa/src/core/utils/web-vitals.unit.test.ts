@@ -28,6 +28,7 @@ const {
     fcp: vi.fn(),
     ttfb: vi.fn(),
   };
+
   const histograms = [
     { record: webVitalsRecords.lcp },
     { record: webVitalsRecords.inp },
@@ -35,12 +36,16 @@ const {
     { record: webVitalsRecords.fcp },
     { record: webVitalsRecords.ttfb },
   ];
+
   let i = 0;
+
   const mockCreateHistogram = vi.fn(() => {
     const histogram = histograms[i];
     i += 1;
+
     return histogram;
   });
+
   return {
     onLCP: vi.fn(),
     onINP: vi.fn(),
@@ -129,9 +134,11 @@ const resetHarness = () => {
   onFCP.mockClear();
   onTTFB.mockClear();
   forceFlush.mockClear();
+
   for (const record of Object.values(records)) {
     record.mockClear();
   }
+
   vi.stubGlobal("document", documentStub);
   vi.stubGlobal("addEventListener", capture);
   vi.resetModules();
@@ -139,6 +146,7 @@ const resetHarness = () => {
 
 const loadModule = () => {
   resetHarness();
+
   return import("./web-vitals");
 };
 
@@ -161,6 +169,7 @@ const show = () => {
 describe("reportWebVitals", () => {
   beforeEach(() => {
     forceFlush.mockClear();
+
     for (const record of Object.values(records)) {
       record.mockClear();
     }
@@ -230,6 +239,7 @@ describe("reportWebVitals", () => {
       navigation_type: "navigate",
       rating: "good",
     };
+
     expect(records.lcp).toHaveBeenCalledWith(120, attrs);
     expect(records.fcp).toHaveBeenCalledWith(120, attrs);
     expect(records.ttfb).toHaveBeenCalledWith(120, attrs);

@@ -84,6 +84,8 @@
     "expo-dev-client",
     "expo-system-ui",
     "babel-plugin-react-compiler",
-    "metro-minify-terser"
+    "metro-minify-terser",
+    "oxlint-plugin-react-doctor",
+    "tailwindcss"
   ]
 }

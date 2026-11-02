@@ -15,6 +15,7 @@ const HomeRoute = () => {
     title: "Home",
   });
   const { t } = useTranslation();
+
   return (
     <div className="container mx-auto flex flex-col items-center gap-y-2 py-24">
       <h1 className="text-3xl sm:text-4xl">{t("title")}</h1>
@@ -28,9 +29,11 @@ const HomeRoute = () => {
     </div>
   );
 };
+
 export const Route = createFileRoute("/")({
   beforeLoad: ({ location }) => {
     const authed = hasValidSession();
+
     if (!authed) {
       // redirect unauthorized user to login
       toast.error("Unauthorized");

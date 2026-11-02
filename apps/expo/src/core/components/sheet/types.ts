@@ -10,6 +10,7 @@ export interface BaseSheetState {
   open: boolean;
   position: number;
 }
+
 export type BaseSheetProps<T> = PropsWithChildren<{
   state: T;
   setState: Dispatch<SetStateAction<T>>;

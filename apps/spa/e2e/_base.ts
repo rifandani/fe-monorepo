@@ -3,17 +3,20 @@ import { test as base, expect } from "@playwright/test";
 
 const username = "emilys";
 const password = "emilyspass";
+
 interface NetworkError {
   url: string;
   method: string;
   status: number;
 }
+
 export interface TestOptions {
   user: {
     username: string;
     password: string;
   };
 }
+
 export const test = base.extend<TestOptions>({
   page: async ({ page }, use, testInfo) => {
     /**
@@ -30,6 +33,7 @@ export const test = base.extend<TestOptions>({
        * we test the login error response
        */
       const excludedUrls = ["https://dummyjson.com/auth/login"];
+
       if (response.status() >= 400 && !excludedUrls.includes(response.url())) {
         networkErrors.push({
           method: response.request().method(),
@@ -46,6 +50,7 @@ export const test = base.extend<TestOptions>({
      * teardown
      */
     expect(errors).toHaveLength(0);
+
     if (networkErrors.length > 0) {
       await testInfo.attach("network-errors.json", {
         body: JSON.stringify(networkErrors, null, 2),
@@ -66,5 +71,7 @@ export const test = base.extend<TestOptions>({
     },
   ],
 });
+
 export { expect } from "@playwright/test";
+
 export type { Page } from "@playwright/test";

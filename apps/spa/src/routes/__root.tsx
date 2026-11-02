@@ -25,12 +25,14 @@ const Devtools =
   import.meta.env.DEV && import.meta.env.VITE_E2E !== "true"
     ? lazy(async () => {
         const m = await import("@/core/providers/devtools");
+
         return { default: m.Devtools };
       })
     : null;
 
 const RootRoute = () => {
   const router = useRouter();
+
   return (
     <>
       {/*
@@ -59,6 +61,7 @@ const RootRoute = () => {
     </>
   );
 };
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({

@@ -5,6 +5,7 @@ import { z } from "zod";
 const portlessUrl = import.meta.env.PORTLESS_URL || undefined;
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const resolvedApiBaseUrl =
   portlessUrl && apiBaseUrl?.includes("fe-monorepo.localhost")
     ? `${portlessUrl}/api`

@@ -27,19 +27,23 @@ export const TranslationProvider = ({
     if (!defaultLocale) {
       return "en-us";
     }
+
     return defaultLocale;
   });
+
   const initValue = initI18n({
     fallbackLocale,
     locale,
     translations,
   });
+
   const value = {
     ...initValue,
     locale,
     setLocale,
     userLocale: defaultLocale ?? "en-us",
   } as const;
+
   return <TranslationContext value={value}>{children}</TranslationContext>;
 };
 
@@ -49,8 +53,10 @@ export const useTranslation = (): ReturnType<typeof initI18n> & {
   userLocale: string;
 } => {
   const context = use(TranslationContext);
+
   if (!context) {
     throw new Error("useTranslation must be used within a TranslationProvider");
   }
+
   return context;
 };

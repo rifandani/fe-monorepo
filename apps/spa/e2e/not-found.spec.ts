@@ -4,6 +4,7 @@ test.beforeEach(async ({ page }) => {
   // not exists route
   await page.goto("/hahahahaha");
 });
+
 test.describe("authorized", () => {
   test("should have heading, text description, and back to home link", async ({
     page,
@@ -19,6 +20,7 @@ test.describe("authorized", () => {
     await expect(link).toHaveText(/Back to Home page|Kembali ke halaman Home/u);
   });
 });
+
 test.describe("unauthorized", () => {
   // reset storage state in a test file to avoid authentication that was set up for the whole project
   test.use({ storageState: { cookies: [], origins: [] } });

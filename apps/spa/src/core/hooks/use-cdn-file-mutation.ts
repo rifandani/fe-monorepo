@@ -14,6 +14,7 @@ interface Opt {
   key: CdnValidKeys;
   url?: string | undefined;
 }
+
 export const useCdnFileMutation = (
   opt: Opt,
   mutationOptions?: Except<
@@ -26,8 +27,10 @@ export const useCdnFileMutation = (
     mutationKey: cdnKeys[opt.key](opt.url),
     ...mutationOptions,
   });
+
   return mutation;
 };
+
 export const useCdnFileMutationState = (opt: Opt) =>
   useMutationState<MutationState<GetCdnFileSuccessSchema, HTTPError, string>>({
     filters: {

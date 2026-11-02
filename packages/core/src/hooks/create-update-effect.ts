@@ -36,6 +36,7 @@ export const createUpdateEffect: (hook: EffectHookType) => EffectHookType =
         // Run effect on subsequent updates
         return effect();
       }
+
       // Skip effect on initial mount and set mounted flag
       isMountedRef.current = true;
     }, deps);
