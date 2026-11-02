@@ -1,0 +1,34 @@
+{
+  // Removes repos/** from the project panel, file finder, project search, and file watching
+  "file_scan_exclusions": [
+    "repos/**",
+    // This setting REPLACES Zed's defaults, so add them again:
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings"
+  ],
+
+  // Stops auto-import suggestions from repos/**
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "autoImportFileExcludePatterns": ["repos/**"]
+          }
+        },
+        "javascript": {
+          "preferences": {
+            "autoImportFileExcludePatterns": ["repos/**"]
+          }
+        }
+      }
+    }
+  }
+}

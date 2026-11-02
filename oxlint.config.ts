@@ -113,6 +113,7 @@ export default defineConfig({
     "**/.claude",
     "**/.cursor",
     "**/.repos",
+    "**/repos",
     "**/.impeccable",
     "**/docs",
   ],

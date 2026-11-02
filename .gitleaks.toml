@@ -20,3 +20,7 @@ paths = ['''(?i).*e2e/\.auth/.*''', '''(?i).*playwright/\.auth/.*''']
 [[allowlists]]
 description = "gitleaks ignore file"
 paths = ['''^\.gitleaksignore$''']
+
+[[allowlists]]
+description = "Vendored reference repositories"
+paths = ['''^repos/''']

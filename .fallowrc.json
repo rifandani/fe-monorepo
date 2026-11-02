@@ -4,6 +4,7 @@
   "workspaces": {
     "patterns": ["apps/*", "packages/*"]
   },
+  "ignorePatterns": ["repos/**"],
   "ignoreExports": [
     { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
     {

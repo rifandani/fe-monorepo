@@ -15,7 +15,6 @@ Pull each vendored upstream **first**: `git subtree pull` commits, so it needs t
 | prefix | remote | branch |
 | --- | --- | --- |
 | `repos/effect` | `https://github.com/Effect-TS/effect.git` | `main` |
-| `repos/hono` | `https://github.com/honojs/hono.git` | `main` |
 
 ```bash
 git subtree pull --prefix=<prefix> <remote> <branch> --squash

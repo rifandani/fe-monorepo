@@ -26,7 +26,7 @@ export function SearchField({ className, ...props }: SearchFieldProps) {
 export function SearchInput(props: InputProps) {
   return (
     <InputGroup className="[--input-gutter-end:--spacing(8)]">
-      <HiMagnifyingGlass className="in-disabled:opacity-50" />
+      <HiMagnifyingGlass data-slot="icon" className="in-disabled:opacity-50" />
       <Input {...props} />
       <Button
         className={twJoin(
