@@ -58,8 +58,8 @@ const useKeyList = () => {
       keyListRef.current.splice(index, 0, counterRef.current);
     },
     // Generate the initial keys, one per item of `initialList`
-    initKeys: <T>(initialList: T[]) => {
-      keyListRef.current = initialList.map(() => {
+    initKeys: (count: number) => {
+      keyListRef.current = Array.from({ length: count }, () => {
         counterRef.current += 1;
 
         return counterRef.current;
@@ -71,13 +71,10 @@ const useKeyList = () => {
     },
     // Move the key at `oldIndex` to `newIndex`
     moveKey: (oldIndex: number, newIndex: number) => {
-      const keyTemp = keyListRef.current.filter(
-        (_, index: number) => index !== oldIndex
-      );
+      const keyTemp = [...keyListRef.current];
+      const movedKeys = keyTemp.splice(oldIndex, 1);
 
-      // SAFETY: `oldIndex` addresses an existing entry - the caller moves an item
-      // already in the list, so the key list has a number at that position.
-      keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
+      keyTemp.splice(newIndex, 0, ...movedKeys);
       keyListRef.current = keyTemp;
     },
     // Reset the keys back to empty
@@ -138,11 +135,10 @@ const createListMutators = <T>(
     }
 
     setList((l) => {
-      const newList = [...l];
-      const temp = newList.filter((_, index: number) => index !== oldIndex);
-      // SAFETY: `oldIndex` addresses an existing item; `noUncheckedIndexedAccess`
-      // widens the read to `T | undefined` even though the slot is occupied.
-      temp.splice(newIndex, 0, newList[oldIndex] as T);
+      const temp = [...l];
+      const movedItems = temp.splice(oldIndex, 1);
+
+      temp.splice(newIndex, 0, ...movedItems);
       // move keys if necessary
       keys.moveKey(oldIndex, newIndex);
 
@@ -217,7 +213,7 @@ export const useDynamicList = <T>(initialList: T[] = []) => {
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization
-    keys.initKeys(initialList);
+    keys.initKeys(initialList.length);
 
     return initialList;
   });

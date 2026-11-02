@@ -1,7 +1,7 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserStore } from "@/auth/stores/auth-user-store";
 import { sessionAuth } from "@/auth/utils/session-auth";
 import { queryClient } from "@/core/providers/query/client";
 
@@ -19,12 +19,12 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("sessionAuth", () => {
   beforeEach(() => {
-    useAuthUserStore.getState().clearUser();
+    authUserStore.clear();
     queryClient.clear();
   });
 
   it("offers the Access Token of the current Session", () => {
-    useAuthUserStore.getState().setUser(validUser);
+    authUserStore.set(validUser);
 
     expect(sessionAuth.getToken()).toBe("access");
   });
@@ -34,10 +34,10 @@ describe("sessionAuth", () => {
   });
 
   it("ends the Session when the server rejects the Access Token", () => {
-    useAuthUserStore.getState().setUser(validUser);
+    authUserStore.set(validUser);
 
     sessionAuth.onUnauthorized?.();
 
-    expect(useAuthUserStore.getState().user).toBeNull();
+    expect(authUserStore.get()).toBeNull();
   });
 });

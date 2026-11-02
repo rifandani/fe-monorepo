@@ -22,7 +22,9 @@ export const useClipboard = () => {
   const [copied, setCopied] = useState(false);
 
   const [, startResetTimer, stopResetTimer] = useTimeoutFn(
-    () => setCopied(false),
+    () => {
+      setCopied(false);
+    },
     COPIED_RESET_MS,
     { immediate: false }
   );

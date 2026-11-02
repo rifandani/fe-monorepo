@@ -1,22 +1,24 @@
+import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
+import { Http } from "@workspace/core/services/http";
+import { Effect, Layer } from "effect";
+import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
-import { describe, expect, it, vi } from "vitest";
 
 import { userApi, userKeys } from "./user";
 import type { GetUserApiResponseSchema } from "./user";
 
-// `userApi` closes over the `http` singleton, which now reads the Access Token
-// from the store, which persists through `react-native-mmkv` — unloadable in
-// Node. Faked at the Module Boundary; nothing about the request under test runs
-// through it, and the request itself is still faked at the Network Boundary
-// (ADR-0002). The singleton coupling is what ADR-0002 already records as a
-// deferred follow-up: `userApi` should take `http` by parameter, as
-// `authRepositories(http)` does.
-vi.mock("@/core/services/mmkv", async () => {
-  const { createMmkvFake } = await import("@test/mmkv");
+/**
+ * `userApi` reads `Http` from context, so the test owns the base URL and no
+ * app singleton — nor the MMKV-backed store behind its Session — is loaded.
+ * The request itself is still faked at the Network Boundary (ADR-0002).
+ */
+const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+  Layer.provide(FetchHttpClient.layer)
+);
 
-  return createMmkvFake();
-});
+const getDetail = (params: { id: number }) =>
+  userApi.getDetail(params).pipe(Effect.provide(TestHttp));
 
 const detailUrl = `${MOCK_API_BASE_URL}/users/:id`;
 
@@ -56,46 +58,61 @@ describe("userKeys", () => {
 });
 
 describe("userApi.getDetail", () => {
-  it("fetches and returns the parsed user detail", async () => {
-    let capturedId: string | readonly string[] | undefined;
-    let capturedRequest: Request | undefined;
-    server.use(
-      http.get(detailUrl, ({ params, request }) => {
-        capturedId = params.id;
-        capturedRequest = request;
+  it.effect("fetches and returns the decoded user detail", () =>
+    Effect.gen(function* () {
+      let capturedId: string | readonly string[] | undefined;
+      let capturedRequest: Request | undefined;
+      server.use(
+        http.get(detailUrl, ({ params, request }) => {
+          capturedId = params.id;
+          capturedRequest = request;
 
-        return HttpResponse.json(sampleUser);
+          return HttpResponse.json(sampleUser);
+        })
+      );
+
+      const result = yield* getDetail({ id: 1 });
+
+      // The path param is read off the real request rather than a spy's call args, so this
+      // covers the `users/${id}` template *and* the base URL the `Http` layer was given — neither of which the previous module-boundary
+      // mock could observe.
+      expect(capturedRequest?.method).toBe("GET");
+      expect(capturedId).toBe("1");
+      expect(result).toEqual(sampleUser);
+    })
+  );
+
+  it.effect(
+    "fails with a SchemaError when the response violates the schema",
+    () =>
+      Effect.gen(function* () {
+        server.use(
+          http.get(detailUrl, () =>
+            HttpResponse.json({ ...sampleUser, email: "not-an-email" })
+          )
+        );
+
+        const error = yield* Effect.flip(getDetail({ id: 1 }));
+
+        expect(error._tag).toBe("SchemaError");
       })
-    );
+  );
 
-    const result = await userApi.getDetail({ id: 1 });
+  it.effect("fails with the Error Envelope on a 404", () =>
+    Effect.gen(function* () {
+      server.use(
+        http.get(detailUrl, () =>
+          HttpResponse.json({ message: "User not found" }, { status: 404 })
+        )
+      );
 
-    // The path param is read off the real request rather than a spy's call args, so this
-    // covers the `users/${id}` template *and* the base URL the `http` singleton picked up
-    // from `EXPO_PUBLIC_API_BASE_URL` — neither of which the previous module-boundary
-    // mock could observe.
-    expect(capturedRequest?.method).toBe("GET");
-    expect(capturedId).toBe("1");
-    expect(result).toEqual(sampleUser);
-  });
+      const error = yield* Effect.flip(getDetail({ id: 999 }));
 
-  it("rejects when the response violates the schema", async () => {
-    server.use(
-      http.get(detailUrl, () =>
-        HttpResponse.json({ ...sampleUser, email: "not-an-email" })
-      )
-    );
-
-    await expect(userApi.getDetail({ id: 1 })).rejects.toThrow();
-  });
-
-  it("rejects on a 404", async () => {
-    server.use(
-      http.get(detailUrl, () =>
-        HttpResponse.json({ message: "User not found" }, { status: 404 })
-      )
-    );
-
-    await expect(userApi.getDetail({ id: 999 })).rejects.toThrow();
-  });
+      expect(error).toMatchObject({
+        _tag: "HttpResponseError",
+        status: 404,
+        data: { message: "User not found" },
+      });
+    })
+  );
 });

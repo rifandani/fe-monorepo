@@ -2,7 +2,6 @@ import { AreaChartShowcase } from "./showcases/area-chart";
 import { AvatarShowcase } from "./showcases/avatar";
 import { BadgeShowcase } from "./showcases/badge";
 import { BarChartShowcase } from "./showcases/bar-chart";
-import { BarListShowcase } from "./showcases/bar-list";
 import { BreadcrumbsShowcase } from "./showcases/breadcrumbs";
 import { ButtonShowcase } from "./showcases/button";
 import { ButtonGroupShowcase } from "./showcases/button-group";
@@ -258,7 +257,6 @@ export const categories: Category[] = [
       { id: "grid-list", name: "Grid List", Showcase: GridListShowcase },
       { id: "tree", name: "Tree", Showcase: TreeShowcase },
       { id: "leaderboard", name: "Leaderboard", Showcase: LeaderboardShowcase },
-      { id: "bar-list", name: "Bar List", Showcase: BarListShowcase },
       { id: "tracker", name: "Tracker", Showcase: TrackerShowcase },
       { id: "carousel", name: "Carousel", Showcase: CarouselShowcase },
       { id: "snippet", name: "Snippet", Showcase: SnippetShowcase },

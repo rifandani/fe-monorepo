@@ -1,240 +1,60 @@
-// oxlint-disable promise/prefer-await-to-callbacks
-import type {
-  Attributes,
-  Context,
-  Span,
-  SpanContext,
-  SpanOptions,
-  Tracer,
-} from "@opentelemetry/api";
-import { context, SpanStatusCode, trace } from "@opentelemetry/api";
-
-import { SERVICE_NAME } from "@/core/constants/global";
-
-const noopSpanContext: SpanContext = {
-  spanId: "",
-  traceFlags: 0,
-  traceId: "",
-};
-
-const noopSpan: Span = {
-  addEvent() {
-    return this;
-  },
-  addLink() {
-    return this;
-  },
-  addLinks() {
-    return this;
-  },
-  end() {
-    return this;
-  },
-  isRecording() {
-    return false;
-  },
-  recordException() {
-    return this;
-  },
-  setAttribute() {
-    return this;
-  },
-  setAttributes() {
-    return this;
-  },
-  setStatus() {
-    return this;
-  },
-  spanContext() {
-    return noopSpanContext;
-  },
-  updateName() {
-    return this;
-  },
-};
-
-/**
- * Tracer implementation that does nothing (null object).
- */
-/** The callback otel hands the active span, in any of the overload positions. */
-type SpanCallback<R> = (span: Span) => R;
-
-/**
- * `startActiveSpan` is overloaded on `(name, fn)`, `(name, options, fn)` and
- * `(name, options, context, fn)`, so the callback can arrive in any of three
- * positions. This predicate names that argument.
- */
-const isSpanCallback = <R>(
-  value: Context | SpanCallback<R> | SpanOptions | undefined
-): value is SpanCallback<R> => typeof value === "function";
-
-/** Picks the callback out of whichever overload position it arrived in. */
-const resolveSpanCallback = <R>(
-  arg1: SpanCallback<R> | SpanOptions,
-  arg2?: Context | SpanCallback<R>,
-  arg3?: SpanCallback<R>
-): SpanCallback<R> | undefined => {
-  if (isSpanCallback<R>(arg1)) {
-    return arg1;
-  }
-
-  if (isSpanCallback<R>(arg2)) {
-    return arg2;
-  }
-
-  return arg3;
-};
+import { Effect } from "effect";
 
 /** Value of an extra field recorded next to an error; each is stringified. */
 type ErrorAttributeValue = boolean | null | number | string | undefined;
 
-export const noopTracer: Tracer = {
-  startActiveSpan<R>(
-    _name: string,
-    arg1: SpanCallback<R> | SpanOptions,
-    arg2?: Context | SpanCallback<R>,
-    arg3?: SpanCallback<R>
-  ): R {
-    const fn = resolveSpanCallback<R>(arg1, arg2, arg3);
-
-    // SAFETY: a noop tracer has nothing to report, so with no callback in any
-    // overload position there is no value to produce - which the `R` fixed by
-    // otel's own signature cannot express.
-    return fn?.(noopSpan) as R;
-  },
-  startSpan(): Span {
-    return noopSpan;
-  },
-};
-
-export const getTracer = ({
-  isEnabled = false,
-  tracer,
-}: {
-  isEnabled?: boolean;
-  tracer?: Tracer;
-} = {}): Tracer => {
-  if (!isEnabled) {
-    return noopTracer;
-  }
-
-  if (tracer) {
-    return tracer;
-  }
-
-  return trace.getTracer(SERVICE_NAME);
-};
-
-interface RecordSpanOptions<T> {
-  /**
-   * The name of the span.
-   */
-  name: string;
-  /**
-   * The tracer to use.
-   */
-  tracer: Tracer;
-  /**
-   * The attributes to set on the span.
-   */
-  attributes: Attributes;
-  /**
-   * The function to wrap.
-   */
-  fn: (span: Span) => Promise<T>;
-  /**
-   * Whether to end the span when the function is done.
-   *
-   * @default true
-   */
-  endWhenDone?: boolean;
+/**
+ * @description What gets recorded about one failure: the message, the stack when
+ * there is one, and any extra fields (React's `componentStack`, the router's
+ * error info) — each becomes an `error.<key>` span attribute.
+ */
+export interface ReportedError {
+  message: string;
+  stack?: string;
+  [key: string]: ErrorAttributeValue;
 }
 
 /**
- * Marks the span as failed and always ends it. A thrown value that is not an
- * `Error` carries no message or stack to report, so the catch below narrows it to
- * `null` and only the status is set.
+ * @description Normalize a thrown value — which may be anything — into a
+ * `ReportedError`. A thrown non-`Error` carries no stack, so only its string
+ * form survives.
  */
-const failSpan = (span: Span, error: Error | null) => {
-  try {
-    if (error) {
-      span.recordException({
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-      });
-      span.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: error.message,
-      });
-    } else {
-      span.setStatus({ code: SpanStatusCode.ERROR });
-    }
-  } finally {
-    // always stop the span when there is an error:
-    span.end();
-  }
-};
+export const toReportedError = (
+  thrown: unknown,
+  extra: Record<string, ErrorAttributeValue> = {}
+): ReportedError => ({
+  ...extra,
+  message: thrown instanceof Error ? thrown.message : String(thrown),
+  name: thrown instanceof Error ? thrown.name : undefined,
+  stack: thrown instanceof Error ? thrown.stack : undefined,
+});
 
-export const recordSpan = <T>({
-  name,
-  tracer,
-  attributes,
-  fn,
-  endWhenDone = true,
-}: RecordSpanOptions<T>) =>
-  tracer.startActiveSpan(name, { attributes }, async (span) => {
-    try {
-      const result = await fn(span);
+const errorAttributes = (error: ReportedError) =>
+  Object.fromEntries(
+    Object.entries(error).map(([key, value]) => [`error.${key}`, String(value)])
+  );
 
-      if (endWhenDone) {
-        span.setStatus({ code: SpanStatusCode.OK });
-        span.end();
-      }
-
-      return result;
-    } catch (error) {
-      failSpan(span, error instanceof Error ? error : null);
-      throw error;
-    }
+/**
+ * @description An Effect that records `error` as one failed span named `name`.
+ *
+ * The span fails with a defect carrying the original message and stack, so the
+ * tracer marks it ERROR and records the exception; the Effect itself always
+ * succeeds — reporting a failure must never become one.
+ *
+ * @example
+ *
+ * ```ts
+ * appRuntime.runFork(recordException("router.onError", toReportedError(error)));
+ * ```
+ */
+export const recordException = (name: string, error: ReportedError) => {
+  const defect = Object.assign(new Error(error.message), {
+    stack: error.stack,
   });
 
-export const recordException = ({
-  name,
-  error,
-  tracer,
-}: {
-  /**
-   * the name of the span
-   */
-  name: string;
-  /**
-   * the error to record
-   */
-  error: {
-    message: string;
-    stack?: string;
-    [key: string]: ErrorAttributeValue;
-    [key: number]: ErrorAttributeValue;
-    [key: symbol]: ErrorAttributeValue;
-  };
-  /**
-   * the tracer
-   */
-  tracer: Tracer;
-}) => {
-  const span = tracer.startSpan(name);
-  context.with(trace.setSpan(context.active(), span), () => {
-    span.setAttributes(
-      Object.fromEntries(
-        Object.entries(error).map(([key, value]) => [
-          `error.${key}`,
-          String(value),
-        ])
-      )
-    );
-    span.recordException(error);
-    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-    span.end();
-  });
+  return Effect.die(defect).pipe(
+    Effect.withSpan(name, { attributes: errorAttributes(error) }),
+    Effect.exit,
+    Effect.asVoid
+  );
 };

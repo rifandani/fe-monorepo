@@ -1,11 +1,13 @@
+import { describe, expect, it } from "@effect/vitest";
 import { server } from "@test/msw";
 import {
   cdnKeys,
   cdnRepositories,
   cdnValidKeys,
 } from "@workspace/core/apis/cdn";
+import { Effect } from "effect";
+import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
-import { describe, expect, it } from "vitest";
 
 const fileUrl = "https://cdn.example.com/a.png";
 
@@ -22,56 +24,62 @@ describe("cdn keys", () => {
   });
 });
 
+const getCdnFile = (url: string) =>
+  cdnRepositories
+    .getCdnFile({ url })
+    .pipe(Effect.provide(FetchHttpClient.layer));
+
 describe("cdnRepositories", () => {
-  it("getCdnFile returns blob, headers, and response", async () => {
-    server.use(
-      http.get(fileUrl, () =>
-        HttpResponse.text("img", {
-          headers: { "content-type": "image/png" },
-        })
-      )
-    );
+  it.effect("getCdnFile returns blob, headers, and response", () =>
+    Effect.gen(function* () {
+      server.use(
+        http.get(fileUrl, () =>
+          HttpResponse.text("img", {
+            headers: { "content-type": "image/png" },
+          })
+        )
+      );
 
-    const result = await cdnRepositories().getCdnFile({ url: fileUrl });
+      const result = yield* getCdnFile(fileUrl);
 
-    // No request assertion here: `url` is this method's only input, and the handler
-    // matching on it *is* the assertion — a wrong URL means no handler matches, which
-    // `onUnhandledRequest: "error"` turns into a failure.
-    expect(await result.blob.text()).toBe("img");
-    expect(result.headers["content-type"]).toBe("image/png");
-    expect(result.response.ok).toBe(true);
-  });
+      // No request assertion here: `url` is this method's only input, and the
+      // handler matching on it *is* the assertion — a wrong URL means no handler
+      // matches, which `onUnhandledRequest: "error"` turns into a failure.
+      expect(yield* Effect.promise(async () => await result.blob.text())).toBe(
+        "img"
+      );
+      expect(result.blob.type).toBe("image/png");
+      expect(result.headers["content-type"]).toBe("image/png");
+      expect(result.response.status).toBe(200);
+    })
+  );
 
-  it("getCdnFile rejects on a 500", async () => {
-    server.use(
-      http.get(fileUrl, () => new HttpResponse(null, { status: 500 }))
-    );
+  it.effect(
+    "getCdnFile leaves the blob type empty when the CDN names none",
+    () =>
+      Effect.gen(function* () {
+        server.use(
+          http.get(fileUrl, () => new HttpResponse(new Uint8Array([1, 2, 3])))
+        );
 
-    // `retry: 0` because ky retries GET twice by default with backoff, which would
-    // idle this test ~0.9s waiting to re-receive the same 500.
-    await expect(
-      cdnRepositories().getCdnFile({ url: fileUrl }, { retry: 0 })
-    ).rejects.toThrow();
-  });
+        const result = yield* getCdnFile(fileUrl);
 
-  it("getCdnFile forwards ky options to the request", async () => {
-    let captured: Request | undefined;
-    server.use(
-      http.get(fileUrl, ({ request }) => {
-        captured = request;
-
-        return HttpResponse.text("");
+        expect(result.headers["content-type"]).toBeUndefined();
+        expect(result.blob.type).toBe("");
+        expect(result.blob.size).toBe(3);
       })
-    );
+  );
 
-    await cdnRepositories().getCdnFile(
-      { url: fileUrl },
-      { headers: { "x-trace": "abc" } }
-    );
+  it.effect("getCdnFile fails on a 500", () =>
+    Effect.gen(function* () {
+      server.use(
+        http.get(fileUrl, () => new HttpResponse(null, { status: 500 }))
+      );
 
-    // Capture-then-assert: the resolver stashes the request and assertions run in the
-    // test body, so a failure reports an ordinary `expect` diff instead of the
-    // HTTPError that a throwing resolver would surface.
-    expect(captured?.headers.get("x-trace")).toBe("abc");
-  });
+      const error = yield* Effect.flip(getCdnFile(fileUrl));
+
+      expect(error._tag).toBe("HttpClientError");
+      expect(error.response?.status).toBe(500);
+    })
+  );
 });

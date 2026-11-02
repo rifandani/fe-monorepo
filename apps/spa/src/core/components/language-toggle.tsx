@@ -1,7 +1,7 @@
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
+import { Match } from "effect";
 import { HiGlobeAlt } from "react-icons/hi2";
-import type { Selection } from "react-stately";
-import { match } from "ts-pattern";
+import type { Key } from "react-stately";
 
 import { Button } from "@/core/components/ui/button";
 import {
@@ -13,6 +13,9 @@ import {
 } from "@/core/components/ui/menu";
 import { useTranslation } from "@/core/providers/i18n/context";
 
+const isLocaleDictLanguage = (key: Key): key is LocaleDictLanguage =>
+  key === "en-us" || key === "id-id";
+
 export const LanguageToggle = () => {
   const { t, setLocale, locale } = useTranslation();
 
@@ -20,23 +23,22 @@ export const LanguageToggle = () => {
     <MenuTrigger>
       <Button intent="plain">
         <HiGlobeAlt className="size-6" />
-        {match(locale)
-          .with("en-us", () => "English")
-          .with("id-id", () => "Indonesia")
-          .otherwise(() => "Indonesia")}
+        {Match.value(locale).pipe(
+          Match.when("en-us", () => "English"),
+          Match.orElse(() => "Indonesia")
+        )}
       </Button>
 
       <Menu
         selectionMode="single"
         selectedKeys={new Set([locale])}
-        onSelectionChange={(_selection) => {
-          // SAFETY: `selectionMode="single"` rules out the "all" sentinel, and every
-          // menu item below is keyed by one of the values named here.
-          const selection = _selection as Exclude<Selection, "all"> & {
-            currentKey: LocaleDictLanguage;
-          };
+        onSelectionChange={(selection) => {
+          // `selectionMode="single"` rules out the "all" sentinel.
+          const [key] = selection === "all" ? [] : selection;
 
-          setLocale(selection.currentKey);
+          if (key !== undefined && isLocaleDictLanguage(key)) {
+            setLocale(key);
+          }
         }}
       >
         <MenuSection>

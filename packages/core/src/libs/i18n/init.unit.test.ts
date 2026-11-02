@@ -28,6 +28,7 @@ const translations = {
       plural: {
         // SAFETY: deliberately missing `other`, so `select()` finds nothing to
         // use - the cast is what lets the fixture express that broken catalog.
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         count: { two: "two" } as never,
       },
     }),
@@ -72,12 +73,13 @@ const setup = (
   const { t } = initI18n({
     locale,
     fallbackLocale,
-    translations: translations as never,
+    translations,
   });
 
   // SAFETY: likewise, the fixture's keys and params are absent from the
   // registered catalog `t` is typed against.
   return (key: string, params?: FixtureParams) =>
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     t(key as never, params as never);
 };
 

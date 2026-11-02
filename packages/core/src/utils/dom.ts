@@ -94,7 +94,8 @@ export const createSearchParams = (
  * // instead of => sort=asc&filters=model&filters=category
  */
 export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
-  const searchParams = init ? createSearchParams(init) : new URLSearchParams();
+  const searchParams =
+    init === undefined ? new URLSearchParams() : createSearchParams(init);
 
   // replace array of string values with a comma separated value
   for (const [key, value] of Object.entries(init ?? {})) {
@@ -107,7 +108,8 @@ export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
   return searchParams;
 };
 
-interface ExperimentalNavigator {
+/** `navigator` with `userAgentData`, which is not in the DOM lib yet. */
+interface ExperimentalNavigator extends Navigator {
   userAgentData?: {
     brands: {
       brand: string;
@@ -132,13 +134,12 @@ interface ExperimentalNavigator {
  * @returns {string} The platform name
  */
 export const getPlatform = (): string => {
-  // SAFETY: `userAgentData` is not in the DOM lib yet; every read below is guarded
-  // and falls back to the standard `navigator.platform`.
-  const nav = navigator as ExperimentalNavigator;
+  const nav: ExperimentalNavigator = navigator;
+  const platform = nav.userAgentData?.platform;
 
   // First, try the synchronous userAgentData.platform
-  if (nav?.userAgentData?.platform) {
-    return nav.userAgentData.platform;
+  if (platform !== undefined && platform !== "") {
+    return platform;
   }
 
   // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
@@ -154,16 +155,16 @@ export const getPlatform = (): string => {
  * @returns {Promise<string>} The platform name
  */
 export const getPlatformAsync = async (): Promise<string> => {
-  // SAFETY: as in `getPlatform` - an unshipped API behind guarded reads.
-  const nav = navigator as ExperimentalNavigator;
+  const nav: ExperimentalNavigator = navigator;
+  const platform = nav.userAgentData?.platform;
 
   // First, try the synchronous userAgentData.platform
-  if (nav?.userAgentData?.platform) {
-    return nav.userAgentData.platform;
+  if (platform !== undefined && platform !== "") {
+    return platform;
   }
 
   // Try high entropy values for more accurate platform info
-  if (nav?.userAgentData?.getHighEntropyValues) {
+  if (nav.userAgentData) {
     try {
       const highEntropyValues = await nav.userAgentData.getHighEntropyValues([
         "platform",

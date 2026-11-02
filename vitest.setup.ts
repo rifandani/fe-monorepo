@@ -22,7 +22,7 @@ const createMemoryStorage = (): Storage => {
       store.delete(key);
     },
     setItem(key: string, value: string) {
-      store.set(key, String(value));
+      store.set(key, value);
     },
   };
 };

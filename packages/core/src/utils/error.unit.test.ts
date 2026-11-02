@@ -1,29 +1,25 @@
+import type { ErrorResponseSchema } from "@workspace/core/apis/core";
+import { HttpResponseError } from "@workspace/core/services/http-response-error";
 import { toErrorMessage } from "@workspace/core/utils/error";
-import { HTTPError } from "ky";
-import type { NormalizedOptions } from "ky";
+import { Effect, Schema } from "effect";
 import { describe, expect, it } from "vitest";
-import { z } from "zod";
 
 /**
- * ky populates `data` itself, eagerly, before the error is thrown. Tests build
- * the error directly rather than through MSW: this module neither builds nor
- * parses a request, so ADR-0002's rule of thumb points at the Module Boundary.
+ * Tests build the error directly rather than through MSW: this module neither
+ * builds nor decodes a request, so ADR-0002's rule of thumb points at the Module
+ * Boundary.
  */
-const httpError = (data?: string | Record<string, string>, status = 401) => {
-  // SAFETY: `toErrorMessage` reads only `data` and `message`; ky's normalized
-  // options are untouched by this module, so an empty object stands in.
-  const options = {} as NormalizedOptions;
-
-  const error = new HTTPError(
-    new Response(null, { status }),
-    new Request("https://api.test/things"),
-    options
-  );
-
-  error.data = data;
-
-  return error;
-};
+const httpError = (
+  data?: ErrorResponseSchema | Record<string, string> | string,
+  status = 401
+) =>
+  new HttpResponseError({
+    status,
+    method: "GET",
+    url: "https://api.test/things",
+    data,
+    message: `Request failed with status code ${status}: GET https://api.test/things`,
+  });
 
 describe("toErrorMessage", () => {
   it("reads the Error Envelope", () => {
@@ -38,27 +34,33 @@ describe("toErrorMessage", () => {
     );
   });
 
-  it("falls back to ky's message when there is no body", () => {
+  it("falls back to the error's message when there is no body", () => {
     const error = httpError();
 
     expect(toErrorMessage(error)).toBe(error.message);
   });
 
-  it("falls back to ky's message when the body is not an Error Envelope", () => {
+  it("falls back to the error's message when the body is not an Error Envelope", () => {
     const error = httpError({ detail: "nope" });
 
     expect(toErrorMessage(error)).toBe(error.message);
   });
 
   it("does not leak schema detail when the response shape is wrong", () => {
-    // A ZodError means the server sent something we cannot read. That is not
+    // A SchemaError means the server sent something we cannot read. That is not
     // actionable by the person using the app, and naming the offending field
     // leaks our internals into a toast.
-    const parsed = z.object({ email: z.email() }).safeParse({ email: "nope" });
-    const error = parsed.success ? null : parsed.error;
+    const failure = Effect.runSync(
+      Effect.flip(
+        Schema.decodeUnknownEffect(Schema.Struct({ email: Schema.Finite }))({
+          email: "nope",
+        })
+      )
+    );
 
-    const message = toErrorMessage(error);
+    const message = toErrorMessage(failure);
 
+    expect(failure._tag).toBe("SchemaError");
     expect(message).not.toContain("email");
     expect(message).toBe("Something went wrong. Please try again.");
   });

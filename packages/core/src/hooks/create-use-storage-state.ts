@@ -13,8 +13,8 @@ export interface Options<T> {
 }
 
 /** Storage and `JSON.parse` both throw `Error` subclasses; anything else is wrapped. */
-const toError = <T>(thrown: T) =>
-  thrown instanceof Error ? thrown : new Error(String(thrown));
+const toError = (cause: unknown) =>
+  cause instanceof Error ? cause : new Error(String(cause));
 
 const logError = (error: Error) => {
   console.error(error);
@@ -41,6 +41,9 @@ const deserialize = <T>(value: string, options: Options<T>): T => {
     return options.deserializer(value);
   }
 
+  // SAFETY: storage holds what `serialize` wrote under this key, so it parses
+  // back to `T`. A custom `deserializer` is the way to validate it.
+  // oxlint-disable-next-line typescript/no-unsafe-return
   return JSON.parse(value);
 };
 
@@ -52,6 +55,9 @@ const resolveDefaultValue = <T>(options: Options<T>) => {
 
   return options.defaultValue;
 };
+
+const hasStoredValue = (value: string | null | undefined): value is string =>
+  Boolean(value);
 
 /**
  * Retrieves and deserializes the stored value from storage
@@ -66,7 +72,7 @@ const readStoredValue = <T>(
   try {
     const raw = storage?.getItem(key);
 
-    if (raw) {
+    if (hasStoredValue(raw)) {
       return deserialize(raw, options);
     }
   } catch (error) {

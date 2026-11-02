@@ -7,6 +7,7 @@ import {
   COLOR_MODES,
   TRACER_REACT_ENTRY,
 } from "@/core/constants/global";
+import { AppAtomProvider } from "@/core/providers/atom/provider";
 import { AppHeadProvider } from "@/core/providers/head/provider";
 import {
   AppI18nProvider,
@@ -37,24 +38,26 @@ export const Entry = () => {
   return (
     <StrictMode>
       <AppHeadProvider>
-        <AppQueryProvider>
-          <AppTranslationProvider>
-            <AppI18nProvider>
-              <AppToastProvider>
-                <Suspense
-                  name={TRACER_REACT_ENTRY}
-                  fallback={<Loader className="size-4.5" variant="spin" />}
-                >
-                  {/* Router entry point */}
-                  <AppRouterProvider />
+        <AppAtomProvider>
+          <AppQueryProvider>
+            <AppTranslationProvider>
+              <AppI18nProvider>
+                <AppToastProvider>
+                  <Suspense
+                    name={TRACER_REACT_ENTRY}
+                    fallback={<Loader className="size-4.5" variant="spin" />}
+                  >
+                    {/* Router entry point */}
+                    <AppRouterProvider />
 
-                  {/* PWA */}
-                  <ReloadPromptSw />
-                </Suspense>
-              </AppToastProvider>
-            </AppI18nProvider>
-          </AppTranslationProvider>
-        </AppQueryProvider>
+                    {/* PWA */}
+                    <ReloadPromptSw />
+                  </Suspense>
+                </AppToastProvider>
+              </AppI18nProvider>
+            </AppTranslationProvider>
+          </AppQueryProvider>
+        </AppAtomProvider>
       </AppHeadProvider>
     </StrictMode>
   );

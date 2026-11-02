@@ -1,22 +1,20 @@
-import { trace } from "@opentelemetry/api";
 import { createRoot } from "react-dom/client";
 
 import {
-  TRACER_REACT_ENTRY,
   TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
   TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
   TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
 } from "@/core/constants/global";
 import { Entry } from "@/core/entry";
-import { recordException } from "@/core/utils/telemetry";
+import { appRuntime } from "@/core/services/runtime";
+import { recordException, toReportedError } from "@/core/utils/telemetry";
+import type { ReportedError } from "@/core/utils/telemetry";
+import { reportWebVitals } from "@/core/utils/web-vitals";
 
 import "@/core/styles/globals.css";
-import "./instrumentation";
-import { reportWebVitals } from "@/core/utils/web-vitals";
 
 reportWebVitals();
 
-const tracer = trace.getTracer(TRACER_REACT_ENTRY);
 const root = document.querySelector("#root");
 
 if (!(root instanceof HTMLElement)) {
@@ -25,38 +23,28 @@ if (!(root instanceof HTMLElement)) {
   );
 }
 
+/** Record a React root error as a failed span, without blocking React. */
+const reportRootError = (name: string, error: ReportedError) => {
+  appRuntime.runFork(recordException(name, error));
+};
+
 createRoot(root, {
-  onCaughtError(error, errorInfo) {
-    recordException({
-      error: {
-        componentStack: errorInfo.componentStack,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      },
-      name: TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
-      tracer,
-    });
+  onCaughtError: (error, { componentStack }) => {
+    reportRootError(
+      TRACER_REACT_ENTRY_ON_CAUGHT_ERROR,
+      toReportedError(error, { componentStack })
+    );
   },
-  onRecoverableError(error, errorInfo) {
-    recordException({
-      error: {
-        componentStack: errorInfo.componentStack,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      },
-      name: TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
-      tracer,
-    });
+  onRecoverableError: (error, { componentStack }) => {
+    reportRootError(
+      TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR,
+      toReportedError(error, { componentStack })
+    );
   },
-  onUncaughtError(error, errorInfo) {
-    recordException({
-      error: {
-        componentStack: errorInfo.componentStack,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      },
-      name: TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
-      tracer,
-    });
+  onUncaughtError: (error, { componentStack }) => {
+    reportRootError(
+      TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
+      toReportedError(error, { componentStack })
+    );
   },
 }).render(<Entry />);

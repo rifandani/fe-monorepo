@@ -40,14 +40,15 @@ const RootRoute = () => {
        * It needs to be wrapped by RAC RouterProvider component.
        */}
       <RACRouterProvider
-        navigate={(to, options) =>
-          router.navigate({
+        navigate={(to, options) => {
+          void router.navigate({
             ...options,
             // SAFETY: react-aria hands back an href built from this app's own
             // links; TanStack cannot verify that through the generic `navigate` hook.
+            // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             to: to as ToPathOption<RegisteredRouter, "/", "/">,
-          })
-        }
+          });
+        }}
         useHref={(to) => router.buildLocation({ to }).href}
       >
         <Outlet />

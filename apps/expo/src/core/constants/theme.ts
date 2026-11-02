@@ -159,14 +159,11 @@ export type Themes = typeof builtThemes;
 // SAFETY: in a production client bundle tamagui hydrates the themes from CSS at
 // runtime, so shipping the JS theme objects is dead weight - the empty stub is
 // what tamagui's own docs prescribe here.
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const hydratedFromCss = {} as Themes;
-
-// SAFETY: `builtThemes` is the generator output, which tamagui types loosely; it
-// is the very value `Themes` describes.
-const jsThemes = builtThemes as Themes;
 
 export const themes: Themes =
   process.env.TAMAGUI_ENVIRONMENT === "client" &&
   process.env.NODE_ENV === "production"
     ? hydratedFromCss
-    : jsThemes;
+    : builtThemes;

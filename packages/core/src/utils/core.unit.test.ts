@@ -139,9 +139,10 @@ describe("objectToFormData", () => {
   it("appends File values as-is", () => {
     const file = new File(["hi"], "hi.txt", { type: "text/plain" });
     const formData = objectToFormData({ avatar: file });
-    expect(formData.get("avatar")).toBeInstanceOf(File);
-    // SAFETY: the assertion on the previous line established the entry is a File.
-    expect((formData.get("avatar") as File).name).toBe("hi.txt");
+    const avatar = formData.get("avatar");
+
+    expect(avatar).toBeInstanceOf(File);
+    expect(avatar instanceof File ? avatar.name : undefined).toBe("hi.txt");
   });
 
   it("skips null and undefined leaves", () => {
@@ -159,6 +160,7 @@ describe("objectToFormData", () => {
   it("skips inherited enumerable properties", () => {
     // SAFETY: `Object.create` returns `any`; the prototype and the own property
     // assigned below are both string-valued, which is what the walk reads.
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     const obj = Object.create({ inherited: "no" }) as Record<string, string>;
     obj.own = "yes";
     const formData = objectToFormData({ nested: obj });

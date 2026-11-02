@@ -1,15 +1,17 @@
+import { useAtomValue } from "@effect/atom-react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import { useAppStore } from "@/core/hooks/use-app-store";
+import { AppAtomProvider } from "@/core/providers/atom/provider";
 import { DevPlugins } from "@/core/providers/dev-plugins";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { AppI18nProvider } from "@/core/providers/i18n/provider";
 import { AppQueryProvider } from "@/core/providers/query/provider";
 import { AppTamaguiProvider } from "@/core/providers/tamagui/provider";
 import { AppToastProvider } from "@/core/providers/toast/provider";
+import { userAtom } from "@/core/stores/app-store";
 
 // // Keep the splash screen visible while we fetch resources
 // SplashScreen.preventAutoHideAsync()
@@ -21,7 +23,7 @@ SplashScreen.setOptions({
 
 const App = () => {
   const { t } = useTranslation();
-  const user = useAppStore((state) => state.user);
+  const user = useAtomValue(userAtom);
 
   return (
     <GestureHandlerRootView>
@@ -51,16 +53,18 @@ const App = () => {
 
 const RootLayout = () => (
   <KeyboardProvider>
-    <AppI18nProvider>
-      <AppQueryProvider>
-        <AppTamaguiProvider>
-          <AppToastProvider>
-            <App />
-            <DevPlugins />
-          </AppToastProvider>
-        </AppTamaguiProvider>
-      </AppQueryProvider>
-    </AppI18nProvider>
+    <AppAtomProvider>
+      <AppI18nProvider>
+        <AppQueryProvider>
+          <AppTamaguiProvider>
+            <AppToastProvider>
+              <App />
+              <DevPlugins />
+            </AppToastProvider>
+          </AppTamaguiProvider>
+        </AppQueryProvider>
+      </AppI18nProvider>
+    </AppAtomProvider>
   </KeyboardProvider>
 );
 

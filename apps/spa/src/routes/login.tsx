@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import type { ErrorResponseSchema } from "@workspace/core/apis/core";
+import { toErrorMessage } from "@workspace/core/utils/error";
 import { toast } from "sonner";
 
 import { LoginTextField } from "@/auth/components/login-text-field";
@@ -11,11 +11,6 @@ import { Note } from "@/core/components/ui/note";
 import { useSeo } from "@/core/hooks/use-seo";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-/** The login repository rejects with the API's error envelope. */
-const loginErrorMessage = (error: Error) =>
-  // SAFETY: see above - the mutation's rejection carries the API error body.
-  (error as ErrorResponseSchema & Error).message;
-
 const LoginForm = () => {
   const { t } = useTranslation();
   const { form, loginMutation } = useLoginForm();
@@ -25,7 +20,7 @@ const LoginForm = () => {
       className="flex flex-col pt-3 md:pt-8"
       onSubmit={(ev) => {
         ev.preventDefault();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
     >
       <form.Field name="username">
@@ -61,12 +56,12 @@ const LoginForm = () => {
           intent="danger"
           className="mt-4"
         >
-          {loginErrorMessage(loginMutation.error)}
+          {toErrorMessage(loginMutation.error)}
         </Note>
       )}
 
       <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
+        selector={(state) => [state.canSubmit, state.isSubmitting] as const}
       >
         {([canSubmit, isSubmitting]) => (
           <Button

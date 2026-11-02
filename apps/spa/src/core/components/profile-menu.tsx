@@ -1,3 +1,4 @@
+import { useAtomValue } from "@effect/atom-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Button as ButtonPrimitive } from "react-aria-components/Button";
 import {
@@ -6,7 +7,7 @@ import {
   HiUser,
 } from "react-icons/hi2";
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserAtom } from "@/auth/stores/auth-user-store";
 import { endSession } from "@/auth/utils/end-session";
 import { Avatar } from "@/core/components/ui/avatar";
 import {
@@ -22,7 +23,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
 export const ProfileMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const user = useAuthUserStore((state) => state.user);
+  const user = useAtomValue(authUserAtom);
 
   return (
     <MenuTrigger>
@@ -35,12 +36,9 @@ export const ProfileMenu = () => {
 
       <Menu
         onAction={(key) => {
-          // SAFETY: the three menu items below are the only keys this menu emits.
-          const currentKey = key as "profile" | "settings" | "logout";
-
-          if (currentKey === "logout") {
+          if (key === "logout") {
             endSession();
-            navigate({
+            void navigate({
               to: "/login",
             });
           }

@@ -15,19 +15,18 @@ interface IData<T> {
 
 /**
  * Calculates the target index in an array based on step direction
- * @template T Array element type
  * @param step Number of steps to move (positive for forward, negative for backward)
- * @param arr Target array
+ * @param length Length of the target array
  * @returns Clamped index within array bounds
  */
-const dumpIndex = <T>(step: number, arr: T[]) => {
+const dumpIndex = (step: number, length: number) => {
   let index =
     step > 0
       ? step - 1 // move forward
-      : arr.length + step; // move backward
+      : length + step; // move backward
 
-  if (index >= arr.length - 1) {
-    index = arr.length - 1;
+  if (index >= length - 1) {
+    index = length - 1;
   }
 
   if (index < 0) {
@@ -45,7 +44,7 @@ const dumpIndex = <T>(step: number, arr: T[]) => {
  * @returns Object containing current element and arrays before/after it
  */
 const split = <T>(step: number, targetArr: T[]) => {
-  const index = dumpIndex(step, targetArr);
+  const index = dumpIndex(step, targetArr.length);
 
   return {
     _after: targetArr.slice(index + 1),
@@ -65,6 +64,7 @@ const pushValue = <T>(
 ): IData<T> => {
   // SAFETY: `present` is only absent before the first value is set, and every
   // caller of this helper has already committed one.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const _past = [...history.past, history.present as T];
   const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
 
@@ -91,6 +91,7 @@ const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
   return {
     future: _after,
     // SAFETY: travelling implies a committed `present` - see `updateHistory`.
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     past: [...history.past, history.present as T, ..._before],
     present: _current,
   };
@@ -105,6 +106,7 @@ const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
 
   return {
     // SAFETY: travelling implies a committed `present` - see `updateHistory`.
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     future: [..._after, history.present as T, ...history.future],
     past: _before,
     present: _current,
@@ -126,22 +128,18 @@ const createHistoryActions = <T>(
    * @param step Positive for forward, negative for backward movement
    */
   go: (step: number) => {
-    // `Number` is identity for numbers and coerces stray string callers, so it
-    // subsumes the `isNumber` guard this used to branch on.
-    const stepNum = Number(step);
-
     // Travelling forward consumes `future`, backward consumes `past`; a zero
     // step, or an empty source stack, is a no-op.
     const [source, travel] =
-      stepNum > 0
+      step > 0
         ? ([history.future, travelForward] as const)
         : ([history.past, travelBackward] as const);
 
-    if (stepNum === 0 || source.length === 0) {
+    if (step === 0 || source.length === 0) {
       return;
     }
 
-    setHistory(travel(history, stepNum));
+    setHistory(travel(history, step));
   },
   /**
    * Updates current value and manages history state
@@ -190,8 +188,7 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
 
   // Stays in the hook body: the react-compiler rule forbids handing a ref
   // across a function boundary during render.
-  // oxlint-disable-next-line typescript/no-explicit-any
-  const reset = (...params: any[]) => {
+  const reset = (...params: [initial?: T]) => {
     const _initial = params.length > 0 ? params[0] : initialValueRef.current;
     initialValueRef.current = _initial;
     setHistory({

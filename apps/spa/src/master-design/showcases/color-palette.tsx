@@ -1,4 +1,5 @@
 import { cn } from "cn";
+import { noop } from "radashi";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { Variant, VariantGrid } from "../variant";
@@ -161,7 +162,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
     const el = ref.current;
 
     if (!el) {
-      return;
+      return noop;
     }
 
     const update = () => {

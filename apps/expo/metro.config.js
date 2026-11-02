@@ -3,7 +3,6 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const path = require("node:path");
 
-/** @type {import('expo/metro-config')} */
 const { getDefaultConfig } = require("expo/metro-config");
 
 const projectRoot = path.dirname(require.resolve("./package.json"));

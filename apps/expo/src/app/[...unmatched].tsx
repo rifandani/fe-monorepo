@@ -1,13 +1,14 @@
+import { useAtomValue } from "@effect/atom-react";
 import { Link, Stack } from "expo-router";
 import { H3, YStack } from "tamagui";
 
 import { BaseButton } from "@/core/components/button/base-button";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
+import { userAtom } from "@/core/stores/app-store";
 
 const Unmatched = () => {
   const { t } = useTranslation();
-  const user = useAppStore((state) => state.user);
+  const user = useAtomValue(userAtom);
 
   return (
     <>

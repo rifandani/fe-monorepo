@@ -53,8 +53,7 @@ export function useControllableValue<T = any>(
 export function useControllableValue<T = any>(
   props?: Props<T>,
   options?: Options<T>
-  // oxlint-disable-next-line typescript/no-explicit-any
-): [T, (v: SetStateAction<T>, ...args: any[]) => void];
+): [T, (v: SetStateAction<T>, ...args: unknown[]) => void];
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: Props<T> | StandardProps<T> = {},
@@ -69,9 +68,11 @@ export function useControllableValue<T = any>(
 
   // SAFETY: the standard `{ value, defaultValue, onChange }` shape is exactly the
   // name-addressed bag under this hook's default prop names.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const bag = props as Props<T>;
   // SAFETY: `valuePropName` names the prop holding this hook's value, whose type
   // the caller states as `T` when instantiating the hook.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const value = bag[valuePropName] as T;
   const isControlled = Object.hasOwn(bag, valuePropName);
 
@@ -82,6 +83,7 @@ export function useControllableValue<T = any>(
 
     if (Object.hasOwn(bag, defaultValuePropName)) {
       // SAFETY: as above, for the prop named by `defaultValuePropName`.
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       return bag[defaultValuePropName] as T;
     }
 
@@ -97,11 +99,11 @@ export function useControllableValue<T = any>(
 
   const update = useUpdate();
 
-  // oxlint-disable-next-line typescript/no-explicit-any
-  const setState = (v: SetStateAction<T>, ...args: any[]) => {
+  const setState = (v: SetStateAction<T>, ...args: unknown[]) => {
     const r = isFunction(v)
       ? // SAFETY: `stateRef` is seeded from the controlled value or the default, so
         // it holds `undefined` only when the caller's own `T` includes it.
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         v(stateRef.current as T)
       : v;
 

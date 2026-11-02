@@ -24,7 +24,7 @@ export const TranslationProvider = ({
   children: ReactNode;
 }) => {
   const [locale, setLocale] = useState(() => {
-    if (!defaultLocale) {
+    if (defaultLocale === undefined || defaultLocale === "") {
       return "en-us";
     }
 

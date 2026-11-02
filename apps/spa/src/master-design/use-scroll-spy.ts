@@ -1,3 +1,4 @@
+import { noop } from "radashi";
 import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -83,7 +84,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
 
   useEffect(() => {
     if (ids.length === 0) {
-      return;
+      return noop;
     }
 
     const compute = () => {
@@ -111,7 +112,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     return () => {
       cancelAnimationFrame(raf);
 
-      if (settleTimer.current) {
+      if (settleTimer.current !== null) {
         clearTimeout(settleTimer.current);
         settleTimer.current = null;
       }
@@ -122,7 +123,7 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
   }, [ids]);
 
   useEffect(() => {
-    if (!activeId) {
+    if (activeId === null || activeId === "") {
       return;
     }
 

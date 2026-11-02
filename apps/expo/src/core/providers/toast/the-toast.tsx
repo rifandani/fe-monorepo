@@ -22,6 +22,14 @@ const iconMapper = {
   warning: <Feather name="alert-octagon" size={16} color="white" />,
 } satisfies Record<ToastPreset, React.ReactNode>;
 
+const ToastMessage = ({ message }: { message: string | undefined }) => {
+  if (message === undefined || message === "") {
+    return null;
+  }
+
+  return <Toast.Description>{message}</Toast.Description>;
+};
+
 export const TheToast = () => {
   const currentToast = useToastState();
 
@@ -51,9 +59,7 @@ export const TheToast = () => {
 
       <YStack gap="$1">
         <Toast.Title>{currentToast.title}</Toast.Title>
-        {!!currentToast.message && (
-          <Toast.Description>{currentToast.message}</Toast.Description>
-        )}
+        <ToastMessage message={currentToast.message} />
       </YStack>
     </Toast>
   );

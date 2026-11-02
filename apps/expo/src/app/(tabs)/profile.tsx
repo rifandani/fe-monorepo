@@ -1,3 +1,4 @@
+import { useAtomValue } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
@@ -23,8 +24,8 @@ import {
 import { endSession } from "@/auth/utils/end-session";
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
+import { userAtom } from "@/core/stores/app-store";
 import { formatDisplayDate } from "@/core/utils/date";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
@@ -32,9 +33,27 @@ import { ProfileListItem } from "@/user/components/profile-list-item";
 import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
 import { useGetUser } from "@/user/hooks/use-get-user";
 
+const BirthDate = ({
+  birthDate,
+  locale,
+}: {
+  birthDate: string | undefined;
+  locale: string;
+}) => {
+  if (birthDate === undefined || birthDate === "") {
+    return null;
+  }
+
+  return (
+    <Paragraph size="$2" opacity={0.7}>
+      {formatDisplayDate(birthDate, locale)}
+    </Paragraph>
+  );
+};
+
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
-  const user = useAppStore((state) => state.user);
+  const user = useAtomValue(userAtom);
 
   const { data } = useGetUser(
     user
@@ -60,11 +79,7 @@ const EditProfileSection = () => {
       <YStack flex={1}>
         <H6 size="$4">{username}</H6>
         <Paragraph size="$3">{email}</Paragraph>
-        {!!birthDate && (
-          <Paragraph size="$2" opacity={0.7}>
-            {formatDisplayDate(birthDate, locale)}
-          </Paragraph>
-        )}
+        <BirthDate birthDate={birthDate} locale={locale} />
 
         <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
           {t("editProfile")}
@@ -79,7 +94,7 @@ const CheckForUpdatesListItem = () => {
   const { t } = useTranslation();
   const { isUpdateAvailable, isUpdatePending } = useUpdates();
   useFocusEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         await checkForUpdateAsync();
       } catch (error) {
@@ -93,7 +108,7 @@ const CheckForUpdatesListItem = () => {
   });
   useFocusEffect(() => {
     if (isUpdatePending) {
-      (async () => {
+      void (async () => {
         try {
           await reloadAsync();
         } catch (error) {
@@ -115,7 +130,7 @@ const CheckForUpdatesListItem = () => {
     <ProfileListItem
       icon={<Feather name="download-cloud" />}
       onPress={() => {
-        (async () => {
+        void (async () => {
           try {
             await fetchUpdateAsync();
           } catch (error) {

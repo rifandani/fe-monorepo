@@ -1,3 +1,4 @@
+import { noop } from "radashi";
 import { useEffect, useRef, useState } from "react";
 
 interface UseAutoScrollOptions {
@@ -34,7 +35,7 @@ export const useAutoScroll = ({
     const anchor = anchorRef.current;
 
     if (!anchor) {
-      return;
+      return noop;
     }
 
     const observer = new IntersectionObserver(
@@ -59,7 +60,7 @@ export const useAutoScroll = ({
   // Auto-scroll on updates and during streaming
   useEffect(() => {
     if (!isAutoScroll) {
-      return;
+      return noop;
     }
 
     const scrollToBottom = () => {
@@ -77,7 +78,7 @@ export const useAutoScroll = ({
     }
 
     return () => {
-      if (intervalId) {
+      if (intervalId !== undefined) {
         clearInterval(intervalId);
       }
     };

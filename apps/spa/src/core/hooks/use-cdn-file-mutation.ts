@@ -7,23 +7,28 @@ import type {
   GetCdnFileSuccessSchema,
 } from "@workspace/core/apis/cdn";
 import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
-import type { HTTPError } from "ky";
+import type { HttpClientError } from "effect/http";
 import type { Except } from "type-fest";
+
+import { appRuntime } from "@/core/services/runtime";
 
 interface Opt {
   key: CdnValidKeys;
   url?: string | undefined;
 }
 
+type CdnError = HttpClientError.HttpClientError;
+
 export const useCdnFileMutation = (
   opt: Opt,
   mutationOptions?: Except<
-    UseMutationOptions<GetCdnFileSuccessSchema, HTTPError, string>,
+    UseMutationOptions<GetCdnFileSuccessSchema, CdnError, string>,
     "mutationKey" | "mutationFn"
   >
 ) => {
-  const mutation = useMutation<GetCdnFileSuccessSchema, HTTPError, string>({
-    mutationFn: (url) => cdnRepositories().getCdnFile({ url }),
+  const mutation = useMutation<GetCdnFileSuccessSchema, CdnError, string>({
+    mutationFn: async (url) =>
+      await appRuntime.runPromise(cdnRepositories.getCdnFile({ url })),
     mutationKey: cdnKeys[opt.key](opt.url),
     ...mutationOptions,
   });
@@ -32,7 +37,7 @@ export const useCdnFileMutation = (
 };
 
 export const useCdnFileMutationState = (opt: Opt) =>
-  useMutationState<MutationState<GetCdnFileSuccessSchema, HTTPError, string>>({
+  useMutationState<MutationState<GetCdnFileSuccessSchema, CdnError, string>>({
     filters: {
       mutationKey: cdnKeys[opt.key](opt.url),
     },

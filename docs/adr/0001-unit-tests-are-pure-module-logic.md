@@ -1,12 +1,13 @@
 # Unit tests are pure module logic only
 
-We run Vitest projects (`core`, `spa`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Zustand stores via `.getState()`. React components/hooks (RTL, hook harnesses), plain Zod shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; all three projects run in a single CI job, `unit`.
+We run Vitest projects (`core`, `spa`, `expo`) for Unit tests: utils, libs, registries, plain classes, non-React factories, and Atom stores through their registry helpers (`*-store.ts`). React components/hooks (RTL, hook harnesses), plain Schema shapes, Vitest UI, and browser mode are out of scope — UI behavior belongs in Playwright E2E. Files are `*.unit.test.ts` under `environment: 'node'` with shared polyfills; all three projects run in a single CI job, `unit`.
 
 > Coverage was originally out of scope too. That clause was reversed on 2026-07-28 — see [Amendments](#amendments).
 > The four per-project CI jobs were collapsed into one on 2026-07-29 — same section.
 > "Targeted mocks" was narrowed on 2026-07-30: API-layer tests now fake at the network boundary via MSW, not at the module boundary. Scope above is unchanged — see [ADR-0002](./0002-network-boundary-mocking-with-msw.md).
 > A second tool now watches the same `coverage.include` allowlist from the other side: [ADR-0003](./0003-mutation-testing-is-advisory.md) derives its mutation scope from it. Coverage asks *did a test execute this line* (a floor, enforced); mutation asks *would a test notice if this line were wrong* (a ceiling, advisory).
 > Its first report then revised the allowlist itself on 2026-08-03 — pure Zod schema modules were scoring a free 100% — see [Amendments](#amendments).
+> On 2026-11-02 the apps moved to Effect: Zustand stores became `Atom.kvs` atoms in `*-store.ts` files, Zod became Effect Schema, and Effect tests use `@effect/vitest`. The scope rule is unchanged; only the names in it moved.
 
 ## Considered Options
 
@@ -22,7 +23,7 @@ Coverage measures business logic, defined by the `coverage.include` allowlist in
 
 > **Logic Seam** — a framework entry point holds no logic. It delegates to a plain `.ts` sibling, and the sibling is what gets unit-tested and measured (`app/api/og/route.tsx` → `og-params.ts`).
 
-Logic left inside a shell is therefore invisible to coverage by design — that absence is the signal to extract it. Note `.tsx` is not a proxy for UI here: `core/utils/seo.tsx` and both Zustand stores are `.tsx` business logic.
+Logic left inside a shell is therefore invisible to coverage by design — that absence is the signal to extract it. Note `.tsx` is not a proxy for UI here: `core/utils/seo.tsx` is `.tsx` business logic.
 
 `thresholds` is a floor, not a target — `autoUpdate: false`, `perFile: true`. First baseline 2026-07-28: statements 90.1%, branches 78.33%, functions 84.64%, lines 90.05%. Backfilling the untested branches of every allowlisted module the same day moved the measurement to statements 100%, branches 99.51%, functions 100%, lines 100%.
 

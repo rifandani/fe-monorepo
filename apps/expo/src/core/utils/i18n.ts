@@ -1,5 +1,5 @@
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
-import { match } from "ts-pattern";
+import { Match } from "effect";
 
 const fallbackLocale: LocaleDictLanguage = "en-us";
 
@@ -12,8 +12,9 @@ export const resolveDeviceLocale = (
 ): LocaleDictLanguage => {
   const [primaryTag] = languageTag?.toLowerCase().split("-") ?? [];
 
-  return match(primaryTag)
-    .with("id", () => "id-id" as const)
-    .with("en", () => "en-us" as const)
-    .otherwise(() => fallbackLocale);
+  return Match.value(primaryTag).pipe(
+    Match.when("id", (): LocaleDictLanguage => "id-id"),
+    Match.when("en", (): LocaleDictLanguage => "en-us"),
+    Match.orElse(() => fallbackLocale)
+  );
 };

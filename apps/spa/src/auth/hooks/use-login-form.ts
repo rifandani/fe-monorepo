@@ -1,9 +1,13 @@
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import { Schema } from "effect";
 
 import { useAuthLogin } from "@/auth/hooks/use-auth-login";
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserStore } from "@/auth/stores/auth-user-store";
+
+/** TanStack Form reads any Standard Schema; Effect Schema converts to one. */
+const loginValidator = Schema.toStandardSchemaV1(authLoginRequestSchema);
 
 /**
  * Login form state plus the mutation submitting it, which stores the user and
@@ -11,12 +15,11 @@ import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
  */
 export const useLoginForm = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuthUserStore();
 
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
       // set user to local storage and navigate to home
-      setUser(user);
+      authUserStore.set(user);
       await navigate({ to: "/" });
     },
   });
@@ -30,7 +33,7 @@ export const useLoginForm = () => {
       loginMutation.mutate(value);
     },
     validators: {
-      onChange: authLoginRequestSchema,
+      onChange: loginValidator,
     },
   });
 

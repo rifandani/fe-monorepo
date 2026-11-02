@@ -75,10 +75,16 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
 
   /** Check if an item is selected */
   const isSelected = (item: T) => selectedSet.has(item);
+
   /** Select an item */
-  const select = (item: T) => setSelected(withItem(selectedSet, item));
+  const select = (item: T) => {
+    setSelected(withItem(selectedSet, item));
+  };
+
   /** UnSelect an item */
-  const unSelect = (item: T) => setSelected(withoutItem(selectedSet, item));
+  const unSelect = (item: T) => {
+    setSelected(withoutItem(selectedSet, item));
+  };
 
   /** Toggle the select status of an item */
   const toggle = (item: T) => {
@@ -90,9 +96,15 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
   };
 
   /** Select all items in the list */
-  const selectAll = () => setSelected(withItems(selectedSet, items));
+  const selectAll = () => {
+    setSelected(withItems(selectedSet, items));
+  };
+
   /** UnSelect all items in the list */
-  const unSelectAll = () => setSelected(withoutItems(selectedSet, items));
+  const unSelectAll = () => {
+    setSelected(withoutItems(selectedSet, items));
+  };
+
   /**
    * Check if no item is selected
    */
@@ -103,7 +115,13 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
   /**
    * Toggle select all items
    */
-  const toggleAll = () => (allSelected ? unSelectAll() : selectAll());
+  const toggleAll = () => {
+    if (allSelected) {
+      unSelectAll();
+    } else {
+      selectAll();
+    }
+  };
 
   return {
     allSelected,

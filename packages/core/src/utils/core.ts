@@ -104,18 +104,14 @@ const mapKeysDeep = (
 /**
  * convert deep nested object keys to camelCase.
  */
-export const toCamelCase = <T>(object: JsonValue): T =>
-  // SAFETY: only keys are rewritten - the leaves keep their runtime values, so
-  // `T` is the caller's snake_case-to-camelCase restatement of its own payload
-  // type, which the traversal cannot express generically.
-  mapKeysDeep(object, camel) as T;
+export const toCamelCase = (object: JsonValue): JsonValue =>
+  mapKeysDeep(object, camel);
 
 /**
  * convert deep nested object keys to snake_case.
  */
-export const toSnakeCase = <T>(object: JsonValue): T =>
-  // SAFETY: only keys are rewritten - see `toCamelCase`.
-  mapKeysDeep(object, snake) as T;
+export const toSnakeCase = (object: JsonValue): JsonValue =>
+  mapKeysDeep(object, snake);
 
 const removeLeadingZerosRegex = /^0+[1-9]+/u;
 const removeLeadingZeroRegex = /^(?<group>0)/u;
@@ -139,7 +135,7 @@ const removeLeadingWhitespace2Regex = /^\s*/u;
  * Remove leading whitespaces
  */
 export const removeLeadingWhitespace = (value?: string) => {
-  if (!value) {
+  if (value === undefined || value === "") {
     return "";
   }
 
@@ -173,6 +169,14 @@ type FormDataAppend = (value: FormDataValue, rootName?: string) => void;
 const isWalkable = (value: FormDataValue): value is FormDataRecord =>
   typeof value === "object" && value !== null;
 
+/** A value `FormData` takes as its string form. */
+const isLeaf = (value: FormDataValue): value is boolean | number | string =>
+  typeof value !== "object" && value !== undefined;
+
+/** The string form of a comma-joined array item; `null` and `undefined` are empty. */
+const toCommaItem = (item: FormDataValue) =>
+  isLeaf(item) || item instanceof Date ? String(item) : "";
+
 const appendObjectEntries = (
   obj: FormDataRecord,
   rootName: string,
@@ -203,7 +207,7 @@ const appendFormDataValue = (
 
   if (Array.isArray(value)) {
     if (arrayMode === "comma") {
-      formData.append(rootName, value.join(","));
+      formData.append(rootName, value.map(toCommaItem).join(","));
 
       return;
     }
@@ -221,7 +225,7 @@ const appendFormDataValue = (
     return;
   }
 
-  if (value !== null && value !== undefined) {
+  if (isLeaf(value)) {
     formData.append(rootName, String(value));
   }
 };
@@ -249,7 +253,7 @@ const createObjectToFormData =
       appendFormDataValue(
         formData,
         _obj,
-        _rootName || "",
+        _rootName ?? "",
         appendFormData,
         arrayMode
       );
@@ -368,11 +372,11 @@ export const objectToFormDataArrayWithComma = createObjectToFormData("comma");
  * // => 'not found'
  * ```
  */
-export const deepReadObject = <T>(
+export const deepReadObject = (
   obj: JsonRecord,
   path: string,
-  defaultValue?: T
-): T | undefined => {
+  defaultValue?: JsonValue
+): JsonValue | undefined => {
   let current: JsonValue | undefined = obj;
 
   for (const segment of path.trim().split(".")) {
@@ -384,7 +388,5 @@ export const deepReadObject = <T>(
     current = current[segment];
   }
 
-  // SAFETY: the shape behind a runtime path string is unknowable here, so the
-  // read site names the type it expects - the same contract as `defaultValue`.
-  return current === undefined ? defaultValue : (current as T);
+  return current === undefined ? defaultValue : current;
 };

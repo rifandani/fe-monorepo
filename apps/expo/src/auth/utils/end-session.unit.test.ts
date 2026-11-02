@@ -2,16 +2,16 @@ import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { endSession } from "@/auth/utils/end-session";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { queryClient } from "@/core/providers/query/client";
+import { appStore } from "@/core/stores/app-store";
 
 // The store persists through `react-native-mmkv`, which Node cannot load.
 // Faked at the Module Boundary per ADR-0002's rule of thumb — nothing here
-// builds an HTTP request. Mirrors `core/hooks/use-app-store.unit.test.ts`.
-vi.mock("@/core/services/mmkv", async () => {
-  const { createMmkvFake } = await import("@test/mmkv");
+// builds an HTTP request. Mirrors `core/stores/app-store.unit.test.ts`.
+vi.mock("react-native-mmkv", async () => {
+  const { createMmkvModuleFake } = await import("@test/mmkv");
 
-  return createMmkvFake();
+  return createMmkvModuleFake();
 });
 
 const validUser: AuthLoginResponseSchema = {
@@ -28,20 +28,20 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("endSession", () => {
   beforeEach(() => {
-    useAppStore.getState().reset();
+    appStore.reset();
     queryClient.clear();
   });
 
   it("discards the Session", () => {
-    useAppStore.getState().setUser(validUser);
+    appStore.setUser(validUser);
 
     endSession();
 
-    expect(useAppStore.getState().user).toBeNull();
+    expect(appStore.getUser()).toBeNull();
   });
 
   it("discards the previous Session's cached queries", () => {
-    useAppStore.getState().setUser(validUser);
+    appStore.setUser(validUser);
     queryClient.setQueryData(["users", "detail"], { id: 1 });
 
     endSession();
@@ -50,13 +50,13 @@ describe("endSession", () => {
   });
 
   it("keeps the theme, which is not part of the Session", () => {
-    // `user` and `theme` share one persisted blob, so ending a Session must
-    // not reach for the store's `reset`.
-    useAppStore.getState().setUser(validUser);
-    useAppStore.getState().setTheme("dark");
+    // Ending a Session must reach for `resetUser`, never the store's `reset`,
+    // which would also put the theme back to its default.
+    appStore.setUser(validUser);
+    appStore.setTheme("dark");
 
     endSession();
 
-    expect(useAppStore.getState().theme).toBe("dark");
+    expect(appStore.getTheme()).toBe("dark");
   });
 });

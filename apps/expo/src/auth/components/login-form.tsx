@@ -1,5 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { effectTsResolver } from "@hookform/resolvers/effect-ts";
 import { authLoginRequestSchema } from "@workspace/core/apis/auth";
 import type { ComponentProps } from "react";
 import { useState } from "react";
@@ -17,8 +17,8 @@ import {
 
 import { useAuthLogin } from "@/auth/hooks/use-auth-login";
 import { BaseButton } from "@/core/components/button/base-button";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
+import { appStore } from "@/core/stores/app-store";
 
 const RememberMeCheckbox = () => {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ const RememberMeCheckbox = () => {
         id="rememberMe"
         checked={state.rememberMe}
         onCheckedChange={(checked) => {
-          setState((prev) => ({ ...prev, rememberMe: !!checked }));
+          setState((prev) => ({ ...prev, rememberMe: checked === true }));
         }}
       >
         <Checkbox.Indicator>
@@ -86,7 +86,7 @@ const LoginTextField = ({
             onBlur={onBlur}
             onChangeText={onChange}
           />
-          {error?.message ? (
+          {error?.message !== undefined && error.message !== "" ? (
             <Paragraph testID={`login-form-${name}-error`} color="$red10">
               {error.message}
             </Paragraph>
@@ -99,7 +99,6 @@ const LoginTextField = ({
 
 export const LoginForm = () => {
   const { t } = useTranslation();
-  const setUser = useAppStore((state) => state.setUser);
 
   const form = useForm({
     defaultValues: {
@@ -107,20 +106,22 @@ export const LoginForm = () => {
       username: "",
     },
     mode: "onChange",
-    resolver: zodResolver(authLoginRequestSchema),
+    resolver: effectTsResolver(authLoginRequestSchema),
   });
 
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: (user) => {
-      setUser(user);
+      appStore.setUser(user);
     },
   });
 
   return (
     <Form
-      onSubmit={form.handleSubmit((values) => {
-        loginMutation.mutate(values);
-      })}
+      onSubmit={() => {
+        void form.handleSubmit((values) => {
+          loginMutation.mutate(values);
+        })();
+      }}
     >
       <LoginTextField
         control={form.control}
