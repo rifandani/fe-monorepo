@@ -21,6 +21,8 @@
 .agents
 .fallow
 .changeset
+# Vendored reference repositories are not part of any app build.
+repos
 **/*.log
 # Secrets must be injected at runtime, never copied into the image.
 **/.env

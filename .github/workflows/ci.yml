@@ -38,8 +38,18 @@ jobs:
             | sudo tar -xz -C /usr/local/bin gitleaks
           gitleaks version
 
+      # git-subtree squash commits store trees without the `repos/` prefix, so
+      # the `.gitleaks.toml` path allowlist cannot cover them. Exclude those
+      # commits from the history walk; HEAD paths under `repos/` stay allowlisted.
       - name: Detect secrets
-        run: gitleaks detect --source . --verbose --redact --exit-code 1
+        run: |
+          mapfile -t SQUASH < <(git rev-list --grep="^Squashed 'repos/" HEAD)
+          if ((${#SQUASH[@]})); then
+            gitleaks detect --source . --verbose --redact --exit-code 1 \
+              --log-opts="HEAD --not ${SQUASH[*]}"
+          else
+            gitleaks detect --source . --verbose --redact --exit-code 1
+          fi
 
   # PR-scoped dead code / complexity / duplication / styling gate (new-only).
   # https://docs.fallow.tools/cli/audit · https://docs.fallow.tools/integrations/ci
