@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^8.0.6",
-    "@babel/core": "^8.0.10",
+    "@babel/core": "^8.1.0",
     "@babel/plugin-transform-export-namespace-from": "^8.0.1",
     "@babel/plugin-transform-modules-commonjs": "^8.0.1",
     "@changesets/changelog-github": "1.0.1",
