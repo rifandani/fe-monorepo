@@ -33,6 +33,24 @@ import { ProfileListItem } from "@/user/components/profile-list-item";
 import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
 import { useGetUser } from "@/user/hooks/use-get-user";
 
+const BirthDate = ({
+  birthDate,
+  locale,
+}: {
+  birthDate: string | undefined;
+  locale: string;
+}) => {
+  if (birthDate === undefined || birthDate === "") {
+    return null;
+  }
+
+  return (
+    <Paragraph size="$2" opacity={0.7}>
+      {formatDisplayDate(birthDate, locale)}
+    </Paragraph>
+  );
+};
+
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
   const user = useAtomValue(userAtom);
@@ -61,11 +79,7 @@ const EditProfileSection = () => {
       <YStack flex={1}>
         <H6 size="$4">{username}</H6>
         <Paragraph size="$3">{email}</Paragraph>
-        {birthDate !== undefined && birthDate !== "" && (
-          <Paragraph size="$2" opacity={0.7}>
-            {formatDisplayDate(birthDate, locale)}
-          </Paragraph>
-        )}
+        <BirthDate birthDate={birthDate} locale={locale} />
 
         <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
           {t("editProfile")}

@@ -27,12 +27,17 @@ interface PushPayload {
 const isOptionalString = (value: unknown): value is string | undefined =>
   value === undefined || typeof value === "string";
 
+interface PushPayloadInput {
+  body?: unknown;
+  title?: unknown;
+}
+
+const isObject = (value: unknown): value is PushPayloadInput =>
+  typeof value === "object" && value !== null;
+
 /** The push payload is attacker-visible JSON, so every field is checked. */
 const isPushPayload = (data: unknown): data is PushPayload =>
-  typeof data === "object" &&
-  data !== null &&
-  isOptionalString("body" in data ? data.body : undefined) &&
-  isOptionalString("title" in data ? data.title : undefined);
+  isObject(data) && isOptionalString(data.body) && isOptionalString(data.title);
 
 self.addEventListener("message", (event) => {
   if (isSkipWaitingMessage(event.data)) {

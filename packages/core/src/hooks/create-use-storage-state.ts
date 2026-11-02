@@ -56,6 +56,9 @@ const resolveDefaultValue = <T>(options: Options<T>) => {
   return options.defaultValue;
 };
 
+const hasStoredValue = (value: string | null | undefined): value is string =>
+  Boolean(value);
+
 /**
  * Retrieves and deserializes the stored value from storage
  * Falls back to defaultValue if storage access fails or value doesn't exist
@@ -69,7 +72,7 @@ const readStoredValue = <T>(
   try {
     const raw = storage?.getItem(key);
 
-    if (raw !== undefined && raw !== null && raw !== "") {
+    if (hasStoredValue(raw)) {
       return deserialize(raw, options);
     }
   } catch (error) {

@@ -169,6 +169,24 @@ interface SubstitutionContext {
   translationParams: ParamOptions;
 }
 
+const getPluralReplacement = (
+  locale: string,
+  argKey: string,
+  argValue: number,
+  translationParams: ParamOptions
+) => {
+  const pluralMap = translationParams.plural?.[argKey];
+
+  const pluralRules = new Intl.PluralRules(locale, {
+    type: pluralMap?.type,
+  });
+
+  return {
+    formatter: pluralMap?.formatter,
+    replacement: pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other,
+  };
+};
+
 const substitutePlural = ({
   locale,
   result,
@@ -181,20 +199,18 @@ const substitutePlural = ({
     throw new TypeError("Invalid argument");
   }
 
-  const pluralMap = translationParams.plural?.[argKey];
-
-  const pluralRules = new Intl.PluralRules(locale, {
-    type: pluralMap?.type,
-  });
-
-  const replacement =
-    pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other;
+  const { formatter, replacement } = getPluralReplacement(
+    locale,
+    argKey,
+    argValue,
+    translationParams
+  );
 
   if (replacement === undefined || replacement === "") {
     throw new Error("Missing replacement value");
   }
 
-  const numberFormatter = new Intl.NumberFormat(locale, pluralMap?.formatter);
+  const numberFormatter = new Intl.NumberFormat(locale, formatter);
 
   return result.replace(
     replaceKey,
