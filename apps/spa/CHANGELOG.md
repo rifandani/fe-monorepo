@@ -1,5 +1,13 @@
 # @workspace/spa
 
+## 1.1.2
+
+### Patch Changes
+
+- Update workspace dependencies and tooling.
+- Updated dependencies
+  - @workspace/core@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes
