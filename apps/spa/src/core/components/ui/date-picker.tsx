@@ -94,7 +94,8 @@ export function DatePickerOverlay({
 export function DatePickerTrigger({ className, ...props }: GroupProps) {
   return (
     <InputGroup className={cx("*:data-[slot=control]:w-full", className)} {...props}>
-      <DateInput />
+      {/* InputGroup pads only `<input>` for trailing buttons; DateInput is a div, so pad it here */}
+      <DateInput className="pe-12 sm:pe-10" />
       <Button
         data-slot="date-picker-trigger"
         className={twJoin(

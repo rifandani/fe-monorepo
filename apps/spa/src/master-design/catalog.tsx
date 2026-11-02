@@ -25,7 +25,7 @@ export const MasterDesignCatalog = () => {
 
   return (
     <div className="bg-background text-foreground flex min-h-svh w-full">
-      <aside className="bg-sidebar sticky top-0 hidden h-svh w-64 shrink-0 overflow-y-auto border-r md:block">
+      <aside className="bg-sidebar sticky top-0 hidden h-svh w-64 shrink-0 border-r md:block">
         <CatalogNav activeId={activeId} filter={filter} onNavigate={scrollTo} />
       </aside>
 
