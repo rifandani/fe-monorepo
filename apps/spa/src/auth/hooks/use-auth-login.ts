@@ -12,10 +12,13 @@ import type { z } from "zod";
 import { http } from "@/core/services/http";
 
 type Params = Parameters<typeof authKeys.login>[0];
+
 type Success = Awaited<
   ReturnType<ReturnType<typeof authRepositories>["login"]>
 >;
+
 type Error = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
+
 export const useAuthLogin = (
   params: Params,
   mutationOptions?: Except<
@@ -24,6 +27,7 @@ export const useAuthLogin = (
   >
 ) => {
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
+
   return useMutation<Success, Error, Exclude<Params, undefined>>({
     mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),

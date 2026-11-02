@@ -6,6 +6,7 @@ import { useAppStore } from "./use-app-store";
 
 const mmkv = vi.hoisted(() => {
   const store = new Map<string, string>();
+
   return {
     store,
     appStorageId: "app-storage" as const,

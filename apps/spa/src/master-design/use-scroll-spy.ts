@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 /** Fraction of the viewport height where the "active section" threshold sits. */
 const THRESHOLD_RATIO = 0.2;
+
 /** Idle time after the last scroll event before click-suppression is lifted. */
 const SETTLE_MS = 150;
 
@@ -18,11 +19,13 @@ const lastId = (ids: string[]) => ids.at(-1) ?? null;
 
 const idAtThreshold = (ids: string[], line: number): string | null => {
   let current = firstId(ids);
+
   for (const id of ids) {
     if ((sectionTop(id) ?? Number.POSITIVE_INFINITY) <= line) {
       current = id;
     }
   }
+
   return current;
 };
 
@@ -41,9 +44,11 @@ const suppress = (
   settleTimer: RefObject<ReturnType<typeof setTimeout> | null>
 ) => {
   suppressedRef.current = true;
+
   if (settleTimer.current) {
     clearTimeout(settleTimer.current);
   }
+
   settleTimer.current = setTimeout(() => {
     suppressedRef.current = false;
   }, SETTLE_MS);
@@ -86,12 +91,15 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     };
 
     let raf = 0;
+
     const onScroll = () => {
       if (suppressedRef.current) {
         // Keep the highlight pinned; just extend the settle window.
         suppress(suppressedRef, settleTimer);
+
         return;
       }
+
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(compute);
     };
@@ -99,12 +107,15 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     compute();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+
     return () => {
       cancelAnimationFrame(raf);
+
       if (settleTimer.current) {
         clearTimeout(settleTimer.current);
         settleTimer.current = null;
       }
+
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -114,7 +125,9 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
     if (!activeId) {
       return;
     }
+
     const fragment = `#${activeId}`;
+
     if (window.location.hash !== fragment) {
       window.history.replaceState(null, "", fragment);
     }
@@ -122,9 +135,11 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
 
   const scrollTo = (id: string) => {
     const el = document.querySelector(`#${id}`);
+
     if (!el) {
       return;
     }
+
     setActiveId(id);
     suppressUntilSettled();
     el.scrollIntoView({ behavior: "smooth", block: "start" });

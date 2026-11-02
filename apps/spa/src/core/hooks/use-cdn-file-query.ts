@@ -16,6 +16,7 @@ interface Opt {
   url?: string | undefined;
   filename?: string;
 }
+
 export const useCdnFileQuery = (
   opt: Opt,
   queryOptions?: Except<
@@ -33,7 +34,9 @@ export const useCdnFileQuery = (
     queryKey: cdnKeys[opt.key](opt.url),
     ...queryOptions,
   });
+
   // create file object from blob
   const file = toCdnFile(query.data?.blob, opt.filename);
+
   return { ...query, file };
 };

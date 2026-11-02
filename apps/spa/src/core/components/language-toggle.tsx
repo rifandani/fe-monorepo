@@ -15,6 +15,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
 
 export const LanguageToggle = () => {
   const { t, setLocale, locale } = useTranslation();
+
   return (
     <Menu>
       <Button intent="plain">
@@ -34,6 +35,7 @@ export const LanguageToggle = () => {
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: LocaleDictLanguage;
           };
+
           setLocale(selection.currentKey);
         }}
       >

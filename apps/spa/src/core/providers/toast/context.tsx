@@ -9,14 +9,18 @@ import type { ColorMode } from "@/core/constants/global";
 import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
 
 type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
+
 type ToasterProps = ComponentPropsWithoutRef<typeof Toaster>;
+
 export const useCreateToastContext = () => {
   // `Entry` owns applying the mode to `<html>`; this only needs to read it back
   const [colorMode] = useLocalStorage<ColorMode>(
     COLOR_MODE_STORAGE_KEY,
     "auto"
   );
+
   const theme = colorMode ?? "auto";
+
   const [toastConfig, setToastConfig, resetToastConfig] =
     useResetState<ToasterProps>({
       className: "toaster group",
@@ -54,12 +58,15 @@ export const useCreateToastContext = () => {
         ),
       },
     });
+
   const actions = {
     resetToastConfig,
     setToastConfig,
   };
+
   return [toastConfig, actions] as const;
 };
+
 export const ToastContext = createContext<ToastContextInterface>(
   // SAFETY: the provider always supplies a real value; a consumer outside it is a
   // programming error rather than a supported state.

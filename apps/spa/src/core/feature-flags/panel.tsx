@@ -34,6 +34,7 @@ const toKebab = (id: string): string =>
 /** Subsequence match — `/ fuzzy filter` in the panel. */
 const fuzzyMatch = (query: string, ...haystacks: string[]): boolean => {
   const q = query.trim().toLowerCase();
+
   if (q.length === 0) {
     return true;
   }
@@ -41,14 +42,17 @@ const fuzzyMatch = (query: string, ...haystacks: string[]): boolean => {
   return haystacks.some((haystack) => {
     const t = haystack.toLowerCase();
     let i = 0;
+
     for (const char of t) {
       if (char === q[i]) {
         i += 1;
       }
+
       if (i === q.length) {
         return true;
       }
     }
+
     return false;
   });
 };
@@ -57,11 +61,13 @@ const groupBySection = (
   flags: readonly FeatureFlagDefinition[]
 ): readonly (readonly [string, FeatureFlagDefinition[]])[] => {
   const groups = new Map<string, FeatureFlagDefinition[]>();
+
   for (const flag of flags) {
     const list = groups.get(flag.section) ?? [];
     list.push(flag);
     groups.set(flag.section, list);
   }
+
   return [...groups.entries()];
 };
 
@@ -69,9 +75,11 @@ const statusDotClass = (isOverridden: boolean, enabled: boolean): string => {
   if (isOverridden) {
     return "bg-blue-500";
   }
+
   if (enabled) {
     return "bg-muted-fg";
   }
+
   return "bg-muted-fg/40";
 };
 
@@ -79,6 +87,7 @@ const OverrideRail = ({ visible }: { visible: boolean }) => {
   if (!visible) {
     return null;
   }
+
   return (
     <span
       aria-hidden="true"
@@ -189,9 +198,11 @@ const FlagSwitch = ({
 
 const FeatureFlagRow = ({ flag }: { flag: FeatureFlagDefinition }) => {
   const { id, label } = flag;
+
   const isOverridden = useFeatureFlagStore(
     (s) => s.overrides[id] !== undefined
   );
+
   const enabled = isFeatureEnabled(id);
   const displayId = toKebab(id);
 
@@ -224,6 +235,7 @@ export const FeatureFlagsPanel = () => {
   const overrideCount = useFeatureFlagStore(
     (s) => Object.keys(s.overrides).length
   );
+
   const resetAllOverrides = useFeatureFlagStore((s) => s.resetAllOverrides);
 
   const [query, setQuery] = useState("");
@@ -231,6 +243,7 @@ export const FeatureFlagsPanel = () => {
   const filteredFlags = featureFlagRegistry.filter((flag) =>
     fuzzyMatch(query, flag.id, toKebab(flag.id), flag.label, flag.section)
   );
+
   const sections = groupBySection(filteredFlags);
 
   // TanStack `pluginsTabContent` forces `width/height: 100%` on `& > *` and

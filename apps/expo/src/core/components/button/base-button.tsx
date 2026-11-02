@@ -1,6 +1,7 @@
 import { Button, styled } from "tamagui";
 
 const BORDER_COLOR_PRESS = "$borderColorPress";
+
 /**
  * includes `bg`, `color`, `pressStyle.bg`, `pressStyle.borderColor`
  */
@@ -82,6 +83,7 @@ const _baseButtonVariants = {
     },
   },
 } as const;
+
 export const BaseButton = styled(Button, {
   name: "BaseButton",
   // variants: baseButtonVariants,

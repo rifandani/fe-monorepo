@@ -14,14 +14,17 @@ interface IUseSkeletonAnimationProps {
   speed?: number;
   targetOpacityValue?: number;
 }
+
 export const useSkeletonAnimation = ({
   speed = 1000,
   targetOpacityValue = 0.2,
 }: IUseSkeletonAnimationProps) => {
   const shared = useSharedValue(0);
+
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(shared.value, [0, 1], [targetOpacityValue, 1]),
   }));
+
   useEffect(() => {
     shared.value = withRepeat(
       withTiming(1, { duration: speed }),
@@ -30,5 +33,6 @@ export const useSkeletonAnimation = ({
     );
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return animatedStyle;
 };

@@ -4,6 +4,7 @@ import { resetTestEnv, testEnv } from "./vitest.env-mock";
 
 const createMemoryStorage = (): Storage => {
   const store = new Map<string, string>();
+
   return {
     get length() {
       return store.size;
@@ -30,6 +31,7 @@ const localStorageMock = createMemoryStorage();
 const sessionStorageMock = createMemoryStorage();
 
 vi.stubGlobal("localStorage", localStorageMock);
+
 vi.stubGlobal("sessionStorage", sessionStorageMock);
 
 if (globalThis.window === undefined) {

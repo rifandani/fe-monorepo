@@ -34,15 +34,20 @@ export const genericErrorMessage = "Something went wrong. Please try again.";
 export const toErrorMessage = (error: unknown): string => {
   if (error instanceof HTTPError) {
     const parsed = errorResponseSchema.safeParse(error.data);
+
     if (parsed.success) {
       return parsed.data.message;
     }
+
     const text = textBodySchema.safeParse(error.data);
+
     if (text.success) {
       return text.data;
     }
+
     return error.message;
   }
+
   // A ZodError is an `Error`, so it must be answered before the general case.
   // Matched by `name`, which zod assigns explicitly, rather than `instanceof`:
   // each app resolves its own zod, and a second copy would make `instanceof`
@@ -51,5 +56,6 @@ export const toErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
     return error.name === "ZodError" ? genericErrorMessage : error.message;
   }
+
   return genericErrorMessage;
 };

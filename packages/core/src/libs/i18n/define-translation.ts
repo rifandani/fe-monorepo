@@ -29,12 +29,14 @@ type ParseOptionType<
               enum: Record<ParamName, Record<string, string>>;
             }
           : never;
+
 type ExtractParamOptions<S extends string> =
   S extends `${string}{${infer Param}}${infer Rest}`
     ? Param extends `${infer Name}:${infer Type}` // If the string contains a parameter
       ? ParseOptionType<Type, Name> & ExtractParamOptions<Rest> // If the string contains a parameter with a type
       : ExtractParamOptions<Rest> // If the string has no parameter type
     : unknown; // If the string has no parameters
+
 // "Hello "
 // "name" = Param
 // "! Your last login was {lastLoginDate:date}." = Rest
@@ -53,6 +55,7 @@ export interface ParamOptions {
   enum?: Record<string, Record<string, string>>;
   list?: Record<string, Intl.ListFormatOptions>;
 }
+
 export const defineTranslation = <
   S extends string,
   O extends ExtractParamOptions<S>,

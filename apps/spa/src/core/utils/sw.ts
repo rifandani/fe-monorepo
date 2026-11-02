@@ -30,6 +30,7 @@ export const resolveSwPrompt = ({
   if (!(needRefresh || offlineReady)) {
     return null;
   }
+
   return {
     canReload: needRefresh,
     messageKey: offlineReady ? "appReady" : "newContentAvailable",

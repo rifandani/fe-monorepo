@@ -3,6 +3,7 @@ import type { RequireAtLeastOne } from "type-fest";
 
 /** A decoded JSON value: what an HTTP payload or `JSON.parse` result can hold. */
 type JsonValue = JsonRecord | JsonValue[] | boolean | null | number | string;
+
 interface JsonRecord {
   [key: string]: JsonValue | undefined;
 }
@@ -32,12 +33,16 @@ export const clamp = ({
   min: number;
   max: number;
 }): number => Math.min(Math.max(value, min), max);
+
 const indonesianPhoneNumberFormatRegex =
   /(?<firstGroup>\d{3})(?<secondGroup>\d+)/u;
+
 const indonesianPhoneNumberFormatRegex2 =
   /(?<firstGroup>\d{3})(?<secondGroup>\d{4})/u;
+
 const indonesianPhoneNumberFormatRegex3 =
   /(?<firstGroup>\d{4})(?<secondGroup>\d{4})/u;
+
 const indonesianPhoneNumberFormatRegex4 =
   /(?<firstGroup>\d{4})(?<secondGroup>\d{5,})/u;
 
@@ -56,6 +61,7 @@ export const indonesianPhoneNumberFormat = (phoneNumber: string) => {
   // e.g the rest of the numbers
   const uniqNumber = numbers.slice(3);
   let regexp: RegExp;
+
   if (uniqNumber.length <= 6) {
     regexp = indonesianPhoneNumberFormatRegex;
   } else if (uniqNumber.length === 7) {
@@ -65,7 +71,9 @@ export const indonesianPhoneNumberFormat = (phoneNumber: string) => {
   } else {
     regexp = indonesianPhoneNumberFormatRegex4;
   }
+
   const matches = uniqNumber.replace(regexp, "$1-$2");
+
   return [code, ndc, matches].join("-");
 };
 
@@ -77,15 +85,19 @@ const mapKeysDeep = (
   if (Array.isArray(value)) {
     return value.map((item) => mapKeysDeep(item, mapKey));
   }
+
   if (!isJsonRecord(value)) {
     return value;
   }
+
   const mapped: JsonRecord = {};
+
   for (const [key, entry] of Object.entries(value)) {
     if (entry !== undefined) {
       mapped[mapKey(key)] = mapKeysDeep(entry, mapKey);
     }
   }
+
   return mapped;
 };
 
@@ -116,8 +128,10 @@ export const removeLeadingZeros = (value: string) => {
   if (removeLeadingZerosRegex.test(value)) {
     return value.replace(removeLeadingZeroRegex, "");
   }
+
   return value.replace(removeLeadingZeros2Regex, "0");
 };
+
 const removeLeadingWhitespaceRegex = /^\s*$/u;
 const removeLeadingWhitespace2Regex = /^\s*/u;
 
@@ -128,9 +142,11 @@ export const removeLeadingWhitespace = (value?: string) => {
   if (!value) {
     return "";
   }
+
   if (removeLeadingWhitespaceRegex.test(value)) {
     return value.replace(removeLeadingWhitespace2Regex, "");
   }
+
   return value;
 };
 
@@ -145,9 +161,11 @@ type FormDataValue =
   | number
   | string
   | undefined;
+
 interface FormDataRecord {
   [key: string]: FormDataValue;
 }
+
 type FormDataAppend = (value: FormDataValue, rootName?: string) => void;
 
 // Blob/Date land here too: they carry no own enumerable keys, so - as before -
@@ -164,6 +182,7 @@ const appendObjectEntries = (
     if (!Object.hasOwn(obj, key)) {
       continue;
     }
+
     const nextRoot = rootName === "" ? key : `${rootName}.${key}`;
     append(obj[key], nextRoot);
   }
@@ -178,22 +197,30 @@ const appendFormDataValue = (
 ) => {
   if (value instanceof File) {
     formData.append(rootName, value);
+
     return;
   }
+
   if (Array.isArray(value)) {
     if (arrayMode === "comma") {
       formData.append(rootName, value.join(","));
+
       return;
     }
+
     for (let i = 0; i < value.length; i += 1) {
       append(value[i], `${rootName}[${i}]`);
     }
+
     return;
   }
+
   if (isWalkable(value)) {
     appendObjectEntries(value, rootName, append);
+
     return;
   }
+
   if (value !== null && value !== undefined) {
     formData.append(rootName, String(value));
   }
@@ -209,13 +236,16 @@ const createObjectToFormData =
     }>
   ) => {
     const formData = new FormData();
+
     const ignore = (_key?: string) =>
       Array.isArray(options?.ignoreList) &&
       options.ignoreList.some((ignored) => ignored === _key);
+
     const appendFormData: FormDataAppend = (_obj, _rootName) => {
       if (ignore(_rootName)) {
         return;
       }
+
       appendFormDataValue(
         formData,
         _obj,
@@ -224,7 +254,9 @@ const createObjectToFormData =
         arrayMode
       );
     };
+
     appendFormData(obj, options?.rootName);
+
     return formData;
   };
 
@@ -342,13 +374,16 @@ export const deepReadObject = <T>(
   defaultValue?: T
 ): T | undefined => {
   let current: JsonValue | undefined = obj;
+
   for (const segment of path.trim().split(".")) {
     if (!isJsonRecord(current)) {
       current = undefined;
       break;
     }
+
     current = current[segment];
   }
+
   // SAFETY: the shape behind a runtime path string is unknowable here, so the
   // read site names the type it expects - the same contract as `defaultValue`.
   return current === undefined ? defaultValue : (current as T);

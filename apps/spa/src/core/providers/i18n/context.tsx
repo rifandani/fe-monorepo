@@ -11,6 +11,7 @@ const TranslationContext = createContext<
     })
   | null
 >(null);
+
 export const TranslationProvider = ({
   defaultLocale,
   translations,
@@ -26,29 +27,36 @@ export const TranslationProvider = ({
     if (!defaultLocale) {
       return navigator.language.toLowerCase();
     }
+
     return defaultLocale;
   });
+
   const initValue = initI18n({
     fallbackLocale,
     locale,
     translations,
   });
+
   const value = {
     ...initValue,
     locale,
     setLocale,
     userLocale: navigator.language.toLowerCase(),
   } as const;
+
   return <TranslationContext value={value}>{children}</TranslationContext>;
 };
+
 export const useTranslation = (): ReturnType<typeof initI18n> & {
   setLocale: (locale: string) => void;
   locale: string;
   userLocale: string;
 } => {
   const context = use(TranslationContext);
+
   if (!context) {
     throw new Error("useTranslation must be used within a TranslationProvider");
   }
+
   return context;
 };

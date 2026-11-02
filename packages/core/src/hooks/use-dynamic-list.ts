@@ -46,6 +46,7 @@ import type { Dispatch, SetStateAction } from "react";
 const useKeyList = () => {
   const counterRef = useRef(-1);
   const keyListRef = useRef<number[]>([]);
+
   return {
     // Get the uuid of specific item
     getKey: (index: number) => keyListRef.current[index],
@@ -60,6 +61,7 @@ const useKeyList = () => {
     initKeys: <T>(initialList: T[]) => {
       keyListRef.current = initialList.map(() => {
         counterRef.current += 1;
+
         return counterRef.current;
       });
     },
@@ -72,6 +74,7 @@ const useKeyList = () => {
       const keyTemp = keyListRef.current.filter(
         (_, index: number) => index !== oldIndex
       );
+
       // SAFETY: `oldIndex` addresses an existing entry - the caller moves an item
       // already in the list, so the key list has a number at that position.
       keyTemp.splice(newIndex, 0, keyListRef.current[oldIndex] as number);
@@ -110,6 +113,7 @@ const createListMutators = <T>(
       const temp = [...l];
       temp.splice(index, 0, item);
       keys.setKey(index);
+
       return temp;
     });
   },
@@ -117,10 +121,13 @@ const createListMutators = <T>(
   merge: (index: number, items: T[]) => {
     setList((l) => {
       const temp = [...l];
+
       for (const [i] of items.entries()) {
         keys.setKey(index + i);
       }
+
       temp.splice(index, 0, ...items);
+
       return temp;
     });
   },
@@ -129,6 +136,7 @@ const createListMutators = <T>(
     if (oldIndex === newIndex) {
       return;
     }
+
     setList((l) => {
       const newList = [...l];
       const temp = newList.filter((_, index: number) => index !== oldIndex);
@@ -137,6 +145,7 @@ const createListMutators = <T>(
       temp.splice(newIndex, 0, newList[oldIndex] as T);
       // move keys if necessary
       keys.moveKey(oldIndex, newIndex);
+
       return temp;
     });
   },
@@ -150,6 +159,7 @@ const createListMutators = <T>(
   push: (item: T) => {
     setList((l) => {
       keys.setKey(l.length);
+
       return [...l, item];
     });
   },
@@ -160,6 +170,7 @@ const createListMutators = <T>(
       temp.splice(index, 1);
       // remove keys if necessary
       keys.removeKey(index);
+
       return temp;
     });
   },
@@ -168,6 +179,7 @@ const createListMutators = <T>(
     setList((l) => {
       const temp = [...l];
       temp[index] = item;
+
       return temp;
     });
   },
@@ -178,6 +190,7 @@ const createListMutators = <T>(
       for (const [index] of newList.entries()) {
         keys.setKey(index);
       }
+
       return newList;
     });
   },
@@ -191,6 +204,7 @@ const createListMutators = <T>(
   unshift: (item: T) => {
     setList((l) => {
       keys.setKey(0);
+
       return [item, ...l];
     });
   },
@@ -198,13 +212,16 @@ const createListMutators = <T>(
 
 export const useDynamicList = <T>(initialList: T[] = []) => {
   const keys = useKeyList();
+
   // Current list
   const [list, setList] = useState(() => {
     // Initialize keyList directly without using setKey callback
     // to avoid fragile behavior during state initialization
     keys.initKeys(initialList);
+
     return initialList;
   });
+
   return {
     ...createListMutators<T>(setList, keys),
     getIndex: keys.getIndex,

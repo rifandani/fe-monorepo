@@ -12,6 +12,7 @@ interface Props {
   speed?: number;
   targetOpacityValue?: number;
 }
+
 export const Skeleton = ({
   loaderStyle,
   numberOfItems = 3,
@@ -20,6 +21,7 @@ export const Skeleton = ({
   targetOpacityValue = 0.2,
 }: Props) => {
   const animatedStyle = useSkeletonAnimation({ speed, targetOpacityValue });
+
   return (
     <View style={{ flexDirection: direction }}>
       {Array.from({ length: numberOfItems }, (_, idx) => (

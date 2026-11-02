@@ -11,18 +11,22 @@ interface Options<T> {
   valuePropName?: string;
   trigger?: string;
 }
+
 /** The change handler a component passes under the configured `trigger` name. */
 type TriggerFn<T> = (value: T, ...args: unknown[]) => void;
+
 /**
  * A component's props addressed by caller-supplied names: this hook reads the
  * value, the default value and the change trigger, and nothing else.
  */
 type Props<T> = Record<string, T | TriggerFn<T> | undefined>;
+
 interface StandardProps<T> {
   value: T;
   defaultValue?: T;
   onChange: (val: T) => void;
 }
+
 /**
  * In some components, we need the state to be managed by itself or controlled by it's parent.
  * This hook helps you manage this kind of state.
@@ -62,6 +66,7 @@ export function useControllableValue<T = any>(
     valuePropName = "value",
     trigger = "onChange",
   } = options;
+
   // SAFETY: the standard `{ value, defaultValue, onChange }` shape is exactly the
   // name-addressed bag under this hook's default prop names.
   const bag = props as Props<T>;
@@ -69,22 +74,29 @@ export function useControllableValue<T = any>(
   // the caller states as `T` when instantiating the hook.
   const value = bag[valuePropName] as T;
   const isControlled = Object.hasOwn(bag, valuePropName);
+
   const initialValue = useMemo(() => {
     if (isControlled) {
       return value;
     }
+
     if (Object.hasOwn(bag, defaultValuePropName)) {
       // SAFETY: as above, for the prop named by `defaultValuePropName`.
       return bag[defaultValuePropName] as T;
     }
+
     return defaultValue;
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const stateRef = useRef(initialValue);
+
   if (isControlled) {
     stateRef.current = value;
   }
+
   const update = useUpdate();
+
   // oxlint-disable-next-line typescript/no-explicit-any
   const setState = (v: SetStateAction<T>, ...args: any[]) => {
     const r = isFunction(v)
@@ -92,14 +104,18 @@ export function useControllableValue<T = any>(
         // it holds `undefined` only when the caller's own `T` includes it.
         v(stateRef.current as T)
       : v;
+
     if (!isControlled) {
       stateRef.current = r;
       update();
     }
+
     const onChange = bag[trigger];
+
     if (isFunction(onChange)) {
       onChange(r, ...args);
     }
   };
+
   return [stateRef.current, useMemoizedFn(setState)] as const;
 }

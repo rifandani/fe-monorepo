@@ -3,8 +3,10 @@ import type { ComponentPropsWithoutRef } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = ComponentPropsWithoutRef<typeof ToastViewport>;
+
 export const SafeToastViewport = (props: Props) => {
   const { left, bottom, right } = useSafeAreaInsets();
+
   return (
     <ToastViewport
       flexDirection="column"

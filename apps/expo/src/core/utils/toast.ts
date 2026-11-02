@@ -25,5 +25,6 @@ export const resolveToastPreset = <T>(customData?: T): ToastPreset => {
   // SAFETY: `preset` is validated against `TOAST_PRESETS` below, and anything
   // else - including a bag without the field - falls back to `default`.
   const preset = (customData as Partial<ToastCustomData> | undefined)?.preset;
+
   return preset && TOAST_PRESETS.has(preset) ? preset : "default";
 };

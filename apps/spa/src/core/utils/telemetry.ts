@@ -16,6 +16,7 @@ const noopSpanContext: SpanContext = {
   traceFlags: 0,
   traceId: "",
 };
+
 const noopSpan: Span = {
   addEvent() {
     return this;
@@ -51,6 +52,7 @@ const noopSpan: Span = {
     return this;
   },
 };
+
 /**
  * Tracer implementation that does nothing (null object).
  */
@@ -75,9 +77,11 @@ const resolveSpanCallback = <R>(
   if (isSpanCallback<R>(arg1)) {
     return arg1;
   }
+
   if (isSpanCallback<R>(arg2)) {
     return arg2;
   }
+
   return arg3;
 };
 
@@ -92,6 +96,7 @@ export const noopTracer: Tracer = {
     arg3?: SpanCallback<R>
   ): R {
     const fn = resolveSpanCallback<R>(arg1, arg2, arg3);
+
     // SAFETY: a noop tracer has nothing to report, so with no callback in any
     // overload position there is no value to produce - which the `R` fixed by
     // otel's own signature cannot express.
@@ -101,6 +106,7 @@ export const noopTracer: Tracer = {
     return noopSpan;
   },
 };
+
 export const getTracer = ({
   isEnabled = false,
   tracer,
@@ -111,11 +117,14 @@ export const getTracer = ({
   if (!isEnabled) {
     return noopTracer;
   }
+
   if (tracer) {
     return tracer;
   }
+
   return trace.getTracer(SERVICE_NAME);
 };
+
 interface RecordSpanOptions<T> {
   /**
    * The name of the span.
@@ -177,16 +186,19 @@ export const recordSpan = <T>({
   tracer.startActiveSpan(name, { attributes }, async (span) => {
     try {
       const result = await fn(span);
+
       if (endWhenDone) {
         span.setStatus({ code: SpanStatusCode.OK });
         span.end();
       }
+
       return result;
     } catch (error) {
       failSpan(span, error instanceof Error ? error : null);
       throw error;
     }
   });
+
 export const recordException = ({
   name,
   error,

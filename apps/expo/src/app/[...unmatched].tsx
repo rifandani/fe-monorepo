@@ -8,6 +8,7 @@ import { useTranslation } from "@/core/providers/i18n/context";
 const Unmatched = () => {
   const { t } = useTranslation();
   const user = useAppStore((state) => state.user);
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -24,4 +25,5 @@ const Unmatched = () => {
     </>
   );
 };
+
 export default Unmatched;

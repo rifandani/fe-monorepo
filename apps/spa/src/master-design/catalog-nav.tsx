@@ -27,6 +27,7 @@ const visibleCategories = (needle: string): Category[] =>
           entry.name.toLowerCase().includes(needle)
         )
       : category.entries;
+
     return entries.length === 0 ? [] : [{ ...category, entries }];
   });
 
@@ -69,6 +70,7 @@ export const CatalogNav = ({
 }: CatalogNavProps) => {
   const query = filter.trim().toLowerCase();
   const visible = visibleCategories(query);
+
   const [expanded, setExpanded] = useState<Set<string>>(() =>
     categoryIds(categories)
   );

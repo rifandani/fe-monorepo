@@ -14,7 +14,7 @@ const { include, exclude } = vitestConfig.test.coverage ?? {};
 // say so — an unguarded destructure would fail later as an opaque TypeError, or
 // worse, silently mutate nothing and report a flattering score.
 if (!(Array.isArray(include) && Array.isArray(exclude))) {
-  throw new Error(
+  throw new TypeError(
     "stryker.config.mjs expects `test.coverage.include`/`exclude` arrays in vitest.config.ts. " +
       "See docs/adr/0003-mutation-testing-is-advisory.md — mutation scope is derived from that allowlist, not copied."
   );

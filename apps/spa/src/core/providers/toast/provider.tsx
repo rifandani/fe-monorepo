@@ -5,6 +5,7 @@ import { ToastContext, useCreateToastContext } from "./context";
 
 export const AppToastProvider = ({ children }: PropsWithChildren) => {
   const value = useCreateToastContext();
+
   return (
     <ToastContext value={value}>
       {children}

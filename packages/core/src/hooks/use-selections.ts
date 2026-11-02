@@ -42,24 +42,29 @@ const withItem = <T>(selectedSet: Set<T>, item: T) => [
 const withoutItem = <T>(selectedSet: Set<T>, item: T) => {
   const newSet = new Set(selectedSet);
   newSet.delete(item);
+
   return [...newSet];
 };
 
 /** Returns the selection with every item of `items` added. */
 const withItems = <T>(selectedSet: Set<T>, items: T[]) => {
   const newSet = new Set(selectedSet);
+
   for (const o of items) {
     newSet.add(o);
   }
+
   return [...newSet];
 };
 
 /** Returns the selection with every item of `items` removed. */
 const withoutItems = <T>(selectedSet: Set<T>, items: T[]) => {
   const newSet = new Set(selectedSet);
+
   for (const o of items) {
     newSet.delete(o);
   }
+
   return [...newSet];
 };
 
@@ -74,6 +79,7 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
   const select = (item: T) => setSelected(withItem(selectedSet, item));
   /** UnSelect an item */
   const unSelect = (item: T) => setSelected(withoutItem(selectedSet, item));
+
   /** Toggle the select status of an item */
   const toggle = (item: T) => {
     if (isSelected(item)) {
@@ -82,6 +88,7 @@ export const useSelections = <T>(items: T[], defaultSelected: T[] = []) => {
       select(item);
     }
   };
+
   /** Select all items in the list */
   const selectAll = () => setSelected(withItems(selectedSet, items));
   /** UnSelect all items in the list */

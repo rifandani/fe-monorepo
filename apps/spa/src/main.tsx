@@ -18,11 +18,13 @@ reportWebVitals();
 
 const tracer = trace.getTracer(TRACER_REACT_ENTRY);
 const root = document.querySelector("#root");
+
 if (!(root instanceof HTMLElement)) {
-  throw new Error(
+  throw new TypeError(
     "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got mispelled?"
   );
 }
+
 createRoot(root, {
   onCaughtError(error, errorInfo) {
     recordException({

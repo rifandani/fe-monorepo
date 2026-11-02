@@ -11,6 +11,7 @@ const fallbackLocale: LocaleDictLanguage = "en-us";
 
 const getDefaultLocale = (): LocaleDictLanguage => {
   const deviceTag = getLocales()[0]?.languageTag;
+
   return resolveDeviceLocale(deviceTag);
 };
 

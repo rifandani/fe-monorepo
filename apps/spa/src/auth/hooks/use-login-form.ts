@@ -12,6 +12,7 @@ import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
 export const useLoginForm = () => {
   const navigate = useNavigate();
   const { setUser } = useAuthUserStore();
+
   const loginMutation = useAuthLogin(undefined, {
     onSuccess: async (user) => {
       // set user to local storage and navigate to home
@@ -19,6 +20,7 @@ export const useLoginForm = () => {
       await navigate({ to: "/" });
     },
   });
+
   const form = useForm({
     defaultValues: {
       password: "",
@@ -31,5 +33,6 @@ export const useLoginForm = () => {
       onChange: authLoginRequestSchema,
     },
   });
+
   return { form, loginMutation };
 };

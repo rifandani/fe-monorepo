@@ -31,11 +31,13 @@ self.addEventListener("activate", (event) => {
       // Only prune our offline cache versions — never Workbox precaches.
       const keys = await caches.keys();
       const deletions: Promise<boolean>[] = [];
+
       for (const key of keys) {
         if (key.startsWith("spa-offline-") && key !== OFFLINE_CACHE) {
           deletions.push(caches.delete(key));
         }
       }
+
       await Promise.all(deletions);
     })()
   );
@@ -43,13 +45,17 @@ self.addEventListener("activate", (event) => {
 
 // self.__WB_MANIFEST is the default injection point
 precacheAndRoute(self.__WB_MANIFEST);
+
 // clean old assets
 cleanupOutdatedCaches();
+
 let allowlist: RegExp[] | undefined;
+
 // in dev mode, we disable precaching to avoid caching issues
 if (import.meta.env.DEV) {
   allowlist = [/^\/$/u];
 }
+
 // to allow work offline
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL("index.html"), { allowlist })

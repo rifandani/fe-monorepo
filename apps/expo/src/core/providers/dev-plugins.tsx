@@ -15,5 +15,6 @@ export const DevPlugins = () => {
   useReactNavigationDevTools(navigationRef as any);
   useMMKVDevTools({ storage: appStorage });
   useReactQueryDevTools(queryClient);
+
   return null;
 };

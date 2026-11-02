@@ -1,11 +1,5 @@
 # @workspace/spa
 
-## Maintenance
-
-- /improve-codebase-architecture
-- /improve-codebase-architecture to use /effect ecosystem in both FE and BE
-- refactor whole codebase to follow best practices for react and composition patterns from /vercel-composition-patterns and /vercel-react-best-practices
-
 ## 🏁 Getting Started
 
 When you start a new project from this template, change the placeholder values below. Paths are relative to `apps/spa`, unless they start with "repo root". Do the repo-level steps in the [root README](../../README.md#-getting-started) too.

@@ -9,19 +9,23 @@ import { appStateStorage, appStorageId } from "@/core/services/mmkv";
 import { appStoreStateDefaultValues } from "./app-store-state-defaults";
 
 export type AppStoreState = z.infer<typeof _appStoreStateSchema>;
+
 interface AppStoreAction {
   reset: () => void;
   resetUser: () => void;
   setUser: (user: AuthLoginResponseSchema) => void;
   setTheme: (theme: AppStoreState["theme"]) => void;
 }
+
 type AppStore = AppStoreState & AppStoreAction;
+
 // Stryker disable all: Zod shape for persist rehydration — ADR-0001 plain
 // Zod out of unit-test scope (ADR-0003 accepted noise).
 const _appStoreStateSchema = z.object({
   theme: z.enum(["system", "light", "dark"]),
   user: authLoginResponseSchema.nullable(),
 });
+
 // Stryker restore all
 /**
  * Hooks to manipulate global app store that integrated with MMKV

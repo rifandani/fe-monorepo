@@ -7,6 +7,7 @@ import { isFeatureEnabled } from "@/core/feature-flags/is-enabled";
 // import cannot pull Intent UI into the main chunk (PWA 2 MiB precache limit).
 const MasterDesignPage = lazy(async () => {
   const m = await import("@/master-design/catalog-page");
+
   return { default: m.MasterDesignPage };
 });
 

@@ -68,6 +68,7 @@ describe("createSearchParamsWithComma", () => {
       sort: "asc",
       filters: ["model", "category"],
     });
+
     expect(params.get("sort")).toBe("asc");
     expect(params.get("filters")).toBe("model,category");
   });
@@ -192,6 +193,7 @@ describe("doDownload / saveFile", () => {
 
   it("doDownload clicks a temporary anchor", () => {
     vi.useFakeTimers();
+
     const link = {
       href: "",
       download: "",
@@ -199,6 +201,7 @@ describe("doDownload / saveFile", () => {
       click: vi.fn(),
       remove: vi.fn(),
     };
+
     const append = vi.fn();
     vi.stubGlobal("document", {
       createElement: vi.fn(() => link),
@@ -218,6 +221,7 @@ describe("doDownload / saveFile", () => {
       click: vi.fn(),
       remove: vi.fn(),
     };
+
     const createObjectURL = vi.fn(() => "blob:1");
     const revokeObjectURL = vi.fn();
     vi.stubGlobal("document", { createElement: vi.fn(() => a) });

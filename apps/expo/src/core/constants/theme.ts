@@ -16,6 +16,7 @@ const darkPalette = [
   "hsla(0, 15%, 93%, 1)",
   "hsla(0, 15%, 99%, 1)",
 ];
+
 const lightPalette = [
   "hsla(0, 15%, 99%, 1)",
   "hsla(0, 15%, 94%, 1)",
@@ -30,6 +31,7 @@ const lightPalette = [
   "hsla(0, 15%, 15%, 1)",
   "hsla(0, 15%, 1%, 1)",
 ];
+
 const lightShadows = {
   shadow1: "rgba(0,0,0,0.04)",
   shadow2: "rgba(0,0,0,0.08)",
@@ -38,6 +40,7 @@ const lightShadows = {
   shadow5: "rgba(0,0,0,0.32)",
   shadow6: "rgba(0,0,0,0.4)",
 };
+
 const darkShadows = {
   shadow1: "rgba(0,0,0,0.2)",
   shadow2: "rgba(0,0,0,0.3)",
@@ -46,7 +49,9 @@ const darkShadows = {
   shadow5: "rgba(0,0,0,0.6)",
   shadow6: "rgba(0,0,0,0.7)",
 };
+
 const accentPaletteEnd = "hsla(250, 50%, 95%, 1)";
+
 // we're adding some example sub-themes for you to show how they are done, "success" "warning", "error":
 const builtThemes = createThemes({
   componentThemes: defaultComponentThemes,
@@ -143,7 +148,9 @@ const builtThemes = createThemes({
   //   },
   // },
 });
+
 export type Themes = typeof builtThemes;
+
 // the process.env conditional here is optional but saves web client-side bundle
 // size by leaving out themes JS. tamagui automatically hydrates themes from CSS
 // back into JS for you, and the bundler plugins set TAMAGUI_ENVIRONMENT. so
@@ -153,6 +160,7 @@ export type Themes = typeof builtThemes;
 // runtime, so shipping the JS theme objects is dead weight - the empty stub is
 // what tamagui's own docs prescribe here.
 const hydratedFromCss = {} as Themes;
+
 // SAFETY: `builtThemes` is the generator output, which tamagui types loosely; it
 // is the very value `Themes` describes.
 const jsThemes = builtThemes as Themes;

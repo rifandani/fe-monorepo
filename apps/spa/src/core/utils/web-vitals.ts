@@ -13,22 +13,27 @@ import {
 import { meterProvider } from "@/instrumentation";
 
 const meter = meterProvider.getMeter(METRICS_METER_WEB_VITALS);
+
 const lcpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_LCP, {
   description: "Largest Contentful Paint",
   unit: "ms",
 });
+
 const inpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_INP, {
   description: "Interaction to Next Paint",
   unit: "ms",
 });
+
 const clsMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_CLS, {
   description: "Cumulative Layout Shift",
   unit: "1",
 });
+
 const fcpMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_FCP, {
   description: "First Contentful Paint",
   unit: "ms",
 });
+
 const ttfbMetric = meter.createHistogram(METRICS_METER_WEB_VITALS_TTFB, {
   description: "Time to First Byte",
   unit: "ms",
@@ -71,9 +76,11 @@ const flushPending = (): void => {
     if (recordedIds.has(id)) {
       continue;
     }
+
     recordedIds.add(id);
     entry.histogram.record(entry.value, entry.attributes);
   }
+
   pending.clear();
   void drainReader();
 };
@@ -85,6 +92,7 @@ const recordImmediate =
     if (recordedIds.has(metric.id)) {
       return;
     }
+
     recordedIds.add(metric.id);
     histogram.record(metric.value, attrs(metric));
   };
@@ -103,6 +111,7 @@ const recordDeferred =
     if (recordedIds.has(metric.id)) {
       return;
     }
+
     pending.set(metric.id, {
       attributes: attrs(metric),
       histogram,
@@ -123,6 +132,7 @@ export const reportWebVitals = (): void => {
   if (started) {
     return;
   }
+
   started = true;
 
   onLCP(recordImmediate(lcpMetric));

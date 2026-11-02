@@ -1,18 +1,22 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
 
 import { version } from "./package.json";
+
 /**
  * create a new project in EAS, and copy the project ID, slug, and expo account username, and paste here
  */
 const EAS_PROJECT_ID = "28f2412b-baec-4843-b0d3-c51706061d29";
 const PROJECT_SLUG = "expoapp";
 const OWNER = "rifandani";
+
 type AppVariant = "development" | "preview" | "production";
+
 const APP_VARIANTS: readonly AppVariant[] = [
   "development",
   "preview",
   "production",
 ];
+
 // `APP_VARIANT` comes from the shell, so anything unrecognized (including unset)
 // falls through to the development config below.
 const isAppVariant = (value?: string): value is AppVariant =>
@@ -23,6 +27,7 @@ const getDynamicAppConfig = (environment?: AppVariant) => {
   const BUNDLE_IDENTIFIER = "com.rifandani.expoapp";
   const BASE_ICON_SRC = "./src/core/assets/icons";
   const SCHEME = "expoapp";
+
   if (environment === "production") {
     return {
       adaptiveIcon: `${BASE_ICON_SRC}/android.png`,
@@ -32,6 +37,7 @@ const getDynamicAppConfig = (environment?: AppVariant) => {
       scheme: SCHEME,
     };
   }
+
   if (environment === "preview") {
     return {
       adaptiveIcon: `${BASE_ICON_SRC}/android-preview.png`,
@@ -41,6 +47,7 @@ const getDynamicAppConfig = (environment?: AppVariant) => {
       scheme: `${SCHEME}-preview`,
     };
   }
+
   return {
     adaptiveIcon: `${BASE_ICON_SRC}/android-development.png`,
     bundleIdentifier: `${BUNDLE_IDENTIFIER}.development`,
@@ -49,6 +56,7 @@ const getDynamicAppConfig = (environment?: AppVariant) => {
     scheme: `${SCHEME}-development`,
   };
 };
+
 const PLUGINS = [
   "expo-localization",
   "expo-router",
@@ -131,12 +139,14 @@ const appConfig = ({ config }: ConfigContext): ExpoConfig => {
     `🦌 ~ "app.config.ts" at line 47: process.env.APP_VARIANT ->`,
     process.env.APP_VARIANT
   );
+
   const { name, bundleIdentifier, icon, adaptiveIcon, scheme } =
     getDynamicAppConfig(
       isAppVariant(process.env.APP_VARIANT)
         ? process.env.APP_VARIANT
         : undefined
     );
+
   return {
     // copy all existing properties from `app.json` (it should be empty, because we don't have it)
     ...config,
@@ -167,4 +177,5 @@ const appConfig = ({ config }: ConfigContext): ExpoConfig => {
     },
   };
 };
+
 export default appConfig;

@@ -29,10 +29,12 @@ export const useCopyToClipboard = ({
     },
     []
   );
+
   const copyToClipboard = async (value: string) => {
     if (!(value && canWriteToClipboard())) {
       return;
     }
+
     // Clear any existing timeout
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
@@ -45,5 +47,6 @@ export const useCopyToClipboard = ({
       setIsCopied(false);
     }, timeout);
   };
+
   return { copyToClipboard, isCopied };
 };

@@ -18,9 +18,11 @@ export const resolveFeatureEnabled = ({
   if (!isDev) {
     return false;
   }
+
   if (override !== undefined) {
     return override;
   }
+
   return defaultEnabled;
 };
 

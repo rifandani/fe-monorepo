@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+
 // make sure to sync this with `e2e/_base.ts`
 interface TestOptions {
   user: {
@@ -6,9 +7,11 @@ interface TestOptions {
     password: string;
   };
 }
+
 // Overridable so a worktree can run E2E while the main checkout holds :4000.
 const port = Number(process.env.PW_PORT ?? 4000);
 const baseURL = `http://localhost:${port}`;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */

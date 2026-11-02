@@ -6,6 +6,7 @@ import { TheToast } from "@/core/providers/toast/the-toast";
 
 const SWIPE_DIRECTION = "horizontal";
 const DURATION = 3000; // 3s
+
 export const AppToastProvider = ({ children, ...rest }: ToastProviderProps) => (
   <ToastProvider
     swipeDirection={SWIPE_DIRECTION}

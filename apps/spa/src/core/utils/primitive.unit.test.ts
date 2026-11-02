@@ -13,9 +13,11 @@ const isRenderFn = <T>(
 
 const renderFn = <T>(value: string | ((v: T) => string)) => {
   expect(isRenderFn(value)).toBe(true);
+
   if (!isRenderFn(value)) {
     throw new Error("cx did not return a render function");
   }
+
   return value;
 };
 

@@ -23,6 +23,7 @@ export const ProfileMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useAuthUserStore((state) => state.user);
+
   return (
     <Menu>
       <MenuTrigger>
@@ -33,6 +34,7 @@ export const ProfileMenu = () => {
         onAction={(key) => {
           // SAFETY: the three menu items below are the only keys this menu emits.
           const currentKey = key as "profile" | "settings" | "logout";
+
           if (currentKey === "logout") {
             endSession();
             navigate({

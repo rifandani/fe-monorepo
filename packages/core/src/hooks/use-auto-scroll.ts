@@ -32,9 +32,11 @@ export const useAutoScroll = ({
   // Detect user scroll to toggle auto-scroll
   useEffect(() => {
     const anchor = anchorRef.current;
+
     if (!anchor) {
       return;
     }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry) {
@@ -47,7 +49,9 @@ export const useAutoScroll = ({
         threshold: 0,
       }
     );
+
     observer.observe(anchor);
+
     return () => {
       observer.disconnect();
     };
@@ -57,22 +61,27 @@ export const useAutoScroll = ({
     if (!isAutoScroll) {
       return;
     }
+
     const scrollToBottom = () => {
       anchorRef.current?.scrollIntoView({
         behavior: dependency > 5 ? "instant" : "smooth",
       });
     };
+
     scrollToBottom();
     let intervalId: ReturnType<typeof setInterval> | undefined;
+
     // `isAutoScroll` is already guaranteed by the early return above.
     if (isStreaming() && isLoading) {
       intervalId = setInterval(scrollToBottom, intervalMs);
     }
+
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
       }
     };
   }, [dependency, isLoading, isAutoScroll, isStreaming, intervalMs]);
+
   return { anchorRef, isAutoScroll };
 };

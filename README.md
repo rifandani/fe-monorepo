@@ -4,6 +4,13 @@
 
 [![Mintlify Docs](https://img.shields.io/badge/mintlify-docs-green?logo=mintlify)](https://rifandani-fe-monorepo.mintlify.app)
 
+## Maintenance
+
+- /improve-codebase-architecture
+- /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
+- refactor whole codebase (except master-design) to follow best practices for react and composition patterns from /vercel-composition-patterns and /vercel-react-best-practices
+- remove oxlint-disable, fallow-disable across codebase and actually fix it
+
 ## 🏁 Getting Started
 
 This repo is a boilerplate. When you start a new project from it, do the steps below. Each step names the files that contain placeholder values.

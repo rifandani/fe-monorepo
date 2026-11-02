@@ -21,9 +21,11 @@ export const useMemoizedFn = <T extends AnyFunction>(fn: T) => {
   // https://github.com/alibaba/hooks/issues/728
   fnRef.current = useMemo(() => fn, [fn]);
   const memoizedFnRef = useRef<AnyFunction>(null);
+
   if (!memoizedFnRef.current) {
     memoizedFnRef.current = (...args: Parameters<T>) => fnRef.current(...args);
   }
+
   // SAFETY: the wrapper forwards every argument to the latest `fn` and returns
   // its result, so it is call-compatible with `T` while keeping a stable identity.
   return memoizedFnRef.current as T;

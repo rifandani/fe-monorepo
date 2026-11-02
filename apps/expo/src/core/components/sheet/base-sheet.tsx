@@ -15,9 +15,11 @@ export const BaseSheet = <T extends BaseSheetState>({
   const onOpenChange = (open: boolean) => {
     setState({ ...state, open });
   };
+
   const onPositionChange = (position: number) => {
     setState({ ...state, position });
   };
+
   return (
     <Sheet
       modal

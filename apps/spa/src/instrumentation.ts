@@ -39,12 +39,15 @@ import {
   SERVICE_NAME,
   SERVICE_VERSION,
 } from "@/core/constants/global";
+
 // Dev (incl. portless HTTPS): same-origin via Vite proxy → avoids CORS + mixed content.
 const otlpEndpoint = import.meta.env.DEV
   ? window.location.origin
   : ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT;
+
 const TRACE_EXPORTER_URL = `${otlpEndpoint}/v1/traces`;
 const METRICS_EXPORTER_URL = `${otlpEndpoint}/v1/metrics`;
+
 const logLevelMap = {
   ALL: DiagLogLevel.ALL,
   DEBUG: DiagLogLevel.DEBUG,
@@ -54,14 +57,19 @@ const logLevelMap = {
   VERBOSE: DiagLogLevel.VERBOSE,
   WARN: DiagLogLevel.WARN,
 } satisfies Record<typeof ENV.VITE_OTEL_LOG_LEVEL, DiagLogLevel>;
+
 // for troubleshooting the internal otel logs, set the log level to DEBUG
 diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.VITE_OTEL_LOG_LEVEL]);
+
 let resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: SERVICE_NAME,
   [ATTR_SERVICE_VERSION]: SERVICE_VERSION,
 });
+
 const detectedResources = detectResources({ detectors: [browserDetector] });
+
 resource = resource.merge(detectedResources);
+
 /**
  * WebTracerProvider already includes:
  * new W3CTraceContextPropagator()
@@ -78,6 +86,7 @@ const tracerProvider = new WebTracerProvider({
     // new SimpleSpanProcessor(new ConsoleSpanExporter()),
   ],
 });
+
 /**
  * Web vitals are judged at p75, so the SDK default buckets
  * ([0, 5, 10, 25, …, 10000]) are unusable here: every non-zero CLS sample would
@@ -97,6 +106,7 @@ const histogramView = (
   },
   instrumentName,
 });
+
 export const meterProvider = new MeterProvider({
   readers: [
     new PeriodicExportingMetricReader({
@@ -139,8 +149,11 @@ export const meterProvider = new MeterProvider({
     ),
   ],
 });
+
 tracerProvider.register();
+
 metrics.setGlobalMeterProvider(meterProvider);
+
 registerInstrumentations({
   instrumentations: [
     new FetchInstrumentation({
@@ -148,4 +161,5 @@ registerInstrumentations({
     }),
   ],
 });
+
 logger.log("[instrumentation]: Client started");

@@ -6,6 +6,7 @@ const invalidUsername = "km";
 const invalidPassword = "0lelp";
 const errorUsername = "1emilys";
 const errorPassword = "1emilyspass";
+
 test.describe("authorized", () => {
   test("should redirect back to home page", async ({ page }) => {
     const usernameInput = page.getByRole("textbox", { name: /username/iu });
@@ -16,6 +17,7 @@ test.describe("authorized", () => {
     await expect(submitBtn).toBeHidden();
   });
 });
+
 test.describe("unauthorized", () => {
   // reset storage state in a test file to avoid authentication that was set up for the whole project
   test.use({ storageState: { cookies: [], origins: [] } });

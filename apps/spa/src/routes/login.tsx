@@ -19,6 +19,7 @@ const loginErrorMessage = (error: Error) =>
 const LoginForm = () => {
   const { t } = useTranslation();
   const { form, loginMutation } = useLoginForm();
+
   return (
     <form
       className="flex flex-col pt-3 md:pt-8"
@@ -80,6 +81,7 @@ const LoginForm = () => {
     </form>
   );
 };
+
 const LoginRoute = () => {
   useSeo({
     description:
@@ -87,6 +89,7 @@ const LoginRoute = () => {
     title: "Login",
   });
   const { t } = useTranslation();
+
   return (
     <div className="flex min-h-screen w-full">
       {/* form */}
@@ -123,9 +126,11 @@ const LoginRoute = () => {
     </div>
   );
 };
+
 export const Route = createFileRoute("/login")({
   beforeLoad: ({ location }) => {
     const authed = hasValidSession();
+
     if (authed) {
       // redirect authorized user to login
       toast.info("Already Logged In");

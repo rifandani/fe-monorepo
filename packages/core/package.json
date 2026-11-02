@@ -23,16 +23,16 @@
     "typerange:audit": "fr --audit"
   },
   "devDependencies": {
-    "@types/node": "26.6.3",
+    "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@workspace/typescript-config": "workspace:*",
     "typescript": "7.0.2"
   },
   "peerDependencies": {
-    "ky": "2.0.2",
-    "radashi": "12.9.1",
+    "ky": "2.2.0",
+    "radashi": "13.0.1",
     "react": ">=19.0.0",
-    "type-fest": "5.8.0",
-    "zod": "4.4.3"
+    "type-fest": "5.10.0",
+    "zod": "4.6.7"
   }
 }

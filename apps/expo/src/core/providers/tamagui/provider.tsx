@@ -74,11 +74,14 @@ const NavigationThemeProvider = ({
   const tamaguiTheme = useTheme();
   const scheme = useColorScheme();
   const theme = useAppStore((state) => state.theme);
+
   const isDark = match(theme)
     .with("system", () => scheme === "dark")
     .with("dark", () => true)
     .otherwise(() => false);
+
   const value = buildNavigationTheme(tamaguiTheme, isDark);
+
   return (
     <ThemeProvider value={value}>
       <StatusBar animated style={value.dark ? "light" : "dark"} />
@@ -86,12 +89,14 @@ const NavigationThemeProvider = ({
     </ThemeProvider>
   );
 };
+
 export const AppTamaguiProvider = ({
   children,
   ...rest
 }: Omit<TamaguiProviderProps, "config">) => {
   const scheme = useColorScheme();
   const theme = useAppStore((state) => state.theme);
+
   return (
     <TamaguiProvider
       disableInjectCSS

@@ -6,6 +6,7 @@ import type {
 import type { Register } from "@workspace/core/libs/i18n/my-translations";
 
 export type LocaleDictLanguage = "en-us" | "id-id";
+
 type RegisteredTranslations = Register extends {
   translations: infer T;
 }
@@ -13,15 +14,19 @@ type RegisteredTranslations = Register extends {
     ? Translations
     : never
   : LanguageMessages;
+
 type I18nMessage = string | ReturnType<typeof defineTranslation>;
+
 export interface LanguageMessages {
   [key: string]: I18nMessage | LanguageMessages;
 }
+
 type Join<K, P> = K extends string
   ? P extends string
     ? `${K}.${P}`
     : never
   : never;
+
 type DotPathsFor<T extends object = RegisteredTranslations> = {
   [K in keyof T]: T[K] extends I18nMessage
     ? K
@@ -29,7 +34,9 @@ type DotPathsFor<T extends object = RegisteredTranslations> = {
       ? Join<K, DotPathsFor<T[K]>>
       : never;
 }[keyof T];
+
 type EnumMap = Record<string, Record<string, string>>;
+
 type ParseArgType<
   ParamType extends string,
   ParamName extends string,
@@ -45,6 +52,7 @@ type ParseArgType<
           ? keyof Enums[ParamName]
           : never
         : never;
+
 type ExtractParamArgs<
   S extends string,
   Enums extends EnumMap,
@@ -54,6 +62,7 @@ type ExtractParamArgs<
         ExtractParamArgs<Rest, Enums> // If the string contains a parameter with a type
     : Record<Param, string> & ExtractParamArgs<Rest, Enums> // If the string has no parameter type
   : unknown; // If the string has no parameters
+
 type TranslationAtKeyWithParams<
   Translations,
   Key extends string,
@@ -64,14 +73,17 @@ type TranslationAtKeyWithParams<
   : Key extends keyof Translations
     ? Translations[Key]
     : never;
+
 type NormalizedTranslationAtKey<T> =
   T extends ReturnType<typeof defineTranslation>
     ? T
     : [T, ReturnType<typeof defineTranslation>[1]];
+
 type NormalizedTranslationAtKeyWithParams<Key extends string> =
   NormalizedTranslationAtKey<
     TranslationAtKeyWithParams<RegisteredTranslations, Key>
   >;
+
 type Params<S extends DotPathsFor> = ExtractParamArgs<
   NormalizedTranslationAtKeyWithParams<S>[0],
   NormalizedTranslationAtKeyWithParams<S>[1] extends {
@@ -82,12 +94,15 @@ type Params<S extends DotPathsFor> = ExtractParamArgs<
       : E
     : EnumMap
 >;
+
 type PathsWithParams = {
   [K in DotPathsFor]: keyof Params<K> extends never ? never : K;
 }[DotPathsFor];
+
 type PathsWithNoParams = {
   [K in DotPathsFor]: keyof Params<K> extends never ? K : never;
 }[DotPathsFor];
+
 const replaceKeyRegex = /-?[^-]+$/u;
 
 /** A value a `{name:type}` placeholder can be given, per `ParseArgType`. */
@@ -110,31 +125,40 @@ const isStringArg = (value: TranslationArg): value is string =>
 const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
   let parentLocale = locale;
+
   while (parentLocale !== "") {
     locales.push(parentLocale);
     parentLocale = parentLocale.replace(replaceKeyRegex, "");
   }
+
   return locales;
 };
 
 const getTranslationByKey = (obj: LanguageMessages, key: string) => {
   const keys = key.split(".");
   let currentObj = obj;
+
   for (let i = 0; i <= keys.length - 1; i += 1) {
     const k = keys[i];
+
     if (!k) {
       throw new Error("[getTranslationByKey]: Invalid key!");
     }
+
     const newObj = currentObj[k];
+
     if (!newObj) {
       return;
     }
+
     if (isRenderableMessage(newObj)) {
       if (i < keys.length - 1) {
         return;
       }
+
       return newObj;
     }
+
     currentObj = newObj;
   }
 };
@@ -159,16 +183,22 @@ const substitutePlural = ({
   if (!isNumberArg(argValue)) {
     throw new TypeError("Invalid argument");
   }
+
   const pluralMap = translationParams.plural?.[argKey];
+
   const pluralRules = new Intl.PluralRules(locale, {
     type: pluralMap?.type,
   });
+
   const replacement =
     pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other;
+
   if (!replacement) {
     throw new Error("Missing replacement value");
   }
+
   const numberFormatter = new Intl.NumberFormat(locale, pluralMap?.formatter);
+
   return result.replace(
     replaceKey,
     replacement.replace(`{?}`, numberFormatter.format(argValue))
@@ -185,10 +215,13 @@ const substituteEnum = ({
   if (!isStringArg(argValue)) {
     throw new TypeError("Invalid argument");
   }
+
   const replacement = translationParams.enum?.[argKey]?.[argValue];
+
   if (!replacement) {
     throw new Error("Missing replacement value");
   }
+
   return result.replace(replaceKey, replacement);
 };
 
@@ -208,11 +241,13 @@ const substituteWithFormatter =
     if (!isValid(ctx.argValue)) {
       throw new TypeError("Invalid argument");
     }
+
     return ctx.result.replace(ctx.replaceKey, format(ctx, ctx.argValue));
   };
 
 /** Maps the `{arg:type}` annotation to the substituter handling it. */
 type Substituter = (ctx: SubstitutionContext) => string;
+
 interface SubstituterMap {
   [annotation: string]: Substituter;
 }
@@ -256,9 +291,11 @@ const performSubstitution = (
     const match = result.match(`{${argKey}:?([^}]*)?}`);
     const [replaceKey, argType] = match || [`{${argKey}}`, undefined];
     const substitute = argType ? substituters[argType] : undefined;
+
     if (!substitute) {
       return result.replace(replaceKey, String(argValue));
     }
+
     return substitute({
       argKey,
       argValue,
@@ -281,10 +318,13 @@ const getTranslation = <S extends DotPathsFor, A extends Params<S>>(
   if (translation === undefined) {
     return;
   }
+
   if (isPlainMessage(translation)) {
     return performSubstitution(locale, translation, argObj, {});
   }
+
   const [str, translationParams] = translation;
+
   // SAFETY: `defineTranslation` builds the tuple, so its second element is the
   // `ParamOptions` it was given; the catalog type widens it on the way out.
   return performSubstitution(
@@ -307,10 +347,12 @@ export const initI18n = ({
   const fallbackLocales = Array.isArray(fallbackLocale)
     ? fallbackLocale
     : [fallbackLocale];
+
   const orderedLocales = new Set([
     ...getOrderedLocaleAndParentLocales(locale),
     ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
   ]);
+
   function t<S extends PathsWithNoParams>(key: S): string;
   function t<S extends PathsWithParams, A extends Params<S>>(
     key: S,
@@ -322,16 +364,21 @@ export const initI18n = ({
       // catalog is keyed by; TypeScript does not track that through the call.
       const translationFile =
         translations[_locale.toLowerCase() as Lowercase<string>];
+
       if (!translationFile) {
         continue;
       }
+
       const translation = getTranslation(_locale, translationFile, key, args);
+
       if (translation) {
         return translation;
       }
     }
+
     return key;
   }
+
   return {
     t,
   };

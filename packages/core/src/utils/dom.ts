@@ -21,6 +21,7 @@ export const doDownload = (url: string) => {
   if (!url) {
     return;
   }
+
   const link = document.createElement("a");
   link.href = url;
   link.download = url;
@@ -94,6 +95,7 @@ export const createSearchParams = (
  */
 export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
   const searchParams = init ? createSearchParams(init) : new URLSearchParams();
+
   // replace array of string values with a comma separated value
   for (const [key, value] of Object.entries(init ?? {})) {
     if (Array.isArray(value)) {
@@ -101,8 +103,10 @@ export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
       searchParams.set(key, value.join(","));
     }
   }
+
   return searchParams;
 };
+
 interface ExperimentalNavigator {
   userAgentData?: {
     brands: {
@@ -131,10 +135,12 @@ export const getPlatform = (): string => {
   // SAFETY: `userAgentData` is not in the DOM lib yet; every read below is guarded
   // and falls back to the standard `navigator.platform`.
   const nav = navigator as ExperimentalNavigator;
+
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
     return nav.userAgentData.platform;
   }
+
   // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
   return navigator.platform || "";
 };
@@ -150,16 +156,19 @@ export const getPlatform = (): string => {
 export const getPlatformAsync = async (): Promise<string> => {
   // SAFETY: as in `getPlatform` - an unshipped API behind guarded reads.
   const nav = navigator as ExperimentalNavigator;
+
   // First, try the synchronous userAgentData.platform
   if (nav?.userAgentData?.platform) {
     return nav.userAgentData.platform;
   }
+
   // Try high entropy values for more accurate platform info
   if (nav?.userAgentData?.getHighEntropyValues) {
     try {
       const highEntropyValues = await nav.userAgentData.getHighEntropyValues([
         "platform",
       ]);
+
       if (highEntropyValues.platform) {
         return highEntropyValues.platform;
       }
@@ -167,6 +176,7 @@ export const getPlatformAsync = async (): Promise<string> => {
       // Fall through to next fallback
     }
   }
+
   // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
   return navigator.platform || "";
 };
@@ -189,12 +199,15 @@ export const getShortcutKey = (key: string): string => {
   if (key.toLowerCase() === "mod") {
     return isMacOS() ? "⌘" : "Ctrl";
   }
+
   if (key.toLowerCase() === "alt") {
     return isMacOS() ? "⌥" : "Alt";
   }
+
   if (key.toLowerCase() === "shift") {
     return isMacOS() ? "⇧" : "Shift";
   }
+
   return key;
 };
 

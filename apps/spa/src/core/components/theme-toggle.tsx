@@ -17,11 +17,13 @@ import { useTranslation } from "@/core/providers/i18n/context";
 
 export const ThemeToggle = () => {
   const { t } = useTranslation();
+
   // `Entry` owns applying the mode to `<html>`; this only reads and writes the pick
   const [theme, setTheme] = useLocalStorage<ColorMode>(
     COLOR_MODE_STORAGE_KEY,
     "auto"
   );
+
   return (
     <Menu>
       <Button intent="outline">
@@ -43,6 +45,7 @@ export const ThemeToggle = () => {
           const selection = _selection as Exclude<Selection, "all"> & {
             currentKey: ColorMode;
           };
+
           setTheme(selection.currentKey);
         }}
       >

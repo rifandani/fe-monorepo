@@ -12,5 +12,6 @@ export const useLatest = <T>(value: T) => {
   useLayoutEffect(() => {
     ref.current = value;
   }, [value]);
+
   return ref;
 };

@@ -43,6 +43,7 @@ describe("logger", () => {
     expect(String(log.mock.calls[0]?.[0])).toContain("\u001B[34m"); // BLUE
     expect(String(warn.mock.calls[0]?.[0])).toContain("\u001B[33m"); // YELLOW
     expect(String(error.mock.calls[0]?.[0])).toContain("\u001B[31m"); // RED
+
     for (const spy of [debug, log, warn, error]) {
       expect(String(spy.mock.calls[0]?.[0])).toContain("\u001B[37m"); // WHITE
     }
@@ -62,6 +63,7 @@ describe("logger", () => {
           minute: "2-digit",
           second: "2-digit",
         });
+
         return "12:00:00.000";
       }
     );

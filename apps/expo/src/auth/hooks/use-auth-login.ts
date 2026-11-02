@@ -14,9 +14,11 @@ import { http } from "@/core/services/http";
 import type { ToastCustomData } from "@/core/utils/toast";
 
 type Params = Parameters<typeof authKeys.login>[0];
+
 type Success = Awaited<
   ReturnType<ReturnType<typeof authRepositories>["login"]>
 >;
+
 type MutationError = HTTPError<ErrorResponseSchema> | TimeoutError | z.ZodError;
 
 export const useAuthLogin = (
@@ -28,6 +30,7 @@ export const useAuthLogin = (
 ) => {
   const toast = useToastController();
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
+
   return useMutation<Success, MutationError, Exclude<Params, undefined>>({
     mutationFn: (json) => authRepositories(http).login({ json }),
     mutationKey: authKeys.login(params),

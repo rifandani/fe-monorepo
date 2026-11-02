@@ -40,6 +40,7 @@ describe("authRepositories", () => {
       http.post(loginUrl, async ({ request }) => {
         capturedRequest = request;
         capturedBody = await request.json();
+
         return HttpResponse.json(loginResponse);
       })
     );
@@ -59,6 +60,7 @@ describe("authRepositories", () => {
     server.use(
       http.post(loginUrl, ({ request }) => {
         captured = request;
+
         return HttpResponse.json(loginResponse);
       })
     );

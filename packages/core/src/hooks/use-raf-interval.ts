@@ -7,37 +7,49 @@ interface FrameHandle {
   kind: "frame";
   id: number;
 }
+
 interface TimerHandle {
   kind: "timer";
   id: ReturnType<typeof setTimeout>;
 }
+
 type Handle = FrameHandle | TimerHandle;
 
 // The animation-frame pair is absent outside the DOM (SSR, Node test runs),
 // where the plain timers are the fallback.
 const hasRequestAnimationFrame = () => "requestAnimationFrame" in globalThis;
+
 const setRafInterval = (callback: () => void, delay = 0): Handle => {
   if (!hasRequestAnimationFrame()) {
     return { kind: "timer", id: setInterval(callback, delay) };
   }
+
   let start = Date.now();
   const handle: FrameHandle = { kind: "frame", id: 0 };
+
   const loop = () => {
     const current = Date.now();
+
     if (current - start >= delay) {
       callback();
       start = Date.now();
     }
+
     handle.id = requestAnimationFrame(loop);
   };
+
   handle.id = requestAnimationFrame(loop);
+
   return handle;
 };
+
 const clearRafInterval = (handle: Handle) => {
   if (handle.kind === "timer") {
     clearInterval(handle.id);
+
     return;
   }
+
   cancelAnimationFrame(handle.id);
 };
 
@@ -62,15 +74,19 @@ export const useRafInterval = (
   const fnRef = useLatest(fn);
   const timerRef = useRef<Handle>(null);
   useEffect(() => {
-    if (!isNumber(delay) || delay < 0) {
+    // radashi 13 `isNumber(NaN)` is true; `NaN >= 0` is false, so NaN still bails.
+    if (!(isNumber(delay) && delay >= 0)) {
       return;
     }
+
     if (immediate) {
       fnRef.current();
     }
+
     timerRef.current = setRafInterval(() => {
       fnRef.current();
     }, delay);
+
     return () => {
       if (timerRef.current) {
         clearRafInterval(timerRef.current);
@@ -78,10 +94,12 @@ export const useRafInterval = (
     };
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [delay]);
+
   const clear = () => {
     if (timerRef.current) {
       clearRafInterval(timerRef.current);
     }
   };
+
   return clear;
 };

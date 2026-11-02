@@ -12,8 +12,11 @@ import type { ToastCustomData } from "@/core/utils/toast";
 import { userApi, userKeys } from "@/user/apis/user";
 
 type Params = Parameters<typeof userKeys.detail>[0];
+
 type Success = Awaited<ReturnType<typeof userApi.getDetail>>;
+
 type QueryError = z.ZodError | HTTPError | TimeoutError;
+
 export const useGetUser = (
   params?: Params,
   options?: Except<
@@ -23,15 +26,18 @@ export const useGetUser = (
 ) => {
   const toast = useToastController();
   const enabled = !!params;
+
   const query = useQuery({
     queryFn: enabled ? () => userApi.getDetail(params) : skipToken,
     queryKey: userKeys.detail(params),
     ...options,
   });
+
   useEffect(() => {
     if (!query.error) {
       return;
     }
+
     toast.show(toErrorMessage(query.error), {
       customData: {
         preset: "error",
@@ -39,5 +45,6 @@ export const useGetUser = (
     });
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [query.error]);
+
   return query;
 };

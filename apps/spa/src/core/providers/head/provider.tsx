@@ -20,6 +20,7 @@ const HeadDefaults = () => {
     },
   });
   useSeoMeta(defaultSeo.metadata);
+
   return null;
 };
 

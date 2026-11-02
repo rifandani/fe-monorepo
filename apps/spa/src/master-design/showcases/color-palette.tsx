@@ -14,6 +14,7 @@ const byteHex = (n: number) =>
 
 const formatHex = (r: number, g: number, b: number, a = 1): string => {
   const rgb = `#${byteHex(r)}${byteHex(g)}${byteHex(b)}`;
+
   return a < 1 ? `${rgb}${byteHex(a * 255)}` : rgb;
 };
 
@@ -30,6 +31,7 @@ const cssColorToRgba = (color: string): Rgba | null => {
   canvas.width = 1;
   canvas.height = 1;
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
   if (!ctx) {
     return null;
   }
@@ -38,6 +40,7 @@ const cssColorToRgba = (color: string): Rgba | null => {
   ctx.fillStyle = "rgba(1, 2, 3, 1)";
   const sentinel = ctx.fillStyle;
   ctx.fillStyle = color;
+
   if (ctx.fillStyle === sentinel) {
     return null;
   }
@@ -46,6 +49,7 @@ const cssColorToRgba = (color: string): Rgba | null => {
   ctx.fillRect(0, 0, 1, 1);
   // 1×1 getImageData always yields RGBA; index via ?? for noUncheckedIndexedAccess.
   const pixel = ctx.getImageData(0, 0, 1, 1).data;
+
   return {
     r: pixel[0] ?? 0,
     g: pixel[1] ?? 0,
@@ -56,6 +60,7 @@ const cssColorToRgba = (color: string): Rgba | null => {
 
 const toLinearChannel = (c: number): number => {
   const s = c / 255;
+
   return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
 };
 
@@ -64,6 +69,7 @@ const contrastInk = ({ r, g, b }: Rgba): string => {
     0.2126 * toLinearChannel(r) +
     0.7152 * toLinearChannel(g) +
     0.0722 * toLinearChannel(b);
+
   return luminance > 0.4 ? "#111111" : "#FFFFFF";
 };
 
@@ -150,16 +156,20 @@ const SwatchTile = ({ name, bg }: Swatch) => {
 
   useLayoutEffect(() => {
     const el = ref.current;
+
     if (!el) {
       return;
     }
 
     const update = () => {
       const rgba = cssColorToRgba(getComputedStyle(el).backgroundColor);
+
       if (!rgba) {
         setHex("");
+
         return;
       }
+
       setHex(formatHex(rgba.r, rgba.g, rgba.b, rgba.a));
       setInk(contrastInk(rgba));
     };
@@ -172,6 +182,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
       attributeFilter: ["class"],
       attributes: true,
     });
+
     return () => {
       observer.disconnect();
     };

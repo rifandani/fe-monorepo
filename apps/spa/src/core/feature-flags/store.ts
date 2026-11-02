@@ -31,6 +31,7 @@ export const useFeatureFlagStore = create<FeatureFlagStore>()(
       resetOverride: (id) => {
         set((state) => {
           const { [id]: _removed, ...rest } = state.overrides;
+
           return { overrides: rest };
         });
       },

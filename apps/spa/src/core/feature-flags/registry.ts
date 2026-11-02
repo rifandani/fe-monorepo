@@ -24,8 +24,10 @@ export const getFeatureFlagDefinition = (
   id: FeatureFlagId
 ): FeatureFlagDefinition => {
   const def = featureFlagRegistry.find((flag) => flag.id === id);
+
   if (!def) {
     throw new Error(`Unknown Feature Flag: ${id}`);
   }
+
   return def;
 };

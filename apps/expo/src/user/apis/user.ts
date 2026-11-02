@@ -24,13 +24,18 @@ const userSchema = z.object({
   eyeColor: z.string(),
   // ... and a lot more
 });
+
 const getUserApiRequestSchema = z.object({
   id: z.number(),
 });
+
 // Stryker restore all
 type GetUserApiRequestSchema = z.infer<typeof getUserApiRequestSchema>;
+
 const getUserApiResponseSchema = userSchema;
+
 export type GetUserApiResponseSchema = z.infer<typeof getUserApiResponseSchema>;
+
 export const userKeys = {
   all: ["users"] as const,
   detail: (params?: GetUserApiRequestSchema) =>
@@ -40,11 +45,13 @@ export const userKeys = {
     [...userKeys.lists(), ...(params ? [params] : [])] as const,
   lists: () => [...userKeys.all, "list"] as const,
 };
+
 export const userApi = {
   getDetail: async (params: GetUserApiRequestSchema) => {
     const json = await http.instance
       .get(`users/${params.id}`)
       .json<GetUserApiResponseSchema>();
+
     return getUserApiResponseSchema.parse(json);
   },
 } as const;
