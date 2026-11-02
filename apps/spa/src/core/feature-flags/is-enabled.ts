@@ -1,6 +1,6 @@
+import { featureFlagStore } from "@/core/feature-flags/feature-flag-store";
 import { getFeatureFlagDefinition } from "@/core/feature-flags/registry";
 import type { FeatureFlagId } from "@/core/feature-flags/registry";
-import { useFeatureFlagStore } from "@/core/feature-flags/store";
 
 export interface ResolveFeatureEnabledInput {
   isDev: boolean;
@@ -33,6 +33,6 @@ export const resolveFeatureEnabled = ({
 export const isFeatureEnabled = (id: FeatureFlagId): boolean =>
   resolveFeatureEnabled({
     isDev: import.meta.env.DEV,
-    override: useFeatureFlagStore.getState().overrides[id],
+    override: featureFlagStore.overrides()[id],
     defaultEnabled: getFeatureFlagDefinition(id).defaultEnabled,
   });

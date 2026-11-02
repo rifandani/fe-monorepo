@@ -1,7 +1,17 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { resolveFeatureEnabled } from "@/core/feature-flags/is-enabled";
-import { useFeatureFlagStore } from "@/core/feature-flags/store";
+import { featureFlagStore } from "@/core/feature-flags/feature-flag-store";
+import {
+  isFeatureEnabled,
+  resolveFeatureEnabled,
+} from "@/core/feature-flags/is-enabled";
+
+/** A fresh module graph, so the atom reads storage before anything writes. */
+const loadFresh = () => {
+  vi.resetModules();
+
+  return import("@/core/feature-flags/feature-flag-store");
+};
 
 describe("resolveFeatureEnabled", () => {
   it("returns false outside DEV even with an ON override", () => {
@@ -42,21 +52,72 @@ describe("resolveFeatureEnabled", () => {
   });
 });
 
-describe("useFeatureFlagStore overrides", () => {
+describe("featureFlagStore overrides", () => {
   beforeEach(() => {
-    localStorage.clear();
-    useFeatureFlagStore.setState({ overrides: {} });
+    featureFlagStore.resetAllOverrides();
   });
 
   it("setOverride / resetOverride round-trip", () => {
-    useFeatureFlagStore.getState().setOverride("componentCatalog", false);
-    expect(useFeatureFlagStore.getState().overrides.componentCatalog).toBe(
-      false
-    );
+    featureFlagStore.setOverride("componentCatalog", false);
+    expect(featureFlagStore.overrides().componentCatalog).toBe(false);
 
-    useFeatureFlagStore.getState().resetOverride("componentCatalog");
-    expect(
-      useFeatureFlagStore.getState().overrides.componentCatalog
-    ).toBeUndefined();
+    featureFlagStore.resetOverride("componentCatalog");
+    expect(featureFlagStore.overrides().componentCatalog).toBeUndefined();
+  });
+
+  it("resetAllOverrides clears every override", () => {
+    featureFlagStore.setOverride("componentCatalog", true);
+    featureFlagStore.resetAllOverrides();
+
+    expect(featureFlagStore.overrides()).toEqual({});
+  });
+
+  it("isFeatureEnabled honors a stored override", () => {
+    featureFlagStore.setOverride("componentCatalog", false);
+
+    expect(isFeatureEnabled("componentCatalog")).toBe(false);
+  });
+});
+
+describe("featureFlagOverridesAtom on first read", () => {
+  it("has no overrides when nothing is persisted", async () => {
+    localStorage.clear();
+    const fresh = await loadFresh();
+
+    expect(fresh.featureFlagStore.overrides()).toEqual({});
+  });
+
+  it("rehydrates persisted overrides", async () => {
+    localStorage.setItem(
+      "app-feature-flags",
+      JSON.stringify({ componentCatalog: false })
+    );
+    const fresh = await loadFresh();
+
+    expect(fresh.featureFlagStore.overrides()).toEqual({
+      componentCatalog: false,
+    });
+  });
+
+  it("drops an override for a flag that no longer exists", async () => {
+    localStorage.setItem(
+      "app-feature-flags",
+      JSON.stringify({ componentCatalog: true, retired: true })
+    );
+    const fresh = await loadFresh();
+
+    expect(fresh.featureFlagStore.overrides()).toEqual({
+      componentCatalog: true,
+    });
+  });
+
+  it("reads a malformed set as no overrides", async () => {
+    localStorage.setItem(
+      "app-feature-flags",
+      JSON.stringify({ componentCatalog: "yes" })
+    );
+    const fresh = await loadFresh();
+
+    expect(fresh.featureFlagStore.overrides()).toEqual({});
   });
 });

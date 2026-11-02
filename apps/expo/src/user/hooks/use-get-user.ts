@@ -3,19 +3,21 @@ import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { toErrorMessage } from "@workspace/core/utils/error";
-import type { HTTPError, TimeoutError } from "ky";
+import type { Effect } from "effect";
 import { useEffect } from "react";
 import type { Except } from "type-fest";
-import type { z } from "zod";
 
+import { appRuntime } from "@/core/services/runtime";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { userApi, userKeys } from "@/user/apis/user";
 
 type Params = Parameters<typeof userKeys.detail>[0];
 
-type Success = Awaited<ReturnType<typeof userApi.getDetail>>;
+type GetDetailEffect = ReturnType<typeof userApi.getDetail>;
 
-type QueryError = z.ZodError | HTTPError | TimeoutError;
+type Success = Effect.Success<GetDetailEffect>;
+
+type QueryError = Effect.Error<GetDetailEffect>;
 
 export const useGetUser = (
   params?: Params,
@@ -25,10 +27,13 @@ export const useGetUser = (
   >
 ) => {
   const toast = useToastController();
-  const enabled = !!params;
 
   const query = useQuery({
-    queryFn: enabled ? () => userApi.getDetail(params) : skipToken,
+    // `signal` interrupts the Effect, which aborts the underlying fetch.
+    queryFn: params
+      ? ({ signal }) =>
+          appRuntime.runPromise(userApi.getDetail(params), { signal })
+      : skipToken,
     queryKey: userKeys.detail(params),
     ...options,
   });

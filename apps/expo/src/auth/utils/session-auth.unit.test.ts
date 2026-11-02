@@ -2,16 +2,16 @@ import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { sessionAuth } from "@/auth/utils/session-auth";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { queryClient } from "@/core/providers/query/client";
+import { appStore } from "@/core/stores/app-store";
 
 // The store persists through `react-native-mmkv`, which Node cannot load.
 // Faked at the Module Boundary per ADR-0002's rule of thumb — nothing here
 // builds an HTTP request.
-vi.mock("@/core/services/mmkv", async () => {
-  const { createMmkvFake } = await import("@test/mmkv");
+vi.mock("react-native-mmkv", async () => {
+  const { createMmkvModuleFake } = await import("@test/mmkv");
 
-  return createMmkvFake();
+  return createMmkvModuleFake();
 });
 
 const validUser: AuthLoginResponseSchema = {
@@ -28,12 +28,12 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("sessionAuth", () => {
   beforeEach(() => {
-    useAppStore.getState().reset();
+    appStore.reset();
     queryClient.clear();
   });
 
   it("offers the Access Token of the current Session", () => {
-    useAppStore.getState().setUser(validUser);
+    appStore.setUser(validUser);
 
     expect(sessionAuth.getToken()).toBe("access");
   });
@@ -43,10 +43,10 @@ describe("sessionAuth", () => {
   });
 
   it("ends the Session when the server rejects the Access Token", () => {
-    useAppStore.getState().setUser(validUser);
+    appStore.setUser(validUser);
 
     sessionAuth.onUnauthorized?.();
 
-    expect(useAppStore.getState().user).toBeNull();
+    expect(appStore.getUser()).toBeNull();
   });
 });

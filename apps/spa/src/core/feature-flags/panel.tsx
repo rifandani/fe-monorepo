@@ -1,10 +1,16 @@
+import { useAtomValue } from "@effect/atom-react";
 import { twJoin } from "cn";
 import { useState } from "react";
 import { SwitchButton, SwitchField } from "react-aria-components/Switch";
 import { HiArrowPath } from "react-icons/hi2";
 
 import { Button } from "@/core/components/ui/button";
-import { isFeatureEnabled } from "@/core/feature-flags/is-enabled";
+import {
+  featureFlagOverridesAtom,
+  featureFlagStore,
+  featureFlagStoreName,
+} from "@/core/feature-flags/feature-flag-store";
+import { resolveFeatureEnabled } from "@/core/feature-flags/is-enabled";
 import {
   featureFlagIds,
   featureFlagRegistry,
@@ -13,10 +19,6 @@ import type {
   FeatureFlagDefinition,
   FeatureFlagId,
 } from "@/core/feature-flags/registry";
-import {
-  featureFlagStoreName,
-  useFeatureFlagStore,
-} from "@/core/feature-flags/store";
 import { router } from "@/core/providers/router/client";
 
 const applyFlagChange = (mutate: () => void): void => {
@@ -105,8 +107,6 @@ const OverrideResetButton = ({
   flagId: FeatureFlagId;
   visible: boolean;
 }) => {
-  const resetOverride = useFeatureFlagStore((s) => s.resetOverride);
-
   if (!visible) {
     return null;
   }
@@ -119,7 +119,7 @@ const OverrideResetButton = ({
       className="text-muted-foreground size-6 sm:size-6"
       onPress={() => {
         applyFlagChange(() => {
-          resetOverride(flagId);
+          featureFlagStore.resetOverride(flagId);
         });
       }}
     >
@@ -175,39 +175,44 @@ const FlagSwitch = ({
   flagId: FeatureFlagId;
   label: string;
   enabled: boolean;
-}) => {
-  const setOverride = useFeatureFlagStore((s) => s.setOverride);
-
-  return (
-    <SwitchField
-      aria-label={label}
-      isSelected={enabled}
-      onChange={(isSelected) => {
-        applyFlagChange(() => {
-          setOverride(flagId, isSelected);
-        });
-      }}
-    >
-      <SwitchButton className="shrink-0 outline-none">
-        {(values) => (
-          <FlagSwitchIndicator
-            isFocusVisible={values.isFocusVisible}
-            isSelected={values.isSelected}
-          />
-        )}
-      </SwitchButton>
-    </SwitchField>
-  );
-};
+}) => (
+  <SwitchField
+    aria-label={label}
+    isSelected={enabled}
+    onChange={(isSelected) => {
+      applyFlagChange(() => {
+        featureFlagStore.setOverride(flagId, isSelected);
+      });
+    }}
+  >
+    <SwitchButton className="shrink-0 outline-none">
+      {(values) => (
+        <FlagSwitchIndicator
+          isFocusVisible={values.isFocusVisible}
+          isSelected={values.isSelected}
+        />
+      )}
+    </SwitchButton>
+  </SwitchField>
+);
 
 const FeatureFlagRow = ({ flag }: { flag: FeatureFlagDefinition }) => {
-  const { id, label } = flag;
+  const { id, label, defaultEnabled } = flag;
 
-  const isOverridden = useFeatureFlagStore(
-    (s) => s.overrides[id] !== undefined
+  // Subscribe to the override itself, so flipping it re-renders this row.
+  const override = useAtomValue(
+    featureFlagOverridesAtom,
+    (overrides) => overrides[id]
   );
 
-  const enabled = isFeatureEnabled(id);
+  const isOverridden = override !== undefined;
+
+  const enabled = resolveFeatureEnabled({
+    isDev: import.meta.env.DEV,
+    override,
+    defaultEnabled,
+  });
+
   const displayId = toKebab(id);
 
   return (
@@ -236,11 +241,10 @@ const FeatureFlagRow = ({ flag }: { flag: FeatureFlagDefinition }) => {
 };
 
 export const FeatureFlagsPanel = () => {
-  const overrideCount = useFeatureFlagStore(
-    (s) => Object.keys(s.overrides).length
+  const overrideCount = useAtomValue(
+    featureFlagOverridesAtom,
+    (overrides) => Object.keys(overrides).length
   );
-
-  const resetAllOverrides = useFeatureFlagStore((s) => s.resetAllOverrides);
 
   const [query, setQuery] = useState("");
 
@@ -269,7 +273,7 @@ export const FeatureFlagsPanel = () => {
             isDisabled={overrideCount === 0}
             onPress={() => {
               applyFlagChange(() => {
-                resetAllOverrides();
+                featureFlagStore.resetAllOverrides();
               });
             }}
           >

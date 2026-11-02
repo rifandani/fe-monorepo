@@ -53,6 +53,8 @@ Interceptor install costs ~140ms per *file*, so the bill scales with files touch
 
 ## Amendments
 
+**2026-11-02 — `Http` is an Effect service; the deferred follow-up is done.** `ky` was replaced by Effect's `HttpClient` (`FetchHttpClient`), so MSW still intercepts every request at the same `fetch` boundary. Repositories now read `Http` from context instead of taking it, or a singleton, by parameter — which resolves the "`userApi` should accept `http`" follow-up above: `user.unit.test.ts` provides `Http.layer({ baseUrl: MOCK_API_BASE_URL })` and no longer mocks MMKV. Effect does not retry by default, so the `retry: 0` note no longer applies. The MMKV fake moved one layer down, to the `react-native-mmkv` module itself, so the `KeyValueStore` adapter in `core/services/mmkv.ts` runs under test.
+
 **2026-09-11 — the set is four files, and a different four.** `packages/core/src/services/http.unit.test.ts` now fakes at the Network Boundary, and the test of the second auth module was deleted with the module it covered (see below). The list under [Scope](#scope) shows the current set.
 
 The scope rule is unchanged; the file moved across it. `Http` used to be a constructor call that built no request of its own — it handed a configured ky instance to the `apis/` modules and they did the building, which is why its test asserted object identity (`expect(http.instance).not.toBe(before)`) and sent nothing. It now attaches the Access Token in a `beforeRequest` hook and ends the Session on a 401 in `afterResponse`, so it builds and inspects requests, and **the rule of thumb selects it**: fake at the Network Boundary, because everything the module does to the request really executes.

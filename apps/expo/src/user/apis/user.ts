@@ -1,40 +1,41 @@
+import { emailStringSchema, urlStringSchema } from "@workspace/core/apis/core";
 import type { ResourceListRequestSchema } from "@workspace/core/apis/core";
-import { z } from "zod";
+import { Http } from "@workspace/core/services/http";
+import { Effect, Schema } from "effect";
+import { HttpClientResponse } from "effect/http";
 
-import { http } from "@/core/services/http";
-
-// Stryker disable all: Zod shapes — ADR-0001 plain Zod out of unit-test
+// Stryker disable all: Schema shapes — ADR-0001 plain Schema out of unit-test
 // scope; file stays allowlisted for userKeys / userApi (ADR-0003).
-const userSchema = z.object({
-  id: z.number(),
-  firstName: z.string(),
-  lastName: z.string(),
-  maidenName: z.string(),
-  age: z.number(),
-  gender: z.union([z.literal("male"), z.literal("female")]),
-  email: z.email(),
-  phone: z.string(),
-  username: z.string(),
-  password: z.string(),
-  birthDate: z.string(),
-  image: z.url(),
-  bloodGroup: z.string(),
-  height: z.number(),
-  weight: z.number(),
-  eyeColor: z.string(),
+const userSchema = Schema.Struct({
+  id: Schema.Number,
+  firstName: Schema.String,
+  lastName: Schema.String,
+  maidenName: Schema.String,
+  age: Schema.Number,
+  gender: Schema.Literals(["male", "female"]),
+  email: emailStringSchema,
+  phone: Schema.String,
+  username: Schema.String,
+  password: Schema.String,
+  birthDate: Schema.String,
+  image: urlStringSchema,
+  bloodGroup: Schema.String,
+  height: Schema.Number,
+  weight: Schema.Number,
+  eyeColor: Schema.String,
   // ... and a lot more
 });
 
-const getUserApiRequestSchema = z.object({
-  id: z.number(),
+const getUserApiRequestSchema = Schema.Struct({
+  id: Schema.Number,
 });
 
 // Stryker restore all
-type GetUserApiRequestSchema = z.infer<typeof getUserApiRequestSchema>;
+type GetUserApiRequestSchema = typeof getUserApiRequestSchema.Type;
 
 const getUserApiResponseSchema = userSchema;
 
-export type GetUserApiResponseSchema = z.infer<typeof getUserApiResponseSchema>;
+export type GetUserApiResponseSchema = typeof getUserApiResponseSchema.Type;
 
 export const userKeys = {
   all: ["users"] as const,
@@ -46,12 +47,19 @@ export const userKeys = {
   lists: () => [...userKeys.all, "list"] as const,
 };
 
+/**
+ * @description User endpoints. Each needs the `Http` service, so the caller's
+ * Layer — not this module — decides the base URL and the Session.
+ */
 export const userApi = {
-  getDetail: async (params: GetUserApiRequestSchema) => {
-    const json = await http.instance
-      .get(`users/${params.id}`)
-      .json<GetUserApiResponseSchema>();
+  getDetail: Effect.fn("userApi.getDetail")(function* ({
+    id,
+  }: GetUserApiRequestSchema) {
+    const http = yield* Http;
+    const response = yield* http.get(`users/${id}`);
 
-    return getUserApiResponseSchema.parse(json);
-  },
+    return yield* HttpClientResponse.schemaBodyJson(getUserApiResponseSchema)(
+      response
+    );
+  }),
 } as const;

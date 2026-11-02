@@ -26,13 +26,13 @@
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@workspace/typescript-config": "workspace:*",
+    "effect": "4.1.2",
     "typescript": "7.0.2"
   },
   "peerDependencies": {
-    "ky": "2.2.0",
+    "effect": "4.1.2",
     "radashi": "13.0.1",
     "react": ">=19.0.0",
-    "type-fest": "5.10.0",
-    "zod": "4.6.7"
+    "type-fest": "5.10.0"
   }
 }

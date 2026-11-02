@@ -1,16 +1,17 @@
 /* oxlint-disable import/no-cycle */
-import { trace } from "@opentelemetry/api";
+import { useAtomValue } from "@effect/atom-react";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";
 import { logger } from "@workspace/core/utils/logger";
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserAtom } from "@/auth/stores/auth-user-store";
 import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
-import { TRACER_ROUTER, TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
+import { TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { queryClient } from "@/core/providers/query/client";
-import { recordException } from "@/core/utils/telemetry";
+import { appRuntime } from "@/core/services/runtime";
+import { recordException, toReportedError } from "@/core/utils/telemetry";
 
 import { routeTree } from "../../../routeTree.gen";
 
@@ -20,8 +21,6 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
-
-const tracer = trace.getTracer(TRACER_ROUTER);
 
 const PendingRoute = () => (
   <div className="flex items-center justify-center">
@@ -68,7 +67,7 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
 };
 
 const NotFoundRoute = () => {
-  const userStore = useAuthUserStore();
+  const user = useAtomValue(authUserAtom);
   const { t } = useTranslation();
 
   return (
@@ -83,12 +82,9 @@ const NotFoundRoute = () => {
 
         {/* Quick Actions */}
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
-          <Link
-            href={userStore.user ? "/" : "/login"}
-            className="flex items-center"
-          >
+          <Link href={user ? "/" : "/login"} className="flex items-center">
             {t("backTo", {
-              target: userStore.user ? "Home" : "Login",
+              target: user ? "Home" : "Login",
             })}
           </Link>
         </div>
@@ -101,16 +97,12 @@ const NotFoundRoute = () => {
 export const router = createRouter({
   routeTree,
   defaultOnCatch: (error, errorInfo) => {
-    recordException({
-      error: {
-        message: error instanceof Error ? error.message : String(error),
-        name: error instanceof Error ? error.name : undefined,
-        stack: error instanceof Error ? error.stack : undefined,
-        ...errorInfo,
-      },
-      name: TRACER_ROUTER_ON_ERROR,
-      tracer,
-    });
+    appRuntime.runFork(
+      recordException(
+        TRACER_ROUTER_ON_ERROR,
+        toReportedError(error, { componentStack: errorInfo.componentStack })
+      )
+    );
   },
   defaultNotFoundComponent: NotFoundRoute,
   defaultPendingComponent: PendingRoute,

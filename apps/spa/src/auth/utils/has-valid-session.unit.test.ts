@@ -1,7 +1,7 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserStore } from "@/auth/stores/auth-user-store";
 import { hasValidSession } from "@/auth/utils/has-valid-session";
 
 const validUser: AuthLoginResponseSchema = {
@@ -18,7 +18,7 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("hasValidSession", () => {
   beforeEach(() => {
-    useAuthUserStore.getState().clearUser();
+    authUserStore.clear();
   });
 
   it("is false when there is no Session", () => {
@@ -26,14 +26,14 @@ describe("hasValidSession", () => {
   });
 
   it("is true once a Session exists", () => {
-    useAuthUserStore.getState().setUser(validUser);
+    authUserStore.set(validUser);
 
     expect(hasValidSession()).toBe(true);
   });
 
   it("is false again after the Session ends", () => {
-    useAuthUserStore.getState().setUser(validUser);
-    useAuthUserStore.getState().clearUser();
+    authUserStore.set(validUser);
+    authUserStore.clear();
 
     expect(hasValidSession()).toBe(false);
   });

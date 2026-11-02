@@ -1,10 +1,11 @@
+import { useAtom } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { ListItem } from "tamagui";
 
 import { FitSheet } from "@/core/components/sheet/fit-sheet";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { useBaseSheet } from "@/core/hooks/use-base-sheet";
 import { useTranslation } from "@/core/providers/i18n/context";
+import { themeAtom } from "@/core/stores/app-store";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
 const THEME_OPTIONS = [
@@ -15,8 +16,7 @@ const THEME_OPTIONS = [
 
 export const ProfileThemeChanger = () => {
   const { t } = useTranslation();
-  const theme = useAppStore((state) => state.theme);
-  const setTheme = useAppStore((state) => state.setTheme);
+  const [theme, setTheme] = useAtom(themeAtom);
   const { state, setState, open } = useBaseSheet();
 
   return (

@@ -1,3 +1,4 @@
+import { useAtomValue } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
@@ -23,8 +24,8 @@ import {
 import { endSession } from "@/auth/utils/end-session";
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
-import { useAppStore } from "@/core/hooks/use-app-store";
 import { useTranslation } from "@/core/providers/i18n/context";
+import { userAtom } from "@/core/stores/app-store";
 import { formatDisplayDate } from "@/core/utils/date";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
@@ -34,7 +35,7 @@ import { useGetUser } from "@/user/hooks/use-get-user";
 
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
-  const user = useAppStore((state) => state.user);
+  const user = useAtomValue(userAtom);
 
   const { data } = useGetUser(
     user

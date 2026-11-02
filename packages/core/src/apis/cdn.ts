@@ -1,14 +1,15 @@
-import type { KyResponse, Options } from "ky";
-import ky from "ky";
+import { Effect } from "effect";
+import { HttpClient } from "effect/http";
+import type { HttpClientResponse } from "effect/http";
 
 export interface GetCdnFileRequestSchema {
   url: string;
 }
 
 export interface GetCdnFileSuccessSchema {
-  response: KyResponse;
+  response: HttpClientResponse.HttpClientResponse;
   blob: Blob;
-  headers: Record<PropertyKey, string>;
+  headers: Record<string, string>;
 }
 
 export type CdnValidKeys = (typeof cdnValidKeys)[keyof typeof cdnValidKeys];
@@ -24,24 +25,20 @@ export const cdnKeys = {
     [...cdnKeys.article(), url] as const,
 };
 
-export const cdnRepositories = () =>
-  ({
-    async getCdnFile(
-      {
-        url,
-      }: {
-        url: string;
-      },
-      options?: Options
-    ) {
-      const response = await ky.get(url, options);
-      const blob = await response.blob();
-      const headers = Object.fromEntries(response.headers);
+/**
+ * @description CDN files live at absolute URLs outside the API, so these use the
+ * plain transport `HttpClient` — no base URL and no Session.
+ */
+export const cdnRepositories = {
+  getCdnFile: Effect.fn("cdnRepositories.getCdnFile")(function* ({
+    url,
+  }: GetCdnFileRequestSchema) {
+    const client = HttpClient.filterStatusOk(yield* HttpClient.HttpClient);
+    const response = yield* client.get(url);
+    const buffer = yield* response.arrayBuffer;
+    const headers = Object.fromEntries(Object.entries(response.headers));
+    const blob = new Blob([buffer], { type: headers["content-type"] ?? "" });
 
-      return {
-        blob,
-        headers,
-        response,
-      };
-    },
-  }) as const;
+    return { blob, headers, response } satisfies GetCdnFileSuccessSchema;
+  }),
+} as const;

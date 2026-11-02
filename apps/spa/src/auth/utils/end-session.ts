@@ -1,4 +1,4 @@
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserStore } from "@/auth/stores/auth-user-store";
 import { queryClient } from "@/core/providers/query/client";
 
 /**
@@ -11,6 +11,6 @@ import { queryClient } from "@/core/providers/query/client";
  * and the router has no business behind this seam.
  */
 export const endSession = () => {
-  useAuthUserStore.getState().clearUser();
+  authUserStore.clear();
   queryClient.clear();
 };

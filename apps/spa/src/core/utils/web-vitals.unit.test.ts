@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Effect, Metric } from "effect";
+import { describe, expect, it, vi } from "vitest";
 
 import {
-  METRICS_METER_WEB_VITALS,
   METRICS_METER_WEB_VITALS_CLS,
   METRICS_METER_WEB_VITALS_FCP,
   METRICS_METER_WEB_VITALS_INP,
@@ -9,72 +9,48 @@ import {
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/core/constants/global";
 
-const {
-  onLCP,
-  onINP,
-  onCLS,
-  onFCP,
-  onTTFB,
-  createHistogram,
-  getMeter,
-  forceFlush,
-  records,
-  resetHistogramIndex,
-} = vi.hoisted(() => {
-  const webVitalsRecords = {
-    lcp: vi.fn(),
-    inp: vi.fn(),
-    cls: vi.fn(),
-    fcp: vi.fn(),
-    ttfb: vi.fn(),
-  };
+const harness = vi.hoisted(() => ({
+  onLCP: vi.fn(),
+  onINP: vi.fn(),
+  onCLS: vi.fn(),
+  onFCP: vi.fn(),
+  onTTFB: vi.fn(),
+  forceFlush: vi.fn(() => Promise.resolve()),
+  /** A fresh metric registry per module load, so samples never leak between tests. */
+  registry: { current: new Map() } satisfies { current: Metric.MetricRegistry },
+}));
 
-  const histograms = [
-    { record: webVitalsRecords.lcp },
-    { record: webVitalsRecords.inp },
-    { record: webVitalsRecords.cls },
-    { record: webVitalsRecords.fcp },
-    { record: webVitalsRecords.ttfb },
-  ];
+const { onLCP, onINP, onCLS, onFCP, onTTFB, forceFlush } = harness;
 
-  let i = 0;
+vi.mock("web-vitals", () => ({
+  onLCP: harness.onLCP,
+  onINP: harness.onINP,
+  onCLS: harness.onCLS,
+  onFCP: harness.onFCP,
+  onTTFB: harness.onTTFB,
+}));
 
-  const mockCreateHistogram = vi.fn(() => {
-    const histogram = histograms[i];
-    i += 1;
-
-    return histogram;
-  });
+// The real runtime would build telemetry and HTTP layers; the module only needs
+// it to run `Metric.update`, so it runs on a per-test registry instead.
+vi.mock("@/core/services/runtime", async () => {
+  const effect = await import("effect");
 
   return {
-    onLCP: vi.fn(),
-    onINP: vi.fn(),
-    onCLS: vi.fn(),
-    onFCP: vi.fn(),
-    onTTFB: vi.fn(),
-    createHistogram: mockCreateHistogram,
-    getMeter: vi.fn(() => ({ createHistogram: mockCreateHistogram })),
-    forceFlush: vi.fn(() => Promise.resolve()),
-    records: webVitalsRecords,
-    resetHistogramIndex: () => {
-      i = 0;
+    appRuntime: {
+      runSync: <A>(program: Effect.Effect<A>) =>
+        effect.Effect.runSync(
+          effect.Effect.provideService(
+            program,
+            effect.Metric.MetricRegistry,
+            harness.registry.current
+          )
+        ),
     },
   };
 });
 
-vi.mock("web-vitals", () => ({
-  onLCP,
-  onINP,
-  onCLS,
-  onFCP,
-  onTTFB,
-}));
-
-vi.mock("@/instrumentation", () => ({
-  meterProvider: {
-    getMeter,
-    forceFlush,
-  },
+vi.mock("@/core/services/telemetry", () => ({
+  metricReader: { forceFlush: harness.forceFlush },
 }));
 
 type HideEvent = "pagehide" | "visibilitychange";
@@ -125,19 +101,13 @@ const resetHarness = () => {
   listeners.pagehide.length = 0;
   listeners.visibilitychange.length = 0;
   documentStub.visibilityState = "visible";
-  resetHistogramIndex();
-  getMeter.mockClear();
-  createHistogram.mockClear();
+  harness.registry.current = new Map();
   onLCP.mockClear();
   onINP.mockClear();
   onCLS.mockClear();
   onFCP.mockClear();
   onTTFB.mockClear();
   forceFlush.mockClear();
-
-  for (const record of Object.values(records)) {
-    record.mockClear();
-  }
 
   vi.stubGlobal("document", documentStub);
   vi.stubGlobal("addEventListener", capture);
@@ -149,6 +119,36 @@ const loadModule = () => {
 
   return import("./web-vitals");
 };
+
+type WebVitalsModule = Awaited<ReturnType<typeof loadModule>>;
+
+type HistogramKey = keyof WebVitalsModule["webVitalsHistograms"];
+
+/** Every sample one histogram holds, across all attribute sets, read from the registry. */
+const samplesOf = (module: WebVitalsModule, key: HistogramKey) =>
+  Effect.runSync(
+    Effect.provideService(
+      Metric.snapshot,
+      Metric.MetricRegistry,
+      harness.registry.current
+    )
+  )
+    .filter(
+      (snapshot) =>
+        snapshot.type === "Histogram" &&
+        snapshot.id === module.webVitalsHistograms[key].id
+    )
+    .flatMap((snapshot) =>
+      snapshot.type === "Histogram" && snapshot.state.count > 0
+        ? [
+            {
+              attributes: snapshot.attributes,
+              count: snapshot.state.count,
+              sum: snapshot.state.sum,
+            },
+          ]
+        : []
+    );
 
 const fire = (type: HideEvent) => {
   for (const listener of listeners[type]) {
@@ -167,39 +167,23 @@ const show = () => {
 };
 
 describe("reportWebVitals", () => {
-  beforeEach(() => {
-    forceFlush.mockClear();
+  it("names each histogram after its web vital", async () => {
+    const module = await loadModule();
 
-    for (const record of Object.values(records)) {
-      record.mockClear();
-    }
-  });
-
-  it("registers meters at import", async () => {
-    await loadModule();
-    expect(getMeter).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS);
-    expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_LCP, {
-      description: "Largest Contentful Paint",
-      unit: "ms",
-    });
-    expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_INP, {
-      description: "Interaction to Next Paint",
-      unit: "ms",
-    });
-    expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_CLS, {
-      description: "Cumulative Layout Shift",
-      unit: "1",
-    });
-    expect(createHistogram).toHaveBeenCalledWith(METRICS_METER_WEB_VITALS_FCP, {
-      description: "First Contentful Paint",
-      unit: "ms",
-    });
-    expect(createHistogram).toHaveBeenCalledWith(
-      METRICS_METER_WEB_VITALS_TTFB,
-      {
-        description: "Time to First Byte",
-        unit: "ms",
-      }
+    expect(module.webVitalsHistograms.lcp.id).toBe(
+      METRICS_METER_WEB_VITALS_LCP
+    );
+    expect(module.webVitalsHistograms.inp.id).toBe(
+      METRICS_METER_WEB_VITALS_INP
+    );
+    expect(module.webVitalsHistograms.cls.id).toBe(
+      METRICS_METER_WEB_VITALS_CLS
+    );
+    expect(module.webVitalsHistograms.fcp.id).toBe(
+      METRICS_METER_WEB_VITALS_FCP
+    );
+    expect(module.webVitalsHistograms.ttfb.id).toBe(
+      METRICS_METER_WEB_VITALS_TTFB
     );
   });
 
@@ -220,8 +204,8 @@ describe("reportWebVitals", () => {
   });
 
   it("records LCP/FCP/TTFB immediately with semconv attrs", async () => {
-    const { reportWebVitals } = await loadModule();
-    reportWebVitals();
+    const module = await loadModule();
+    module.reportWebVitals();
 
     const metric = {
       id: "v1",
@@ -235,22 +219,26 @@ describe("reportWebVitals", () => {
     onFCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v2" }));
     onTTFB.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v3" }));
 
-    const attrs = {
+    const attributes = {
       navigation_type: "navigate",
       rating: "good",
     };
 
-    expect(records.lcp).toHaveBeenCalledWith(120, attrs);
-    expect(records.fcp).toHaveBeenCalledWith(120, attrs);
-    expect(records.ttfb).toHaveBeenCalledWith(120, attrs);
+    for (const key of ["lcp", "fcp", "ttfb"] as const) {
+      expect(samplesOf(module, key)).toEqual([
+        { attributes, count: 1, sum: 120 },
+      ]);
+    }
 
     onLCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, value: 200 }));
-    expect(records.lcp).toHaveBeenCalledOnce();
+    expect(samplesOf(module, "lcp")).toEqual([
+      { attributes, count: 1, sum: 120 },
+    ]);
   });
 
   it("defers CLS/INP until the page hides and records the latest value once", async () => {
-    const { reportWebVitals } = await loadModule();
-    reportWebVitals();
+    const module = await loadModule();
+    module.reportWebVitals();
 
     const clsCb = onCLS.mock.calls[0]?.[0];
     const inpCb = onINP.mock.calls[0]?.[0];
@@ -283,25 +271,32 @@ describe("reportWebVitals", () => {
       })
     );
 
-    expect(records.cls).not.toHaveBeenCalled();
-    expect(records.inp).not.toHaveBeenCalled();
+    expect(samplesOf(module, "cls")).toEqual([]);
+    expect(samplesOf(module, "inp")).toEqual([]);
 
     show();
-    expect(records.cls).not.toHaveBeenCalled();
+    expect(samplesOf(module, "cls")).toEqual([]);
     expect(forceFlush).not.toHaveBeenCalled();
 
     hide();
 
-    expect(records.cls).toHaveBeenCalledOnce();
-    expect(records.cls).toHaveBeenCalledWith(0.12, {
-      navigation_type: "navigate",
-      rating: "needs-improvement",
-    });
-    expect(records.inp).toHaveBeenCalledOnce();
-    expect(records.inp).toHaveBeenCalledWith(80, {
-      navigation_type: "navigate",
-      rating: "good",
-    });
+    expect(samplesOf(module, "cls")).toEqual([
+      {
+        attributes: {
+          navigation_type: "navigate",
+          rating: "needs-improvement",
+        },
+        count: 1,
+        sum: 0.12,
+      },
+    ]);
+    expect(samplesOf(module, "inp")).toEqual([
+      {
+        attributes: { navigation_type: "navigate", rating: "good" },
+        count: 1,
+        sum: 80,
+      },
+    ]);
     expect(forceFlush).toHaveBeenCalledOnce();
 
     clsCb?.(
@@ -314,23 +309,23 @@ describe("reportWebVitals", () => {
       })
     );
     hide();
-    expect(records.cls).toHaveBeenCalledOnce();
+    expect(samplesOf(module, "cls")).toHaveLength(1);
   });
 
   it("flushes the reader on hide even when nothing is pending", async () => {
-    const { reportWebVitals } = await loadModule();
-    reportWebVitals();
+    const module = await loadModule();
+    module.reportWebVitals();
 
     hide();
 
-    expect(records.cls).not.toHaveBeenCalled();
-    expect(records.inp).not.toHaveBeenCalled();
+    expect(samplesOf(module, "cls")).toEqual([]);
+    expect(samplesOf(module, "inp")).toEqual([]);
     expect(forceFlush).toHaveBeenCalledOnce();
   });
 
   it("still flushes on pagehide as a backup", async () => {
-    const { reportWebVitals } = await loadModule();
-    reportWebVitals();
+    const module = await loadModule();
+    module.reportWebVitals();
 
     const inpCb = onINP.mock.calls[0]?.[0];
 
@@ -346,14 +341,37 @@ describe("reportWebVitals", () => {
 
     fire("pagehide");
 
-    expect(records.inp).toHaveBeenCalledOnce();
-    expect(records.inp).toHaveBeenCalledWith(240, {
-      navigation_type: "back-forward-cache",
-      rating: "needs-improvement",
-    });
+    const expected = [
+      {
+        attributes: {
+          navigation_type: "back-forward-cache",
+          rating: "needs-improvement",
+        },
+        count: 1,
+        sum: 240,
+      },
+    ];
+
+    expect(samplesOf(module, "inp")).toEqual(expected);
     expect(forceFlush).toHaveBeenCalledOnce();
 
     fire("pagehide");
-    expect(records.inp).toHaveBeenCalledOnce();
+    expect(samplesOf(module, "inp")).toEqual(expected);
+  });
+
+  it("swallows a failed export, since the page is going away", async () => {
+    const module = await loadModule();
+    module.reportWebVitals();
+    forceFlush.mockImplementationOnce(() =>
+      Promise.reject(new Error("offline"))
+    );
+
+    hide();
+
+    // `drainReader` runs detached; let its rejection settle.
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(forceFlush).toHaveBeenCalledOnce();
   });
 });

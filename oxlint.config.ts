@@ -31,6 +31,13 @@ export default defineConfig({
     "react-doctor/only-export-components": "off",
     // Existing `oxlint-disable` on hooks/effects; compiler still runs.
     "react/rule-suppression": "off",
+    // Effect error classes extend a factory call, `Schema.TaggedError<Self>()(…)`.
+    // The rule reads that call as a bare `Error(…)` and its autofix inserts a
+    // `new` that breaks the class. `new` on real errors stays enforced by review.
+    "unicorn/throw-new-error": "off",
+    // `Effect.gen(function* () {…})` and `Effect.fn("name")(function* () {…})`
+    // are the Effect idiom; the span or the enclosing binding names them.
+    "func-names": ["error", "always", { generators: "never" }],
   },
   overrides: [
     {
@@ -50,11 +57,14 @@ export default defineConfig({
       },
     },
     {
-      // `toErrorMessage` is the parser at a boundary where the input is
-      // definitionally unparsed: a caught failure. It runs a schema against
-      // every shape before trusting it, and a narrower parameter would only
-      // move the cast to each caller.
-      files: ["packages/core/src/utils/error.ts"],
+      // `toErrorMessage` and `toReportedError` are the parsers at a boundary
+      // where the input is definitionally unparsed: a caught failure. They
+      // check every shape before trusting it, and a narrower parameter would
+      // only move the cast to each caller.
+      files: [
+        "packages/core/src/utils/error.ts",
+        "apps/spa/src/core/utils/telemetry.ts",
+      ],
       rules: {
         "anti-slop/no-unknown-parameters": "off",
       },

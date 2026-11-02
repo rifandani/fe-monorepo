@@ -1,10 +1,13 @@
 // fallow-ignore-file unused-file
-import { createEnv } from "@t3-oss/env-core";
-import { z } from "zod";
+import { Schema } from "effect";
 
-export const ENV_SERVER = createEnv({
-  runtimeEnv: process.env,
-  server: {
-    APP_VARIANT: z.string().min(1),
-  },
+const envServerSchema = Schema.Struct({
+  APP_VARIANT: Schema.NonEmptyString,
+});
+
+/**
+ * @description Build-time env (read by `app.config.ts` in Node), decoded once.
+ */
+export const ENV_SERVER = Schema.decodeUnknownSync(envServerSchema)({
+  APP_VARIANT: process.env.APP_VARIANT,
 });

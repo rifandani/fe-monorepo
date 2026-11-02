@@ -1,6 +1,6 @@
 import type { HttpAuthConfig } from "@workspace/core/services/http";
 
-import { useAuthUserStore } from "@/auth/hooks/use-auth-user-store";
+import { authUserStore } from "@/auth/stores/auth-user-store";
 import { endSession } from "@/auth/utils/end-session";
 
 /**
@@ -8,11 +8,11 @@ import { endSession } from "@/auth/utils/end-session";
  *
  * Lives here rather than inline in `core/services/http.ts` so the two functions
  * are reachable by a test: the token read and the rejection response are the
- * wiring that can actually be wrong, while the `new Http(...)` call is a
+ * wiring that can actually be wrong, while the `Http.layer(...)` call is a
  * declaration.
  */
 export const sessionAuth: HttpAuthConfig = {
-  // Read per request, so signing in and out need not notify the instance.
-  getToken: () => useAuthUserStore.getState().user?.accessToken ?? null,
+  // Read per request, so signing in and out need not notify the client.
+  getToken: () => authUserStore.get()?.accessToken ?? null,
   onUnauthorized: endSession,
 };

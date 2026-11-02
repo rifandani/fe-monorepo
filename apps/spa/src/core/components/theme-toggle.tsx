@@ -1,7 +1,7 @@
 import { useLocalStorage } from "@reactuses/core";
+import { Match } from "effect";
 import { HiComputerDesktop, HiMoon, HiSun } from "react-icons/hi2";
 import type { Selection } from "react-stately";
-import { match } from "ts-pattern";
 
 import { Button } from "@/core/components/ui/button";
 import {
@@ -27,13 +27,11 @@ export const ThemeToggle = () => {
   return (
     <MenuTrigger>
       <Button intent="outline">
-        {match(theme)
-          .with("auto", () => <HiComputerDesktop className="size-6" />)
-          .with("light", () => <HiSun className="size-6" />)
-          .with("dark", () => <HiMoon className="size-6" />)
-          .otherwise(() => (
-            <HiComputerDesktop className="size-6" />
-          ))}
+        {Match.value(theme).pipe(
+          Match.when("light", () => <HiSun className="size-6" />),
+          Match.when("dark", () => <HiMoon className="size-6" />),
+          Match.orElse(() => <HiComputerDesktop className="size-6" />)
+        )}
       </Button>
 
       <Menu

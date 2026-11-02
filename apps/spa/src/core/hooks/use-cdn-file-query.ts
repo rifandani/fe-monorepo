@@ -8,8 +8,10 @@ import type {
 } from "@workspace/core/apis/cdn";
 import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
 import { toCdnFile } from "@workspace/core/utils/dom";
-import type { HTTPError } from "ky";
+import type { HttpClientError } from "effect/http";
 import type { Except } from "type-fest";
+
+import { appRuntime } from "@/core/services/runtime";
 
 interface Opt {
   key: CdnValidKeys;
@@ -20,18 +22,25 @@ interface Opt {
 export const useCdnFileQuery = (
   opt: Opt,
   queryOptions?: Except<
-    UndefinedInitialDataOptions<unknown, HTTPError, GetCdnFileSuccessSchema>,
+    UndefinedInitialDataOptions<
+      unknown,
+      HttpClientError.HttpClientError,
+      GetCdnFileSuccessSchema
+    >,
     "queryKey" | "queryFn"
   >
 ) => {
+  const { url } = opt;
+
   const query = useQuery({
-    queryFn: opt.url
+    // `signal` interrupts the Effect, which aborts the underlying fetch.
+    queryFn: url
       ? ({ signal }) =>
-          // SAFETY: this branch only runs when `opt.url` is set - the `skipToken`
-          // alternative covers the empty case.
-          cdnRepositories().getCdnFile({ url: opt.url as string }, { signal })
+          appRuntime.runPromise(cdnRepositories.getCdnFile({ url }), {
+            signal,
+          })
       : skipToken,
-    queryKey: cdnKeys[opt.key](opt.url),
+    queryKey: cdnKeys[opt.key](url),
     ...queryOptions,
   });
 

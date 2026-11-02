@@ -1,12 +1,13 @@
 import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
 import { format, isValid, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
-import { match } from "ts-pattern";
+import { Match } from "effect";
 
 const resolveDateFnsLocale = (locale: LocaleDictLanguage | string) =>
-  match(locale)
-    .with("id-id", () => id)
-    .otherwise(() => enUS);
+  Match.value(locale).pipe(
+    Match.when("id-id", () => id),
+    Match.orElse(() => enUS)
+  );
 
 /**
  * Formats an ISO / Date-parseable string for display (e.g. user `birthDate`).

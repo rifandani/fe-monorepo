@@ -1,8 +1,11 @@
+import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { authKeys, authRepositories } from "@workspace/core/apis/auth";
 import { Http } from "@workspace/core/services/http";
+import { HttpResponseError } from "@workspace/core/services/http-response-error";
+import { Effect, Layer } from "effect";
+import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
-import { describe, expect, it } from "vitest";
 
 const loginUrl = `${MOCK_API_BASE_URL}/auth/login`;
 
@@ -20,9 +23,13 @@ const loginResponse = {
 
 const credentials = { username: "ada", password: "secret1" };
 
-/** `authRepositories` takes `Http` by parameter, so the test owns the base URL. */
-const repositories = () =>
-  authRepositories(new Http({ prefix: MOCK_API_BASE_URL }));
+/** `authRepositories` reads `Http` from context, so the test owns the base URL. */
+const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+  Layer.provide(FetchHttpClient.layer)
+);
+
+const login = (json: typeof credentials) =>
+  authRepositories.login(json).pipe(Effect.provide(TestHttp));
 
 describe("authKeys", () => {
   it("builds login keys", () => {
@@ -33,81 +40,79 @@ describe("authKeys", () => {
 });
 
 describe("authRepositories", () => {
-  it("login posts the credentials and parses the response", async () => {
-    let capturedBody: unknown;
-    let capturedRequest: Request | undefined;
-    server.use(
-      http.post(loginUrl, async ({ request }) => {
-        capturedRequest = request;
-        capturedBody = await request.json();
+  it.effect("login posts the credentials and decodes the response", () =>
+    Effect.gen(function* () {
+      let capturedBody: unknown;
+      let capturedRequest: Request | undefined;
+      server.use(
+        http.post(loginUrl, async ({ request }) => {
+          capturedRequest = request;
+          capturedBody = await request.json();
 
-        return HttpResponse.json(loginResponse);
+          return HttpResponse.json(loginResponse);
+        })
+      );
+
+      const result = yield* login(credentials);
+
+      // Capture-then-assert, so a mismatch reports an `expect` diff rather than the
+      // failure a throwing resolver would surface.
+      expect(capturedRequest?.method).toBe("POST");
+      expect(capturedBody).toEqual(credentials);
+      expect(result.username).toBe("ada");
+      expect(result.accessToken).toBe("token");
+    })
+  );
+
+  it.effect(
+    "login fails with a SchemaError when the response violates the schema",
+    () =>
+      Effect.gen(function* () {
+        // This method's whole job is decoding with `authLoginResponseSchema`, and a
+        // 200 that decodes cleanly proves nothing about it. Drive a well-formed-but-
+        // invalid payload through the real client and assert Schema rejects it.
+        server.use(
+          http.post(loginUrl, () =>
+            HttpResponse.json({ ...loginResponse, email: "not-an-email" })
+          )
+        );
+
+        const error = yield* Effect.flip(login(credentials));
+
+        expect(error._tag).toBe("SchemaError");
       })
-    );
+  );
 
-    const result = await repositories().login({ json: credentials });
+  it.effect("login fails on a 401, carrying the Error Envelope", () =>
+    Effect.gen(function* () {
+      server.use(
+        http.post(loginUrl, () =>
+          HttpResponse.json({ message: "Invalid credentials" }, { status: 401 })
+        )
+      );
 
-    // Capture-then-assert, so a mismatch reports an `expect` diff rather than the
-    // HTTPError a throwing resolver would surface.
-    expect(capturedRequest?.method).toBe("POST");
-    expect(capturedBody).toEqual(credentials);
-    expect(result.username).toBe("ada");
-    expect(result.accessToken).toBe("token");
-  });
+      // Asserting the failure alone would pass whether or not the envelope
+      // survived. `toErrorMessage` reads `data`, and only a real client against
+      // a real response proves `Http` populates it.
+      const error = yield* Effect.flip(login(credentials));
 
-  it("login forwards ky options", async () => {
-    let captured: Request | undefined;
-    server.use(
-      http.post(loginUrl, ({ request }) => {
-        captured = request;
+      expect(error).toBeInstanceOf(HttpResponseError);
+      expect(error).toMatchObject({
+        status: 401,
+        data: { message: "Invalid credentials" },
+      });
+    })
+  );
 
-        return HttpResponse.json(loginResponse);
-      })
-    );
+  it.effect("login fails on a 500", () =>
+    Effect.gen(function* () {
+      server.use(
+        http.post(loginUrl, () => new HttpResponse(null, { status: 500 }))
+      );
 
-    await repositories().login(
-      { json: credentials },
-      { headers: { "x-trace": "abc" } }
-    );
+      const error = yield* Effect.flip(login(credentials));
 
-    expect(captured?.headers.get("x-trace")).toBe("abc");
-  });
-
-  it("login rejects when the response violates the schema", async () => {
-    // This method's whole job is `authLoginResponseSchema.parse`, and a 200 that
-    // parses cleanly proves nothing about it. Drive a well-formed-but-invalid payload
-    // through real ky and assert Zod rejects it.
-    server.use(
-      http.post(loginUrl, () =>
-        HttpResponse.json({ ...loginResponse, email: "not-an-email" })
-      )
-    );
-
-    await expect(repositories().login({ json: credentials })).rejects.toThrow();
-  });
-
-  it("login rejects on a 401, carrying the Error Envelope", async () => {
-    server.use(
-      http.post(loginUrl, () =>
-        HttpResponse.json({ message: "Invalid credentials" }, { status: 401 })
-      )
-    );
-
-    // Asserting the rejection alone would pass whether or not the envelope
-    // survived. `toErrorMessage` reads `data`, and only a real ky against a
-    // real response proves ky populates it.
-    await expect(
-      repositories().login({ json: credentials })
-    ).rejects.toMatchObject({
-      data: { message: "Invalid credentials" },
-    });
-  });
-
-  it("login rejects on a 500", async () => {
-    server.use(
-      http.post(loginUrl, () => new HttpResponse(null, { status: 500 }))
-    );
-
-    await expect(repositories().login({ json: credentials })).rejects.toThrow();
-  });
+      expect(error).toMatchObject({ _tag: "HttpResponseError", status: 500 });
+    })
+  );
 });

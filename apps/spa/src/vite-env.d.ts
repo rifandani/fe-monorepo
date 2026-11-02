@@ -6,6 +6,8 @@
 interface ImportMetaEnv {
   // prefixed with "VITE_" -> exposed to our Vite-processed code
   readonly VITE_APP_TITLE: string | undefined;
+  readonly VITE_OTEL_EXPORTER_OTLP_ENDPOINT: string | undefined;
+  readonly VITE_OTEL_LOG_LEVEL: string | undefined;
   readonly VITE_APP_URL: string | undefined;
   readonly VITE_API_BASE_URL: string | undefined;
   // Set to "true" by playwright's webServer to keep devtools out of E2E runs

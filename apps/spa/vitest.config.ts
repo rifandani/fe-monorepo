@@ -6,7 +6,7 @@ const root = import.meta.dirname;
 
 export default defineProject({
   // spa tsconfig uses jsx: "preserve"; unit tests still import .tsx modules
-  // (e.g. zustand store co-located with providers) so oxc must transform JSX.
+  // (e.g. the router and its providers) so oxc must transform JSX.
   oxc: {
     jsx: { runtime: "automatic" },
   },

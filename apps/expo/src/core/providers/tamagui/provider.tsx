@@ -1,12 +1,13 @@
+import { useAtomValue } from "@effect/atom-react";
 import type { Theme } from "@react-navigation/native";
 import { ThemeProvider } from "@react-navigation/native";
+import { Match } from "effect";
 import { StatusBar } from "expo-status-bar";
 import { Platform, useColorScheme } from "react-native";
 import type { TamaguiProviderProps } from "tamagui";
 import { TamaguiProvider, useTheme } from "tamagui";
-import { match } from "ts-pattern";
 
-import { useAppStore } from "@/core/hooks/use-app-store";
+import { themeAtom } from "@/core/stores/app-store";
 
 import config from "../../../../tamagui.config";
 
@@ -73,12 +74,13 @@ const NavigationThemeProvider = ({
 }) => {
   const tamaguiTheme = useTheme();
   const scheme = useColorScheme();
-  const theme = useAppStore((state) => state.theme);
+  const theme = useAtomValue(themeAtom);
 
-  const isDark = match(theme)
-    .with("system", () => scheme === "dark")
-    .with("dark", () => true)
-    .otherwise(() => false);
+  const isDark = Match.value(theme).pipe(
+    Match.when("system", () => scheme === "dark"),
+    Match.when("dark", () => true),
+    Match.orElse(() => false)
+  );
 
   const value = buildNavigationTheme(tamaguiTheme, isDark);
 
@@ -95,21 +97,22 @@ export const AppTamaguiProvider = ({
   ...rest
 }: Omit<TamaguiProviderProps, "config">) => {
   const scheme = useColorScheme();
-  const theme = useAppStore((state) => state.theme);
+  const theme = useAtomValue(themeAtom);
 
   return (
     <TamaguiProvider
       disableInjectCSS
       config={config}
-      defaultTheme={match(theme)
-        .with(
+      defaultTheme={Match.value(theme).pipe(
+        Match.when(
           "system",
           () =>
             // SAFETY: `useColorScheme` resolves to "light" or "dark" here; its type
             // keeps the null the RN API allows before the first read.
             scheme as string
-        )
-        .otherwise((t) => t)}
+        ),
+        Match.orElse((picked) => picked)
+      )}
       {...rest}
     >
       <NavigationThemeProvider>{children}</NavigationThemeProvider>
