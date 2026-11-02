@@ -7,15 +7,17 @@ import { Tab, TabList, type TabListProps, TabPanel, TabPanels, Tabs } from "@/co
 import { useClipboard } from "@/core/hooks/use-clipboard"
 import { cx } from "@/core/utils/primitive"
 
-export const Snippet = ({ className, ...props }: TabsProps) => (
-  <Tabs
-    className={cx(
-      "not-typeset group w-full gap-0 overflow-hidden rounded-md border bg-bg",
-      className
-    )}
-    {...props}
-  />
-)
+export function Snippet({ className, ...props }: TabsProps) {
+  return (
+    <Tabs
+      className={cx(
+        "not-typeset group w-full gap-0 overflow-hidden rounded-md border bg-background",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
 export function SnippetTabsList<T extends object>({ className, ...props }: TabListProps<T>) {
   const { orientation } = useSlottedContext(TabsContext)!
@@ -32,13 +34,18 @@ export function SnippetTabsList<T extends object>({ className, ...props }: TabLi
   )
 }
 
-export const SnippetTab = ({ className, ...props }: React.ComponentProps<typeof Tab>) => (
-  <Tab className={cx("gap-1.5", className)} {...props} />
-)
+export function SnippetTab({ className, ...props }: React.ComponentProps<typeof Tab>) {
+  return <Tab className={cx("gap-1.5", className)} {...props} />
+}
 
 export const SnippetTabPanels = TabPanels
 
-export function SnippetTabPanel({ className, children, ...props }: TabPanelProps) {
+export function SnippetTabPanel({
+  className,
+  children,
+  onCopy,
+  ...props
+}: TabPanelProps & { onCopy?: (text: string) => void }) {
   const { copy, copied } = useClipboard()
   return (
     <TabPanel className={cx("mt-0 px-4 py-2 text-sm dark:bg-secondary/70", className)} {...props}>
@@ -53,8 +60,9 @@ export function SnippetTabPanel({ className, children, ...props }: TabPanelProps
                 className="-me-2"
                 size="sq-sm"
                 intent="plain"
-                onPress={() => {
-                  copy(children as string)
+                onPress={async () => {
+                  const text = children as string
+                  if (await copy(text)) onCopy?.(text)
                 }}
               >
                 {copied ? (

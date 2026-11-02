@@ -5,27 +5,31 @@ import { type ButtonProps, buttonStyles } from "@/core/components/ui/button"
 import { Link, type LinkProps } from "@/core/components/ui/link"
 import { Text } from "@/core/components/ui/text"
 
-const Pagination = ({ className, ref, ...props }: React.ComponentProps<"nav">) => (
-  <nav
-    data-slot="pagination"
-    aria-label="pagination"
-    className={cn(
-      "mx-auto flex w-full items-center justify-center gap-(--pagination-gap) [--pagination-gap:--spacing(2)] [--section-radius:calc(var(--radius-lg)-1px)] **:data-[slot=control]:w-auto",
-      "**:data-[slot=pagination-item]:cursor-default",
-      className
-    )}
-    ref={ref}
-    {...props}
-  />
-)
+export function Pagination({ className, ref, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      data-slot="pagination"
+      aria-label="pagination"
+      className={cn(
+        "mx-auto flex w-full items-center justify-center gap-(--pagination-gap) [--pagination-gap:--spacing(2)] [--section-radius:calc(var(--radius-lg)-1px)] **:data-[slot=control]:w-auto",
+        "**:data-[slot=pagination-item]:cursor-default",
+        className
+      )}
+      ref={ref}
+      {...props}
+    />
+  )
+}
 
-const PaginationSection = ({ className, ref, ...props }: React.ComponentProps<"ul">) => (
-  <li data-slot="pagination-section">
-    <ul ref={ref} className={cn("flex h-full gap-1.5 text-sm/6", className)} {...props} />
-  </li>
-)
+export function PaginationSection({ className, ref, ...props }: React.ComponentProps<"ul">) {
+  return (
+    <li data-slot="pagination-section">
+      <ul ref={ref} className={cn("flex h-full gap-1.5 text-sm/6", className)} {...props} />
+    </li>
+  )
+}
 
-const PaginationList = ({ className, ref, ...props }: React.ComponentProps<"ul">) => {
+export function PaginationList({ className, ref, ...props }: React.ComponentProps<"ul">) {
   return (
     <ul
       ref={ref}
@@ -37,20 +41,20 @@ const PaginationList = ({ className, ref, ...props }: React.ComponentProps<"ul">
   )
 }
 
-interface PaginationItemProps
+export interface PaginationItemProps
   extends Omit<LinkProps, "children">, Pick<ButtonProps, "isCircle" | "size" | "intent"> {
   className?: string
   isCurrent?: boolean
   children?: string | number | React.ReactNode
 }
 
-const PaginationItem = ({
+export function PaginationItem({
   className,
   size = "sm",
   isCircle,
   isCurrent,
   ...props
-}: PaginationItemProps) => {
+}: PaginationItemProps) {
   return (
     <li>
       <Link
@@ -69,7 +73,7 @@ const PaginationItem = ({
   )
 }
 
-const PaginationFirst = (props: PaginationItemProps) => {
+export function PaginationFirst(props: PaginationItemProps) {
   return (
     <PaginationItem data-slot="pagination-item" aria-label="First page" {...props}>
       <>
@@ -95,7 +99,7 @@ const PaginationFirst = (props: PaginationItemProps) => {
   )
 }
 
-const PaginationPrevious = (props: PaginationItemProps) => {
+export function PaginationPrevious(props: PaginationItemProps) {
   return (
     <PaginationItem {...props}>
       <>
@@ -118,7 +122,7 @@ const PaginationPrevious = (props: PaginationItemProps) => {
   )
 }
 
-const PaginationNext = (props: PaginationItemProps) => {
+export function PaginationNext(props: PaginationItemProps) {
   return (
     <PaginationItem aria-label="Next page" {...props}>
       <>
@@ -140,7 +144,7 @@ const PaginationNext = (props: PaginationItemProps) => {
   )
 }
 
-const PaginationLast = (props: PaginationItemProps) => {
+export function PaginationLast(props: PaginationItemProps) {
   return (
     <PaginationItem aria-label="Last page" {...props}>
       <>
@@ -167,20 +171,20 @@ const PaginationLast = (props: PaginationItemProps) => {
   )
 }
 
-const PaginationSpacer = ({ className, ...props }: React.ComponentPropsWithoutRef<"div">) => {
+export function PaginationSpacer({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
   return <div aria-hidden className={cn("flex-1", className)} {...props} />
 }
 
-const PaginationGap = ({
+export function PaginationGap({
   className,
   children = <>&hellip;</>,
   ...props
-}: React.ComponentProps<"li">) => {
+}: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="pagination-gap"
       className={cn(
-        "w-9 select-none text-center font-semibold text-fg text-sm/6 outline-hidden",
+        "w-9 select-none text-center font-semibold text-foreground text-sm/6 outline-hidden",
         className
       )}
       {...props}
@@ -191,12 +195,12 @@ const PaginationGap = ({
   )
 }
 
-const PaginationLabel = ({ className, ...props }: React.ComponentPropsWithoutRef<"li">) => {
+export function PaginationLabel({ className, ...props }: React.ComponentPropsWithoutRef<"li">) {
   return (
     <li
       data-slot="pagination-label"
       className={cn(
-        "min-w-4 self-center text-fg *:[strong]:font-medium *:[strong]:text-fg",
+        "min-w-4 self-center text-foreground *:[strong]:font-medium *:[strong]:text-foreground",
         className
       )}
       {...props}
@@ -204,19 +208,4 @@ const PaginationLabel = ({ className, ...props }: React.ComponentPropsWithoutRef
   )
 }
 
-const PaginationInfo = Text
-
-export {
-  Pagination,
-  PaginationFirst,
-  PaginationGap,
-  PaginationInfo,
-  PaginationItem,
-  PaginationLabel,
-  PaginationLast,
-  PaginationList,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationSection,
-  PaginationSpacer,
-}
+export const PaginationInfo = Text

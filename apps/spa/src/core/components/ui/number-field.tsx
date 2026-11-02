@@ -11,7 +11,7 @@ import { Input, InputGroup } from "@/core/components/ui/input"
 import { cx } from "@/core/utils/primitive"
 import { fieldStyles } from "./field"
 
-const NumberField = ({ className, ...props }: NumberFieldProps) => {
+export function NumberField({ className, ...props }: NumberFieldProps) {
   return (
     <NumberFieldPrimitive {...props} data-slot="control" className={cx(fieldStyles(), className)} />
   )
@@ -21,7 +21,7 @@ interface InputProps extends PrimitiveInputProps {
   ref?: React.RefObject<HTMLInputElement>
 }
 
-function NumberInput({ className, ...props }: InputProps) {
+export function NumberInput({ className, ...props }: InputProps) {
   return (
     <InputGroup className="[--input-gutter-end:--spacing(20)]">
       <Input className={cx("tabular-nums", className)} {...props} />
@@ -38,16 +38,16 @@ function NumberInput({ className, ...props }: InputProps) {
   )
 }
 
-interface StepperButtonProps extends ButtonProps {
+export interface StepperButtonProps extends ButtonProps {
   slot: "increment" | "decrement"
   className?: string
 }
 
-const StepperButton = ({ slot, className, ...props }: StepperButtonProps) => {
+function StepperButton({ slot, className, ...props }: StepperButtonProps) {
   return (
     <Button
       className={cx(
-        "inline-grid place-content-center pressed:text-fg text-muted-fg enabled:hover:text-fg",
+        "inline-grid place-content-center pressed:text-foreground text-muted-foreground enabled:hover:text-foreground",
         "size-full min-w-11 grow bg-input/20 pressed:bg-input/60 sm:min-w-8.5",
         "*:data-[slot=stepper-icon]:size-5 sm:*:data-[slot=stepper-icon]:size-4",
         "disabled:pointer-events-none disabled:opacity-50",
@@ -66,4 +66,3 @@ const StepperButton = ({ slot, className, ...props }: StepperButtonProps) => {
 }
 
 export type { NumberFieldProps }
-export { NumberField, NumberInput }

@@ -24,16 +24,16 @@ export const MasterDesignCatalog = () => {
   });
 
   return (
-    <div className="bg-bg text-fg flex min-h-svh w-full">
+    <div className="bg-background text-foreground flex min-h-svh w-full">
       <aside className="bg-sidebar sticky top-0 hidden h-svh w-64 shrink-0 overflow-y-auto border-r md:block">
         <CatalogNav activeId={activeId} filter={filter} onNavigate={scrollTo} />
       </aside>
 
       <main className="min-w-0 flex-1">
-        <header className="bg-bg/80 sticky top-0 z-20 flex items-center gap-4 border-b px-6 py-3 backdrop-blur">
+        <header className="bg-background/80 sticky top-0 z-20 flex items-center gap-4 border-b px-6 py-3 backdrop-blur">
           <div>
             <h1 className="text-lg font-semibold">Component Catalog</h1>
-            <p className="text-muted-fg text-xs">
+            <p className="text-muted-foreground text-xs">
               {entryIds.length} components · dev only
             </p>
           </div>
@@ -53,7 +53,7 @@ export const MasterDesignCatalog = () => {
         <div className="mx-auto flex max-w-7xl flex-col gap-16 px-6 py-10">
           {categories.map((category) => (
             <section key={category.id}>
-              <h2 className="text-muted-fg mb-6 border-b pb-2 text-sm font-semibold tracking-wide uppercase">
+              <h2 className="text-muted-foreground mb-6 border-b pb-2 text-sm font-semibold tracking-wide uppercase">
                 {category.name}
               </h2>
               <div className="flex flex-col gap-12">

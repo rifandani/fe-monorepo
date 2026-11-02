@@ -32,7 +32,7 @@ export const SidebarShowcase = () => (
           </SidebarContent>
         </Sidebar>
         <SidebarInset>
-          <div className="text-muted-fg p-4 text-sm">Inset content</div>
+          <div className="text-muted-foreground p-4 text-sm">Inset content</div>
         </SidebarInset>
       </SidebarProvider>
     </Variant>

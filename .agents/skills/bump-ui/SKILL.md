@@ -25,6 +25,7 @@ Apply every rule below to every touched spa UI file (and toast/globals where nam
 - Import icons from `react-icons/hi2` (not `@heroicons/react`); map Heroicon names to `Hi*` exports to match already-adapted UI files.
 - Rewrite `@/hooks/use-mobile` → `@/core/hooks/use-mobile`.
 - Rewrite `@/hooks/use-clipboard` → `@/core/hooks/use-clipboard`.
+- Use `@reactuses/core` if possible instead of creating new custom hooks
 - Copy chart `className` tokens from `chart.tsx` into `apps/spa/src/core/styles/globals.css`.
 - React 19 context: render `<SomeContext value={…}>` (not `SomeContext.Provider`).
 - Hoist every regex to module scope (stable reference outside components/hooks).

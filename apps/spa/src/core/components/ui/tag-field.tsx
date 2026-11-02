@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { Key, Selection } from "react-aria-components/TagGroup"
@@ -12,7 +12,7 @@ const splitPatternRegex = /[,;]/
 const whitespaceRegex = /\s{2,}/g
 const tabRegex = /[\t\r\n]|\\t|\\r|\\n/g
 
-interface TagInputProps extends Pick<
+export interface TagInputProps extends Pick<
   TextFieldProps,
   "isDisabled" | "isReadOnly" | "children" | "aria-label" | "aria-labelledby"
 > {

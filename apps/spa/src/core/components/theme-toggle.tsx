@@ -6,7 +6,7 @@ import { match } from "ts-pattern";
 import { Button } from "@/core/components/ui/button";
 import {
   Menu,
-  MenuContent,
+  MenuTrigger,
   MenuHeader,
   MenuItem,
   MenuSection,
@@ -25,7 +25,7 @@ export const ThemeToggle = () => {
   );
 
   return (
-    <Menu>
+    <MenuTrigger>
       <Button intent="outline">
         {match(theme)
           .with("auto", () => <HiComputerDesktop className="size-6" />)
@@ -36,7 +36,7 @@ export const ThemeToggle = () => {
           ))}
       </Button>
 
-      <MenuContent
+      <Menu
         selectionMode="single"
         selectedKeys={new Set([theme ?? "auto"])}
         onSelectionChange={(_selection) => {
@@ -58,7 +58,7 @@ export const ThemeToggle = () => {
           <MenuItem id="light">{t("light")}</MenuItem>
           <MenuItem id="dark">{t("dark")}</MenuItem>
         </MenuSection>
-      </MenuContent>
-    </Menu>
+      </Menu>
+    </MenuTrigger>
   );
 };

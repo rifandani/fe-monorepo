@@ -244,7 +244,7 @@ Breakpoints (Tailwind defaults): `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280p
 
 Hybrid. Resting surfaces are flat: Paper (or Card, which equals Paper) plus a 1px Hairline and `shadow-xs` so the edge reads, not so the card floats. Dark mode leans even flatter — tooltips drop shadow entirely and keep a ring.
 
-Overlays (popover, modal, sheet, command menu) are the only places structural lift is allowed: `shadow-xs` or `shadow-lg` plus `drop-shadow-xl` and a muted ring (`muted-fg/20`, `border` in dark). Depth is a state of floating, not a property of content.
+Overlays (popover, modal, sheet, command menu) are the only places structural lift is allowed: `shadow-xs` or `shadow-lg` plus `drop-shadow-xl` and a muted ring (`muted-foreground/20`, `border` in dark). Depth is a state of floating, not a property of content.
 
 ### Shadow Vocabulary
 
@@ -284,7 +284,7 @@ Precise and restrained. Confidence lives in focus treatment, not motion. Hover i
 - **Shape:** Soft-rect 8px (`rounded-lg`). Circular only when `isCircle`.
 - **Primary:** Instrument Blue fill, on-primary text, 15% graphite border, medium weight. Default size `md`: 36px tall from `sm` (40px on mobile), `6px 12px` padding.
 - **Hover / Focus:** Hover mixes 10% on-primary into the fill. Focus-visible: 2px outline + 2px ring with 3px Paper offset. Disabled/pending at 50% opacity.
-- **Secondary:** Fog fill, Fog Ink text, muted-fg icons.
+- **Secondary:** Fog fill, Fog Ink text, muted-foreground icons.
 - **Warning / Danger / Success:** Status fills; same geometry. Do not use as brand.
 - **Outline / Plain:** Transparent fill, Hairline border (outline) or no border (plain). Hover washes Fog.
 
@@ -306,7 +306,7 @@ Intents: `primary` | `secondary` | `warning` | `danger` | `success` | `outline` 
 ### Inputs / Fields
 
 - **Style:** Transparent fill, 8px corners, Input Stroke border, 16px/14px text.
-- **Hover:** Border to `muted-fg/30`.
+- **Hover:** Border to `muted-foreground/30`.
 - **Focus:** Border `ring/70`, 3px ring at `ring/20` (Instrument Blue). Invalid swaps to Alert Vermillion subtle-fg and matching ring.
 - **Disabled:** Violet Paper fill, 50% opacity.
 - **Error / Required:** Field error in Alert Vermillion Ink. Required labels append a vermillion asterisk.

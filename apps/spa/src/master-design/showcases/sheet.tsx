@@ -1,9 +1,9 @@
 import { Button } from "@/core/components/ui/button";
 import {
   Sheet,
+  SheetTrigger,
   SheetBody,
   SheetClose,
-  SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
@@ -15,25 +15,25 @@ import { Variant, VariantGrid } from "../variant";
 export const SheetShowcase = () => (
   <VariantGrid>
     <Variant label="right">
-      <Sheet>
+      <SheetTrigger>
         <Button intent="outline">Open right</Button>
-        <SheetContent side="right">
+        <Sheet position="right">
           <SheetHeader>
             <SheetTitle>Right sheet</SheetTitle>
-            <SheetDescription>Default side is right.</SheetDescription>
+            <SheetDescription>Opens from the right edge.</SheetDescription>
           </SheetHeader>
           <SheetBody>Slide-over panel from the right.</SheetBody>
           <SheetFooter>
             <SheetClose>Close</SheetClose>
           </SheetFooter>
-        </SheetContent>
-      </Sheet>
+        </Sheet>
+      </SheetTrigger>
     </Variant>
 
     <Variant label="left">
-      <Sheet>
+      <SheetTrigger>
         <Button intent="outline">Open left</Button>
-        <SheetContent side="left">
+        <Sheet position="left">
           <SheetHeader>
             <SheetTitle>Left sheet</SheetTitle>
             <SheetDescription>Opens from the left edge.</SheetDescription>
@@ -42,8 +42,8 @@ export const SheetShowcase = () => (
           <SheetFooter>
             <SheetClose>Close</SheetClose>
           </SheetFooter>
-        </SheetContent>
-      </Sheet>
+        </Sheet>
+      </SheetTrigger>
     </Variant>
   </VariantGrid>
 );

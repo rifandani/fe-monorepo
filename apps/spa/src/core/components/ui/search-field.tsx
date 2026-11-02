@@ -26,11 +26,11 @@ export function SearchField({ className, ...props }: SearchFieldProps) {
 export function SearchInput(props: InputProps) {
   return (
     <InputGroup className="[--input-gutter-end:--spacing(8)]">
-      <HiMagnifyingGlass data-slot="icon" className="in-disabled:opacity-50" />
+      <HiMagnifyingGlass className="in-disabled:opacity-50" />
       <Input {...props} />
       <Button
         className={twJoin(
-          "touch-target grid place-content-center pressed:text-fg text-muted-fg hover:text-fg group-empty/search-field:invisible",
+          "touch-target grid place-content-center pressed:text-foreground text-muted-foreground hover:text-foreground group-empty/search-field:invisible",
           "px-3 py-2 sm:px-2.5 sm:py-1.5 sm:text-sm/5"
         )}
       >

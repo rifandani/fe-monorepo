@@ -77,46 +77,46 @@ const groups: { label: string; swatches: Swatch[] }[] = [
   {
     label: "Surface",
     swatches: [
-      { name: "bg", bg: "bg-bg" },
-      { name: "fg", bg: "bg-fg" },
+      { name: "background", bg: "bg-background" },
+      { name: "foreground", bg: "bg-foreground" },
       { name: "card", bg: "bg-card" },
-      { name: "card-fg", bg: "bg-card-fg" },
+      { name: "card-foreground", bg: "bg-card-foreground" },
       { name: "muted", bg: "bg-muted" },
-      { name: "muted-fg", bg: "bg-muted-fg" },
+      { name: "muted-foreground", bg: "bg-muted-foreground" },
       { name: "overlay", bg: "bg-overlay" },
-      { name: "overlay-fg", bg: "bg-overlay-fg" },
+      { name: "overlay-foreground", bg: "bg-overlay-foreground" },
     ],
   },
   {
     label: "Brand",
     swatches: [
       { name: "primary", bg: "bg-primary" },
-      { name: "primary-fg", bg: "bg-primary-fg" },
+      { name: "primary-foreground", bg: "bg-primary-foreground" },
       { name: "primary-subtle", bg: "bg-primary-subtle" },
-      { name: "primary-subtle-fg", bg: "bg-primary-subtle-fg" },
+      { name: "primary-subtle-foreground", bg: "bg-primary-subtle-foreground" },
       { name: "secondary", bg: "bg-secondary" },
-      { name: "secondary-fg", bg: "bg-secondary-fg" },
+      { name: "secondary-foreground", bg: "bg-secondary-foreground" },
       { name: "accent", bg: "bg-accent" },
-      { name: "accent-fg", bg: "bg-accent-fg" },
+      { name: "accent-foreground", bg: "bg-accent-foreground" },
     ],
   },
   {
     label: "Status",
     swatches: [
       { name: "success", bg: "bg-success" },
-      { name: "success-fg", bg: "bg-success-fg" },
+      { name: "success-foreground", bg: "bg-success-foreground" },
       { name: "success-subtle", bg: "bg-success-subtle" },
-      { name: "success-subtle-fg", bg: "bg-success-subtle-fg" },
+      { name: "success-subtle-foreground", bg: "bg-success-subtle-foreground" },
       { name: "danger", bg: "bg-danger" },
-      { name: "danger-fg", bg: "bg-danger-fg" },
+      { name: "danger-foreground", bg: "bg-danger-foreground" },
       { name: "danger-subtle", bg: "bg-danger-subtle" },
-      { name: "danger-subtle-fg", bg: "bg-danger-subtle-fg" },
+      { name: "danger-subtle-foreground", bg: "bg-danger-subtle-foreground" },
       { name: "warning", bg: "bg-warning" },
-      { name: "warning-fg", bg: "bg-warning-fg" },
+      { name: "warning-foreground", bg: "bg-warning-foreground" },
       { name: "warning-subtle", bg: "bg-warning-subtle" },
-      { name: "warning-subtle-fg", bg: "bg-warning-subtle-fg" },
+      { name: "warning-subtle-foreground", bg: "bg-warning-subtle-foreground" },
       { name: "info-subtle", bg: "bg-info-subtle" },
-      { name: "info-subtle-fg", bg: "bg-info-subtle-fg" },
+      { name: "info-subtle-foreground", bg: "bg-info-subtle-foreground" },
     ],
   },
   {
@@ -126,13 +126,16 @@ const groups: { label: string; swatches: Swatch[] }[] = [
       { name: "input", bg: "bg-input" },
       { name: "ring", bg: "bg-ring" },
       { name: "navbar", bg: "bg-navbar" },
-      { name: "navbar-fg", bg: "bg-navbar-fg" },
+      { name: "navbar-foreground", bg: "bg-navbar-foreground" },
       { name: "sidebar", bg: "bg-sidebar" },
-      { name: "sidebar-fg", bg: "bg-sidebar-fg" },
+      { name: "sidebar-foreground", bg: "bg-sidebar-foreground" },
       { name: "sidebar-primary", bg: "bg-sidebar-primary" },
-      { name: "sidebar-primary-fg", bg: "bg-sidebar-primary-fg" },
+      {
+        name: "sidebar-primary-foreground",
+        bg: "bg-sidebar-primary-foreground",
+      },
       { name: "sidebar-accent", bg: "bg-sidebar-accent" },
-      { name: "sidebar-accent-fg", bg: "bg-sidebar-accent-fg" },
+      { name: "sidebar-accent-foreground", bg: "bg-sidebar-accent-foreground" },
       { name: "sidebar-border", bg: "bg-sidebar-border" },
       { name: "sidebar-ring", bg: "bg-sidebar-ring" },
     ],
@@ -207,7 +210,7 @@ export const ColorPaletteShowcase = () => (
   <div className="flex flex-col gap-8">
     {groups.map((group) => (
       <div key={group.label}>
-        <h4 className="text-muted-fg mb-3 text-sm font-medium">
+        <h4 className="text-muted-foreground mb-3 text-sm font-medium">
           {group.label}
         </h4>
         <VariantGrid>

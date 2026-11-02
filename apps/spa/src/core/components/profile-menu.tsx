@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import { Button as ButtonPrimitive } from "react-aria-components/Button";
 import {
   HiArrowRightStartOnRectangle,
   HiCog6Tooth,
@@ -10,12 +11,11 @@ import { endSession } from "@/auth/utils/end-session";
 import { Avatar } from "@/core/components/ui/avatar";
 import {
   Menu,
-  MenuContent,
+  MenuTrigger,
   MenuHeader,
   MenuItem,
   MenuSection,
   MenuSeparator,
-  MenuTrigger,
 } from "@/core/components/ui/menu";
 import { useTranslation } from "@/core/providers/i18n/context";
 
@@ -25,12 +25,15 @@ export const ProfileMenu = () => {
   const user = useAuthUserStore((state) => state.user);
 
   return (
-    <Menu>
-      <MenuTrigger>
+    <MenuTrigger>
+      <ButtonPrimitive
+        className="focus-visible:ring-primary relative inline text-start outline-hidden focus-visible:ring-1"
+        data-slot="menu-trigger"
+      >
         <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? "??"} />
-      </MenuTrigger>
+      </ButtonPrimitive>
 
-      <MenuContent
+      <Menu
         onAction={(key) => {
           // SAFETY: the three menu items below are the only keys this menu emits.
           const currentKey = key as "profile" | "settings" | "logout";
@@ -64,7 +67,7 @@ export const ProfileMenu = () => {
             <p>{t("logout")}</p>
           </MenuItem>
         </MenuSection>
-      </MenuContent>
-    </Menu>
+      </Menu>
+    </MenuTrigger>
   );
 };

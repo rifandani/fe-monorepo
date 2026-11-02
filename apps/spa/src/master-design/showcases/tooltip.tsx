@@ -1,25 +1,22 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/core/components/ui/tooltip";
+import { Button } from "@/core/components/ui/button";
+import { Tooltip, TooltipTrigger } from "@/core/components/ui/tooltip";
 
 import { Variant, VariantGrid } from "../variant";
 
 export const TooltipShowcase = () => (
   <VariantGrid>
     <Variant label="default">
-      <Tooltip>
-        <TooltipTrigger>Hover me</TooltipTrigger>
-        <TooltipContent>Helpful hint</TooltipContent>
-      </Tooltip>
+      <TooltipTrigger>
+        <Button intent="outline">Hover me</Button>
+        <Tooltip>Helpful hint</Tooltip>
+      </TooltipTrigger>
     </Variant>
 
     <Variant label="inverse">
-      <Tooltip>
-        <TooltipTrigger>Inverse</TooltipTrigger>
-        <TooltipContent inverse>High-contrast hint</TooltipContent>
-      </Tooltip>
+      <TooltipTrigger>
+        <Button intent="outline">Inverse</Button>
+        <Tooltip inverse>High-contrast hint</Tooltip>
+      </TooltipTrigger>
     </Variant>
   </VariantGrid>
 );

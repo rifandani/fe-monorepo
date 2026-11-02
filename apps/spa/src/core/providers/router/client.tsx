@@ -46,7 +46,7 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
-          <p className="text-muted-fg">Something went wrong</p>
+          <p className="text-muted-foreground">Something went wrong</p>
         </div>
 
         {/* Quick Actions */}
@@ -78,7 +78,7 @@ const NotFoundRoute = () => {
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">404</h1>
           <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
-          <p className="text-muted-fg">{t("gone")}</p>
+          <p className="text-muted-foreground">{t("gone")}</p>
         </div>
 
         {/* Quick Actions */}

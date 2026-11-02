@@ -14,7 +14,7 @@ export const ContextMenuShowcase = () => (
       <ContextMenu>
         <Pressable>
           <button
-            className="text-muted-fg rounded-lg border border-dashed px-8 py-6 text-sm"
+            className="text-muted-foreground rounded-lg border border-dashed px-8 py-6 text-sm"
             type="button"
           >
             Right click here
