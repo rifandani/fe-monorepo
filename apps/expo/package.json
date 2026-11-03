@@ -7,7 +7,6 @@
   "author": "Tri Rizeki Rifandani",
   "main": "index.ts",
   "scripts": {
-    "typecheck": "tsc --noEmit",
     "typerange": "fr",
     "typerange:audit": "fr --audit",
     "test:unit": "vitest run --project expo",

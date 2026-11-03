@@ -21,7 +21,6 @@
   },
   "scripts": {
     "test:unit": "vitest run --project core",
-    "typecheck": "tsc --noEmit",
     "typerange": "fr",
     "typerange:audit": "fr --audit"
   },
