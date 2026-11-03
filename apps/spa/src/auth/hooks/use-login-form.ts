@@ -15,7 +15,7 @@ const loginValidator = Schema.toStandardSchemaV1(authLoginRequestSchema);
 export const useLoginForm = () => {
   const navigate = useNavigate();
 
-  const loginMutation = useAuthLogin(undefined, {
+  const loginMutation = useAuthLogin({
     onSuccess: async () => {
       // The login already started the Session; only the navigation is left.
       await navigate({ to: "/" });

@@ -1,25 +1,11 @@
 import { describe, expect, it } from "@effect/vitest";
 import { server } from "@test/msw";
 import { cdnApi, toCdnFile } from "@workspace/core/cdn/api";
-import { cdnKeys, cdnValidKeys } from "@workspace/core/cdn/queries";
 import { Effect } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 
 const fileUrl = "https://cdn.example.com/a.png";
-
-describe("cdn keys", () => {
-  it("exposes valid keys and query key builders", () => {
-    expect(cdnValidKeys.getArticleCoverImage).toBe("getArticleCoverImage");
-    expect(cdnKeys.all).toEqual(["cdn"]);
-    expect(cdnKeys.article()).toEqual(["cdn", "article"]);
-    expect(cdnKeys.getArticleCoverImage("https://cdn/x.png")).toEqual([
-      "cdn",
-      "article",
-      "https://cdn/x.png",
-    ]);
-  });
-});
 
 const getCdnFile = (url: string) =>
   cdnApi.getCdnFile({ url }).pipe(Effect.provide(FetchHttpClient.layer));

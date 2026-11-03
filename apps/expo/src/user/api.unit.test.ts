@@ -6,8 +6,8 @@ import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 
-import { userApi, userKeys } from "./user";
-import type { GetUserApiResponseSchema } from "./user";
+import { userApi } from "@/user/api";
+import type { GetUserApiResponseSchema } from "@/user/schemas";
 
 /**
  * `userApi` reads `Http` from context, so the test owns the base URL and no
@@ -43,22 +43,6 @@ const sampleUser: GetUserApiResponseSchema = {
   username: "ada",
   weight: 60,
 };
-
-describe("userKeys", () => {
-  it("builds list and detail query keys", () => {
-    expect(userKeys.all).toEqual(["users"]);
-    expect(userKeys.lists()).toEqual(["users", "list"]);
-    expect(userKeys.list({ limit: 10 })).toEqual([
-      "users",
-      "list",
-      { limit: 10 },
-    ]);
-    expect(userKeys.details()).toEqual(["users", "detail"]);
-    expect(userKeys.detail({ id: 1 })).toEqual(["users", "detail", { id: 1 }]);
-    expect(userKeys.detail()).toEqual(["users", "detail"]);
-    expect(userKeys.list()).toEqual(["users", "list"]);
-  });
-});
 
 describe("userApi.getDetail", () => {
   it.effect("fetches and returns the decoded user detail", () =>

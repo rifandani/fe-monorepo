@@ -1,7 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { authApi } from "@workspace/core/auth/api";
-import { authKeys } from "@workspace/core/auth/queries";
 import { Http } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { Session } from "@workspace/core/session/session";
@@ -33,14 +32,6 @@ const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
 
 const login = (json: typeof credentials) =>
   authApi.login(json).pipe(Effect.provide(TestHttp));
-
-describe("authKeys", () => {
-  it("builds login keys", () => {
-    expect(authKeys.all).toEqual(["auth"]);
-    expect(authKeys.login()).toEqual(["auth", "login"]);
-    expect(authKeys.login(credentials)).toEqual(["auth", "login", credentials]);
-  });
-});
 
 describe("authApi", () => {
   it.effect("login posts the credentials and decodes the response", () =>

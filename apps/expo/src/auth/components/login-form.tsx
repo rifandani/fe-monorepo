@@ -109,7 +109,7 @@ export const LoginForm = () => {
   });
 
   // The login starts the Session; `Stack.Protected` then leaves this screen.
-  const loginMutation = useAuthLogin(undefined);
+  const loginMutation = useAuthLogin();
 
   return (
     <Form

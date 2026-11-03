@@ -42,6 +42,8 @@ export default defineConfig({
         "packages/core/src/**/*.ts",
         "apps/{spa,expo}/src/**/{actions,apis,constants,layers,middlewares,services,utils}/**/*.{ts,tsx}",
         "apps/{spa,expo}/src/**/*-store.{ts,tsx}",
+        // A feature folder's own endpoints and query options (`user/api.ts`).
+        "apps/{spa,expo}/src/**/{api,queries}.ts",
       ],
       exclude: [
         "**/*.unit.test.ts",
@@ -58,7 +60,7 @@ export default defineConfig({
         // coverage figure means something. Each core domain folder keeps its
         // schemas in `schemas.ts`, so one glob covers them; its `api.ts` and
         // `queries.ts` stay in — their functions are tested.
-        "packages/core/src/**/schemas.ts",
+        "{packages/core,apps/spa,apps/expo}/src/**/schemas.ts",
         "packages/core/src/i18n/locales/**",
         // React glue: the toolbox hooks and the providers. ADR-0001 puts React
         // components and hooks out of unit-test scope.
