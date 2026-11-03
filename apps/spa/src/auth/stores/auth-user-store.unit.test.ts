@@ -5,7 +5,7 @@ import {
   authUserStore,
   authUserStoreName,
 } from "@/auth/stores/auth-user-store";
-import { appRegistry } from "@/core/services/atom-registry";
+import { persistence } from "@/core/layers/persistence";
 
 const validUser = {
   accessToken: "access",
@@ -43,7 +43,7 @@ describe("authUserStore", () => {
     authUserStore.set(validUser);
 
     expect(authUserStore.get()).toEqual(validUser);
-    expect(appRegistry.get(authUserAtom)).toEqual(validUser);
+    expect(persistence.registry.get(authUserAtom)).toEqual(validUser);
     expect(JSON.parse(localStorage.getItem(authUserStoreName) ?? "")).toEqual(
       validUser
     );
@@ -60,7 +60,7 @@ describe("authUserStore", () => {
   it("notifies subscribers on every change", () => {
     const seen: (string | null)[] = [];
 
-    const unsubscribe = appRegistry.subscribe(authUserAtom, (user) => {
+    const unsubscribe = persistence.registry.subscribe(authUserAtom, (user) => {
       seen.push(user?.username ?? null);
     });
 

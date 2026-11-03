@@ -1,10 +1,11 @@
 import { useAtomValue } from "@effect/atom-react";
+import { PersistenceProvider } from "@workspace/core/persistence/provider";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import { AppAtomProvider } from "@/core/providers/atom/provider";
+import { persistence } from "@/core/layers/persistence";
 import { DevPlugins } from "@/core/providers/dev-plugins";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { AppI18nProvider } from "@/core/providers/i18n/provider";
@@ -53,7 +54,7 @@ const App = () => {
 
 const RootLayout = () => (
   <KeyboardProvider>
-    <AppAtomProvider>
+    <PersistenceProvider persistence={persistence}>
       <AppI18nProvider>
         <AppQueryProvider>
           <AppTamaguiProvider>
@@ -64,7 +65,7 @@ const RootLayout = () => (
           </AppTamaguiProvider>
         </AppQueryProvider>
       </AppI18nProvider>
-    </AppAtomProvider>
+    </PersistenceProvider>
   </KeyboardProvider>
 );
 

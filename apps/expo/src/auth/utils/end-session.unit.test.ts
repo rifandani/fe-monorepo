@@ -2,12 +2,17 @@ import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { endSession } from "@/auth/utils/end-session";
+import { persistence } from "@/core/layers/persistence";
 import { queryClient } from "@/core/providers/query/client";
 import { appStore } from "@/core/stores/app-store";
 
 // The store persists through `react-native-mmkv`, which Node cannot load.
 // Faked at the Module Boundary per ADR-0002's rule of thumb — nothing here
 // builds an HTTP request. Mirrors `core/stores/app-store.unit.test.ts`.
+// `expo-localization` ships React Native source that Node cannot parse. Only the
+// Device Locale default reads it, and no test here depends on that default.
+vi.mock("expo-localization", () => ({ getLocales: () => [] }));
+
 vi.mock("react-native-mmkv", async () => {
   const { createMmkvModuleFake } = await import("@test/mmkv");
 
@@ -28,7 +33,7 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("endSession", () => {
   beforeEach(() => {
-    appStore.reset();
+    appStore.resetUser();
     queryClient.clear();
   });
 
@@ -53,10 +58,10 @@ describe("endSession", () => {
     // Ending a Session must reach for `resetUser`, never the store's `reset`,
     // which would also put the theme back to its default.
     appStore.setUser(validUser);
-    appStore.setTheme("dark");
+    persistence.registry.set(persistence.themeAtom, "dark");
 
     endSession();
 
-    expect(appStore.getTheme()).toBe("dark");
+    expect(persistence.registry.get(persistence.themeAtom)).toBe("dark");
   });
 });

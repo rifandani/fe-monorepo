@@ -60,8 +60,10 @@ export default defineConfig({
         // `queries.ts` stay in — their functions are tested.
         "packages/core/src/**/schemas.ts",
         "packages/core/src/i18n/locales/**",
-        // The React toolbox. ADR-0001 puts hooks out of unit-test scope.
+        // React glue: the toolbox hooks and the providers. ADR-0001 puts React
+        // components and hooks out of unit-test scope.
         "packages/core/src/hooks/**",
+        "packages/core/src/**/provider.ts",
         // Composition roots: Layer, runtime and registry declarations. The
         // wiring that can be wrong — reading the Access Token, responding to a
         // rejected one — lives in `auth/utils/session-auth.ts`, the stores and

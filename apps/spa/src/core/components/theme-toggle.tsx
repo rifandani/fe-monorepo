@@ -1,4 +1,6 @@
-import { useLocalStorage } from "@reactuses/core";
+import { useAtom } from "@effect/atom-react";
+import { themes } from "@workspace/core/constants/core";
+import type { Theme } from "@workspace/core/constants/core";
 import { Match } from "effect";
 import { HiComputerDesktop, HiMoon, HiSun } from "react-icons/hi2";
 import type { Key } from "react-stately";
@@ -11,21 +13,17 @@ import {
   MenuItem,
   MenuSection,
 } from "@/core/components/ui/menu";
-import type { ColorMode } from "@/core/constants/global";
-import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
+import { persistence } from "@/core/layers/persistence";
 import { useTranslation } from "@/core/providers/i18n/context";
 
-const isColorMode = (key: Key): key is ColorMode =>
-  key === "auto" || key === "light" || key === "dark";
+const isTheme = (key: Key): key is Theme =>
+  themes.some((theme) => theme === key);
 
 export const ThemeToggle = () => {
   const { t } = useTranslation();
 
   // `Entry` owns applying the mode to `<html>`; this only reads and writes the pick
-  const [theme, setTheme] = useLocalStorage<ColorMode>(
-    COLOR_MODE_STORAGE_KEY,
-    "auto"
-  );
+  const [theme, setTheme] = useAtom(persistence.themeAtom);
 
   return (
     <MenuTrigger>
@@ -39,12 +37,12 @@ export const ThemeToggle = () => {
 
       <Menu
         selectionMode="single"
-        selectedKeys={new Set([theme ?? "auto"])}
+        selectedKeys={new Set([theme])}
         onSelectionChange={(selection) => {
           // `selectionMode="single"` rules out the "all" sentinel.
           const [key] = selection === "all" ? [] : selection;
 
-          if (key !== undefined && isColorMode(key)) {
+          if (key !== undefined && isTheme(key)) {
             setTheme(key);
           }
         }}
@@ -52,7 +50,7 @@ export const ThemeToggle = () => {
         <MenuSection>
           <MenuHeader separator>{t("theme")}</MenuHeader>
 
-          <MenuItem id="auto" className="mt-1">
+          <MenuItem id="system" className="mt-1">
             {t("system")}
           </MenuItem>
           <MenuItem id="light">{t("light")}</MenuItem>

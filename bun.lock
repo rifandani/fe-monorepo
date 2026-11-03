@@ -164,6 +164,7 @@
       "name": "@workspace/core",
       "version": "1.1.2",
       "devDependencies": {
+        "@effect/atom-react": "4.1.2",
         "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@workspace/typescript-config": "workspace:*",
@@ -171,6 +172,7 @@
         "typescript": "7.0.2",
       },
       "peerDependencies": {
+        "@effect/atom-react": "4.1.2",
         "effect": "4.1.2",
         "radashi": "13.0.1",
         "react": ">=19.0.0",

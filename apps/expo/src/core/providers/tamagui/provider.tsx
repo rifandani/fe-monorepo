@@ -7,7 +7,7 @@ import { Platform, useColorScheme } from "react-native";
 import type { TamaguiProviderProps } from "tamagui";
 import { TamaguiProvider, useTheme } from "tamagui";
 
-import { themeAtom } from "@/core/stores/app-store";
+import { persistence } from "@/core/layers/persistence";
 
 import config from "../../../../tamagui.config";
 
@@ -74,7 +74,7 @@ const NavigationThemeProvider = ({
 }) => {
   const tamaguiTheme = useTheme();
   const scheme = useColorScheme();
-  const theme = useAtomValue(themeAtom);
+  const theme = useAtomValue(persistence.themeAtom);
 
   const isDark = Match.value(theme).pipe(
     Match.when("system", () => scheme === "dark"),
@@ -97,7 +97,7 @@ export const AppTamaguiProvider = ({
   ...rest
 }: Omit<TamaguiProviderProps, "config">) => {
   const scheme = useColorScheme();
-  const theme = useAtomValue(themeAtom);
+  const theme = useAtomValue(persistence.themeAtom);
 
   return (
     <TamaguiProvider

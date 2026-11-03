@@ -1,6 +1,5 @@
-import { Effect, Layer } from "effect";
+import { Effect } from "effect";
 import { KeyValueStore } from "effect/persistence";
-import { Atom } from "effect/reactivity";
 import { MMKV } from "react-native-mmkv";
 
 export const appStorageId = "app-storage" as const;
@@ -53,12 +52,3 @@ export const makeMmkvKeyValueStore = (storage: MmkvLike) =>
     size: attempt("size", undefined, () => storage.getAllKeys().length),
     keys: attempt("keys", undefined, () => storage.getAllKeys()),
   });
-
-/**
- * @description Atom runtime whose `KeyValueStore` is the app's MMKV instance.
- */
-export const appStorageRuntime = Atom.runtime(
-  Layer.sync(KeyValueStore.KeyValueStore, () =>
-    makeMmkvKeyValueStore(appStorage)
-  )
-);

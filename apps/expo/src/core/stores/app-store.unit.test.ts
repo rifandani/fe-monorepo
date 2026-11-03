@@ -1,19 +1,18 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
+import { persistenceKeys } from "@workspace/core/persistence/persistence";
 import { Schema } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { appRegistry } from "@/core/services/atom-registry";
-import {
-  appStore,
-  appStoreDefaults,
-  appStoreKeys,
-  themeAtom,
-  userAtom,
-} from "@/core/stores/app-store";
+import { persistence } from "@/core/layers/persistence";
+import { appStore, userAtom } from "@/core/stores/app-store";
 
 const mmkv = vi.hoisted(() => ({
   stores: new Map<string, Map<string, string>>(),
 }));
+
+// `expo-localization` ships React Native source that Node cannot parse. Only the
+// Device Locale default reads it, and no test here depends on that default.
+vi.mock("expo-localization", () => ({ getLocales: () => [] }));
 
 vi.mock("react-native-mmkv", async () => {
   const { createMmkvModuleFake } = await import("@test/mmkv");
@@ -35,23 +34,6 @@ const sampleUser: AuthLoginResponseSchema = {
   username: "ada",
 };
 
-/**
- * A fresh module graph, with the app storage emptied and then seeded before
- * any atom reads, so the first read sees exactly `seed`.
- */
-const loadFresh = async (seed: Record<string, string> = {}) => {
-  vi.resetModules();
-  const fresh = await import("@/core/stores/app-store");
-  const storage = mmkv.stores.get("app-storage");
-  storage?.clear();
-
-  for (const [key, value] of Object.entries(seed)) {
-    storage?.set(key, value);
-  }
-
-  return fresh;
-};
-
 /** What MMKV holds under `key` in the app storage, decoded. */
 const decodeJson = Schema.decodeSync(Schema.fromJsonString(Schema.Json));
 
@@ -61,75 +43,26 @@ const persisted = (key: string): Schema.Json | undefined => {
   return raw === undefined ? undefined : decodeJson(raw);
 };
 
-describe("appStoreDefaults", () => {
-  it("defaults theme to system and user to null", () => {
-    expect(appStoreDefaults).toEqual({ theme: "system", user: null });
-  });
-});
-
 describe("appStore", () => {
   beforeEach(() => {
-    appStore.reset();
+    appStore.resetUser();
+    persistence.registry.set(persistence.themeAtom, "system");
   });
 
-  it("setUser updates the user atom and persists it", () => {
+  it("setUser updates the user atom and persists it to MMKV", () => {
     appStore.setUser(sampleUser);
 
     expect(appStore.getUser()).toEqual(sampleUser);
-    expect(appRegistry.get(userAtom)).toEqual(sampleUser);
-    expect(persisted(appStoreKeys.user)).toEqual(sampleUser);
+    expect(persistence.registry.get(userAtom)).toEqual(sampleUser);
+    expect(persisted(persistenceKeys.session)).toEqual(sampleUser);
   });
 
   it("resetUser clears the user only", () => {
     appStore.setUser(sampleUser);
-    appStore.setTheme("dark");
+    persistence.registry.set(persistence.themeAtom, "dark");
     appStore.resetUser();
 
     expect(appStore.getUser()).toBeNull();
-    expect(appStore.getTheme()).toBe("dark");
-    expect(persisted(appStoreKeys.theme)).toBe("dark");
-  });
-
-  it("setTheme updates the theme atom and persists it", () => {
-    appStore.setTheme("light");
-
-    expect(appRegistry.get(themeAtom)).toBe("light");
-    expect(persisted(appStoreKeys.theme)).toBe("light");
-  });
-
-  it("reset restores defaults", () => {
-    appStore.setUser(sampleUser);
-    appStore.setTheme("dark");
-    appStore.reset();
-
-    expect(appStore.getUser()).toBeNull();
-    expect(appStore.getTheme()).toBe("system");
-  });
-});
-
-describe("app store atoms on first read", () => {
-  it("reads the defaults when nothing is persisted", async () => {
-    const fresh = await loadFresh();
-
-    expect(fresh.appStore.getTheme()).toBe("system");
-    expect(fresh.appStore.getUser()).toBeNull();
-  });
-
-  it("rehydrates a persisted theme and user", async () => {
-    const fresh = await loadFresh({
-      [appStoreKeys.theme]: JSON.stringify("dark"),
-      [appStoreKeys.user]: JSON.stringify(sampleUser),
-    });
-
-    expect(fresh.appStore.getTheme()).toBe("dark");
-    expect(fresh.appStore.getUser()).toEqual(sampleUser);
-  });
-
-  it("reads an unknown theme as the default", async () => {
-    const fresh = await loadFresh({
-      [appStoreKeys.theme]: JSON.stringify("sepia"),
-    });
-
-    expect(fresh.appStore.getTheme()).toBe("system");
+    expect(persisted(persistenceKeys.theme)).toBe("dark");
   });
 });

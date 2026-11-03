@@ -8,6 +8,10 @@ import { appStore } from "@/core/stores/app-store";
 // The store persists through `react-native-mmkv`, which Node cannot load.
 // Faked at the Module Boundary per ADR-0002's rule of thumb — nothing here
 // builds an HTTP request.
+// `expo-localization` ships React Native source that Node cannot parse. Only the
+// Device Locale default reads it, and no test here depends on that default.
+vi.mock("expo-localization", () => ({ getLocales: () => [] }));
+
 vi.mock("react-native-mmkv", async () => {
   const { createMmkvModuleFake } = await import("@test/mmkv");
 
@@ -28,7 +32,7 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("sessionAuth", () => {
   beforeEach(() => {
-    appStore.reset();
+    appStore.resetUser();
     queryClient.clear();
   });
 
