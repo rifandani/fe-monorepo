@@ -1,8 +1,8 @@
 import type { useSeoMeta } from "@unhead/react";
 import { assign } from "radashi";
 
-import { ENV } from "@/core/constants/env";
 import { SERVICE_NAME } from "@/core/constants/global";
+import { EnvConfig, readEnv } from "@/core/layers/env";
 
 /** unhead's meta input, with plain-string `title` and `description` we can template. */
 export type SeoMetaInput = Parameters<typeof useSeoMeta>[0] & {
@@ -16,7 +16,7 @@ const isImagePath = <T>(image: T): image is T & string =>
 
 const appName = SERVICE_NAME;
 const appDescription = "Bulletproof React.js 19 Template";
-const appBaseUrl = ENV.VITE_APP_URL;
+const appBaseUrl = readEnv(EnvConfig.appUrl);
 const appPublisher = "Rizeki Rifandani";
 
 /**

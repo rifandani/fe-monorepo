@@ -1,40 +1,39 @@
 // oxlint-disable promise/prefer-await-to-callbacks
 import { useToastController } from "@tamagui/toast";
 import type { UseQueryOptions } from "@tanstack/react-query";
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { HttpError } from "@workspace/core/http/http";
 import { toErrorMessage } from "@workspace/core/utils/error";
-import type { Effect } from "effect";
+import type { Schema } from "effect";
 import { useEffect } from "react";
 import type { Except } from "type-fest";
 
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 import type { ToastCustomData } from "@/core/utils/toast";
-import { userApi, userKeys } from "@/user/apis/user";
+import { userDetailQueryOptions } from "@/user/queries";
+import type { userKeys } from "@/user/queries";
+import type {
+  GetUserApiRequestSchema,
+  GetUserApiResponseSchema,
+} from "@/user/schemas";
 
-type Params = Parameters<typeof userKeys.detail>[0];
-
-type GetDetailEffect = ReturnType<typeof userApi.getDetail>;
-
-type Success = Effect.Success<GetDetailEffect>;
-
-type QueryError = Effect.Error<GetDetailEffect>;
-
+/** One user's detail, plus this app's error toast. */
 export const useGetUser = (
-  params?: Params,
+  params?: GetUserApiRequestSchema,
   options?: Except<
-    UseQueryOptions<unknown, QueryError, Success>,
+    UseQueryOptions<
+      GetUserApiResponseSchema,
+      HttpError | Schema.SchemaError,
+      GetUserApiResponseSchema,
+      ReturnType<typeof userKeys.detail>
+    >,
     "queryKey" | "queryFn"
   >
 ) => {
   const toast = useToastController();
 
   const query = useQuery({
-    // `signal` interrupts the Effect, which aborts the underlying fetch.
-    queryFn: params
-      ? async ({ signal }) =>
-          await appRuntime.runPromise(userApi.getDetail(params), { signal })
-      : skipToken,
-    queryKey: userKeys.detail(params),
+    ...userDetailQueryOptions(appRuntime, params),
     ...options,
   });
 

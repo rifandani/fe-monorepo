@@ -1,5 +1,5 @@
-import { errorResponseSchema } from "@workspace/core/apis/core";
-import { HttpResponseError } from "@workspace/core/services/http-response-error";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
+import { errorResponseSchema } from "@workspace/core/http/schemas";
 import { Predicate, Schema } from "effect";
 
 const isErrorResponse = Schema.is(errorResponseSchema);

@@ -2,15 +2,13 @@
 /* oxlint-disable react-doctor/query-mutation-missing-invalidation */
 import type { MutationState, UseMutationOptions } from "@tanstack/react-query";
 import { useMutation, useMutationState } from "@tanstack/react-query";
-import type {
-  CdnValidKeys,
-  GetCdnFileSuccessSchema,
-} from "@workspace/core/apis/cdn";
-import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
+import { cdnFileMutationOptions, cdnKeys } from "@workspace/core/cdn/queries";
+import type { CdnValidKeys } from "@workspace/core/cdn/queries";
+import type { GetCdnFileSuccessSchema } from "@workspace/core/cdn/schemas";
 import type { HttpClientError } from "effect/http";
 import type { Except } from "type-fest";
 
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 
 interface Opt {
   key: CdnValidKeys;
@@ -26,10 +24,8 @@ export const useCdnFileMutation = (
     "mutationKey" | "mutationFn"
   >
 ) => {
-  const mutation = useMutation<GetCdnFileSuccessSchema, CdnError, string>({
-    mutationFn: async (url) =>
-      await appRuntime.runPromise(cdnRepositories.getCdnFile({ url })),
-    mutationKey: cdnKeys[opt.key](opt.url),
+  const mutation = useMutation({
+    ...cdnFileMutationOptions(appRuntime, opt),
     ...mutationOptions,
   });
 

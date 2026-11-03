@@ -1,4 +1,4 @@
-import { authUserStore } from "@/auth/stores/auth-user-store";
+import { persistence } from "@/core/layers/persistence";
 
 /**
  * @description Whether a Session exists. Safe to call outside React — a route
@@ -10,4 +10,5 @@ import { authUserStore } from "@/auth/stores/auth-user-store";
  * here would be a second source of truth. If this app ever moves to an
  * asynchronous storage, that stops being true and this needs revisiting.
  */
-export const hasValidSession = () => authUserStore.get() !== null;
+export const hasValidSession = () =>
+  persistence.registry.get(persistence.sessionAtom) !== null;

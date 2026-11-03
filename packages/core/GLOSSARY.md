@@ -24,4 +24,10 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Access Token**: The credential sent with a request to prove the Session. Held inside the Session, never read by a caller. _Avoid_: token, bearer, jwt, auth header
 
+**Session Start**: The single flow that keeps the Session a successful login produced. The pair of End Session. _Avoid_: setUser, sign in (the login request itself)
+
 **End Session**: The single flow that discards a Session, whether the person signed out or the server rejected the Access Token. Distinct from the store setter it calls. _Avoid_: logout, sign out, log off
+
+### Persistence
+
+**Persistence**: The client state one app keeps on its device across restarts: the Session, the picked theme, and the picked Locale. Each app has exactly one. _Avoid_: store, app store, local storage

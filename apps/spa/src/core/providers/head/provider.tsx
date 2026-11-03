@@ -2,10 +2,11 @@ import { useHead, useSeoMeta } from "@unhead/react";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 import { TemplateParamsPlugin } from "@unhead/react/plugins";
 
-import { ENV } from "@/core/constants/env";
+import { EnvConfig, readEnv } from "@/core/layers/env";
 import { buildSeoMetadata } from "@/core/utils/seo";
 
 const defaultSeo = buildSeoMetadata({});
+const appUrl = readEnv(EnvConfig.appUrl);
 
 const head = createHead({
   plugins: [TemplateParamsPlugin],
@@ -15,7 +16,7 @@ const HeadDefaults = () => {
   useHead({
     templateParams: {
       schemaOrg: {
-        host: ENV.VITE_APP_URL,
+        host: appUrl,
       },
     },
   });

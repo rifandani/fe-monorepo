@@ -1,12 +1,11 @@
-import { useLocalStorage } from "@reactuses/core";
+import { useAtomValue } from "@effect/atom-react";
 import { useResetState } from "@workspace/core/hooks/use-reset-state";
 import { twJoin } from "cn";
 import { createContext } from "react";
 import type { ComponentPropsWithoutRef, CSSProperties } from "react";
 import type { Toaster } from "sonner";
 
-import type { ColorMode } from "@/core/constants/global";
-import { COLOR_MODE_STORAGE_KEY } from "@/core/constants/global";
+import { persistence } from "@/core/layers/persistence";
 
 type ToastContextInterface = ReturnType<typeof useCreateToastContext>;
 
@@ -40,12 +39,7 @@ const toasterStyle: CSSProperties & Record<`--${string}`, string> = {
 
 export const useCreateToastContext = () => {
   // `Entry` owns applying the mode to `<html>`; this only needs to read it back
-  const [colorMode] = useLocalStorage<ColorMode>(
-    COLOR_MODE_STORAGE_KEY,
-    "auto"
-  );
-
-  const theme = colorMode ?? "auto";
+  const theme = useAtomValue(persistence.themeAtom);
 
   const [toastConfig, setToastConfig, resetToastConfig] =
     useResetState<ToasterProps>({
@@ -54,7 +48,7 @@ export const useCreateToastContext = () => {
       position: "bottom-right",
       richColors: true,
       style: toasterStyle,
-      theme: theme === "auto" ? "system" : theme,
+      theme,
       toastOptions: {
         className: twJoin(
           "will-change-transform not-has-data-[slot=note]:backdrop-blur-3xl *:data-icon:mt-0.5 *:data-icon:self-start has-data-description:*:data-icon:mt-1 *:data-[slot=note]:relative *:data-[slot=note]:z-50",

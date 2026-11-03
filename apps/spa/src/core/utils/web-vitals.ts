@@ -9,8 +9,8 @@ import {
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/core/constants/global";
-import { appRuntime } from "@/core/services/runtime";
-import { metricReader } from "@/core/services/telemetry";
+import { appRuntime } from "@/core/layers/runtime";
+import { metricReader } from "@/core/layers/telemetry";
 
 /**
  * Web vitals are judged at p75, so generic buckets are unusable here: every

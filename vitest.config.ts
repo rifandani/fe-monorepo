@@ -39,9 +39,11 @@ export default defineConfig({
       // This allowlist is the definition of business logic: layers whose modules are pure enough to unit test.
       // Untested files only appear in the report when matched here, so a new logic-bearing folder must be added.
       include: [
-        "packages/core/src/{apis,constants,libs,services,utils}/**/*.ts",
-        "apps/{spa,expo}/src/**/{actions,apis,constants,middlewares,services,utils}/**/*.{ts,tsx}",
+        "packages/core/src/**/*.ts",
+        "apps/{spa,expo}/src/**/{actions,apis,constants,layers,middlewares,services,utils}/**/*.{ts,tsx}",
         "apps/{spa,expo}/src/**/*-store.{ts,tsx}",
+        // A feature folder's own endpoints and query options (`user/api.ts`).
+        "apps/{spa,expo}/src/**/{api,queries}.ts",
       ],
       exclude: [
         "**/*.unit.test.ts",
@@ -55,15 +57,21 @@ export default defineConfig({
         // them a free 100%: importing a schema file executes every line, so this file
         // scored 100% statements/branches/lines with no test file in existence.
         // Mutation testing is what exposed it (9.09%, ADR-0003). Excluded so the
-        // coverage figure means something. Modules that mix schemas with repositories
-        // (`auth.ts`, `cdn.ts`) stay in — their functions are tested.
-        "packages/core/src/apis/core.ts",
-        "packages/core/src/libs/i18n/locales/**",
-        // Composition roots: Layer, runtime and registry declarations. The
-        // wiring that can be wrong — reading the Access Token, responding to a
-        // rejected one — lives in `auth/utils/session-auth.ts`, the stores and
-        // the `Http` service in core, all of which are measured.
-        "apps/*/src/core/services/{atom-registry,http,runtime,telemetry}.ts",
+        // coverage figure means something. Each core domain folder keeps its
+        // schemas in `schemas.ts`, so one glob covers them; its `api.ts` and
+        // `queries.ts` stay in — their functions are tested.
+        "{packages/core,apps/spa,apps/expo}/src/**/schemas.ts",
+        "packages/core/src/i18n/locales/**",
+        // React glue: the toolbox hooks and the providers. ADR-0001 puts React
+        // components and hooks out of unit-test scope.
+        "packages/core/src/hooks/**",
+        "packages/core/src/**/provider.ts",
+        // Composition roots: the env, Layer, Persistence, Session and runtime
+        // declarations of each app. The wiring that can be wrong — the Session,
+        // the Access Token, a rejected token — lives in core's `session/`,
+        // `persistence/` and `http/`, all of which are measured. Adapters with
+        // logic of their own (`layers/mmkv.ts`) stay in.
+        "apps/*/src/core/layers/{env,http,persistence,runtime,session,telemetry}.ts",
       ],
     },
   },

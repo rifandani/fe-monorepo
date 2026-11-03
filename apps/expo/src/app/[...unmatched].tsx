@@ -3,12 +3,12 @@ import { Link, Stack } from "expo-router";
 import { H3, YStack } from "tamagui";
 
 import { BaseButton } from "@/core/components/button/base-button";
+import { persistence } from "@/core/layers/persistence";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { userAtom } from "@/core/stores/app-store";
 
 const Unmatched = () => {
   const { t } = useTranslation();
-  const user = useAtomValue(userAtom);
+  const user = useAtomValue(persistence.sessionAtom);
 
   return (
     <>

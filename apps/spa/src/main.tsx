@@ -6,7 +6,7 @@ import {
   TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR,
 } from "@/core/constants/global";
 import { Entry } from "@/core/entry";
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 import { recordException, toReportedError } from "@/core/utils/telemetry";
 import type { ReportedError } from "@/core/utils/telemetry";
 import { reportWebVitals } from "@/core/utils/web-vitals";

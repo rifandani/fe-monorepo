@@ -5,8 +5,8 @@ import { ListItem } from "tamagui";
 
 import { FitSheet } from "@/core/components/sheet/fit-sheet";
 import { useBaseSheet } from "@/core/hooks/use-base-sheet";
+import { persistence } from "@/core/layers/persistence";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { themeAtom } from "@/core/stores/app-store";
 import { ProfileListItem } from "@/user/components/profile-list-item";
 
 const THEME_OPTIONS = [
@@ -17,7 +17,7 @@ const THEME_OPTIONS = [
 
 export const ProfileThemeChanger = () => {
   const { t } = useTranslation();
-  const [theme, setTheme] = useAtom(themeAtom);
+  const [theme, setTheme] = useAtom(persistence.themeAtom);
   const { state, setState, open } = useBaseSheet();
 
   return (

@@ -1,5 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
-import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
+import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
 import { ListItem } from "tamagui";
 
 import { FitSheet } from "@/core/components/sheet/fit-sheet";

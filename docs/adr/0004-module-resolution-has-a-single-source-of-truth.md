@@ -4,6 +4,7 @@ A workspace package resolves through its own `exports` map and nothing else. `@w
 
 > Adapted from the backend monorepo's `6434761`, which reached the same resolution rule as a consequence of dropping its build step. The half of that commit this repo cannot use — running TypeScript natively on Node — is recorded under [Considered Options](#considered-options).
 > Exception: the three Vitest configs keep their `@workspace/core` alias on purpose — see [The exception that stays](#the-exception-that-stays).
+> On 2026-11-03 the `exports` subpaths changed with [ADR-0006](./0006-core-owns-the-effect-seams.md): `./apis/*`, `./libs/*` and `./services/*` became one entry for each domain folder (`./auth/*`, `./cdn/*`, `./http/*`, `./i18n/*`, `./persistence/*`, `./session/*`). The rule of this ADR is unchanged: each folder is public only because the map names it.
 
 ## Vocabulary
 

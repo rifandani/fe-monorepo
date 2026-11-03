@@ -1,13 +1,11 @@
-import { useColorMode, usePreferredDark } from "@reactuses/core";
-import { StrictMode, Suspense } from "react";
+import { useAtomValue } from "@effect/atom-react";
+import { usePreferredDark } from "@reactuses/core";
+import { PersistenceProvider } from "@workspace/core/persistence/provider";
+import { StrictMode, Suspense, useLayoutEffect } from "react";
 
 import { Loader } from "@/core/components/ui/loader";
-import {
-  COLOR_MODE_STORAGE_KEY,
-  COLOR_MODES,
-  TRACER_REACT_ENTRY,
-} from "@/core/constants/global";
-import { AppAtomProvider } from "@/core/providers/atom/provider";
+import { TRACER_REACT_ENTRY } from "@/core/constants/global";
+import { persistence } from "@/core/layers/persistence";
 import { AppHeadProvider } from "@/core/providers/head/provider";
 import {
   AppI18nProvider,
@@ -18,47 +16,50 @@ import { ReloadPromptSw } from "@/core/providers/reload-prompt-sw";
 import { AppRouterProvider } from "@/core/providers/router/provider";
 import { AppToastProvider } from "@/core/providers/toast/provider";
 
-export const Entry = () => {
+/**
+ * Sole owner of the color-mode class on `<html>`. Everywhere else reads the
+ * picked theme from `themeAtom`. `system` has no class of its own: it borrows
+ * whichever one the system prefers.
+ */
+const ThemeClass = () => {
+  const theme = useAtomValue(persistence.themeAtom);
   const preferredDark = usePreferredDark();
-  // Sole owner of the color-mode class on `<html>`. `Entry` never unmounts, so the
-  // class is never torn down by `useColorMode`'s cleanup; everywhere else reads the
-  // persisted mode straight from storage.
-  useColorMode({
-    defaultValue: "auto",
-    modes: COLOR_MODES,
-    // `auto` has no class of its own - it borrows whichever one the system prefers
-    modeClassNames: {
-      auto: preferredDark ? "dark" : "light",
-      dark: "dark",
-      light: "light",
-    },
-    storageKey: COLOR_MODE_STORAGE_KEY,
-  });
+  const preferred = preferredDark ? "dark" : "light";
+  const mode = theme === "system" ? preferred : theme;
 
-  return (
-    <StrictMode>
-      <AppHeadProvider>
-        <AppAtomProvider>
-          <AppQueryProvider>
-            <AppTranslationProvider>
-              <AppI18nProvider>
-                <AppToastProvider>
-                  <Suspense
-                    name={TRACER_REACT_ENTRY}
-                    fallback={<Loader className="size-4.5" variant="spin" />}
-                  >
-                    {/* Router entry point */}
-                    <AppRouterProvider />
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(mode);
+  }, [mode]);
 
-                    {/* PWA */}
-                    <ReloadPromptSw />
-                  </Suspense>
-                </AppToastProvider>
-              </AppI18nProvider>
-            </AppTranslationProvider>
-          </AppQueryProvider>
-        </AppAtomProvider>
-      </AppHeadProvider>
-    </StrictMode>
-  );
+  return null;
 };
+
+export const Entry = () => (
+  <StrictMode>
+    <AppHeadProvider>
+      <PersistenceProvider persistence={persistence}>
+        <ThemeClass />
+        <AppQueryProvider>
+          <AppTranslationProvider>
+            <AppI18nProvider>
+              <AppToastProvider>
+                <Suspense
+                  name={TRACER_REACT_ENTRY}
+                  fallback={<Loader className="size-4.5" variant="spin" />}
+                >
+                  {/* Router entry point */}
+                  <AppRouterProvider />
+
+                  {/* PWA */}
+                  <ReloadPromptSw />
+                </Suspense>
+              </AppToastProvider>
+            </AppI18nProvider>
+          </AppTranslationProvider>
+        </AppQueryProvider>
+      </PersistenceProvider>
+    </AppHeadProvider>
+  </StrictMode>
+);

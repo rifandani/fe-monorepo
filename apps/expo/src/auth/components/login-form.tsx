@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { effectTsResolver } from "@hookform/resolvers/effect-ts";
-import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import { authLoginRequestSchema } from "@workspace/core/auth/schemas";
 import type { ComponentProps } from "react";
 import { useState } from "react";
 import type { Control, RegisterOptions } from "react-hook-form";
@@ -18,7 +18,6 @@ import {
 import { useAuthLogin } from "@/auth/hooks/use-auth-login";
 import { BaseButton } from "@/core/components/button/base-button";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { appStore } from "@/core/stores/app-store";
 
 const RememberMeCheckbox = () => {
   const { t } = useTranslation();
@@ -109,11 +108,8 @@ export const LoginForm = () => {
     resolver: effectTsResolver(authLoginRequestSchema),
   });
 
-  const loginMutation = useAuthLogin(undefined, {
-    onSuccess: (user) => {
-      appStore.setUser(user);
-    },
-  });
+  // The login starts the Session; `Stack.Protected` then leaves this screen.
+  const loginMutation = useAuthLogin();
 
   return (
     <Form

@@ -3,10 +3,9 @@ import { Atom } from "effect/reactivity";
 
 import { featureFlagIds } from "@/core/feature-flags/registry";
 import type { FeatureFlagId } from "@/core/feature-flags/registry";
-import {
-  appRegistry,
-  localStorageRuntime,
-} from "@/core/services/atom-registry";
+import { persistence } from "@/core/layers/persistence";
+
+const { registry } = persistence;
 
 /** Key the Feature Flag overrides are persisted under in `localStorage`. */
 export const featureFlagStoreName = "app-feature-flags" as const;
@@ -24,7 +23,7 @@ const featureFlagOverridesSchema = Schema.Record(
  * never a half-trusted mix.
  */
 export const featureFlagOverridesAtom = Atom.kvs({
-  runtime: localStorageRuntime,
+  runtime: persistence.runtime,
   key: featureFlagStoreName,
   schema: featureFlagOverridesSchema,
   defaultValue: () => ({}),
@@ -35,21 +34,21 @@ export const featureFlagOverridesAtom = Atom.kvs({
  * panel's hooks subscribe to.
  */
 export const featureFlagStore = {
-  overrides: () => appRegistry.get(featureFlagOverridesAtom),
+  overrides: () => registry.get(featureFlagOverridesAtom),
   setOverride: (id: FeatureFlagId, enabled: boolean) => {
-    appRegistry.update(featureFlagOverridesAtom, (overrides) => ({
+    registry.update(featureFlagOverridesAtom, (overrides) => ({
       ...overrides,
       [id]: enabled,
     }));
   },
   resetOverride: (id: FeatureFlagId) => {
-    appRegistry.update(featureFlagOverridesAtom, (overrides) => {
+    registry.update(featureFlagOverridesAtom, (overrides) => {
       const { [id]: _removed, ...rest } = overrides;
 
       return rest;
     });
   },
   resetAllOverrides: () => {
-    appRegistry.set(featureFlagOverridesAtom, {});
+    registry.set(featureFlagOverridesAtom, {});
   },
 } as const;

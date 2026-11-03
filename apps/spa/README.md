@@ -26,7 +26,7 @@ The local URL is `https://spa.fe-monorepo.localhost`. If you rename it, change i
 
 - [ ] Repo root `portless.json`: `name` and `apps["apps/spa"].name`.
 - [ ] `package.json`: the `dev` script (`portless run --name spa.fe-monorepo ...`).
-- [ ] `src/core/constants/env.ts`: the `"fe-monorepo.localhost"` check.
+- [ ] `src/core/layers/env.ts`: the `"fe-monorepo.localhost"` check.
 - [ ] `.env.example` (and your local `.env.*` files): `VITE_APP_URL`, `VITE_API_BASE_URL`.
 - [ ] `scripts/gen-sitemap.ts`: the dev `DOMAIN`.
 - [ ] Repo root `scripts/security/zap.ts` (`LOCAL_TARGET_HINT`) and `docs/security/dast.md`.
@@ -41,7 +41,7 @@ The local URL is `https://spa.fe-monorepo.localhost`. If you rename it, change i
 The template uses [DummyJSON](https://dummyjson.com) as the API.
 
 - [ ] `.env.example`: `VITE_API_BASE_URL` for your API.
-- [ ] Repo root `packages/core/src/apis/*`: change the endpoints and schemas to your API.
+- [ ] Repo root `packages/core/src/{auth,cdn,http}/`: change the endpoints (`api.ts`) and schemas (`schemas.ts`) to your API.
 - [ ] `src/routes/login.tsx`: remove the `(emilyspass)` hint from the login button.
 - [ ] `e2e/_base.ts`, `e2e/auth.setup.ts`, `e2e/login.spec.ts`, `playwright.config.ts`: the test user (`emilys` / `emilyspass`) and the excluded `https://dummyjson.com/auth/login` URL.
 

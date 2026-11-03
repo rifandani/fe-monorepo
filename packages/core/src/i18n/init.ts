@@ -1,0 +1,400 @@
+/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string eslint/func-style */
+import type {
+  defineTranslation,
+  ParamOptions,
+} from "@workspace/core/i18n/define-translation";
+import type { Register } from "@workspace/core/i18n/my-translations";
+
+export type LocaleDictLanguage = "en-us" | "id-id";
+
+type RegisteredTranslations = Register extends {
+  translations: infer T;
+}
+  ? T extends infer Translations
+    ? Translations
+    : never
+  : LanguageMessages;
+
+type I18nMessage = string | ReturnType<typeof defineTranslation>;
+
+export interface LanguageMessages {
+  [key: string]: I18nMessage | LanguageMessages;
+}
+
+type Join<K, P> = K extends string
+  ? P extends string
+    ? `${K}.${P}`
+    : never
+  : never;
+
+type DotPathsFor<T extends object = RegisteredTranslations> = {
+  [K in keyof T]: T[K] extends I18nMessage
+    ? K
+    : T[K] extends object
+      ? Join<K, DotPathsFor<T[K]>>
+      : never;
+}[keyof T];
+
+type EnumMap = Record<string, Record<string, string>>;
+
+type ParseArgType<
+  ParamType extends string,
+  ParamName extends string,
+  Enums extends EnumMap,
+> = ParamType extends "number" | "plural"
+  ? number
+  : ParamType extends "date"
+    ? Date
+    : ParamType extends "list"
+      ? string[]
+      : ParamType extends "enum"
+        ? ParamName extends keyof Enums
+          ? keyof Enums[ParamName]
+          : never
+        : never;
+
+type ExtractParamArgs<
+  S extends string,
+  Enums extends EnumMap,
+> = S extends `${string}{${infer Param}}${infer Rest}`
+  ? Param extends `${infer Name}:${infer Type}`
+    ? Record<Name, ParseArgType<Type, Name, Enums>> &
+        ExtractParamArgs<Rest, Enums> // If the string contains a parameter with a type
+    : Record<Param, string> & ExtractParamArgs<Rest, Enums> // If the string has no parameter type
+  : unknown; // If the string has no parameters
+
+type TranslationAtKeyWithParams<
+  Translations,
+  Key extends string,
+> = Key extends `${infer First}.${infer Rest}`
+  ? First extends keyof Translations
+    ? TranslationAtKeyWithParams<Translations[First], Rest>
+    : never
+  : Key extends keyof Translations
+    ? Translations[Key]
+    : never;
+
+type NormalizedTranslationAtKey<T> =
+  T extends ReturnType<typeof defineTranslation>
+    ? T
+    : [T, ReturnType<typeof defineTranslation>[1]];
+
+type NormalizedTranslationAtKeyWithParams<Key extends string> =
+  NormalizedTranslationAtKey<
+    TranslationAtKeyWithParams<RegisteredTranslations, Key>
+  >;
+
+type Params<S extends DotPathsFor> = ExtractParamArgs<
+  NormalizedTranslationAtKeyWithParams<S>[0],
+  NormalizedTranslationAtKeyWithParams<S>[1] extends {
+    enum: infer E;
+  }
+    ? keyof E extends never
+      ? EnumMap
+      : E
+    : EnumMap
+>;
+
+type PathsWithParams = {
+  [K in DotPathsFor]: keyof Params<K> extends never ? never : K;
+}[DotPathsFor];
+
+type PathsWithNoParams = {
+  [K in DotPathsFor]: keyof Params<K> extends never ? K : never;
+}[DotPathsFor];
+
+const replaceKeyRegex = /-?[^-]+$/u;
+
+/** A value a `{name:type}` placeholder can be given, per `ParseArgType`. */
+type TranslationArg = Date | number | string | string[];
+
+/** A catalog entry that renders, as opposed to a nested group of entries. */
+const isRenderableMessage = (
+  value: I18nMessage | LanguageMessages
+): value is I18nMessage => typeof value === "string" || Array.isArray(value);
+
+const isPlainMessage = (value: I18nMessage): value is string =>
+  typeof value === "string";
+
+const isNumberArg = (value: TranslationArg): value is number =>
+  typeof value === "number";
+
+const isStringArg = (value: TranslationArg): value is string =>
+  typeof value === "string";
+
+const getOrderedLocaleAndParentLocales = (locale: string) => {
+  const locales = [];
+  let parentLocale = locale;
+
+  while (parentLocale !== "") {
+    locales.push(parentLocale);
+    parentLocale = parentLocale.replace(replaceKeyRegex, "");
+  }
+
+  return locales;
+};
+
+const getTranslationByKey = (
+  obj: LanguageMessages,
+  key: string
+): I18nMessage | undefined => {
+  let current: I18nMessage | LanguageMessages | undefined = obj;
+
+  for (const k of key.split(".")) {
+    if (k === "") {
+      throw new Error("[getTranslationByKey]: Invalid key!");
+    }
+
+    // A message before the last key segment means the key does not exist.
+    if (current === undefined || isRenderableMessage(current)) {
+      current = undefined;
+      break;
+    }
+
+    current = current[k];
+  }
+
+  // An empty message counts as missing, so the next locale can supply it.
+  return current !== undefined && current !== "" && isRenderableMessage(current)
+    ? current
+    : undefined;
+};
+
+interface SubstitutionContext {
+  locale: string;
+  result: string;
+  argKey: string;
+  argValue: TranslationArg;
+  replaceKey: string;
+  translationParams: ParamOptions;
+}
+
+const getPluralReplacement = (
+  locale: string,
+  argKey: string,
+  argValue: number,
+  translationParams: ParamOptions
+) => {
+  const pluralMap = translationParams.plural?.[argKey];
+
+  const pluralRules = new Intl.PluralRules(locale, {
+    type: pluralMap?.type,
+  });
+
+  return {
+    formatter: pluralMap?.formatter,
+    replacement: pluralMap?.[pluralRules.select(argValue)] ?? pluralMap?.other,
+  };
+};
+
+const substitutePlural = ({
+  locale,
+  result,
+  argKey,
+  argValue,
+  replaceKey,
+  translationParams,
+}: SubstitutionContext): string => {
+  if (!isNumberArg(argValue)) {
+    throw new TypeError("Invalid argument");
+  }
+
+  const { formatter, replacement } = getPluralReplacement(
+    locale,
+    argKey,
+    argValue,
+    translationParams
+  );
+
+  if (replacement === undefined || replacement === "") {
+    throw new Error("Missing replacement value");
+  }
+
+  const numberFormatter = new Intl.NumberFormat(locale, formatter);
+
+  return result.replace(
+    replaceKey,
+    replacement.replace(`{?}`, numberFormatter.format(argValue))
+  );
+};
+
+const substituteEnum = ({
+  result,
+  argKey,
+  argValue,
+  replaceKey,
+  translationParams,
+}: SubstitutionContext): string => {
+  if (!isStringArg(argValue)) {
+    throw new TypeError("Invalid argument");
+  }
+
+  const replacement = translationParams.enum?.[argKey]?.[argValue];
+
+  if (replacement === undefined || replacement === "") {
+    throw new Error("Missing replacement value");
+  }
+
+  return result.replace(replaceKey, replacement);
+};
+
+type Formatable = number | string[] | Date;
+
+/**
+ * Narrows `argValue` with `isValid`, then substitutes the `Intl`-formatted
+ * value into `result`. Shared by the `number`, `list` and `date` annotations,
+ * which differ only in their guard and formatter.
+ */
+const substituteWithFormatter =
+  <T extends Formatable>(
+    isValid: (value: TranslationArg) => value is T,
+    format: (ctx: SubstitutionContext, value: T) => string
+  ) =>
+  (ctx: SubstitutionContext): string => {
+    if (!isValid(ctx.argValue)) {
+      throw new TypeError("Invalid argument");
+    }
+
+    return ctx.result.replace(ctx.replaceKey, format(ctx, ctx.argValue));
+  };
+
+/** Maps the `{arg:type}` annotation to the substituter handling it. */
+type Substituter = (ctx: SubstitutionContext) => string;
+
+interface SubstituterMap {
+  [annotation: string]: Substituter;
+}
+
+const substituters: SubstituterMap = {
+  date: substituteWithFormatter(
+    (value): value is Date => value instanceof Date,
+    (c, value) =>
+      new Intl.DateTimeFormat(
+        c.locale,
+        c.translationParams.date?.[c.argKey]
+      ).format(value)
+  ),
+  enum: substituteEnum,
+  list: substituteWithFormatter(
+    (value): value is string[] => Array.isArray(value),
+    (c, value) =>
+      new Intl.ListFormat(
+        c.locale,
+        c.translationParams.list?.[c.argKey]
+      ).format(value)
+  ),
+  number: substituteWithFormatter(
+    (value): value is number => typeof value === "number",
+    (c, value) =>
+      new Intl.NumberFormat(
+        c.locale,
+        c.translationParams.number?.[c.argKey]
+      ).format(value)
+  ),
+  plural: substitutePlural,
+};
+
+const performSubstitution = (
+  locale: string,
+  str: string,
+  args: Record<string, TranslationArg>,
+  translationParams: ParamOptions
+): string =>
+  Object.entries(args).reduce((result, [argKey, argValue]) => {
+    const match = new RegExp(`\\{${argKey}:?([^}]*)?\\}`, "u").exec(result);
+    const [replaceKey, argType] = match ?? [`{${argKey}}`, undefined];
+
+    const substitute =
+      argType === undefined || argType === ""
+        ? undefined
+        : substituters[argType];
+
+    if (!substitute) {
+      return result.replace(replaceKey, String(argValue));
+    }
+
+    return substitute({
+      argKey,
+      argValue,
+      locale,
+      replaceKey,
+      result,
+      translationParams,
+    });
+  }, str);
+
+const getTranslation = <S extends DotPathsFor>(
+  locale: string,
+  translations: LanguageMessages,
+  key: S,
+  args?: Params<S>
+): string | undefined => {
+  const translation = getTranslationByKey(translations, key);
+  const argObj = args ?? {};
+
+  if (translation === undefined) {
+    return translation;
+  }
+
+  if (isPlainMessage(translation)) {
+    return performSubstitution(locale, translation, argObj, {});
+  }
+
+  const [str, translationParams] = translation;
+
+  // SAFETY: `defineTranslation` builds the tuple, so its second element is the
+  // `ParamOptions` it was given; the catalog type widens it on the way out.
+  return performSubstitution(
+    locale,
+    str,
+    argObj,
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    translationParams as ParamOptions
+  );
+};
+
+export const initI18n = ({
+  locale,
+  fallbackLocale,
+  translations,
+}: {
+  locale: string;
+  fallbackLocale: string | string[];
+  translations: Record<Lowercase<string>, LanguageMessages>;
+}) => {
+  const fallbackLocales = Array.isArray(fallbackLocale)
+    ? fallbackLocale
+    : [fallbackLocale];
+
+  const orderedLocales = new Set([
+    ...getOrderedLocaleAndParentLocales(locale),
+    ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
+  ]);
+
+  // The catalog is keyed by lowercase locale, so look it up by plain string.
+  const translationsByLocale = new Map(Object.entries(translations));
+
+  function t(key: PathsWithNoParams): string;
+  function t<S extends PathsWithParams>(key: S, args: Params<S>): string;
+  function t<S extends DotPathsFor>(key: S, args?: Params<S>) {
+    for (const _locale of orderedLocales) {
+      const translationFile = translationsByLocale.get(_locale.toLowerCase());
+
+      if (!translationFile) {
+        continue;
+      }
+
+      const translation = getTranslation(_locale, translationFile, key, args);
+
+      if (translation !== undefined && translation !== "") {
+        return translation;
+      }
+    }
+
+    return key;
+  }
+
+  return {
+    t,
+  };
+};

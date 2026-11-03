@@ -12,7 +12,6 @@
       // ],
       "@/*": ["./src/*"],
       // Mirrors the `@test/*` aliases in vitest.config.ts.
-      "@test/mmkv": ["../../vitest.mmkv.ts"],
       "@test/msw": ["../../vitest.msw.ts"]
     },
     "strict": true

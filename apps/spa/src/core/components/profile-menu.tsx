@@ -1,5 +1,6 @@
 import { useAtomValue } from "@effect/atom-react";
 import { useNavigate } from "@tanstack/react-router";
+import { endSession } from "@workspace/core/session/session";
 import { Button as ButtonPrimitive } from "react-aria-components/Button";
 import {
   HiArrowRightStartOnRectangle,
@@ -7,8 +8,6 @@ import {
   HiUser,
 } from "react-icons/hi2";
 
-import { authUserAtom } from "@/auth/stores/auth-user-store";
-import { endSession } from "@/auth/utils/end-session";
 import { Avatar } from "@/core/components/ui/avatar";
 import {
   Menu,
@@ -18,12 +17,19 @@ import {
   MenuSection,
   MenuSeparator,
 } from "@/core/components/ui/menu";
+import { persistence } from "@/core/layers/persistence";
+import { appRuntime } from "@/core/layers/runtime";
 import { useTranslation } from "@/core/providers/i18n/context";
 
 export const ProfileMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const user = useAtomValue(authUserAtom);
+  const user = useAtomValue(persistence.sessionAtom);
+
+  const logout = async () => {
+    await appRuntime.runPromise(endSession);
+    await navigate({ to: "/login" });
+  };
 
   return (
     <MenuTrigger>
@@ -37,10 +43,7 @@ export const ProfileMenu = () => {
       <Menu
         onAction={(key) => {
           if (key === "logout") {
-            endSession();
-            void navigate({
-              to: "/login",
-            });
+            void logout();
           }
         }}
       >
