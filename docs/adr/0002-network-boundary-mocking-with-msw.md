@@ -53,6 +53,8 @@ Interceptor install costs ~140ms per *file*, so the bill scales with files touch
 
 ## Amendments
 
+**2026-11-03 — the set follows the domain folders of [ADR-0006](./0006-core-owns-the-effect-seams.md).** The MSW files are now `packages/core/src/{auth,cdn}/{api,queries}.unit.test.ts`, `packages/core/src/http/http.unit.test.ts`, and `apps/expo/src/user/{api,queries}.unit.test.ts`. The rule is unchanged: each one builds or parses a request. The `queries` tests run the option factories against a real runtime. `Http` now gets the Session from its Layers, so these tests give it `Session.layerMemory()` — the in-memory adapter — instead of callbacks. The `apps/spa` statement in Scope still holds: the spa has no endpoints of its own.
+
 **2026-11-02 — `Http` is an Effect service; the deferred follow-up is done.** `ky` was replaced by Effect's `HttpClient` (`FetchHttpClient`), so MSW still intercepts every request at the same `fetch` boundary. Repositories now read `Http` from context instead of taking it, or a singleton, by parameter — which resolves the "`userApi` should accept `http`" follow-up above: `user.unit.test.ts` provides `Http.layer({ baseUrl: MOCK_API_BASE_URL })` and no longer mocks MMKV. Effect does not retry by default, so the `retry: 0` note no longer applies. The MMKV fake moved one layer down, to the `react-native-mmkv` module itself, so the `KeyValueStore` adapter in `core/services/mmkv.ts` runs under test.
 
 **2026-09-11 — the set is four files, and a different four.** `packages/core/src/services/http.unit.test.ts` now fakes at the Network Boundary, and the test of the second auth module was deleted with the module it covered (see below). The list under [Scope](#scope) shows the current set.
