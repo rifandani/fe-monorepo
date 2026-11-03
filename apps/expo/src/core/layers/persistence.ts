@@ -3,7 +3,7 @@ import { Layer } from "effect";
 import { KeyValueStore } from "effect/persistence";
 import { getLocales } from "expo-localization";
 
-import { appStorage, makeMmkvKeyValueStore } from "@/core/services/mmkv";
+import { appStorage, makeMmkvKeyValueStore } from "@/core/layers/mmkv";
 import { resolveDeviceLocale } from "@/core/utils/i18n";
 
 /**

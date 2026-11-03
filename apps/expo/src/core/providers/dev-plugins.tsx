@@ -3,8 +3,8 @@ import { useReactNavigationDevTools } from "@dev-plugins/react-navigation";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { useNavigationContainerRef } from "expo-router";
 
+import { appStorage } from "@/core/layers/mmkv";
 import { queryClient } from "@/core/providers/query/client";
-import { appStorage } from "@/core/services/mmkv";
 
 export const DevPlugins = () => {
   const navigationRef = useNavigationContainerRef();

@@ -6,15 +6,16 @@ import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-web";
+import { Effect } from "effect";
 
-import { ENV } from "@/core/constants/env";
-import type { otelLogLevels } from "@/core/constants/env";
 import { SERVICE_NAME, SERVICE_VERSION } from "@/core/constants/global";
+import { EnvConfig, readEnv } from "@/core/layers/env";
+import type { otelLogLevels } from "@/core/layers/env";
 
 // Dev (incl. portless HTTPS): same-origin via Vite proxy → avoids CORS + mixed content.
 const otlpEndpoint = import.meta.env.DEV
   ? globalThis.location.origin
-  : ENV.VITE_OTEL_EXPORTER_OTLP_ENDPOINT;
+  : readEnv(EnvConfig.otelEndpoint);
 
 const logLevelMap = {
   ALL: DiagLogLevel.ALL,
@@ -56,19 +57,23 @@ const browserAttributes = () => ({
  * `WebSdk` builds a `WebTracerProvider` with no Node APIs, so this stays a pure
  * SPA concern — no server, no Node SDK.
  */
-export const TelemetryLive = WebSdk.layer(() => {
-  // for troubleshooting the internal otel logs, set the log level to DEBUG
-  diag.setLogger(new DiagConsoleLogger(), logLevelMap[ENV.VITE_OTEL_LOG_LEVEL]);
+export const TelemetryLive = WebSdk.layer(
+  Effect.gen(function* () {
+    const logLevel = yield* EnvConfig.otelLogLevel;
 
-  return {
-    resource: {
-      serviceName: SERVICE_NAME,
-      serviceVersion: SERVICE_VERSION,
-      attributes: browserAttributes(),
-    },
-    spanProcessor: new BatchSpanProcessor(
-      new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
-    ),
-    metricReader,
-  };
-});
+    // for troubleshooting the internal otel logs, set the log level to DEBUG
+    diag.setLogger(new DiagConsoleLogger(), logLevelMap[logLevel]);
+
+    return {
+      resource: {
+        serviceName: SERVICE_NAME,
+        serviceVersion: SERVICE_VERSION,
+        attributes: browserAttributes(),
+      },
+      spanProcessor: new BatchSpanProcessor(
+        new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
+      ),
+      metricReader,
+    };
+  })
+);

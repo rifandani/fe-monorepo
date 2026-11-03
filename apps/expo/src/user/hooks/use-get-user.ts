@@ -7,7 +7,7 @@ import type { Effect } from "effect";
 import { useEffect } from "react";
 import type { Except } from "type-fest";
 
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { userApi, userKeys } from "@/user/apis/user";
 

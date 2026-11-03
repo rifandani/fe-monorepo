@@ -38,7 +38,7 @@ vi.mock("web-vitals", () => ({
 
 // The real runtime would build telemetry and HTTP layers; the module only needs
 // it to run `Metric.update`, so it runs on a per-test registry instead.
-vi.mock("@/core/services/runtime", async () => {
+vi.mock("@/core/layers/runtime", async () => {
   const effect = await import("effect");
 
   return {
@@ -55,7 +55,7 @@ vi.mock("@/core/services/runtime", async () => {
   };
 });
 
-vi.mock("@/core/services/telemetry", () => ({
+vi.mock("@/core/layers/telemetry", () => ({
   metricReader: { forceFlush: harness.forceFlush },
 }));
 

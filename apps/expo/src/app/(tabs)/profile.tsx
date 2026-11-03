@@ -25,8 +25,8 @@ import {
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
 import { persistence } from "@/core/layers/persistence";
+import { appRuntime } from "@/core/layers/runtime";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { appRuntime } from "@/core/services/runtime";
 import { formatDisplayDate } from "@/core/utils/date";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";

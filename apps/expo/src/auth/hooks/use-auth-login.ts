@@ -10,7 +10,7 @@ import { toErrorMessage } from "@workspace/core/utils/error";
 import { Effect } from "effect";
 import type { Except } from "type-fest";
 
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 import type { ToastCustomData } from "@/core/utils/toast";
 
 type Params = Parameters<typeof authKeys.login>[0];

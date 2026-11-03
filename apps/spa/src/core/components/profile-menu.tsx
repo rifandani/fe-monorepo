@@ -18,8 +18,8 @@ import {
   MenuSeparator,
 } from "@/core/components/ui/menu";
 import { persistence } from "@/core/layers/persistence";
+import { appRuntime } from "@/core/layers/runtime";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { appRuntime } from "@/core/services/runtime";
 
 export const ProfileMenu = () => {
   const { t } = useTranslation();

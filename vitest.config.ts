@@ -40,7 +40,7 @@ export default defineConfig({
       // Untested files only appear in the report when matched here, so a new logic-bearing folder must be added.
       include: [
         "packages/core/src/**/*.ts",
-        "apps/{spa,expo}/src/**/{actions,apis,constants,middlewares,services,utils}/**/*.{ts,tsx}",
+        "apps/{spa,expo}/src/**/{actions,apis,constants,layers,middlewares,services,utils}/**/*.{ts,tsx}",
         "apps/{spa,expo}/src/**/*-store.{ts,tsx}",
       ],
       exclude: [
@@ -64,11 +64,12 @@ export default defineConfig({
         // components and hooks out of unit-test scope.
         "packages/core/src/hooks/**",
         "packages/core/src/**/provider.ts",
-        // Composition roots: Layer, runtime and registry declarations. The
-        // wiring that can be wrong — reading the Access Token, responding to a
-        // rejected one — lives in `auth/utils/session-auth.ts`, the stores and
-        // the `Http` service in core, all of which are measured.
-        "apps/*/src/core/services/{atom-registry,http,runtime,telemetry}.ts",
+        // Composition roots: the env, Layer, Persistence, Session and runtime
+        // declarations of each app. The wiring that can be wrong — the Session,
+        // the Access Token, a rejected token — lives in core's `session/`,
+        // `persistence/` and `http/`, all of which are measured. Adapters with
+        // logic of their own (`layers/mmkv.ts`) stay in.
+        "apps/*/src/core/layers/{env,http,persistence,runtime,session,telemetry}.ts",
       ],
     },
   },

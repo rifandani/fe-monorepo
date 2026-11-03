@@ -9,7 +9,7 @@ import type { GetCdnFileSuccessSchema } from "@workspace/core/cdn/schemas";
 import type { HttpClientError } from "effect/http";
 import type { Except } from "type-fest";
 
-import { appRuntime } from "@/core/services/runtime";
+import { appRuntime } from "@/core/layers/runtime";
 
 interface Opt {
   key: CdnValidKeys;

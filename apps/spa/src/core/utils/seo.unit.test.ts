@@ -2,10 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 
 import { buildSeoMetadata, ldParams, resolveOgImage } from "./seo";
 
-vi.mock("@/core/constants/env", () => ({
-  ENV: {
-    VITE_APP_URL: "https://spa.test",
-  },
+vi.mock("@/core/layers/env", () => ({
+  EnvConfig: {},
+  readEnv: () => "https://spa.test",
 }));
 
 vi.mock("@/core/constants/global", () => ({

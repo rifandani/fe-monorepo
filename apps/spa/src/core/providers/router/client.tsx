@@ -8,9 +8,9 @@ import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
 import { persistence } from "@/core/layers/persistence";
+import { appRuntime } from "@/core/layers/runtime";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { queryClient } from "@/core/providers/query/client";
-import { appRuntime } from "@/core/services/runtime";
 import { recordException, toReportedError } from "@/core/utils/telemetry";
 
 import { routeTree } from "../../../routeTree.gen";
