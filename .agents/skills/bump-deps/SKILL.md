@@ -57,7 +57,7 @@ Apply the required code/config from step 3.
 
 Loop until all green, in parallel/subagent:
 
-1. `bun lint-typecheck`
+1. `bun lint` (it also type-checks)
 2. `bun test:unit:cov`
 3. `bun spa build`
 4. `bun audit:sca`

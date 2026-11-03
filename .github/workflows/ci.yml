@@ -81,7 +81,7 @@ jobs:
           # gate: new-only
           dupes-mode: semantic
 
-  lint-typecheck:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -101,8 +101,10 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
+      # oxlint runs with `typeCheck` on (see oxlint.config.ts), so this step
+      # also reports the TypeScript compiler errors. No separate `tsc` step.
       - name: Lint and typecheck
-        run: bun lint-typecheck
+        run: bun lint
 
   typerange:
     runs-on: ubuntu-latest

@@ -47,7 +47,7 @@ Run all checks; stop on first failure:
 | Sync | `main` matches `origin/main` (fetch first) |
 | Clean | `git status` has no staged/unstaged/untracked work (except what you will create) |
 | Changesets | ≥1 `*.md` in `.changeset/` besides `config.json` / README |
-| Lint/types | `bun lint-typecheck` exits 0 |
+| Lint/types | `bun lint` exits 0 (it also type-checks) |
 
 **Done when:** every row passes.
 
