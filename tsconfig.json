@@ -1,12 +1,8 @@
 {
-  "extends": "@workspace/typescript-config/base.json",
-  "compilerOptions": {
-    "moduleResolution": "bundler"
-  },
-  "include": [
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    "vitest.env-mock.ts",
-    "scripts/**/*.ts"
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "include": [],
+  "references": [
+    { "path": "tsconfig.packages.json" },
+    { "path": "tsconfig.tests.json" }
   ]
 }

@@ -1,8 +1,0 @@
-appId: ${MAESTRO_APP_ID}
----
-- runFlow: ./login.yaml
-- assertVisible: "Expo App using:"
-- assertVisible:
-    id: "home-tab-icon"
-- tapOn:
-    id: "profile-tab-icon"

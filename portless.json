@@ -1,6 +1,0 @@
-{
-  "name": "fe-monorepo",
-  "apps": {
-    "apps/spa": { "name": "spa.fe-monorepo" }
-  }
-}
