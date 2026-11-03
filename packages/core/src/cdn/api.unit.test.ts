@@ -1,10 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import { server } from "@test/msw";
-import {
-  cdnKeys,
-  cdnRepositories,
-  cdnValidKeys,
-} from "@workspace/core/apis/cdn";
+import { cdnApi, toCdnFile } from "@workspace/core/cdn/api";
+import { cdnKeys, cdnValidKeys } from "@workspace/core/cdn/queries";
 import { Effect } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -25,11 +22,9 @@ describe("cdn keys", () => {
 });
 
 const getCdnFile = (url: string) =>
-  cdnRepositories
-    .getCdnFile({ url })
-    .pipe(Effect.provide(FetchHttpClient.layer));
+  cdnApi.getCdnFile({ url }).pipe(Effect.provide(FetchHttpClient.layer));
 
-describe("cdnRepositories", () => {
+describe("cdnApi", () => {
   it.effect("getCdnFile returns blob, headers, and response", () =>
     Effect.gen(function* () {
       server.use(
@@ -82,4 +77,23 @@ describe("cdnRepositories", () => {
       expect(error.response?.status).toBe(500);
     })
   );
+});
+
+describe("toCdnFile", () => {
+  it("returns null while the blob is undefined", () => {
+    expect(toCdnFile()).toBeNull();
+    expect(toCdnFile(undefined, "a.png")).toBeNull();
+  });
+
+  it("wraps the blob in a named File carrying its mime type", () => {
+    const file = toCdnFile(new Blob(["img"], { type: "image/png" }), "a.png");
+
+    expect(file).toBeInstanceOf(File);
+    expect(file?.name).toBe("a.png");
+    expect(file?.type).toBe("image/png");
+  });
+
+  it("falls back to a placeholder name", () => {
+    expect(toCdnFile(new Blob(["img"]))?.name).toBe("unknown-filename");
+  });
 });

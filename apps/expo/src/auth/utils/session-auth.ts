@@ -1,4 +1,4 @@
-import type { HttpAuthConfig } from "@workspace/core/services/http";
+import type { HttpAuthConfig } from "@workspace/core/http/http";
 
 import { endSession } from "@/auth/utils/end-session";
 import { appStore } from "@/core/stores/app-store";

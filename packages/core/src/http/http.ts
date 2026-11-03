@@ -1,4 +1,4 @@
-import { HttpResponseError } from "@workspace/core/services/http-response-error";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { Context, Duration, Effect, Layer, Option, Schema } from "effect";
 import type { Cause } from "effect";
 import { constUndefined } from "effect/Function";
@@ -187,7 +187,7 @@ export const makeHttpClient = (
 export class Http extends Context.Service<
   Http,
   HttpClient.HttpClient.With<HttpError>
->()("@workspace/core/services/http/Http") {
+>()("@workspace/core/http/Http") {
   static readonly layer = (config: HttpConfig) =>
     Layer.effect(
       Http,

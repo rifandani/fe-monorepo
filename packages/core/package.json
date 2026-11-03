@@ -7,12 +7,13 @@
   "author": "Tri Rizeki Rifandani",
   "type": "module",
   "exports": {
-    "./apis/*": "./src/apis/*.ts",
     "./assets/*": "./src/assets/*",
+    "./auth/*": "./src/auth/*.ts",
+    "./cdn/*": "./src/cdn/*.ts",
     "./constants/*": "./src/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
-    "./libs/*": "./src/libs/*.ts",
-    "./services/*": "./src/services/*.ts",
+    "./http/*": "./src/http/*.ts",
+    "./i18n/*": "./src/i18n/*.ts",
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },

@@ -1,4 +1,4 @@
-import { defineTranslation } from "@workspace/core/libs/i18n/define-translation";
+import { defineTranslation } from "@workspace/core/i18n/define-translation";
 import { describe, expect, it } from "vitest";
 
 describe("defineTranslation", () => {

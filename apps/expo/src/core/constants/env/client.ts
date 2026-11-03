@@ -1,4 +1,4 @@
-import { urlStringSchema } from "@workspace/core/apis/core";
+import { urlStringSchema } from "@workspace/core/http/schemas";
 import { Schema } from "effect";
 
 const envClientSchema = Schema.Struct({

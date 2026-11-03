@@ -97,8 +97,8 @@ export default defineConfig({
     },
     {
       files: [
-        "packages/core/src/libs/i18n/locales/en-US.ts",
-        "packages/core/src/libs/i18n/locales/id-ID.ts",
+        "packages/core/src/i18n/locales/en-US.ts",
+        "packages/core/src/i18n/locales/id-ID.ts",
       ],
       rules: {
         "unicorn/filename-case": "off",

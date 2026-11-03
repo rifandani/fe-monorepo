@@ -1,8 +1,9 @@
 import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
-import { authKeys, authRepositories } from "@workspace/core/apis/auth";
-import { Http } from "@workspace/core/services/http";
-import { HttpResponseError } from "@workspace/core/services/http-response-error";
+import { authApi } from "@workspace/core/auth/api";
+import { authKeys } from "@workspace/core/auth/queries";
+import { Http } from "@workspace/core/http/http";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -23,13 +24,13 @@ const loginResponse = {
 
 const credentials = { username: "ada", password: "secret1" };
 
-/** `authRepositories` reads `Http` from context, so the test owns the base URL. */
+/** `authApi` reads `Http` from context, so the test owns the base URL. */
 const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
   Layer.provide(FetchHttpClient.layer)
 );
 
 const login = (json: typeof credentials) =>
-  authRepositories.login(json).pipe(Effect.provide(TestHttp));
+  authApi.login(json).pipe(Effect.provide(TestHttp));
 
 describe("authKeys", () => {
   it("builds login keys", () => {
@@ -39,7 +40,7 @@ describe("authKeys", () => {
   });
 });
 
-describe("authRepositories", () => {
+describe("authApi", () => {
   it.effect("login posts the credentials and decodes the response", () =>
     Effect.gen(function* () {
       let capturedBody: unknown;

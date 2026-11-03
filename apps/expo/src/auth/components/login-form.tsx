@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { effectTsResolver } from "@hookform/resolvers/effect-ts";
-import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import { authLoginRequestSchema } from "@workspace/core/auth/schemas";
 import type { ComponentProps } from "react";
 import { useState } from "react";
 import type { Control, RegisterOptions } from "react-hook-form";

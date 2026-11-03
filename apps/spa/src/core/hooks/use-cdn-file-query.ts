@@ -2,12 +2,10 @@
 /* oxlint-disable react/react-compiler */
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { skipToken, useQuery } from "@tanstack/react-query";
-import type {
-  CdnValidKeys,
-  GetCdnFileSuccessSchema,
-} from "@workspace/core/apis/cdn";
-import { cdnKeys, cdnRepositories } from "@workspace/core/apis/cdn";
-import { toCdnFile } from "@workspace/core/utils/dom";
+import { cdnApi, toCdnFile } from "@workspace/core/cdn/api";
+import type { CdnValidKeys } from "@workspace/core/cdn/queries";
+import { cdnKeys } from "@workspace/core/cdn/queries";
+import type { GetCdnFileSuccessSchema } from "@workspace/core/cdn/schemas";
 import type { HttpClientError } from "effect/http";
 import type { Except } from "type-fest";
 
@@ -38,7 +36,7 @@ export const useCdnFileQuery = (
       url === undefined || url === ""
         ? skipToken
         : async ({ signal }) =>
-            await appRuntime.runPromise(cdnRepositories.getCdnFile({ url }), {
+            await appRuntime.runPromise(cdnApi.getCdnFile({ url }), {
               signal,
             }),
     queryKey: cdnKeys[opt.key](url),

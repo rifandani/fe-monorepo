@@ -1,5 +1,5 @@
-import type { ErrorResponseSchema } from "@workspace/core/apis/core";
-import { HttpResponseError } from "@workspace/core/services/http-response-error";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
+import type { ErrorResponseSchema } from "@workspace/core/http/schemas";
 import { toErrorMessage } from "@workspace/core/utils/error";
 import { Effect, Schema } from "effect";
 import { describe, expect, it } from "vitest";

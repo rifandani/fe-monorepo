@@ -1,5 +1,5 @@
-import { defineTranslation } from "@workspace/core/libs/i18n/define-translation";
-import { initI18n } from "@workspace/core/libs/i18n/init";
+import { defineTranslation } from "@workspace/core/i18n/define-translation";
+import { initI18n } from "@workspace/core/i18n/init";
 import { describe, expect, it } from "vitest";
 
 const translations = {

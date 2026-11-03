@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
-import { Http } from "@workspace/core/services/http";
-import type { HttpAuthConfig } from "@workspace/core/services/http";
+import { Http } from "@workspace/core/http/http";
+import type { HttpAuthConfig } from "@workspace/core/http/http";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { delay, http, HttpResponse } from "msw";

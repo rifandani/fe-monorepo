@@ -1,4 +1,4 @@
-import type { LanguageMessages } from "@workspace/core/libs/i18n/init";
+import type { LanguageMessages } from "@workspace/core/i18n/init";
 
 export default {
   // #region COMMON

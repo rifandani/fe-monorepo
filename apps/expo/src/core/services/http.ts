@@ -1,4 +1,4 @@
-import { Http } from "@workspace/core/services/http";
+import { Http } from "@workspace/core/http/http";
 import { Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 

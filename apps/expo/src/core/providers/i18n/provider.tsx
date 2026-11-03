@@ -1,6 +1,6 @@
-import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
-import enUS from "@workspace/core/libs/i18n/locales/en-US";
-import idID from "@workspace/core/libs/i18n/locales/id-ID";
+import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
+import enUS from "@workspace/core/i18n/locales/en-US";
+import idID from "@workspace/core/i18n/locales/id-ID";
 import { getLocales } from "expo-localization";
 import type { PropsWithChildren } from "react";
 
@@ -28,7 +28,7 @@ export const AppI18nProvider = ({ children }: PropsWithChildren) => (
   </TranslationProvider>
 );
 
-declare module "@workspace/core/libs/i18n/my-translations" {
+declare module "@workspace/core/i18n/my-translations" {
   interface Register {
     translations: typeof enUS;
   }

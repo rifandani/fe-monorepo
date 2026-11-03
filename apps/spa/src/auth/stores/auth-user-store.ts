@@ -1,5 +1,5 @@
-import { authLoginResponseSchema } from "@workspace/core/apis/auth";
-import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
+import { authLoginResponseSchema } from "@workspace/core/auth/schemas";
+import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Schema } from "effect";
 import { Atom } from "effect/reactivity";
 

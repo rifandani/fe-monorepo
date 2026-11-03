@@ -2,8 +2,8 @@
 import type {
   defineTranslation,
   ParamOptions,
-} from "@workspace/core/libs/i18n/define-translation";
-import type { Register } from "@workspace/core/libs/i18n/my-translations";
+} from "@workspace/core/i18n/define-translation";
+import type { Register } from "@workspace/core/i18n/my-translations";
 
 export type LocaleDictLanguage = "en-us" | "id-id";
 

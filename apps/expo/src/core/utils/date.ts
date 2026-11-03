@@ -1,4 +1,4 @@
-import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
+import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
 import { format, isValid, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
 import { Match } from "effect";

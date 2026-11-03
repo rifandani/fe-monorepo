@@ -1,6 +1,9 @@
-import { emailStringSchema, urlStringSchema } from "@workspace/core/apis/core";
-import type { ResourceListRequestSchema } from "@workspace/core/apis/core";
-import { Http } from "@workspace/core/services/http";
+import { Http } from "@workspace/core/http/http";
+import {
+  emailStringSchema,
+  urlStringSchema,
+} from "@workspace/core/http/schemas";
+import type { ResourceListRequestSchema } from "@workspace/core/http/schemas";
 import { Effect, Schema } from "effect";
 import { HttpClientResponse } from "effect/http";
 

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
-import { authLoginRequestSchema } from "@workspace/core/apis/auth";
+import { authLoginRequestSchema } from "@workspace/core/auth/schemas";
 import { Schema } from "effect";
 
 import { useAuthLogin } from "@/auth/hooks/use-auth-login";

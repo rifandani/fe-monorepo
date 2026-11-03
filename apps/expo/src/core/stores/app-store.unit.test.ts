@@ -1,4 +1,4 @@
-import type { AuthLoginResponseSchema } from "@workspace/core/apis/auth";
+import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Schema } from "effect";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 

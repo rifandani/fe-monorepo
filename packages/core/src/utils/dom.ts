@@ -239,15 +239,3 @@ export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
   window.URL.revokeObjectURL(url);
   a.remove();
 };
-
-/**
- * Wrap a downloaded CDN blob in a `File` so callers get a name and a mtime,
- * or `null` while the download has not resolved.
- */
-export const toCdnFile = (blob?: Blob, filename?: string) =>
-  blob
-    ? new File([blob], filename ?? "unknown-filename", {
-        lastModified: Date.now(),
-        type: blob.type,
-      })
-    : null;

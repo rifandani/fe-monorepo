@@ -1,4 +1,4 @@
-import type { LocaleDictLanguage } from "@workspace/core/libs/i18n/init";
+import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
 import { Match } from "effect";
 import { HiGlobeAlt } from "react-icons/hi2";
 import type { Key } from "react-stately";

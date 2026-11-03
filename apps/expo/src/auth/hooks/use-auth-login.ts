@@ -3,7 +3,8 @@
 import { useToastController } from "@tamagui/toast";
 import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { authKeys, authRepositories } from "@workspace/core/apis/auth";
+import { authApi } from "@workspace/core/auth/api";
+import { authKeys } from "@workspace/core/auth/queries";
 import { toErrorMessage } from "@workspace/core/utils/error";
 import type { Effect } from "effect";
 import type { Except } from "type-fest";
@@ -13,7 +14,7 @@ import type { ToastCustomData } from "@/core/utils/toast";
 
 type Params = Parameters<typeof authKeys.login>[0];
 
-type LoginEffect = ReturnType<typeof authRepositories.login>;
+type LoginEffect = ReturnType<typeof authApi.login>;
 
 type Success = Effect.Success<LoginEffect>;
 
@@ -32,7 +33,7 @@ export const useAuthLogin = (
 
   return useMutation<Success, MutationError, Exclude<Params, undefined>>({
     mutationFn: async (json) =>
-      await appRuntime.runPromise(authRepositories.login(json)),
+      await appRuntime.runPromise(authApi.login(json)),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
       toast.show(toErrorMessage(error), {
