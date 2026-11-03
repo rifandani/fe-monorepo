@@ -4,10 +4,10 @@ import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";
 import { logger } from "@workspace/core/utils/logger";
 
-import { authUserAtom } from "@/auth/stores/auth-user-store";
 import { Button } from "@/core/components/ui/button";
 import { Link } from "@/core/components/ui/link";
 import { TRACER_ROUTER_ON_ERROR } from "@/core/constants/global";
+import { persistence } from "@/core/layers/persistence";
 import { useTranslation } from "@/core/providers/i18n/context";
 import { queryClient } from "@/core/providers/query/client";
 import { appRuntime } from "@/core/services/runtime";
@@ -69,7 +69,7 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
 };
 
 const NotFoundRoute = () => {
-  const user = useAtomValue(authUserAtom);
+  const user = useAtomValue(persistence.sessionAtom);
   const { t } = useTranslation();
 
   return (

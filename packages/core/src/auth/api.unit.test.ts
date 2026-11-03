@@ -4,6 +4,7 @@ import { authApi } from "@workspace/core/auth/api";
 import { authKeys } from "@workspace/core/auth/queries";
 import { Http } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
+import { Session } from "@workspace/core/session/session";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -26,6 +27,7 @@ const credentials = { username: "ada", password: "secret1" };
 
 /** `authApi` reads `Http` from context, so the test owns the base URL. */
 const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+  Layer.provide(Session.layerMemory()),
   Layer.provide(FetchHttpClient.layer)
 );
 

@@ -3,8 +3,9 @@ import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@workspace/core/auth/api";
 import { authKeys } from "@workspace/core/auth/queries";
+import { startSession } from "@workspace/core/session/session";
 import { toErrorMessage } from "@workspace/core/utils/error";
-import type { Effect } from "effect";
+import { Effect } from "effect";
 import { toast } from "sonner";
 import type { Except } from "type-fest";
 
@@ -30,7 +31,10 @@ export const useAuthLogin = (
 
   return useMutation<Success, Error, Exclude<Params, undefined>>({
     mutationFn: async (json) =>
-      await appRuntime.runPromise(authApi.login(json)),
+      await appRuntime.runPromise(
+        // Session Start belongs to the login itself, so no caller can forget it.
+        authApi.login(json).pipe(Effect.tap(startSession))
+      ),
     mutationKey: authKeys.login(params),
     onError: (error, variables, onMutateResult, context) => {
       toast.error(toErrorMessage(error));

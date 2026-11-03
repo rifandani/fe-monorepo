@@ -1,6 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { Http } from "@workspace/core/http/http";
+import { Session } from "@workspace/core/session/session";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -10,10 +11,12 @@ import type { GetUserApiResponseSchema } from "./user";
 
 /**
  * `userApi` reads `Http` from context, so the test owns the base URL and no
- * app singleton — nor the MMKV-backed store behind its Session — is loaded.
+ * app singleton — nor the MMKV-backed Persistence behind its Session — is
+ * loaded: the Session is the in-memory adapter.
  * The request itself is still faked at the Network Boundary (ADR-0002).
  */
 const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+  Layer.provide(Session.layerMemory()),
   Layer.provide(FetchHttpClient.layer)
 );
 

@@ -2,8 +2,8 @@ import { Http } from "@workspace/core/http/http";
 import { Layer } from "effect";
 import { FetchHttpClient, HttpClient } from "effect/http";
 
-import { sessionAuth } from "@/auth/utils/session-auth";
 import { ENV } from "@/core/constants/env";
+import { SessionLive } from "@/core/layers/session";
 
 /**
  * Trace headers (`traceparent`, `b3`) make every cross-origin request a CORS
@@ -14,12 +14,13 @@ const isSameOriginApi =
   new URL(ENV.VITE_API_BASE_URL).origin === globalThis.location?.origin;
 
 /**
- * @description The API client: `Http` over `fetch`, carrying the Session.
+ * @description The API client: `Http` over `fetch`, carrying the Session. The
+ * `Session` stays in the context, so app Effects can start and end it.
  */
 export const HttpLive = Http.layer({
   baseUrl: ENV.VITE_API_BASE_URL,
-  auth: sessionAuth,
 }).pipe(
+  Layer.provideMerge(SessionLive),
   Layer.provideMerge(FetchHttpClient.layer),
   Layer.provideMerge(
     Layer.succeed(HttpClient.TracerPropagationEnabled, isSameOriginApi)

@@ -1,8 +1,10 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { authUserStore } from "@/auth/stores/auth-user-store";
 import { hasValidSession } from "@/auth/utils/has-valid-session";
+import { persistence } from "@/core/layers/persistence";
+
+const { registry, sessionAtom } = persistence;
 
 const validUser: AuthLoginResponseSchema = {
   accessToken: "access",
@@ -18,7 +20,7 @@ const validUser: AuthLoginResponseSchema = {
 
 describe("hasValidSession", () => {
   beforeEach(() => {
-    authUserStore.clear();
+    registry.set(sessionAtom, null);
   });
 
   it("is false when there is no Session", () => {
@@ -26,14 +28,14 @@ describe("hasValidSession", () => {
   });
 
   it("is true once a Session exists", () => {
-    authUserStore.set(validUser);
+    registry.set(sessionAtom, validUser);
 
     expect(hasValidSession()).toBe(true);
   });
 
   it("is false again after the Session ends", () => {
-    authUserStore.set(validUser);
-    authUserStore.clear();
+    registry.set(sessionAtom, validUser);
+    registry.set(sessionAtom, null);
 
     expect(hasValidSession()).toBe(false);
   });

@@ -1,6 +1,7 @@
 import { useAtomValue } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
+import { endSession } from "@workspace/core/session/session";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
@@ -21,11 +22,11 @@ import {
   YStack,
 } from "tamagui";
 
-import { endSession } from "@/auth/utils/end-session";
 import { BaseButton } from "@/core/components/button/base-button";
 import { BLURHASH } from "@/core/constants/global";
+import { persistence } from "@/core/layers/persistence";
 import { useTranslation } from "@/core/providers/i18n/context";
-import { userAtom } from "@/core/stores/app-store";
+import { appRuntime } from "@/core/services/runtime";
 import { formatDisplayDate } from "@/core/utils/date";
 import type { ToastCustomData } from "@/core/utils/toast";
 import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
@@ -53,7 +54,7 @@ const BirthDate = ({
 
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
-  const user = useAtomValue(userAtom);
+  const user = useAtomValue(persistence.sessionAtom);
 
   const { data } = useGetUser(
     user
@@ -163,7 +164,8 @@ const LogoutListItem = () => {
       icon={<Feather name="log-out" color={$red10} />}
       iconAfter={<Feather name="chevron-right" color={$red10} />}
       onPress={() => {
-        endSession();
+        // `Stack.Protected` guards on `sessionAtom`, so ending it is the navigation.
+        void appRuntime.runPromise(endSession);
       }}
     >
       <ListItem.Text color="$red10">{t("logout")}</ListItem.Text>

@@ -12,7 +12,6 @@ import { AppI18nProvider } from "@/core/providers/i18n/provider";
 import { AppQueryProvider } from "@/core/providers/query/provider";
 import { AppTamaguiProvider } from "@/core/providers/tamagui/provider";
 import { AppToastProvider } from "@/core/providers/toast/provider";
-import { userAtom } from "@/core/stores/app-store";
 
 // // Keep the splash screen visible while we fetch resources
 // SplashScreen.preventAutoHideAsync()
@@ -24,7 +23,7 @@ SplashScreen.setOptions({
 
 const App = () => {
   const { t } = useTranslation();
-  const user = useAtomValue(userAtom);
+  const user = useAtomValue(persistence.sessionAtom);
 
   return (
     <GestureHandlerRootView>

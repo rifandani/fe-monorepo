@@ -1,17 +1,48 @@
 import { describe, expect, it } from "@effect/vitest";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
+import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import type { HttpAuthConfig } from "@workspace/core/http/http";
-import { Effect, Layer } from "effect";
+import { currentAccessToken, Session } from "@workspace/core/session/session";
+import { Effect, Layer, Option } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { delay, http, HttpResponse } from "msw";
 
 const resourceUrl = `${MOCK_API_BASE_URL}/things`;
 
-/** A fresh `Http` per test, so each one owns its Session wiring. */
-const withHttp = (auth?: HttpAuthConfig) =>
+const sessionWith = (accessToken: string): AuthLoginResponseSchema => ({
+  accessToken,
+  email: "ada@example.com",
+  firstName: "Ada",
+  gender: "female",
+  id: 1,
+  image: "https://example.com/a.png",
+  lastName: "Lovelace",
+  refreshToken: "refresh",
+  username: "ada",
+});
+
+/**
+ * A fresh `Http` per test, on an in-memory Session, so each test owns its
+ * Session. `Session` stays in the context, so a test can read it back.
+ */
+const withHttp = (
+  options: {
+    accessToken?: string;
+    auth?: HttpAuthConfig;
+    onEnd?: Effect.Effect<void>;
+  } = {}
+) =>
   Effect.provide(
-    Http.layer({ baseUrl: MOCK_API_BASE_URL, auth }).pipe(
+    Http.layer({ baseUrl: MOCK_API_BASE_URL, auth: options.auth }).pipe(
+      Layer.provideMerge(
+        Session.layerMemory(
+          options.accessToken === undefined
+            ? null
+            : sessionWith(options.accessToken),
+          { onEnd: options.onEnd }
+        )
+      ),
       Layer.provide(FetchHttpClient.layer)
     )
   );
@@ -61,7 +92,7 @@ describe("Http", () => {
     Effect.gen(function* () {
       const requests = captureRequests();
 
-      yield* getThings().pipe(withHttp({ getToken: () => "abc123" }));
+      yield* getThings().pipe(withHttp({ accessToken: "abc123" }));
 
       expect(requests[0]?.headers.get("Authorization")).toBe("Bearer abc123");
     })
@@ -71,7 +102,7 @@ describe("Http", () => {
     Effect.gen(function* () {
       const requests = captureRequests();
 
-      yield* getThings().pipe(withHttp({ getToken: () => null }));
+      yield* getThings().pipe(withHttp());
 
       expect(requests[0]?.headers.get("Authorization")).toBeNull();
     })
@@ -84,18 +115,20 @@ describe("Http", () => {
         let ended = 0;
         rejectWith401();
 
-        const error = yield* Effect.flip(
-          getThings().pipe(
-            withHttp({
-              getToken: () => "abc123",
-              onUnauthorized: () => {
-                ended += 1;
-              },
-            })
-          )
+        const [error, token] = yield* Effect.all([
+          Effect.flip(getThings()),
+          currentAccessToken,
+        ]).pipe(
+          withHttp({
+            accessToken: "abc123",
+            onEnd: Effect.sync(() => {
+              ended += 1;
+            }),
+          })
         );
 
         expect(error).toMatchObject({ _tag: "HttpResponseError", status: 401 });
+        expect(Option.isNone(token)).toBe(true);
         expect(ended).toBe(1);
       })
   );
@@ -111,10 +144,9 @@ describe("Http", () => {
         yield* Effect.flip(
           getThings().pipe(
             withHttp({
-              getToken: () => null,
-              onUnauthorized: () => {
+              onEnd: Effect.sync(() => {
                 ended += 1;
-              },
+              }),
             })
           )
         );
@@ -133,10 +165,9 @@ describe("Http", () => {
       yield* Effect.flip(
         getThings({ headers: { Authorization: "Bearer theirs" } }).pipe(
           withHttp({
-            getToken: () => null,
-            onUnauthorized: () => {
+            onEnd: Effect.sync(() => {
               ended += 1;
-            },
+            }),
           })
         )
       );
@@ -153,9 +184,8 @@ describe("Http", () => {
 
         yield* getThings().pipe(
           withHttp({
-            getToken: () => "abc123",
-            header: "X-Session",
-            format: (token) => `Token ${token}`,
+            accessToken: "abc123",
+            auth: { header: "X-Session", format: (token) => `Token ${token}` },
           })
         );
 
@@ -226,7 +256,10 @@ describe("Http", () => {
             Http.layer({
               baseUrl: MOCK_API_BASE_URL,
               timeout: "10 millis",
-            }).pipe(Layer.provide(FetchHttpClient.layer))
+            }).pipe(
+              Layer.provide(Session.layerMemory()),
+              Layer.provide(FetchHttpClient.layer)
+            )
           )
         )
       );
@@ -254,6 +287,7 @@ describe("Http", () => {
       yield* getThings().pipe(
         Effect.provide(
           Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+            Layer.provide(Session.layerMemory()),
             Layer.provide(TaggedTransport),
             Layer.provide(FetchHttpClient.layer)
           )

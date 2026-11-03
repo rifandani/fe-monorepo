@@ -1,4 +1,5 @@
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
+import { Session } from "@workspace/core/session/session";
 import { Context, Duration, Effect, Layer, Option, Schema } from "effect";
 import type { Cause } from "effect";
 import { constUndefined } from "effect/Function";
@@ -10,14 +11,9 @@ const defaultFormat = (token: string) => `Bearer ${token}`;
 const defaultTimeout = Duration.seconds(10);
 
 /**
- * @description How an `Http` client proves the Session on every request.
+ * @description How an `Http` client sends the Access Token of the `Session`.
  */
 export interface HttpAuthConfig {
-  /**
-   * @description Read the current Access Token, or `null` when there is no Session.
-   * Called per request, so login and logout need not notify the client.
-   */
-  getToken: () => string | null;
   /**
    * @description Name of the header the Access Token is sent in.
    * @default "Authorization"
@@ -28,12 +24,6 @@ export interface HttpAuthConfig {
    * @default token => `Bearer ${token}`
    */
   format?: (token: string) => string;
-  /**
-   * @description End the Session, called when the server rejects an Access Token.
-   * Only fires when the rejected request actually carried one, so a failed sign-in
-   * — which is a 401 with no Session to end — never triggers it.
-   */
-  onUnauthorized?: () => void;
 }
 
 export interface HttpConfig {
@@ -42,7 +32,8 @@ export interface HttpConfig {
    */
   baseUrl: string;
   /**
-   * @description Optional Session auth.
+   * @description How the Access Token is sent.
+   * @default the `Authorization` header, as `Bearer <token>`
    */
   auth?: HttpAuthConfig;
   /**
@@ -101,22 +92,32 @@ const failOnErrorStatus = (response: HttpClientResponse.HttpClientResponse) => {
   );
 };
 
-const withAuth =
-  (auth: HttpAuthConfig) =>
+/**
+ * Send the Access Token of the `Session`, and end the Session when the server
+ * rejects that token. A 401 ends the Session only when the rejected request
+ * carried the token this client sent, so a failed sign-in — a 401 with no
+ * Session to end — never ends one.
+ */
+const withSession =
+  (session: Session["Service"], auth: HttpAuthConfig) =>
   <E, R>(client: HttpClient.HttpClient.With<E, R>) => {
     const header = auth.header ?? defaultHeader;
     const format = auth.format ?? defaultFormat;
 
     return client.pipe(
-      HttpClient.mapRequest((request) => {
-        const token = auth.getToken();
-
-        return token === null || token === ""
-          ? request
-          : HttpClientRequest.setHeader(request, header, format(token));
-      }),
+      HttpClient.mapRequestEffect((request) =>
+        session.accessToken.pipe(
+          Effect.map(
+            Option.match({
+              onNone: () => request,
+              onSome: (token) =>
+                HttpClientRequest.setHeader(request, header, format(token)),
+            })
+          )
+        )
+      ),
       HttpClient.tap((response) =>
-        Effect.sync(() => {
+        Effect.gen(function* () {
           if (response.status !== 401) {
             return;
           }
@@ -126,18 +127,17 @@ const withAuth =
           // their own, and a 401 answering someone else's credential says
           // nothing about our Session. So the header value is compared with
           // the one the current token would produce.
-          const token = auth.getToken();
+          const token = yield* session.accessToken;
           const sent = Headers.get(response.request.headers, header);
 
           if (
-            token === null ||
-            token === "" ||
-            Option.getOrUndefined(sent) !== format(token)
+            Option.isNone(token) ||
+            Option.getOrUndefined(sent) !== format(token.value)
           ) {
             return;
           }
 
-          auth.onUnauthorized?.();
+          yield* session.end;
         })
       )
     );
@@ -146,13 +146,14 @@ const withAuth =
 /**
  * @description Build the app's API client from a transport `HttpClient`.
  *
- * Resolves relative paths against `baseUrl`, asks for JSON, carries the Session
- * when `auth` is set, fails non-2xx responses with `HttpResponseError`, and
- * bounds every request with a timeout.
+ * Resolves relative paths against `baseUrl`, asks for JSON, carries the
+ * Session, fails non-2xx responses with `HttpResponseError`, and bounds every
+ * request with a timeout.
  */
-export const makeHttpClient = (
+const makeHttpClient = (
   client: HttpClient.HttpClient,
-  { auth, baseUrl, timeout = defaultTimeout }: HttpConfig
+  session: Session["Service"],
+  { auth = {}, baseUrl, timeout = defaultTimeout }: HttpConfig
 ): HttpClient.HttpClient.With<HttpError> => {
   const base = client.pipe(
     HttpClient.mapRequest((request) =>
@@ -163,9 +164,10 @@ export const makeHttpClient = (
     )
   );
 
-  const authed = auth ? withAuth(auth)(base) : base;
-
-  return authed.pipe(
+  return withSession(
+    session,
+    auth
+  )(base).pipe(
     HttpClient.transformResponse((response) =>
       response.pipe(Effect.flatMap(failOnErrorStatus), Effect.timeout(timeout))
     )
@@ -192,7 +194,11 @@ export class Http extends Context.Service<
     Layer.effect(
       Http,
       Effect.gen(function* () {
-        return makeHttpClient(yield* HttpClient.HttpClient, config);
+        return makeHttpClient(
+          yield* HttpClient.HttpClient,
+          yield* Session,
+          config
+        );
       })
     );
 }

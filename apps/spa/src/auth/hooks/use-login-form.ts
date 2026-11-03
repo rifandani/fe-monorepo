@@ -4,7 +4,6 @@ import { authLoginRequestSchema } from "@workspace/core/auth/schemas";
 import { Schema } from "effect";
 
 import { useAuthLogin } from "@/auth/hooks/use-auth-login";
-import { authUserStore } from "@/auth/stores/auth-user-store";
 
 /** TanStack Form reads any Standard Schema; Effect Schema converts to one. */
 const loginValidator = Schema.toStandardSchemaV1(authLoginRequestSchema);
@@ -17,9 +16,8 @@ export const useLoginForm = () => {
   const navigate = useNavigate();
 
   const loginMutation = useAuthLogin(undefined, {
-    onSuccess: async (user) => {
-      // set user to local storage and navigate to home
-      authUserStore.set(user);
+    onSuccess: async () => {
+      // The login already started the Session; only the navigation is left.
       await navigate({ to: "/" });
     },
   });
