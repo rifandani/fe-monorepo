@@ -5,17 +5,17 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/core/styles/globals.css",
+    "css": "src/styles/globals.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
   "aliases": {
-    "components": "@/core/components",
-    "lib": "@/core/utils",
-    "hooks": "@/core/hooks",
-    "utils": "@/core/utils",
-    "ui": "@/core/components/ui"
+    "components": "@/components",
+    "lib": "@/utils",
+    "hooks": "@/hooks",
+    "utils": "@/utils",
+    "ui": "@/components/ui"
   },
   "iconLibrary": "react-icons",
   "registries": {

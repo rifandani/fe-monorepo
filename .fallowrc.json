@@ -1,18 +1,25 @@
 {
   "$schema": "./node_modules/fallow/schema.json",
-  "entry": ["src/index.{ts,tsx,js,jsx}", "src/main.{ts,tsx,js,jsx}"],
+  "entry": [
+    "src/index.{ts,tsx,js,jsx}",
+    "src/main.{ts,tsx,js,jsx}",
+    "apps/expo/tamagui.config.ts"
+  ],
   "workspaces": {
     "patterns": ["apps/*", "packages/*"]
   },
   "ignorePatterns": ["repos/**"],
   "ignoreExports": [
-    { "file": "apps/spa/**/components/ui/**", "exports": ["*"] },
+    {
+      "file": "apps/spa/**/components/ui/**",
+      "exports": ["*"]
+    },
     {
       "file": "vitest.msw.ts",
       "exports": ["*"]
     },
     {
-      "file": "apps/spa/src/master-design/**",
+      "file": "apps/spa/src/features/master-design/**",
       "exports": ["*"]
     }
   ],
@@ -27,10 +34,10 @@
     {
       "files": [
         "apps/spa/pwa-assets.config.ts",
-        "apps/spa/src/sw.ts",
-        "apps/spa/src/core/hooks/**",
+        "apps/spa/src/app/sw.ts",
+        "apps/spa/src/hooks/**",
         "apps/expo/src/test/react-native-mmkv-stub.ts",
-        "apps/expo/src/core/constants/**",
+        "apps/expo/src/shared/constants/**",
         "oxfmt.config.ts",
         "oxlint.config.ts",
         "stryker.config.mjs",
@@ -42,18 +49,11 @@
       }
     }
   ],
-  "ignoreFindings": [
-    "apps/spa/src/core/feature-flags/panel.tsx",
-    "apps/spa/src/core/providers/router/client.tsx",
-    "apps/spa/src/routeTree.gen.ts",
-    "apps/spa/src/routes/__root.tsx",
-    "apps/spa/src/core/providers/devtools.tsx"
-  ],
   "duplicates": {
     "minOccurrences": 3,
     "ignore": [
-      "apps/spa/src/auth/hooks/use-auth-login.ts",
-      "apps/spa/src/core/providers/i18n/context.tsx"
+      "apps/spa/src/features/auth/hooks/use-auth-login.ts",
+      "apps/spa/src/providers/i18n/context.tsx"
     ]
   },
   "health": {
@@ -63,7 +63,7 @@
       "**/routeTree.gen.ts",
       "**/*.gen.ts",
       "**/components/ui/**",
-      "apps/spa/src/master-design/**",
+      "apps/spa/src/features/master-design/**",
       "**/*.{test,spec}.{ts,tsx}",
       "**/e2e/**",
       "scripts/security/**"
@@ -88,5 +88,8 @@
     "metro-minify-terser",
     "oxlint-plugin-react-doctor",
     "tailwindcss"
-  ]
+  ],
+  "rules": {
+    "boundary-violation": "error"
+  }
 }

@@ -1,0 +1,58 @@
+"use client"
+
+import { HiXCircle } from "react-icons/hi2"
+import { Button } from "react-aria-components/Button"
+import type { TagGroupProps, TagListProps, TagProps } from "react-aria-components/TagGroup"
+import {
+  Tag as PrimitiveTag,
+  TagGroup as PrimitiveTagGroup,
+  TagList as PrimitiveTagList,
+} from "react-aria-components/TagGroup"
+import { cn } from "cn"
+import { cx } from "@/utils/primitive"
+
+export function TagGroup({ className, ...props }: TagGroupProps) {
+  return (
+    <PrimitiveTagGroup
+      data-slot="control"
+      className={cn("flex flex-col gap-y-1 *:data-[slot=label]:font-medium", className)}
+      {...props}
+    />
+  )
+}
+
+export function TagList<T extends object>({ className, ...props }: TagListProps<T>) {
+  return <PrimitiveTagList className={cx("flex flex-wrap gap-1", className)} {...props} />
+}
+
+export function Tag({ children, className, ...props }: TagProps) {
+  const textValue = typeof children === "string" ? children : undefined
+
+  return (
+    <PrimitiveTag
+      textValue={textValue}
+      className={cx(
+        "inset-ring inset-ring-input outline-hidden dark:bg-input/30",
+        "inline-flex items-center gap-x-1.5 py-0.5 font-medium text-xs/5 forced-colors:outline",
+        "*:[svg]:size-3 *:[svg]:shrink-0",
+        "cursor-default rounded-full px-2",
+        "selected:inset-ring-ring/70 selected:bg-primary-subtle selected:text-primary-subtle-foreground",
+        "disabled:opacity-50 disabled:forced-colors:text-[GrayText]",
+        props.href && "cursor-pointer hover:inset-ring-muted-foreground",
+        className
+      )}
+      {...props}
+    >
+      {({ allowsRemoving }) => (
+        <>
+          {children}
+          {allowsRemoving && (
+            <Button slot="remove" className="">
+              <HiXCircle className="-me-1 size-4" />
+            </Button>
+          )}
+        </>
+      )}
+    </PrimitiveTag>
+  )
+}

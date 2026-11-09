@@ -5,13 +5,13 @@ import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import { persistence } from "@/core/layers/persistence";
-import { DevPlugins } from "@/core/providers/dev-plugins";
-import { useTranslation } from "@/core/providers/i18n/context";
-import { AppI18nProvider } from "@/core/providers/i18n/provider";
-import { AppQueryProvider } from "@/core/providers/query/provider";
-import { AppTamaguiProvider } from "@/core/providers/tamagui/provider";
-import { AppToastProvider } from "@/core/providers/toast/provider";
+import { persistence } from "@/lib/layers/persistence";
+import { DevPlugins } from "@/providers/dev-plugins";
+import { useTranslation } from "@/providers/i18n/context";
+import { AppI18nProvider } from "@/providers/i18n/provider";
+import { AppQueryProvider } from "@/providers/query/provider";
+import { AppTamaguiProvider } from "@/providers/tamagui/provider";
+import { AppToastProvider } from "@/providers/toast/provider";
 
 // // Keep the splash screen visible while we fetch resources
 // SplashScreen.preventAutoHideAsync()

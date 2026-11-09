@@ -2,13 +2,15 @@ import path from "node:path";
 
 import { defineProject } from "vitest/config";
 
+import { coreAliases } from "../../vitest.core-aliases.js";
+
 const root = import.meta.dirname;
 
 export default defineProject({
   resolve: {
     alias: {
       "@test/msw": path.join(root, "../../vitest.msw.ts"),
-      "@workspace/core": path.join(root, "src"),
+      ...coreAliases,
     },
   },
   test: {

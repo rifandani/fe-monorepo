@@ -2,10 +2,10 @@ import { Link } from "expo-router";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { H3, Paragraph, YStack } from "tamagui";
 
-import { LoginForm } from "@/auth/components/login-form";
-import { useTranslation } from "@/core/providers/i18n/context";
+import { LoginForm } from "@/features/auth/components/login-form";
+import { useTranslation } from "@/providers/i18n/context";
 
-export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
+export { BaseErrorBoundary as ErrorBoundary } from "@/components/base-error-boundary";
 
 const LoginScreen = () => {
   const { t } = useTranslation();

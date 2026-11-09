@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "rules": {
+    "boundary-violation": "error"
+  },
+  "boundaries": {
+    "preset": "bulletproof",
+    "coverage": {
+      "requireAllFiles": true,
+      "allowUnmatched": ["*.{ts,js,mjs,html}", "scripts/**", "e2e/**"]
+    }
+  }
+}

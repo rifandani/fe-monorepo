@@ -2,9 +2,9 @@ import { useAtomValue } from "@effect/atom-react";
 import { Link, Stack } from "expo-router";
 import { H3, YStack } from "tamagui";
 
-import { BaseButton } from "@/core/components/button/base-button";
-import { persistence } from "@/core/layers/persistence";
-import { useTranslation } from "@/core/providers/i18n/context";
+import { BaseButton } from "@/components/button/base-button";
+import { persistence } from "@/lib/layers/persistence";
+import { useTranslation } from "@/providers/i18n/context";
 
 const Unmatched = () => {
   const { t } = useTranslation();

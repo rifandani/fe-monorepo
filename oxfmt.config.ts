@@ -5,8 +5,8 @@ export default defineConfig({
   ...ultracite,
   ignorePatterns: [
     ...(ultracite.ignorePatterns ?? []),
-    "**/apps/spa/src/routeTree.gen.ts",
-    "**/apps/*/src/core/components/ui/**",
+    "**/apps/spa/src/app/routeTree.gen.ts",
+    "**/apps/*/src/components/ui/**",
     "**/.agents",
     "**/.claude",
     "**/.cursor",
