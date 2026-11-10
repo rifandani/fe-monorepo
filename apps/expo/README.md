@@ -7,11 +7,11 @@ When you start a new project from this template, change the placeholder values b
 - [ ] Run `eas init` (see [Setup EAS](#setup-eas)), then set these in `app.config.ts`: `EAS_PROJECT_ID`, `PROJECT_SLUG`, `OWNER`, `APP_NAME`, `BUNDLE_IDENTIFIER` (`com.rifandani.expoapp`), `SCHEME`, and the `appleTeamId` / app group comments.
 - [ ] `package.json`: `MAESTRO_APP_ID` in the `test:dev` and `test:prod` scripts, and the `/tmp/fe-monorepo-expo` folder in `ios:sim:install`.
 - [ ] This README: the bundle IDs in the uninstall and Maestro commands, and the `/tmp/fe-monorepo-expo` folder.
-- [ ] `src/core/layers/mmkv.ts` and `src/core/layers/mmkv.unit.test.ts`: `encryptionKey` (`"fe-monorepo/expo"`).
+- [ ] `src/lib/layers/mmkv.ts` and `src/lib/layers/mmkv.unit.test.ts`: `encryptionKey` (`"fe-monorepo/expo"`).
 - [ ] Repo root `packages/core/src/i18n/locales/en-US.ts` and `id-ID.ts`: `appName` (`"Expo App"`).
-- [ ] `src/core/assets/icons/*`: app icons and splash image. Also the splash and adaptive icon `backgroundColor` in `app.config.ts`.
+- [ ] `src/shared/assets/icons/*`: app icons and splash image. Also the splash and adaptive icon `backgroundColor` in `app.config.ts`.
 - [ ] `.env.example` and the EAS project env: `EXPO_PUBLIC_API_BASE_URL` (`https://dummyjson.com`).
-- [ ] Repo root `packages/core/src/{auth,cdn,http}/` and `src/user/`: change the endpoints (`api.ts`) and schemas (`schemas.ts`) to your API.
+- [ ] Repo root `packages/core/src/lib/{auth,cdn,http}/` and `src/features/user/`: change the endpoints (`api.ts`) and schemas (`schemas.ts`) to your API.
 - [ ] `.maestro/shared/_login.yaml` and `.maestro/flows/profile.yaml`: the test user and email. `.maestro/flows/home.yaml`: the `"Expo App using:"` text (it comes from `appName`).
 - [ ] `eas.json`: the `submit.production` values when you are ready to publish to the stores.
 

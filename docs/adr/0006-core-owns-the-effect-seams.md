@@ -1,5 +1,7 @@
 # Core is organised by domain and owns the Effect seams
 
+> The source paths changed with [ADR-0007](./0007-default-bulletproof-source-layout.md). Domain ownership and Effect service design remain in effect.
+
 `packages/core` is organised by domain (`auth/`, `cdn/`, `http/`, `i18n/`, `persistence/`, `session/`), not by kind (`apis/`, `services/`, `libs/`). Core owns the Session and the stored client state of every app, behind one seam: a `KeyValueStore` layer. Each app keeps only its platform adapters and its one runtime, in `src/core/layers/`. TanStack Query stays the owner of server state.
 
 > Recorded on 2026-11-03, after commit `60f553711` moved both apps to Effect. The move made `Http` and the endpoints real Effect code, but the code around them stayed copied in each app.

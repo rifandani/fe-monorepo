@@ -3,55 +3,6 @@
   "expires_format": "YYYY-MM-DD",
   "entries": [
     {
-      "id": "GHSA-mh99-v99m-4gvg",
-      "package": "brace-expansion",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
-    },
-    {
-      "id": "GHSA-rgw5-rvv9-x895",
-      "package": "brace-expansion",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
-    },
-    {
-      "id": "GHSA-3jxr-9vmj-r5cp",
-      "package": "brace-expansion",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
-    },
-    {
-      "id": "GHSA-6j4f-fj2g-mc7p",
-      "package": "brace-expansion",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
-    },
-    {
-      "id": "GHSA-qhr7-859c-m2p7",
-      "package": "brace-expansion",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via expo/eslint/workbox; bump when upstream releases land"
-    },
-    {
-      "id": "GHSA-6g55-p6wh-862q",
-      "package": "postcss",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via vite; bump with framework releases"
-    },
-    {
-      "id": "GHSA-r28c-9q8g-f849",
-      "package": "postcss",
-      "severity": "high",
-      "expires": "2026-11-06",
-      "reason": "Transitive via vite; bump with framework releases"
-    },
-    {
       "id": "GHSA-5p2g-fcmc-qvqq",
       "package": "image-size",
       "severity": "high",
@@ -64,20 +15,6 @@
       "severity": "high",
       "expires": "2026-11-12",
       "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
-    },
-    {
-      "id": "GHSA-28wg-ghj8-5hjv",
-      "package": "nanoid",
-      "severity": "high",
-      "expires": "2026-11-12",
-      "reason": "Transitive via postcss/react-navigation; bump with framework releases"
-    },
-    {
-      "id": "GHSA-2v37-7h3g-55p8",
-      "package": "nanoid",
-      "severity": "high",
-      "expires": "2026-11-12",
-      "reason": "Transitive via postcss/react-navigation; bump with framework releases"
     },
     {
       "id": "GHSA-qr28-fpjm-wq7f",

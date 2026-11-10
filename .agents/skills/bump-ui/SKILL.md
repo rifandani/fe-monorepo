@@ -12,21 +12,19 @@ Leading word: **bump**. Universe is root `bump:ui` (`shadcn add @intentui/all -o
 
 `bun bump:ui`.
 
-**Done when:** spa `src/core/components/ui` shows the IntentUI overwrite (git dirty under that tree).
+**Done when:** spa `src/components/ui` shows the IntentUI overwrite (git dirty under that tree).
 
 ## 2. Adapt (spa)
 
 Apply every rule below to every touched spa UI file (and toast/globals where named). Exhaustive — skip none that match.
 
 - Keep `'use client'` on components/hooks that had it or that the generator emitted client-only.
-- Merge new toast/Toaster props into `apps/spa/src/core/providers/toast/context.tsx`; delete generated `apps/spa/src/core/components/ui/toast.tsx` if present.
+- Merge new toast/Toaster props into `apps/spa/src/providers/toast/context.tsx`; delete generated `apps/spa/src/components/ui/toast.tsx` if present.
 - Import `react-stately` (not `@react-stately/color`).
 - Import `react-aria` (not `@react-aria/i18n`).
 - Import icons from `react-icons/hi2` (not `@heroicons/react`); map Heroicon names to `Hi*` exports to match already-adapted UI files.
-- Rewrite `@/hooks/use-mobile` → `@/core/hooks/use-mobile`.
-- Rewrite `@/hooks/use-clipboard` → `@/core/hooks/use-clipboard`.
 - Use `@reactuses/core` if possible instead of creating new custom hooks
-- Copy chart `className` tokens from `chart.tsx` into `apps/spa/src/core/styles/globals.css`.
+- Copy chart `className` tokens from `chart.tsx` into `apps/spa/src/styles/globals.css`.
 - React 19 context: render `<SomeContext value={…}>` (not `SomeContext.Provider`).
 - Hoist every regex to module scope (stable reference outside components/hooks).
 

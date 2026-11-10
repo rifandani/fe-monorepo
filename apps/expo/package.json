@@ -43,7 +43,8 @@
     "analyze": "dotenvx run --env EXPO_UNSTABLE_ATLAS=true -- expo start --dev-client -c --no-dev",
     "test:dev": "maestro test -e MAESTRO_APP_ID=com.rifandani.expoapp.development -e IS_DEV=true .maestro/flows",
     "test:prod": "maestro test -e MAESTRO_APP_ID=com.rifandani.expoapp.production -e IS_DEV=false .maestro/flows",
-    "test:ui": "maestro studio"
+    "test:ui": "maestro studio",
+    "check:boundaries": "fallow architecture --boundaries --quiet"
   },
   "dependencies": {
     "@dev-plugins/react-native-mmkv": "0.3.1",

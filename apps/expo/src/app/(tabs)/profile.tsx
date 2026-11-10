@@ -22,17 +22,17 @@ import {
   YStack,
 } from "tamagui";
 
-import { BaseButton } from "@/core/components/button/base-button";
-import { BLURHASH } from "@/core/constants/global";
-import { persistence } from "@/core/layers/persistence";
-import { appRuntime } from "@/core/layers/runtime";
-import { useTranslation } from "@/core/providers/i18n/context";
-import { formatDisplayDate } from "@/core/utils/date";
-import type { ToastCustomData } from "@/core/utils/toast";
-import { ProfileLanguageChanger } from "@/user/components/profile-language-changer";
-import { ProfileListItem } from "@/user/components/profile-list-item";
-import { ProfileThemeChanger } from "@/user/components/profile-theme-changer";
-import { useGetUser } from "@/user/hooks/use-get-user";
+import { BaseButton } from "@/components/button/base-button";
+import { ProfileLanguageChanger } from "@/features/user/components/profile-language-changer";
+import { ProfileListItem } from "@/features/user/components/profile-list-item";
+import { ProfileThemeChanger } from "@/features/user/components/profile-theme-changer";
+import { useGetUser } from "@/features/user/hooks/use-get-user";
+import { persistence } from "@/lib/layers/persistence";
+import { appRuntime } from "@/lib/layers/runtime";
+import { useTranslation } from "@/providers/i18n/context";
+import { BLURHASH } from "@/shared/constants/global";
+import { formatDisplayDate } from "@/utils/date";
+import type { ToastCustomData } from "@/utils/toast";
 
 const BirthDate = ({
   birthDate,
@@ -173,7 +173,7 @@ const LogoutListItem = () => {
   );
 };
 
-export { BaseErrorBoundary as ErrorBoundary } from "@/core/components/base-error-boundary";
+export { BaseErrorBoundary as ErrorBoundary } from "@/components/base-error-boundary";
 
 const TabsProfileScreen = () => (
   <YStack flex={1} p="$3" pt={Platform.select({ android: "$6", ios: "$9" })}>

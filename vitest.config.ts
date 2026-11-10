@@ -71,7 +71,7 @@ export default defineConfig({
         // the Access Token, a rejected token — lives in core's `session/`,
         // `persistence/` and `http/`, all of which are measured. Adapters with
         // logic of their own (`layers/mmkv.ts`) stay in.
-        "apps/*/src/core/layers/{env,http,persistence,runtime,session,telemetry}.ts",
+        "apps/*/src/lib/layers/{env,http,persistence,runtime,session,telemetry}.ts",
       ],
     },
   },

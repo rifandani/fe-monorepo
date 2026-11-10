@@ -118,7 +118,7 @@ export default defineConfig({
       // only move the cast to each caller.
       files: [
         "packages/core/src/utils/error.ts",
-        "apps/spa/src/core/utils/telemetry.ts",
+        "apps/spa/src/utils/telemetry.ts",
       ],
       rules: {
         "anti-slop/no-unknown-parameters": "off",
@@ -135,15 +135,66 @@ export default defineConfig({
     },
     {
       // shadcn/Intent UI components (`bun bump:ui` overwrites them). No lint
-      // rule runs on them, but they stay out of `ignorePatterns` so the type
-      // check still covers them, as `tsc --noEmit` did.
-      files: ["apps/*/src/core/components/ui/**"],
+      // style rule runs on them. The workspace import restrictions below and
+      // the type check still cover them.
+      files: ["apps/*/src/components/ui/**"],
       rules: allRulesOff,
+    },
+    // Each Fallow preset runs inside one workspace. Keep imports between
+    // workspaces in the package dependency direction: apps consume core.
+    {
+      files: ["apps/spa/src/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex: "^@workspace/expo(?:/|$)|^\\..*/expo(?:/|$)",
+                message: "SPA code must not import the Expo app.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["apps/expo/src/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex: "^@workspace/spa(?:/|$)|^\\..*/spa(?:/|$)",
+                message: "Expo code must not import the SPA app.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["packages/core/src/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                regex:
+                  "^@workspace/(?:spa|expo)(?:/|$)|^\\..*/apps/(?:spa|expo)(?:/|$)",
+                message: "Shared core code must not import an app.",
+              },
+            ],
+          },
+        ],
+      },
     },
   ],
   ignorePatterns: [
     ...(core.ignorePatterns ?? []),
-    "**/apps/spa/src/routeTree.gen.ts",
+    "**/apps/spa/src/app/routeTree.gen.ts",
     "**/.agents",
     "**/.claude",
     "**/.cursor",

@@ -3,7 +3,7 @@
 Use `useSeo` to generate metadata for each page at runtime in browser.
 
 ```tsx
-import { useSeo } from '@/core/hooks/use-seo'
+import { useSeo } from '@/hooks/use-seo'
 
 function Page() {
   useSeo({

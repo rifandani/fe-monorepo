@@ -21,7 +21,8 @@
     "dev": "portless run --name spa.fe-monorepo vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "build-and-preview": "bun run --sequential build preview"
+    "build-and-preview": "bun run --sequential build preview",
+    "check:boundaries": "fallow architecture --boundaries --quiet"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "2.38.2",

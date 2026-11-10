@@ -51,8 +51,7 @@ jobs:
             gitleaks detect --source . --verbose --redact --exit-code 1
           fi
 
-  # PR-scoped dead code / complexity / duplication / styling gate (new-only).
-  # https://docs.fallow.tools/cli/audit · https://docs.fallow.tools/integrations/ci
+  # Full-project dead code, boundaries, complexity, duplication, and styling checks.
   fallow:
     runs-on: ubuntu-latest
     steps:
@@ -73,6 +72,9 @@ jobs:
 
       - name: Install deps and disallow changes to lockfile
         run: bun ci
+
+      - name: Check architecture boundaries
+        run: bun run check:boundaries
 
       - name: Fallow all checks
         uses: fallow-rs/fallow@v3

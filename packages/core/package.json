@@ -7,22 +7,23 @@
   "author": "Tri Rizeki Rifandani",
   "type": "module",
   "exports": {
-    "./assets/*": "./src/assets/*",
-    "./auth/*": "./src/auth/*.ts",
-    "./cdn/*": "./src/cdn/*.ts",
-    "./constants/*": "./src/constants/*.ts",
+    "./assets/*": "./src/shared/assets/*",
+    "./auth/*": "./src/lib/auth/*.ts",
+    "./cdn/*": "./src/lib/cdn/*.ts",
+    "./constants/*": "./src/shared/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
-    "./http/*": "./src/http/*.ts",
+    "./http/*": "./src/lib/http/*.ts",
     "./i18n/*": "./src/i18n/*.ts",
-    "./persistence/*": "./src/persistence/*.ts",
-    "./session/*": "./src/session/*.ts",
+    "./persistence/*": "./src/lib/persistence/*.ts",
+    "./session/*": "./src/lib/session/*.ts",
     "./types/*": "./src/types/*.ts",
     "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
     "test:unit": "vitest run --project core",
     "typerange": "fr",
-    "typerange:audit": "fr --audit"
+    "typerange:audit": "fr --audit",
+    "check:boundaries": "fallow architecture --boundaries --quiet"
   },
   "devDependencies": {
     "@effect/atom-react": "4.1.2",

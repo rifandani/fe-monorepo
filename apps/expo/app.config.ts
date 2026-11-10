@@ -25,7 +25,7 @@ const isAppVariant = (value?: string): value is AppVariant =>
 const getDynamicAppConfig = (environment?: AppVariant) => {
   const APP_NAME = "Expo App";
   const BUNDLE_IDENTIFIER = "com.rifandani.expoapp";
-  const BASE_ICON_SRC = "./src/core/assets/icons";
+  const BASE_ICON_SRC = "./src/shared/assets/icons";
   const SCHEME = "expoapp";
 
   if (environment === "production") {
@@ -63,9 +63,9 @@ const PLUGINS = [
   [
     "expo-splash-screen",
     {
-      image: "./src/core/assets/icons/splash.png",
+      image: "./src/shared/assets/icons/splash.png",
       // dark: {
-      //   image: './src/core/assets/splash-dark.png',
+      //   image: './src/shared/assets/splash-dark.png',
       //   backgroundColor: '#000000',
       // },
       imageWidth: 200,

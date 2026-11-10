@@ -45,6 +45,8 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       tanstackRouter({
         autoCodeSplitting: true,
+        routesDirectory: "./src/app/routes",
+        generatedRouteTree: "./src/app/routeTree.gen.ts",
       }),
       react(),
       Unhead(),
@@ -57,7 +59,7 @@ export default defineConfig(({ mode }) => {
       serveDevServiceWorker(),
       VitePWA({
         strategies: "injectManifest",
-        srcDir: "src",
+        srcDir: "src/app",
         filename: "sw.ts",
         registerType: "prompt",
         injectRegister: false,

@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
 
-import { useTranslation } from "@/core/providers/i18n/context";
+import { useTranslation } from "@/providers/i18n/context";
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
