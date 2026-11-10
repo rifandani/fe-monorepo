@@ -8,8 +8,6 @@
 
 - /improve-codebase-architecture
 - /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
-- refactor whole codebase (except master-design) to follow best practices for react and composition patterns from /vercel-composition-patterns and /vercel-react-best-practices
-- remove oxlint-disable, fallow-disable across codebase and actually fix it
 
 ## 🏁 Getting Started
 

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Upkeep Implicit State Machines"
+  short_description: "Improve state flows across apps for UX, DX, and AX"
+policy:
+  allow_implicit_invocation: false
