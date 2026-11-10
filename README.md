@@ -6,11 +6,7 @@
 
 ## 🏁 Getting Started
 
-For a new app, run:
-
-```text
-Use /getting-started to set up this repo for my new app.
-```
+Open your agent and run: `Use /getting-started to set up this repo for my new app`
 
 ## Maintenance
 
