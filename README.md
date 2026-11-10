@@ -8,10 +8,7 @@
 
 - /improve-codebase-architecture
 - /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
-- refactor whole codebase (except master-design) to follow best practices for react and composition patterns from /vercel-composition-patterns and /vercel-react-best-practices
-- remove oxlint-disable, fallow-disable across codebase and actually fix it, and remove dead suppressions
-- fix error in browser logs and terminal logs
-- fix issues in build logs and find improvements to make it faster, smaller, etc
+- fix runtime error/warning in browser logs (if it's a browser app), terminal logs, and build time error/warning in build logs. Find improvements to make build faster, smaller, etc.
 - find all of the implicit state machines in my app. Make the best decision that will elevate all three: UX, DX, and AX (agent experience) always without breaking anything
 
 ## 🏁 Getting Started
