@@ -9,7 +9,11 @@
 - /improve-codebase-architecture
 - /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
 - refactor whole codebase (except master-design) to follow best practices for react and composition patterns from /vercel-composition-patterns and /vercel-react-best-practices
-- remove oxlint-disable, fallow-disable across codebase and actually fix it
+- remove oxlint-disable, fallow-disable across codebase and actually fix it, and remove dead suppressions
+- fix error in browser logs and terminal logs
+- fix issues in build logs and find improvements to make it faster, smaller, etc
+- find all of the implicit state machines in my app. Make the best decision that will elevate all three: UX, DX, and AX (agent experience) always without breaking anything
+- https://www.ultracite.ai/docs/presets#authorization-proofs-with-gdp-ts (do our frontend only codebase need this?)
 
 ## 🏁 Getting Started
 
