@@ -1,0 +1,3 @@
+interface:
+  display_name: "Upkeep Warning Logs"
+  short_description: "Fix runtime and build logs; improve build speed and size"

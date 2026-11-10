@@ -8,8 +8,6 @@
 
 - /improve-codebase-architecture
 - /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
-- fix runtime error/warning in browser logs (if it's a browser app), terminal logs, and build time error/warning in build logs. Find improvements to make build faster, smaller, etc.
-- find all of the implicit state machines in my app. Make the best decision that will elevate all three: UX, DX, and AX (agent experience) always without breaking anything
 
 ## 🏁 Getting Started
 
