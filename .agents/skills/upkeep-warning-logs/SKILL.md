@@ -1,6 +1,7 @@
 ---
 name: upkeep-warning-logs
 description: Fix runtime errors and warnings in browser and terminal logs, fix build errors and warnings, and improve build time and output size. Use for log cleanup or build optimization.
+disable-model-invocation: true
 ---
 
 # Upkeep warning logs
