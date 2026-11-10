@@ -1,6 +1,7 @@
 ---
 name: upkeep-implicit-state-machine
 description: Find and improve implicit state machines across apps and their shared code. Use for state-machine upkeep, coupled state flags, scattered transitions, or unclear workflow lifecycles.
+disable-model-invocation: true
 ---
 
 # Upkeep implicit state machines
@@ -15,7 +16,7 @@ Read the applicable repo instructions, standards, relevant glossaries from `GLOS
 
 Build a coverage list of routes, features, and shared areas in scope. Include components, hooks, providers, stores, services, navigation, persistence, background work, and platform adapters. Include source outside the usual feature folders when it can control application behavior. Exclude dependencies, vendored code, caches, and generated output; inspect the source or generator of relevant generated behavior.
 
-For independent areas, use parallel agents for discovery and implementation. Read [ORCHESTRATION.md](ORCHESTRATION.md) before assigning work; it defines checkout isolation, ownership, worker results, and integration checks. Keep small or tightly coupled work with one agent.
+For independent areas, use parallel subagents in the shared checkout. Read [ORCHESTRATION.md](ORCHESTRATION.md) before assigning work; it defines file ownership, worker results, and integration checks. Keep small or tightly coupled work with one agent.
 
 Search for state storage and state changes. Useful signals include state hooks, reducers, atoms, stores, mutable refs, module variables, status values, related booleans, effects, subscriptions, callbacks, promises, timers, and route or storage events. Read the source in each coverage area and trace its callers, state writers, and external events. Search matches are leads; search alone cannot establish coverage.
 
@@ -57,7 +58,7 @@ Give every finding a decision: improve, retain with evidence, or defer with a co
 
 Work in small groups of related flows. Keep the state owner, affected callers, adapters, and tests together. Start with flows where failure can lose data, leave stale authentication, repeat an action, or prevent recovery.
 
-Use the ownership and isolation rules in [ORCHESTRATION.md](ORCHESTRATION.md) for parallel implementation. Resolve shared contract changes before dependent work starts. Combine worker results before the final validation in step 4.
+Use the file ownership rules in [ORCHESTRATION.md](ORCHESTRATION.md) for parallel implementation. Resolve shared contract changes before dependent work starts. Combine worker results before the final validation in step 4.
 
 Use the simplest representation that enforces the model: a derived value, a named status, a discriminated union with state-specific data, or a reducer or transition function. Use domain terms for states and events. Keep the transition rules and invariants with their owner; expose actions that express intent. Preserve required controlled-component and public interfaces through adapters when needed.
 

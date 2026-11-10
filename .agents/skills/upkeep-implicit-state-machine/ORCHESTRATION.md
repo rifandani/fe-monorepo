@@ -1,6 +1,6 @@
 # Agent orchestration
 
-Use parallel work where the file ownership and dependencies permit it. The parent owns the coverage list, shared decisions, integration, and final validation. Workers perform their assigned work without starting more agents.
+Use subagents in the shared checkout where file ownership and dependencies permit parallel work. Do not create worktrees or separate checkouts. The parent owns the coverage list, shared decisions, integration, and final validation. Workers perform their assigned work without starting more agents.
 
 ## Discovery
 
@@ -14,7 +14,7 @@ The parent combines the results, removes duplicate flow entries, and resolves ow
 
 Partition selected work by independent state owner and contract. Keep coupled transitions, affected callers, adapters, and tests together. The parent handles shared configuration and contracts across groups. Complete a shared contract change before starting dependent groups, or give the contract and all consumers to one worker.
 
-Use the available orchestration tool's worktree isolation for editing workers. Follow the host tool's checkout and delegation rules. Each worker must start from the same recorded revision plus the current task changes it needs. Verify that starting state before edits. Give each worker separate output locations and ports where needed. If isolated checkouts are unavailable, keep discovery parallel and serialize edits in the shared checkout.
+Use the available native subagent tool. Tell each worker that edits are immediately visible to the other agents. Each worker edits only its assigned files and preserves changes made by the user and other agents. The parent also respects active file assignments. Sequence work when one task reads a contract that another task changes. Give workers separate output locations and ports where needed; serialize checks that share mutable caches, fixtures, or output files.
 
 Give each worker:
 
@@ -31,7 +31,7 @@ Each worker returns its inspected areas, flow models and decisions, changed file
 
 ## Integration
 
-Review each worker's diff against its assigned model, public contracts, and required benefits. Bring the changes into the parent checkout through supported patch or integration operations. Preserve existing user changes. Resolve dependent contracts and conflicts before treating a worker result as complete.
+After workers finish, review their changes in the shared checkout against their assigned models, public contracts, and required benefits. Use their returned file lists to account for edits. Preserve existing user changes. Resolve dependent contracts and overlapping edits before treating a worker result as complete.
 
 Reconcile all worker results with the coverage list and inventory. Run step 4 against the combined result, including paths that cross worker boundaries. A passing worker check cannot establish that the integrated apps work together.
 

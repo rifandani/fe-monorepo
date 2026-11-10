@@ -1,0 +1,5 @@
+interface:
+  display_name: "Upkeep Lint Suppressions"
+  short_description: "Fix hidden violations and remove dead suppressions"
+policy:
+  allow_implicit_invocation: false

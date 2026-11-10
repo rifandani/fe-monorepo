@@ -27,17 +27,17 @@ For build measurements, read [BUILD-MEASUREMENTS.md](BUILD-MEASUREMENTS.md). Rec
 
 ## 2. Assign independent work
 
-Use agent orchestration when separate apps, diagnostic causes, or build candidates can be investigated independently. Keep a small or tightly coupled task with one agent. Read-only discovery can run in parallel while the parent records the baseline.
+Use native subagents in the current checkout when separate apps, diagnostic causes, or build candidates can be investigated independently. Do not create worktrees or separate checkouts. Keep a small or tightly coupled task with one agent. Read-only discovery can run in parallel while the parent records the baseline.
 
 Group fixes by their dependency graph. Keep a cause, its callers, and its tests together. Assign each editable file to one owner. Keep shared configuration, dependency versions, lockfiles, and changes across groups with the parent.
 
-Use the available orchestration to give workers isolated worktrees when supported. Include the current task changes in each worker's starting state. Give each worker its files, findings, baseline evidence, applicable guidance, reproduction commands, and expected checks. Workers perform steps 3 and 4 within that assignment and return any dependency outside their scope to the parent.
+Give each subagent its files, findings, baseline evidence, applicable guidance, reproduction commands, and expected checks. Subagents perform steps 3 and 4 within that assignment, preserve other agents' edits, and return any dependency outside their scope to the parent.
 
-Isolate worker servers, browser sessions, ports, logs, generated output, and writable caches. In a shared checkout, use separate file ownership and serialize operations that share output or caches. Run competing build experiments in separate worktrees; take timing measurements without competing workloads, as specified in [BUILD-MEASUREMENTS.md](BUILD-MEASUREMENTS.md).
+Give subagents separate servers, browser sessions, ports, logs, generated output, and writable caches where supported. Run operations that share output or caches one at a time. Coordinate build experiments through the parent and evaluate candidates in sequence. Pause edits to the measured build inputs and competing workloads during timing measurements, as specified in [BUILD-MEASUREMENTS.md](BUILD-MEASUREMENTS.md).
 
-Each worker returns changed files, causes and fixes, reproduction and check results, build evidence, and unresolved findings. The parent reviews and combines accepted changes, resolves shared dependencies, and updates the findings list. Worker checks establish only the assigned scope; final validation covers the combined result.
+Each subagent returns changed files, causes and fixes, reproduction and check results, build evidence, and unresolved findings. The parent reviews the shared changes, resolves shared dependencies, and updates the findings list. Subagent checks establish only the assigned scope; final validation covers the combined result.
 
-**Done when:** each independent group has one owner and an isolated execution plan, and shared changes have a clear order. If parallel work is unsuitable, continue with one agent.
+**Done when:** each independent group has one owner in the current checkout, shared resources have an execution plan, and shared changes have a clear order. If parallel work is unsuitable, continue with one agent.
 
 ## 3. Fix the causes
 

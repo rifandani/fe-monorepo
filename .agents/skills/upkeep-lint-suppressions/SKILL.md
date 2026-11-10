@@ -22,15 +22,15 @@ Run the applicable checks before edits and record existing failures. Include unu
 
 ## 2. Assign independent work
 
-Use parallel agents when the inventory contains independent groups of files. Keep directives in the same file, fixes with shared callers, and changes to the same public contract in one group. Keep a small or tightly coupled cleanup with one agent.
+Use parallel subagents in the current shared checkout when the inventory contains independent groups of files. Do not create worktrees or separate checkouts. Keep directives in the same file, fixes with shared callers, and changes to the same public contract in one group. Keep a small or tightly coupled cleanup with one agent.
 
 Give each worker an explicit file list, its inventory entries, the baseline failures, applicable guidance, and check commands. Each worker must perform step 3 for its group. Assign each editable file to one owner. A worker that needs a file outside its assignment must return that dependency to the parent for reassignment.
 
-Use the available agent orchestration to give workers isolated checkouts when supported. Include the current task changes in each worker's starting state. In a shared checkout, use disjoint file ownership and serialize temporary diagnostic edits that could affect another worker's results. Keep shared configuration changes and fixes across groups with the parent.
+Use disjoint file ownership to isolate worker edits. Preserve changes made by other workers and the user. Serialize temporary diagnostic edits and checks when another worker's edits could affect their results. Keep shared configuration changes and fixes across groups with the parent.
 
-Each worker returns its changed files, the outcome for every assigned rule, retained reasons, check commands and results, and unresolved dependencies. The parent collects and reviews the changes, resolves dependencies, and updates the inventory. Run the full repo checks once the worker changes are combined; worker checks establish only their assigned scope.
+Each worker returns its changed files, the outcome for every assigned rule, retained reasons, check commands and results, and unresolved dependencies. The changes are already in the shared checkout. The parent reviews them, resolves dependencies, and updates the inventory. Run the full repo checks after all workers finish; worker checks establish only their assigned scope.
 
-**Done when:** every inventory entry has one owner, all workers have returned, and their changes and results are combined or recorded as blocked.
+**Done when:** every inventory entry has one owner, all workers have returned, and their changes and results are reviewed or recorded as blocked.
 
 ## 3. Remove, check, and fix
 
