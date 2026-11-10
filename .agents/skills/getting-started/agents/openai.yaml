@@ -1,0 +1,5 @@
+interface:
+  display_name: "Getting Started"
+  short_description: "Set up a new app from this boilerplate"
+policy:
+  allow_implicit_invocation: false
