@@ -1,0 +1,5 @@
+interface:
+  display_name: "Create Worktree"
+  short_description: "Create and set up a Git worktree for parallel work"
+policy:
+  allow_implicit_invocation: false

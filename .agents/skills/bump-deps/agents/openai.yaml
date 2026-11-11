@@ -1,0 +1,5 @@
+interface:
+  display_name: "Bump Dependencies"
+  short_description: "Update dependencies, vendored code, and agent skills"
+policy:
+  allow_implicit_invocation: false

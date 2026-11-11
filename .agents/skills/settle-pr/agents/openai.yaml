@@ -1,0 +1,5 @@
+interface:
+  display_name: "Settle PR Reviews"
+  short_description: "Resolve bot review comments and add rules to prevent errors"
+policy:
+  allow_implicit_invocation: false

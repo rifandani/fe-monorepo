@@ -1,0 +1,5 @@
+interface:
+  display_name: "Release"
+  short_description: "Add a changeset or create a monorepo release"
+policy:
+  allow_implicit_invocation: false

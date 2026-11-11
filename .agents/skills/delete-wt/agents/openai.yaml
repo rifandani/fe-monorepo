@@ -1,0 +1,5 @@
+interface:
+  display_name: "Delete Worktree"
+  short_description: "Remove a Git worktree and its merged local branch"
+policy:
+  allow_implicit_invocation: false

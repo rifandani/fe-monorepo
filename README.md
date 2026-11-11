@@ -37,6 +37,7 @@ Source of truth is local env files. When changing them, update deployment/CI pro
 ## 🗒️ Notes
 
 - We have adjusted `/tdd` skills from original Matt Pocock's
+- Our custom skills are: `/bump-deps`, `/bump-ui`, `/delete-wt`, `/getting-started`, `/release`, `/settle-pr`, `/upkeep-implicit-state-machine`, `/upkeep-lint-suppressions`, `/upkeep-react-patterns`, `/upkeep-warning-logs`, `/wt`
 
 ## 📱 Apps
 
