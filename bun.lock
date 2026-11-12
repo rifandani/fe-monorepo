@@ -20,6 +20,7 @@
         "oxlint": "1.90.0",
         "oxlint-plugin-react-doctor": "0.9.22",
         "oxlint-tsgolint": "7.0.2005",
+        "portless": "0.17.0",
         "rimraf": "6.1.4",
         "tailwindcss": "4.3.4",
         "typescript": "7.0.2",
@@ -2823,6 +2824,8 @@
     "pngjs": ["pngjs@3.4.0", "", {}, "sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w=="],
 
     "popmotion": ["popmotion@11.0.3", "", { "dependencies": { "framesync": "6.0.1", "hey-listen": "^1.0.8", "style-value-types": "5.0.0", "tslib": "^2.1.0" } }, "sha512-Y55FLdj3UxkR7Vl3s7Qr4e9m0onSnP8W7d/xQLsoJM40vs6UKHFdygs6SWryasTZYqugMjm3BepCF4CWXDiHgA=="],
+
+    "portless": ["portless@0.17.0", "", { "os": [ "linux", "win32", "darwin", ], "bin": { "portless": "dist/cli.js" } }, "sha512-UJdy5sGmNSwi8ETvVniUTqULJht16qvBR9rvsFqsVekEyabMH2xJ5mwIEYBmSSHVCUmQvAmaYAhBcCs8PA7IBA=="],
 
     "possible-typed-array-names": ["possible-typed-array-names@1.1.0", "", {}, "sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg=="],
 
