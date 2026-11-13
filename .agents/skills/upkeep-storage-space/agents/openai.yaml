@@ -1,0 +1,5 @@
+interface:
+  display_name: "Upkeep Storage Space"
+  short_description: "Find large folders; delete approved caches and build output"
+policy:
+  allow_implicit_invocation: false
