@@ -1,13 +1,16 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { toErrorMessage } from "@workspace/core/utils/error";
-import { toast } from "sonner";
+import { Schema } from "effect";
 
+import {
+  loginSearchSchema,
+  sessionGate,
+} from "@/app/providers/router/session-gate";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
 import { Note } from "@/components/ui/note";
 import { LoginTextField } from "@/features/auth/components/login-text-field";
 import { useLoginForm } from "@/features/auth/hooks/use-login-form";
-import { hasValidSession } from "@/features/auth/utils/has-valid-session";
 import { useSeo } from "@/hooks/use-seo";
 import { useTranslation } from "@/providers/i18n/context";
 
@@ -123,21 +126,7 @@ const LoginRoute = () => {
 };
 
 export const Route = createFileRoute("/login")({
-  beforeLoad: ({ location }) => {
-    const authed = hasValidSession();
-
-    if (authed) {
-      // redirect authorized user to login
-      toast.info("Already Logged In");
-      throw redirect({
-        search: {
-          // Use the current location to power a redirect after login
-          // (Do not use `router.state.resolvedLocation` as it can potentially lag behind the actual current location)
-          redirect: location.href,
-        },
-        to: "/",
-      });
-    }
-  },
+  validateSearch: Schema.toStandardSchemaV1(loginSearchSchema),
+  beforeLoad: sessionGate.requireNoSession,
   component: LoginRoute,
 });

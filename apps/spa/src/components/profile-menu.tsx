@@ -1,5 +1,4 @@
 import { useAtomValue } from "@effect/atom-react";
-import { useNavigate } from "@tanstack/react-router";
 import { endSession } from "@workspace/core/session/session";
 import { Button as ButtonPrimitive } from "react-aria-components/Button";
 import {
@@ -21,15 +20,15 @@ import { persistence } from "@/lib/layers/persistence";
 import { appRuntime } from "@/lib/layers/runtime";
 import { useTranslation } from "@/providers/i18n/context";
 
+// End Session only. The Session gate of the router reacts to it and leaves the
+// page that needs a Session.
+const logout = async () => {
+  await appRuntime.runPromise(endSession);
+};
+
 export const ProfileMenu = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const user = useAtomValue(persistence.sessionAtom);
-
-  const logout = async () => {
-    await appRuntime.runPromise(endSession);
-    await navigate({ to: "/login" });
-  };
 
   return (
     <MenuTrigger>

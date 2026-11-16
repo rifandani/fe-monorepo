@@ -7,8 +7,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { persistence } from "@/lib/layers/persistence";
 import { DevPlugins } from "@/providers/dev-plugins";
-import { useTranslation } from "@/providers/i18n/context";
-import { AppI18nProvider } from "@/providers/i18n/provider";
+import { TranslationProvider, useTranslation } from "@/providers/i18n/context";
 import { AppQueryProvider } from "@/providers/query/provider";
 import { AppTamaguiProvider } from "@/providers/tamagui/provider";
 import { AppToastProvider } from "@/providers/toast/provider";
@@ -54,7 +53,7 @@ const App = () => {
 const RootLayout = () => (
   <KeyboardProvider>
     <PersistenceProvider persistence={persistence}>
-      <AppI18nProvider>
+      <TranslationProvider>
         <AppQueryProvider>
           <AppTamaguiProvider>
             <AppToastProvider>
@@ -63,7 +62,7 @@ const RootLayout = () => (
             </AppToastProvider>
           </AppTamaguiProvider>
         </AppQueryProvider>
-      </AppI18nProvider>
+      </TranslationProvider>
     </PersistenceProvider>
   </KeyboardProvider>
 );

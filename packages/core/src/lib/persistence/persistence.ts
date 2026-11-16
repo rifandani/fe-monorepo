@@ -2,6 +2,8 @@ import { scheduleTask } from "@effect/atom-react";
 import { authLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { themes } from "@workspace/core/constants/core";
 import type { Theme } from "@workspace/core/constants/core";
+import { localeSchema } from "@workspace/core/i18n/locale";
+import type { Locale } from "@workspace/core/i18n/locale";
 import { Schema } from "effect";
 import type { Layer } from "effect";
 import type { KeyValueStore } from "effect/persistence";
@@ -20,9 +22,10 @@ export const persistenceKeys = {
 export interface PersistenceOptions {
   /**
    * @description The Locale to use while none is stored. Called once, on the
-   * first read, so it can read the browser or the device.
+   * first read, so it can read the browser or the device. Give it a supported
+   * Locale: map a raw language tag with `toLocale` first.
    */
-  readonly defaultLocale: () => string;
+  readonly defaultLocale: () => Locale;
 }
 
 /**
@@ -31,8 +34,10 @@ export interface PersistenceOptions {
  *
  * Each value is an `Atom.kvs`: it is decoded with its schema on every read, so a
  * stale or hand-edited entry reads as the default instead of reaching the app
- * half-shaped. Each atom is `keepAlive`, because code outside React (route
- * guards, the `Session` service) reads it where nothing keeps the node mounted.
+ * half-shaped. That holds for the Locale too: a stored value that is not a
+ * supported Locale reads as `defaultLocale`. Each atom is `keepAlive`, because
+ * code outside React (route guards, the `Session` service) reads it where
+ * nothing keeps the node mounted.
  *
  * Call it once per app. The app gives the storage (`localStorage`, MMKV); a test
  * gives an in-memory one.
@@ -42,7 +47,7 @@ export interface PersistenceOptions {
  * ```ts
  * export const persistence = makePersistence(
  *   KeyValueStore.layerStorage(() => localStorage),
- *   { defaultLocale: () => navigator.language.toLowerCase() }
+ *   { defaultLocale: () => toLocale(navigator.language) }
  * );
  * ```
  */
@@ -75,7 +80,7 @@ export const makePersistence = (
   const localeAtom = Atom.kvs({
     runtime,
     key: persistenceKeys.locale,
-    schema: Schema.String,
+    schema: localeSchema,
     defaultValue: defaultLocale,
   }).pipe(Atom.keepAlive, Atom.withLabel("locale"));
 
