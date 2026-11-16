@@ -89,6 +89,19 @@ describe("makePersistence", () => {
     expect(registry.get(persistence.themeAtom)).toBe("system");
   });
 
+  it("reads an unsupported Locale as the default", () => {
+    for (const stored of [
+      JSON.stringify("en-gb"),
+      JSON.stringify("fr-fr"),
+      JSON.stringify(42),
+      "not json",
+    ]) {
+      const { persistence } = setup({ [persistenceKeys.locale]: stored });
+
+      expect(persistence.registry.get(persistence.localeAtom)).toBe("id-id");
+    }
+  });
+
   it("writes each value under its own key", () => {
     const { entries, persistence } = setup();
     const { registry } = persistence;

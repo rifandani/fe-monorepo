@@ -1,15 +1,15 @@
 import { useAtom } from "@effect/atom-react";
-import type { LanguageMessages } from "@workspace/core/i18n/init";
 import { initI18n } from "@workspace/core/i18n/init";
+import { catalogs, defaultLocale } from "@workspace/core/i18n/locale";
+import type { Locale } from "@workspace/core/i18n/locale";
 import type { ReactNode } from "react";
 import { createContext, use } from "react";
 
-import { getDeviceLocale, persistence } from "@/lib/layers/persistence";
+import { persistence } from "@/lib/layers/persistence";
 
 type TranslationContextValue = ReturnType<typeof initI18n> & {
-  setLocale: (locale: string) => void;
-  locale: string;
-  userLocale: string;
+  setLocale: (locale: Locale) => void;
+  locale: Locale;
 };
 
 const TranslationContext = createContext<TranslationContextValue | null>(null);
@@ -19,29 +19,16 @@ const TranslationContext = createContext<TranslationContextValue | null>(null);
  * is `localeAtom`, so a pick survives a restart; the Device Locale is only the
  * default while nothing is stored.
  */
-export const TranslationProvider = ({
-  translations,
-  fallbackLocale,
-  children,
-}: {
-  translations: Record<Lowercase<string>, LanguageMessages>;
-  fallbackLocale: string | string[];
-  children: ReactNode;
-}) => {
+export const TranslationProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useAtom(persistence.localeAtom);
 
   const initValue = initI18n({
-    fallbackLocale,
+    fallbackLocale: defaultLocale,
     locale,
-    translations,
+    translations: catalogs,
   });
 
-  const value = {
-    ...initValue,
-    locale,
-    setLocale,
-    userLocale: getDeviceLocale(),
-  } as const;
+  const value = { ...initValue, locale, setLocale } as const;
 
   return <TranslationContext value={value}>{children}</TranslationContext>;
 };

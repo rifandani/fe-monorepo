@@ -7,10 +7,8 @@ import { AppRouterProvider } from "@/app/providers/router/provider";
 import { Loader } from "@/components/ui/loader";
 import { persistence } from "@/lib/layers/persistence";
 import { AppHeadProvider } from "@/providers/head/provider";
-import {
-  AppI18nProvider,
-  AppTranslationProvider,
-} from "@/providers/i18n/provider";
+import { TranslationProvider } from "@/providers/i18n/context";
+import { AppI18nProvider } from "@/providers/i18n/provider";
 import { AppQueryProvider } from "@/providers/query/provider";
 import { ReloadPromptSw } from "@/providers/reload-prompt-sw";
 import { AppToastProvider } from "@/providers/toast/provider";
@@ -42,7 +40,7 @@ export const Entry = () => (
       <PersistenceProvider persistence={persistence}>
         <ThemeClass />
         <AppQueryProvider>
-          <AppTranslationProvider>
+          <TranslationProvider>
             <AppI18nProvider>
               <AppToastProvider>
                 <Suspense
@@ -57,7 +55,7 @@ export const Entry = () => (
                 </Suspense>
               </AppToastProvider>
             </AppI18nProvider>
-          </AppTranslationProvider>
+          </TranslationProvider>
         </AppQueryProvider>
       </PersistenceProvider>
     </AppHeadProvider>

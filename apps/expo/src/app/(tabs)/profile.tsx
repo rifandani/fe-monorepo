@@ -1,6 +1,7 @@
 import { useAtomValue } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
+import type { Locale } from "@workspace/core/i18n/locale";
 import { endSession } from "@workspace/core/session/session";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
@@ -39,7 +40,7 @@ const BirthDate = ({
   locale,
 }: {
   birthDate: string | undefined;
-  locale: string;
+  locale: Locale;
 }) => {
   if (birthDate === undefined || birthDate === "") {
     return null;

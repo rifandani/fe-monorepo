@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
-import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
+import { localeNames, locales } from "@workspace/core/i18n/locale";
+import { Fragment } from "react";
 import { ListItem } from "tamagui";
 
 import { FitSheet } from "@/components/sheet/fit-sheet";
@@ -20,44 +21,30 @@ export const ProfileLanguageChanger = () => {
       />
 
       <FitSheet state={state} setState={setState}>
-        <FitSheet.Item>
-          <ListItem
-            pressTheme
-            theme="light"
-            title="English"
-            iconAfter={
-              locale === "en-us" ? (
-                <Feather
-                  testID="profile-language-english-checked"
-                  name="check-circle"
-                  size={20}
-                />
-              ) : undefined
-            }
-            onPress={() => {
-              setLocale("en-us" satisfies LocaleDictLanguage);
-            }}
-          />
-        </FitSheet.Item>
-        <FitSheet.Separator />
-        <FitSheet.Item>
-          <ListItem
-            pressTheme
-            title="Indonesia"
-            iconAfter={
-              locale === "id-id" ? (
-                <Feather
-                  testID="profile-language-indonesia-checked"
-                  name="check-circle"
-                  size={20}
-                />
-              ) : undefined
-            }
-            onPress={() => {
-              setLocale("id-id" satisfies LocaleDictLanguage);
-            }}
-          />
-        </FitSheet.Item>
+        {locales.map((item, index) => (
+          <Fragment key={item}>
+            {index > 0 && <FitSheet.Separator />}
+            <FitSheet.Item>
+              <ListItem
+                pressTheme
+                title={localeNames[item]}
+                iconAfter={
+                  locale === item ? (
+                    <Feather
+                      // Maestro reads `profile-language-english-checked` and `profile-language-indonesia-checked`.
+                      testID={`profile-language-${localeNames[item].toLowerCase()}-checked`}
+                      name="check-circle"
+                      size={20}
+                    />
+                  ) : undefined
+                }
+                onPress={() => {
+                  setLocale(item);
+                }}
+              />
+            </FitSheet.Item>
+          </Fragment>
+        ))}
       </FitSheet>
     </>
   );

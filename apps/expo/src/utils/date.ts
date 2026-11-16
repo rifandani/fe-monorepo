@@ -1,13 +1,14 @@
-import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
+import { defaultLocale } from "@workspace/core/i18n/locale";
+import type { Locale } from "@workspace/core/i18n/locale";
 import { format, isValid, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
-import { Match } from "effect";
+import type { Locale as DateFnsLocale } from "date-fns/locale";
 
-const resolveDateFnsLocale = (locale: string) =>
-  Match.value(locale).pipe(
-    Match.when("id-id", () => id),
-    Match.orElse(() => enUS)
-  );
+/** The `date-fns` locale of each Locale; a new Locale fails to compile here. */
+const dateFnsLocales: Record<Locale, DateFnsLocale> = {
+  "en-us": enUS,
+  "id-id": id,
+};
 
 /**
  * Formats an ISO / Date-parseable string for display (e.g. user `birthDate`).
@@ -15,7 +16,7 @@ const resolveDateFnsLocale = (locale: string) =>
  */
 export const formatDisplayDate = (
   value: string,
-  locale: string = "en-us" satisfies LocaleDictLanguage
+  locale: Locale = defaultLocale
 ): string => {
   const parsed = parseISO(value);
   const date = isValid(parsed) ? parsed : new Date(value);
@@ -24,5 +25,5 @@ export const formatDisplayDate = (
     return value;
   }
 
-  return format(date, "PPP", { locale: resolveDateFnsLocale(locale) });
+  return format(date, "PPP", { locale: dateFnsLocales[locale] });
 };

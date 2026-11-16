@@ -1,7 +1,10 @@
-import type { LocaleDictLanguage } from "@workspace/core/i18n/init";
-import { Match } from "effect";
+import {
+  localeNames,
+  locales,
+  localeSchema,
+} from "@workspace/core/i18n/locale";
+import { Schema } from "effect";
 import { HiGlobeAlt } from "react-icons/hi2";
-import type { Key } from "react-stately";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,8 +16,7 @@ import {
 } from "@/components/ui/menu";
 import { useTranslation } from "@/providers/i18n/context";
 
-const isLocaleDictLanguage = (key: Key): key is LocaleDictLanguage =>
-  key === "en-us" || key === "id-id";
+const isLocale = Schema.is(localeSchema);
 
 export const LanguageToggle = () => {
   const { t, setLocale, locale } = useTranslation();
@@ -23,10 +25,7 @@ export const LanguageToggle = () => {
     <MenuTrigger>
       <Button intent="plain">
         <HiGlobeAlt className="size-6" />
-        {Match.value(locale).pipe(
-          Match.when("en-us", () => "English"),
-          Match.orElse(() => "Indonesia")
-        )}
+        {localeNames[locale]}
       </Button>
 
       <Menu
@@ -36,7 +35,7 @@ export const LanguageToggle = () => {
           // `selectionMode="single"` rules out the "all" sentinel.
           const [key] = selection === "all" ? [] : selection;
 
-          if (key !== undefined && isLocaleDictLanguage(key)) {
+          if (isLocale(key)) {
             setLocale(key);
           }
         }}
@@ -44,8 +43,11 @@ export const LanguageToggle = () => {
         <MenuSection>
           <MenuHeader separator>{t("language")}</MenuHeader>
 
-          <MenuItem id="en-us">English</MenuItem>
-          <MenuItem id="id-id">Indonesia</MenuItem>
+          {locales.map((item) => (
+            <MenuItem key={item} id={item}>
+              {localeNames[item]}
+            </MenuItem>
+          ))}
         </MenuSection>
       </Menu>
     </MenuTrigger>

@@ -6,7 +6,9 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 ### Internationalization
 
-**Locale**: A lowercase BCP-47 language tag that selects which Message Catalog to use (`en-us`, `id-id`). _Avoid_: language, languageCode, lng, resolvedLanguage
+**Locale**: One of the supported lowercase BCP-47 language tags (`en-us`, `id-id`), listed once in core with its display name and Message Catalog. A raw tag that is not one of them is never a Locale; it is first mapped to a Device Locale. It selects which Message Catalog to use. _Avoid_: language, languageCode, lng, resolvedLanguage
+
+**Device Locale**: The Locale mapped from the raw language tag of the platform (the OS language on a device, `navigator.language` in a browser), used while no picked Locale is in Persistence. Mapped by primary language subtag (`en*` → `en-us`, `id*` → `id-id`); otherwise `en-us`. Each app gives only the raw tag; core owns the mapping (`toLocale`) and the list of supported Locales. _Avoid_: system language, browser language, userLocale, system language sync on AppState resume
 
 **Message Catalog**: The set of Translation Keys and strings for one Locale, owned in `packages/core`. _Avoid_: resources, locale JSON, dictionary, i18n file
 
