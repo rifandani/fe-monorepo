@@ -1,5 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
 import { authLoginRequestSchema } from "@workspace/core/auth/schemas";
 import { Schema } from "effect";
 
@@ -9,18 +8,11 @@ import { useAuthLogin } from "@/features/auth/hooks/use-auth-login";
 const loginValidator = Schema.toStandardSchemaV1(authLoginRequestSchema);
 
 /**
- * Login form state plus the mutation submitting it, which stores the user and
- * navigates home on success.
+ * Login form state plus the mutation submitting it. The login starts the
+ * Session and nothing else: the Session gate of the router leaves the login page.
  */
 export const useLoginForm = () => {
-  const navigate = useNavigate();
-
-  const loginMutation = useAuthLogin({
-    onSuccess: async () => {
-      // The login already started the Session; only the navigation is left.
-      await navigate({ to: "/" });
-    },
-  });
+  const loginMutation = useAuthLogin();
 
   const form = useForm({
     defaultValues: {

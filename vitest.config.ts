@@ -44,6 +44,10 @@ export default defineConfig({
         "apps/{spa,expo}/src/**/*-store.{ts,tsx}",
         // A feature folder's own endpoints and query options (`user/api.ts`).
         "apps/{spa,expo}/src/**/{api,queries}.ts",
+        // The Session gate of the spa router: a route file holds no logic, it
+        // delegates here (Logic Seam, ADR-0001). It sits in `app/`, not in one
+        // of the folders above, because ADR-0007 puts it in app composition.
+        "apps/spa/src/app/providers/router/session-gate.ts",
       ],
       exclude: [
         "**/*.unit.test.ts",

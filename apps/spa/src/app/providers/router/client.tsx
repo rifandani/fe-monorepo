@@ -14,6 +14,7 @@ import { TRACER_ROUTER_ON_ERROR } from "@/shared/constants/global";
 import { recordException, toReportedError } from "@/utils/telemetry";
 
 import { routeTree } from "../../routeTree.gen";
+import { sessionGate } from "./session-gate";
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -117,3 +118,7 @@ export const router = createRouter({
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
 });
+
+// The guards run on a navigation only. Reload the router when the Session
+// appears or disappears (a login, a sign-out, a 401), so they run again.
+sessionGate.watch(router);

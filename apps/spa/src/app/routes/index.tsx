@@ -1,10 +1,9 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { createFileRoute } from "@tanstack/react-router";
 
+import { sessionGate } from "@/app/providers/router/session-gate";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ProfileMenu } from "@/components/profile-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { hasValidSession } from "@/features/auth/utils/has-valid-session";
 import { useSeo } from "@/hooks/use-seo";
 import { useTranslation } from "@/providers/i18n/context";
 
@@ -31,21 +30,6 @@ const HomeRoute = () => {
 };
 
 export const Route = createFileRoute("/")({
-  beforeLoad: ({ location }) => {
-    const authed = hasValidSession();
-
-    if (!authed) {
-      // redirect unauthorized user to login
-      toast.error("Unauthorized");
-      throw redirect({
-        search: {
-          // Use the current location to power a redirect after login
-          // (Do not use `router.state.resolvedLocation` as it can potentially lag behind the actual current location)
-          redirect: location.href,
-        },
-        to: "/login",
-      });
-    }
-  },
+  beforeLoad: sessionGate.requireSession,
   component: HomeRoute,
 });
