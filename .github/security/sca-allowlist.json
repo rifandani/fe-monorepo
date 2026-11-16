@@ -6,22 +6,15 @@
       "id": "GHSA-5p2g-fcmc-qvqq",
       "package": "image-size",
       "severity": "high",
-      "expires": "2026-11-12",
-      "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
+      "expires": "2026-12-16",
+      "reason": "Transitive via metro@0.82 (Expo SDK 53), which needs image-size ^1.0.2; the fix 2.0.3 is a new major. metro@0.88 drops image-size, so remove this entry with the Expo SDK upgrade. Build-time asset tooling only, not in the app bundle."
     },
     {
       "id": "GHSA-w3rx-r6r6-pgpr",
       "package": "image-size",
       "severity": "high",
-      "expires": "2026-11-12",
-      "reason": "Transitive via metro/react-native; bump when RN/metro releases land"
-    },
-    {
-      "id": "GHSA-qr28-fpjm-wq7f",
-      "package": "decode-uri-component",
-      "severity": "high",
-      "expires": "2026-11-16",
-      "reason": "Transitive via @react-navigation/core > query-string ^0.2.2; fix 0.5.1 is out of range and ESM-only; bump with react-navigation"
+      "expires": "2026-12-16",
+      "reason": "Transitive via metro@0.82 (Expo SDK 53), which needs image-size ^1.0.2; the fix 2.0.3 is a new major. metro@0.88 drops image-size, so remove this entry with the Expo SDK upgrade. Build-time asset tooling only, not in the app bundle."
     }
   ]
 }
