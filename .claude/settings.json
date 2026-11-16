@@ -74,7 +74,6 @@
       "Read(**/*credential*)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
-      "Bash(git push*)",
       "Bash(git reset --hard*)",
       "Bash(git reset*--hard*)",
       "Bash(git clean -f*)",
@@ -162,7 +161,8 @@
     "autoAllowBashIfSandboxed": true,
     "excludedCommands": ["gh", "gh *", "rtk gh", "rtk gh *"],
     "network": {
-      "allowLocalBinding": true
+      "allowLocalBinding": true,
+      "allowUnixSockets": ["/var/run/com.apple.launchd.T8oLpfylZL/Listeners"]
     }
   },
   "skillOverrides": {
