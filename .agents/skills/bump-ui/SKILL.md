@@ -19,7 +19,7 @@ Leading word: **bump**. Universe is root `bump:ui` (`shadcn add @intentui/all -o
 Apply every rule below to every touched spa UI file (and toast/globals where named). Exhaustive — skip none that match.
 
 - Keep `'use client'` on components/hooks that had it or that the generator emitted client-only.
-- Merge new toast/Toaster props into `apps/spa/src/providers/toast/context.tsx`; delete generated `apps/spa/src/components/ui/toast.tsx` if present.
+- Merge new toast/Toaster props into `apps/spa/src/providers/toast/provider.tsx`; delete generated `apps/spa/src/components/ui/toast.tsx` if present.
 - Import `react-stately` (not `@react-stately/color`).
 - Import `react-aria` (not `@react-aria/i18n`).
 - Import icons from `react-icons/hi2` (not `@heroicons/react`); map Heroicon names to `Hi*` exports to match already-adapted UI files.
