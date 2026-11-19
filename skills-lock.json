@@ -85,6 +85,13 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "5334eba3370c6124922f8819447b42fabd8df8d11008a242083b8527589a8686"
     },
+    "javascript-testing-expert": {
+      "source": "dubzzz/fast-check",
+      "commit": "170194db2fcaaf82c3d28dd944d910ac15373b59",
+      "sourceType": "github",
+      "skillPath": "skills/javascript-testing-expert/SKILL.md",
+      "computedHash": "d3a4ceea9cf1ae048bbf7ea3e1034439741727ee998529b755a518e526de8196"
+    },
     "pr": {
       "source": "mattpocock/skills",
       "sourceType": "github",
