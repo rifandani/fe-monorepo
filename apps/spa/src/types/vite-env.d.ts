@@ -10,7 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_OTEL_LOG_LEVEL: string | undefined;
   readonly VITE_APP_URL: string | undefined;
   readonly VITE_API_BASE_URL: string | undefined;
-  // Set to "true" by playwright's webServer to keep devtools out of E2E runs
+  // Set to "true" by vitest.e2e.config.ts to keep devtools out of Route Tests
   readonly VITE_E2E: "true" | "false" | undefined;
   // Injected by portless (envPrefix includes PORTLESS_)
   readonly PORTLESS_URL: string | undefined;

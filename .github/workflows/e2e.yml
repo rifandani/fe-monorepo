@@ -1,24 +1,32 @@
 name: E2E
 
-# Playwright E2E, deliberately outside ci.yml.
+# The spa Route Tests (Vitest browser mode), deliberately outside ci.yml.
+# Rationale: docs/adr/0008-route-tests-run-in-vitest-browser-mode.md.
 #
 # Two reasons for the separate file:
 #   1. Same trap mutation.yml documents in reverse — a `workflow_dispatch` on
 #      ci.yml would also fire sherif, gitleaks, fallow, lint, unit and
 #      both builds on every manual e2e run.
-#   2. E2E no longer runs on pull requests at all. See docs/adr/0004-e2e-is-manual.md.
+#   2. Route Tests do not run on pull requests. See ADR-0008.
 #
 # Triggers: manual on any branch (`gh workflow run e2e.yml --ref <branch>`), and
 # automatic on push to main so the merged state still gets a signal.
 #
 # This gates nothing. `main` has no branch protection and no required status
 # checks, so a red run here is information, not a block.
+#
+# The suite is hermetic: it pins every env value in vitest.e2e.config.ts and
+# fakes the API with MSW. So there is no env file, no secret, no build and no
+# preview server here.
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
 
 env:
   FORCE_COLOR: "1"
@@ -30,15 +38,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  dev-spa-e2e:
+  spa-route-tests:
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    environment: dev
-    # container:
-    #   image: mcr.microsoft.com/playwright:v1.42.0-focal
     steps:
       - name: Checkout branch
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -53,23 +60,13 @@ jobs:
       - name: Install deps and disallow changes to lockfile
         run: bun ci
 
-      - name: Prepare env file
-        env:
-          SPA_ENV_FILE: ${{ secrets.SPA_ENV_FILE }}
-        run: |
-          if [ -n "$SPA_ENV_FILE" ]; then
-            echo "$SPA_ENV_FILE" > apps/spa/.env.local
-          else
-            cp apps/spa/.env.example apps/spa/.env.local
-          fi
-
-      # Keyed on the resolved Playwright version rather than the lockfile hash:
+      # Keyed on the resolved `playwright` version rather than the lockfile hash:
       # bun.lock churns on any dependency change, but the browser binaries only
       # change when Playwright does.
       - name: Resolve playwright version
         id: pw
         run: |
-          echo "version=$(node -p "require('./apps/spa/node_modules/@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./apps/spa/node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Restore playwright browsers
         uses: actions/cache@v4
@@ -79,16 +76,18 @@ jobs:
 
       # Still run on a cache hit: the binaries are cached, the `--with-deps` OS
       # packages are not, and Playwright skips a download it already has.
-      - name: Install playwright browsers
+      - name: Install Chromium
         run: bun spa test:install
 
-      - name: Run playwright tests
-        run: bun spa test:ci
+      - name: Run route tests
+        run: bun spa test:e2e
 
-      - name: Save playwright report as artifact
+      # Failure screenshots and traces (open a trace with
+      # `npx playwright show-trace <file>`).
+      - name: Save failure artifacts
         uses: actions/upload-artifact@v7
-        if: always()
+        if: failure()
         with:
-          name: spa-playwright-report
-          path: apps/spa/playwright-report
+          name: spa-route-test-artifacts
+          path: apps/spa/e2e/.artifacts
           retention-days: 7

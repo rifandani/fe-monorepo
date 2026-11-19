@@ -123,7 +123,6 @@ export default {
     "coverage",
     "**/docs/**",
     "**/e2e/**",
-    "**/playwright*/**",
     "**/.next/**",
     "**/.expo/**",
     "**/dev-dist/**",

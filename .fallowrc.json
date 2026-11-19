@@ -42,7 +42,8 @@
         "oxlint.config.ts",
         "stryker.config.mjs",
         "scripts/security/**",
-        "vitest.msw-setup.ts"
+        "vitest.msw-setup.ts",
+        "apps/spa/e2e/support/setup.ts"
       ],
       "rules": {
         "unused-files": "off"

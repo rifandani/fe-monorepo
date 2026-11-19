@@ -16,12 +16,12 @@ Frontend and full-stack engineers who need a production-ready React SPA baseline
 
 ## Positioning
 
-Not a blank CRA/Vite starter and not an end-user product. The differentiator is the co-equal bar of **accessibility (React Aria / Intent UI)** and **production scaffolding** (PWA, en/id i18n, theme, observability, Playwright/unit tests, feature flags, component catalog). Neighboring templates can copy a stack list; they cannot truthfully claim this combination as the product’s reason to exist without shipping the same teaching surfaces.
+Not a blank CRA/Vite starter and not an end-user product. The differentiator is the co-equal bar of **accessibility (React Aria / Intent UI)** and **production scaffolding** (PWA, en/id i18n, theme, observability, Route Tests and unit tests, feature flags, component catalog). Neighboring templates can copy a stack list; they cannot truthfully claim this combination as the product’s reason to exist without shipping the same teaching surfaces.
 
 ## Operating Context
 
 - Monorepo app under `apps/spa`, shared logic via `@workspace/core`.
-- Local dev via Vite (`bun dev` / portless); Playwright e2e and Vitest unit tests.
+- Local dev via Vite (`bun dev` / portless); Vitest Route Tests (browser mode) and unit tests.
 - Sample product surface: login → authenticated home; gated `/master-design` component catalog (feature flag `componentCatalog`).
 - Engineers evaluate and learn by reading the catalog, auth flow, SEO/observability docs, and ops wiring—not by completing an end-user business workflow.
 
@@ -51,7 +51,7 @@ Undecided / open:
 
 - Runnable app: auth, home, master-design catalog, theme/language toggles.
 - Docs: `docs/observability.md`, `docs/seo.md`, app `CLAUDE.md` / `README.md`.
-- Tests and CI-oriented scripts (Playwright, Vitest).
+- Tests and CI-oriented scripts (Vitest unit tests and Route Tests).
 - No real customer testimonials, case studies, benchmarks, or press—future work must not fabricate them.
 
 ## Product Principles
