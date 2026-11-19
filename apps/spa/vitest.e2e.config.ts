@@ -48,6 +48,8 @@ export default defineConfig((configEnv) =>
         name: "spa-e2e",
         include: ["e2e/**/*.e2e.test.tsx"],
         setupFiles: ["e2e/support/setup.ts"],
+        // Removes Playwright's raw trace work files after the run.
+        globalSetup: ["e2e/support/global-setup.ts"],
         // The app is page-global (router, QueryClient, Persistence). Each file
         // gets a fresh iframe; `setup.ts` resets state between tests in a file.
         isolate: true,

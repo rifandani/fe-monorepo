@@ -43,7 +43,8 @@
         "stryker.config.mjs",
         "scripts/security/**",
         "vitest.msw-setup.ts",
-        "apps/spa/e2e/support/setup.ts"
+        "apps/spa/e2e/support/setup.ts",
+        "apps/spa/e2e/support/global-setup.ts"
       ],
       "rules": {
         "unused-files": "off"
