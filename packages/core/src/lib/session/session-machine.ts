@@ -71,11 +71,11 @@ export const sessionMachine = setupEffect({
   actors: {
     start: createEffectLogic({
       schemas: { input: startInputSchema },
-      effect: () => startNotProvided,
+      effect: startNotProvided,
     }),
     refresh: createEffectLogic({
       schemas: { input: refreshInputSchema },
-      effect: () => refreshNotProvided,
+      effect: refreshNotProvided,
     }),
     end: createEffectLogic(endNotProvided),
   },
