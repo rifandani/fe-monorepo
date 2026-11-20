@@ -1,0 +1,23 @@
+{
+  "name": "@xstate/example-toggle-solid",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@solidjs/web": "^2.0.3",
+    "@statelyai/sdk": "^0.20.1",
+    "@xstate/solid": "workspace:*",
+    "solid-js": "^2.0.3",
+    "xstate": "workspace:*"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "^3.0.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
+  }
+}

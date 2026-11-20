@@ -1,0 +1,23 @@
+{
+  "name": "vue-ts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@statelyai/sdk": "^0.20.1",
+    "@xstate/vue": "6.0.0-alpha.1",
+    "vue": "^3.5.29",
+    "xstate": "6.0.0-alpha.36"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
+    "vue-tsc": "^3.3.9"
+  }
+}

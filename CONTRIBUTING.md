@@ -1,0 +1,105 @@
+# Contributing
+
+Thank you for your interest in contributing to XState! Contributors like you make this project possible, and we welcome any contributions to the code base and the documentation.
+
+There are several ways you can contribute to XState:
+
+- 📥 [Submit an issue](#submit-an-issue)
+- ✨ [Solve an issue or make a change](#making-changes)
+- 🖊️ [Write documentation](#contributing-to-our-docs)
+- 💬 [Respond to support questions in the GitHub discussions](https://github.com/statelyai/xstate/discussions)
+- 🛟 [Respond to questions in the Help channel on Discord](https://discord.gg/xstate)
+
+Please read [our code of conduct](https://github.com/statelyai/xstate/blob/main/CODE_OF_CONDUCT.md).
+
+## Environment
+
+- Use Node 22.18 or newer (CI uses Node 24).
+- Run `corepack enable` once so the pnpm version pinned in `packageManager` is used automatically.
+- Run `pnpm i` to install all needed dev dependencies.
+
+## Making changes
+
+Pull requests are encouraged. If you want to add a feature or fix a bug:
+
+1. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) and [clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) the [repository](https://github.com/statelyai/xstate).
+1. [Create a separate branch](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/managing-branches) for your changes.
+1. Make your changes, and write tests that validate your change and/or fix.
+1. Run `pnpm test` (for all packages) or `pnpm test:core` (for only changes to core XState).
+1. Run `pnpm typecheck` to make sure that there are no type errors.
+1. Create a changeset by running `pnpm changeset`. [More about changesets](https://github.com/atlassian/changesets).
+1. Push your branch and open a PR 🚀
+
+PRs are reviewed promptly and merged in within a day or two (or even within an hour) if everything looks good.
+
+## Contributing an example
+
+Our [examples](https://github.com/statelyai/xstate/tree/next/examples) are self-contained apps that show how to solve a common problem, integrate another framework (like Vue or Svelte) or build something fun with XState.
+
+To contribute an example, please read the [`readme`](https://github.com/statelyai/xstate/blob/next/examples/readme.md) in the `/examples` folder.
+
+## Submit an issue
+
+Issues and bug reports are also encouraged. If you want to submit an issue:
+
+1. Search [existing issues](https://github.com/statelyai/xstate/issues) to check if your issue already exists or has been solved.
+2. [Create a new issue](https://github.com/statelyai/xstate/issues/new/choose) if your issue has not yet been submitted.
+3. Ensure you fill out all the details in the issue template to help us understand the issue.
+
+We’ll try to respond promptly and address your issue as soon as possible.
+
+## Contributing to our docs
+
+XState v6 documentation lives in this repository, next to what it describes: guides and reference pages in `docs/`, package pages in `packages/*/docs/` and package READMEs. The [stately.ai docs site](https://github.com/statelyai/docs) renders these pages from this repository, so edit them here. The docs site repository holds the site itself, the XState v5 documentation and other Stately content; contribute to those there. Add every page to the nearest `meta.json`. These pages cover only how to use the libraries; contributor material belongs in this file or `examples/CONTRIBUTING.md`.
+
+- Start with working code and explain the behavior the reader can observe. Introduce one concept at a time.
+- Use TypeScript unless JavaScript behavior is the subject. Keep examples complete enough to copy and run, and verify them against the current package source and types.
+- Check local links and `meta.json` navigation, format Markdown and JSON, and run focused type checks or tests for changed examples.
+
+## Setup
+
+### Building
+
+We are using [preconstruct](https://preconstruct.tools/) to build our packages. It comes with a handy trick which allows us to always use source files of packages contained in this monorepo. It creates hook/redirecting files in place of dist files during development. This always happens after installing packages (during `postinstall` step) and you shouldn't be worried about it, but if you actually build packages you destroy those redirecting files and to run tests, typechecking etc correctly you need to bring them back by running `pnpm postinstall`.
+
+One check reads the built output on purpose: `pnpm typecheck:adapter-consumers` compiles a consumer against the adapters' generated declarations with `exactOptionalPropertyTypes: true`, which is how it catches type problems that only published types expose. It needs `pnpm build` first and tells you so if the declarations are missing or older than the sources. It is not part of `pnpm typecheck` for that reason; CI runs it directly after the build. Run `pnpm postinstall` afterwards to restore the redirecting files.
+
+### Bundle measurements
+
+`pnpm bench:size` bundles representative XState, store, and adapter entry points from source and prints their minified and min+gzip sizes in bytes, for both esbuild and Terser. Pass `--profile=<name>` to measure one profile, `--why` to attribute bytes to modules, or `--json` for machine-readable output. The script only measures; it has no thresholds and CI does not run it.
+
+### Publishing
+
+We are using [changesets](https://github.com/atlassian/changesets) to create "release intents" for our packages. The Publish workflow handles release intents on `main` and `next`; changes for the v6 alpha belong on `next`.
+
+Before entering beta, run the built and packed consumer checks with both TypeScript compilers, including `exactOptionalPropertyTypes: true` and `skipLibCheck: false`. After publishing from `next` with the Changesets prerelease tag set to `beta`, the Publish workflow runs `pnpm check:release-tags --tag beta`. This read-only check requires the beta tag of every coordinated v6 package to resolve to its workspace version; it retries briefly for registry propagation and fails if a tag is missing or stale. Resolve any publication or tag mismatch before announcing the release. The check does not publish packages or change tags.
+
+### Persistence conformance
+
+`packages/core/test/persistenceConformance.v6.test.ts` is the shape contract for persisted snapshots. It validates every envelope it produces against `packages/core/src/persistedSnapshot.schema.json`.
+
+### Examples and development dependencies
+
+<!-- Maintained check commands from package.json and scripts/check-*.js; fixture overrides from pnpm-workspace.yaml. -->
+
+`pnpm check:examples` typechecks and builds all 49 TypeScript examples, runs every discovered example regression test, and verifies donut persistence through a CLI restart. Run `pnpm build` first so standalone example compilers consume generated package declarations. Node-based writer and occupancy tests run separately through `pnpm test:tooling`; the remaining example tests use Vitest. New example test files are discovered automatically.
+
+`pnpm test:tooling` generates the bundled core documentation and API stability manifest before running the tooling tests, including the agent CLI checks. It can run after `pnpm install` without a separate package build.
+
+`node scripts/typecheck-examples.js` checks every example with a `tsconfig.json`, including referenced projects behind solution configs; pass project names or paths to select examples. Any compiler failure exits nonzero. `examples/readme.md` has no project configuration and is skipped. Every current TypeScript example has a build script and participates in the CI gate.
+
+`pnpm check:templates` installs and builds all four standalone starter templates with their own frozen lockfiles.
+
+`pnpm check:exports` requires every public export of `xstate`, `@xstate/scxml`,
+`@xstate/test`, `@xstate/effect`, `@xstate/react`, `@xstate/vue`,
+`@xstate/svelte` and `@xstate/solid` to carry exactly one `@public`,
+`@experimental`, or `@internal` stability tag. `@deprecated` must be
+paired with `@public` or `@experimental`.
+
+After `pnpm build`, `pnpm check:packed` packs `xstate` and `@xstate/react`, then
+checks their published files, declarations, ESM/CJS entry points, and production
+builds from a standalone consumer.
+
+Workflow regression tests use in-process actors, simulated clocks, and mocked network, database, filesystem, and subprocess boundaries. Passing these checks does not exercise real MongoDB credentials, external services, or media-file moves. Follow each example's README to run its live integration.
+
+The pinned `@scion-scxml/test-framework@2.0.16` package supplies SCXML fixtures only. Its original fixture files and licensing remain intact; its unused HTTP runner dependencies are removed with scoped pnpm overrides. That runner is intentionally unavailable. Core SCXML tests read the fixtures directly. Happy DOM is a development-only test environment.

@@ -1,0 +1,306 @@
+---
+title: "XState Effect: Actors"
+description: Create actors whose lifetime and dependencies belong to an Effect application.
+---
+
+`createEffectActor(logic, options?)` starts an actor and returns its handle as a scoped Effect.
+
+The actor processes events through one FIFO mailbox. Events sent by a child
+keep their send order, including when each send runs in a separate promise
+continuation while the parent executes transition effects. Under continuous
+traffic, the loop periodically yields so timers and other Effects can run.
+
+Observers see each step in the order that `createActor` uses. The events that
+the transition emits come first. Then an active step gives `next`, a `done`
+step gives `next` and then `complete`, and an `error` step gives `error`.
+
+- Pass `options.input` when the logic requires input.
+- Pass `options.snapshot` to resume an actor from a persisted snapshot. See [persisting and restoring](#persisting-and-restoring).
+- Provide the services required by its declared actions and child actors.
+- Use `Effect.scoped` for a bounded program, or a Layer for an application service.
+
+The [quick start](quick-start.md) shows an actor with input and a deployment service.
+
+## Lifetime
+
+The enclosing scope owns the actor. When that scope closes, the actor stops and its hosted Effects are interrupted.
+
+- `Effect.scoped(program)` closes the scope when `program` finishes.
+- `actor.stop()` stops the actor explicitly. Called synchronously by an `on` listener or an observer while the actor delivers a step to it, it takes effect when that step ends. Called from anywhere else, it stops the actor at once.
+- Tasks created with `createEffectLogic`, `createEffectStreamLogic` and `createEffectEventStreamLogic` have their own scopes. Their resources are released when the task completes, fails or is interrupted.
+- Background Effect actions use the owning actor's scope. Their resources are released when that actor stops.
+- Use `withActorScope` around a resource acquisition to keep it until the owning actor stops.
+- The enclosing scope waits for the actor's finalizers before finishing its own cleanup.
+
+Provide application Layers outside `Effect.scoped`, with `program.pipe(Effect.scoped, Effect.provide(AppLayer))`, so services remain available while actor cleanup runs.
+
+### Resource lifetimes
+
+This release task owns a temporary workspace and opens a cache for the rest of the workflow. The workspace closes before the machine handles `onDone`; the cache closes when the owning actor stops.
+
+<!-- example from examples/effect-workflows/src/resources.ts -->
+
+```ts
+import { Effect } from 'effect';
+import {
+  createEffectActor,
+  createEffectLogic,
+  waitFor,
+  withActorScope
+} from '@xstate/effect';
+import { setup } from 'xstate';
+
+const events: string[] = [];
+const prepareRelease = createEffectLogic(
+  Effect.gen(function* () {
+    // Keep the shared cache open for the rest of the release workflow.
+    yield* Effect.acquireRelease(
+      Effect.succeed({ name: 'release-cache' }),
+      () => Effect.sync(() => events.push('close cache'))
+    ).pipe(withActorScope);
+
+    // This temporary workspace belongs to this invocation.
+    yield* Effect.acquireRelease(
+      Effect.succeed({ directory: '/tmp/release' }),
+      () => Effect.sync(() => events.push('remove workspace'))
+    );
+    events.push('prepare release');
+    return 'artifact ready';
+  })
+);
+
+const releaseMachine = setup({ actors: { prepareRelease } }).createMachine({
+  initial: 'preparing',
+  states: {
+    preparing: {
+      invoke: { src: 'prepareRelease', onDone: { target: 'ready' } }
+    },
+    ready: {}
+  }
+});
+
+const program = Effect.gen(function* () {
+  const actor = yield* createEffectActor(releaseMachine);
+  yield* waitFor(actor, (snapshot) => snapshot.matches('ready'));
+  events.push('ready for approval');
+  // The workspace is gone; the cache stays open while the actor is alive.
+});
+
+await Effect.runPromise(Effect.scoped(program));
+export const result = events;
+console.log(result);
+// ['prepare release', 'remove workspace', 'ready for approval', 'close cache']
+```
+
+The resource objects in this demo are local stand-ins. Replace their acquisition and release Effects with your file, connection or subscription APIs.
+
+`withActorScope` uses the scope of the root actor created by `createEffectActor`, including when called from a nested invocation. Apply it to the acquisition whose lifetime you want to extend.
+
+## Provide an actor as a service
+
+Use `Layer.effect` to share one actor across requests. This review actor stays alive across calls to the `ManagedRuntime`:
+
+<!-- example from examples/effect-workflows/src/actor-service.ts -->
+
+```ts
+import { Context, Effect, Layer, ManagedRuntime } from 'effect';
+import {
+  createEffectActor,
+  send,
+  waitFor,
+  type EffectActor
+} from '@xstate/effect';
+import { createMachine } from 'xstate';
+
+const reviewMachine = createMachine({
+  initial: 'pending',
+  states: {
+    pending: { on: { APPROVE: { target: 'approved' } } },
+    approved: {}
+  }
+});
+
+class ReviewActor extends Context.Service<
+  ReviewActor,
+  EffectActor<typeof reviewMachine>
+>()('@app/ReviewActor') {}
+
+const ReviewActorLayer = Layer.effect(
+  ReviewActor,
+  createEffectActor(reviewMachine)
+);
+const runtime = ManagedRuntime.make(ReviewActorLayer);
+
+try {
+  const snapshot = await runtime.runPromise(
+    Effect.gen(function* () {
+      const actor = yield* ReviewActor;
+      yield* send(actor, { type: 'APPROVE' });
+      return yield* waitFor(actor, (s) => s.matches('approved'));
+    })
+  );
+  console.log(snapshot.value); // 'approved'
+} finally {
+  await runtime.dispose();
+}
+```
+
+- The Layer starts the actor when it is built.
+- `EffectActor<typeof reviewMachine>` types the service and its events.
+- `runtime.dispose()` closes the runtime, stops the actor and releases its resources. Call it when your application shuts down.
+
+If the machine requires services, provide their Layers to the actor Layer with `Layer.provide`.
+
+## Clock
+
+`after` transitions and delayed sends use Effect's `Clock`. In tests, `TestClock` advances those timers without waiting for real time. See the [complete deadline example](testing-and-errors.md#testclock).
+
+Timers are interrupted when the actor stops.
+
+## Persisting and restoring
+
+An actor can outlive its process. Save `actor.getPersistedSnapshot()` after an event, then pass the saved snapshot to `createEffectActor` when the next event arrives, in the same process or another one.
+
+<!-- example from examples/effect-workflows/src/persistence.ts -->
+
+```ts
+import { Effect } from 'effect';
+import { createEffectActor, sendAndAwait } from '@xstate/effect';
+import { createMachine, type Snapshot } from 'xstate';
+
+const review = createMachine({
+  id: 'review',
+  initial: 'draft',
+  states: {
+    draft: { on: { SUBMIT: { target: 'inReview' } } },
+    inReview: { on: { APPROVE: { target: 'approved' } } },
+    approved: { type: 'final' }
+  }
+});
+
+// Handle one event, then return the snapshot to store.
+const handle = (
+  stored: Snapshot<unknown> | undefined,
+  event: { type: 'SUBMIT' } | { type: 'APPROVE' }
+) =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      const actor = yield* createEffectActor(review, { snapshot: stored });
+      yield* sendAndAwait(actor, event);
+      return JSON.parse(JSON.stringify(actor.getPersistedSnapshot()));
+    })
+  );
+
+const program = Effect.gen(function* () {
+  const submitted = yield* handle(undefined, { type: 'SUBMIT' });
+  // Store `submitted` in a database row or a Durable Object, possibly for days.
+  const approved = yield* handle(submitted, { type: 'APPROVE' });
+  return approved.status;
+});
+
+export const result = await Effect.runPromise(program);
+console.log(result); // 'done'
+```
+
+Restoring resumes the persisted state and context without running entry actions again.
+
+- A pending `after` transition or delayed send keeps its original deadline, measured on Effect's `Clock`. A deadline that passed while the snapshot was stored fires as soon as the actor starts.
+- State-machine children resume their persisted state and context.
+- Completed children do not restart.
+- Running Effect tasks and streams restart from the beginning: a `createEffectLogic` task runs its Effect again, and a `createEffectStreamLogic` or `createEffectEventStreamLogic` stream starts again from its first item. A half-finished Effect cannot be persisted, so this matches how XState restarts running async and callback actors. Make that work safe to repeat, for example with an idempotency key.
+- A snapshot-only restore does not need `input`, even when the logic requires it.
+- The restored actor belongs to the enclosing scope like any other: closing the scope stops it, its children and its timers.
+
+## Validated JSON snapshots
+
+`createSnapshotCodec(machine, schema)` binds a full bidirectional Effect schema to a versioned machine. The schema below is a reusable starting point for a leaf machine. Extend it with the actual output, children, state inputs and actor counters used by your workflow.
+
+<!-- example from examples/effect-workflows/src/persistence-codec.ts -->
+
+```ts
+import { Effect, Schema } from 'effect';
+import { createEffectActor, createSnapshotCodec } from '@xstate/effect';
+import { createMachine } from 'xstate';
+
+const review = createMachine({
+  id: 'review',
+  version: '1',
+  context: { submittedAt: new Date('2026-01-01T00:00:00Z'), amount: 42n },
+  initial: 'pending',
+  states: { pending: {} }
+});
+
+const Snapshot = Schema.Struct({
+  status: Schema.Literals(['active', 'stopped']),
+  value: Schema.Literal('pending'),
+  context: Schema.Struct({
+    submittedAt: Schema.DateFromString,
+    amount: Schema.BigIntFromString
+  }),
+  machine: Schema.Struct({
+    id: Schema.Literal('review'),
+    version: Schema.Literal('1')
+  }),
+  children: Schema.Record(Schema.String, Schema.Never),
+  timers: Schema.Array(Schema.Unknown),
+  historyValue: Schema.Record(Schema.String, Schema.Unknown),
+  nextTimerId: Schema.Number,
+  nextTimerOccurrence: Schema.optionalKey(Schema.Number)
+});
+const codec = createSnapshotCodec(review, Snapshot);
+
+const program = Effect.gen(function* () {
+  const actor = yield* createEffectActor(review);
+  const json = yield* codec.encode(actor.getPersistedSnapshot());
+  const snapshot = yield* codec.decode(json);
+  const restored = yield* createEffectActor(review, { snapshot });
+  const context = restored.getSnapshot().context;
+  return {
+    submittedAt: context.submittedAt.toISOString(),
+    amount: String(context.amount)
+  };
+});
+
+export const result = await Effect.runPromise(Effect.scoped(program));
+console.log(result); // { submittedAt: '2026-01-01T00:00:00.000Z', amount: '42' }
+```
+
+- The transport has its own format version and stable machine ID. It preserves the source machine version. A schema can explicitly support historical versions, for example with a union.
+- The supplied schema owns every rich value, including nested child snapshots and child input. Use reversible schemas for Date, bigint, Map, Set and application classes. The codec does not derive child schemas or revive constructors.
+- Include all existing core metadata. Omitting or changing children, timers, history, timer and actor counters or state input owners fails with `SnapshotCodecError`. Unknown defined metadata must also survive. Optional undefined fields such as an active snapshot's output can be deliberately omitted by the schema.
+- Encoded values must be lossless plain JSON. Undefined, nonfinite numbers, negative zero, cycles, holes, functions, symbols, accessor properties and unsupported object prototypes are rejected. Schema validation errors retain `Schema.SchemaError` and the schema's service requirements.
+- Errored snapshots, including failed embedded children, are rejected. Recover or project their outcome before persisting. JSON cannot preserve a live Effect Cause or the genuine `EffectFailure` brand; direct restoration of a serialized failed task or stream is rejected too.
+- Decoding does not run migrations or start actors. Use the existing `machineVersions(...).migrateSnapshot` before restoration, or the machine's configured `migrate` during restoration. Choose one migration owner. Decoding a historical snapshot alone does not prove its restoration will succeed.
+
+A caller schema can still discard application data inside context or output. Verify its round trips for your domain. The codec checks transport and persistence metadata; it cannot prove arbitrary user transformations reversible.
+
+## Actor handle
+
+The `EffectActor` handle supports:
+
+- `send`, `getSnapshot`, `subscribe` and `on` from XState's actor reference contract;
+- `inspect`, `getPersistedSnapshot` and `stop`;
+- this package's [actor functions](observing-actors.md) and `useSelector` from `@xstate/react`.
+
+## Requirements
+
+`RequirementsFrom<TLogic>` collects the services needed by:
+
+- actions registered with `setupEffect({ actions })`;
+- actors registered with `setup({ actors })` or `setupEffect({ actors })`;
+- inline `invoke.src` logic, at the root or in a state;
+- those same sources inside child machines, up to 10 levels of nesting.
+
+`createEffectActor` returns `Effect<EffectActor<TLogic>, never, R | Scope>`, where `R` is that service union. TypeScript checks that you provide those services before running the program. Overrides passed to `machine.provide` contribute their current services, replacing the requirements of the sources they override. Actor and invocation scopes are supplied automatically.
+
+Declare spawned Effect logic in `actors` and spawn it by name. See [declared sources](schemas-and-actions.md#declared-sources).
+
+<details>
+<summary>Requirement inference limits and creation errors</summary>
+
+- Requirements deeper than 10 machine levels are not collected. Flatten that tree, or provide the deeper services explicitly.
+- Inline logic passed to `enq.spawn` is invisible to requirement inference and is rejected at runtime.
+- The `never` error channel means actor creation has no typed failures. It does not describe the actor's later result; use `join` to observe that result.
+- Missing services and other programming errors can put the actor in the `error` status. Invalid input rejected by a runtime validator makes creation fail as a defect.
+
+</details>
