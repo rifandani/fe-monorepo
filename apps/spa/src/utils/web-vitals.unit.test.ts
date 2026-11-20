@@ -1,3 +1,4 @@
+import { fc } from "@fast-check/vitest";
 import { Effect, Metric } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import type { Metric as WebVitalsMetric } from "web-vitals";
@@ -9,6 +10,8 @@ import {
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/shared/constants/global";
+
+// Helpers
 
 /** The shape of `onLCP`, `onINP` and the other `web-vitals` reporters. */
 type OnMetric = (callback: (metric: WebVitalsMetric) => void) => void;
@@ -177,120 +180,160 @@ const show = () => {
   fire("visibilitychange");
 };
 
+/** A web-vitals report for `id`, with realistic fields the module only copies. */
+const report = (
+  id: string,
+  value: number,
+  rating = "good",
+  navigationType = "navigate"
+) => asMetric({ id, value, delta: value, navigationType, rating });
+
+/** The callback that `reportWebVitals` gave to one `web-vitals` reporter. */
+const callbackOf = (reporter: typeof onLCP) => {
+  const callback = reporter.mock.calls[0]?.[0];
+
+  if (callback === undefined) {
+    throw new Error("reportWebVitals did not register this reporter");
+  }
+
+  return callback;
+};
+
+/** Loads the module and starts reporting, as the app does once per page. */
+const startReporting = async () => {
+  const module = await loadModule();
+  module.reportWebVitals();
+
+  return module;
+};
+
+/**
+ * Starts one property run without a module reload: drain what earlier runs left
+ * pending, then give this run a new registry. Each run also uses a new metric id.
+ */
+const startRun = () => {
+  hide();
+  show();
+  harness.registry.current = new Map();
+};
+
+const goodNavigation = { navigation_type: "navigate", rating: "good" };
+
+/** A web vital value: a finite, non-negative number. */
+const vitalValueArb = fc.double({
+  min: 0,
+  noNaN: true,
+  noDefaultInfinity: true,
+});
+
+/** What can happen to a deferred metric: a new report, or the page hides or shows. */
+const deferredEventArb = fc.oneof(
+  vitalValueArb.map((value) => ({ kind: "report" as const, value })),
+  fc.constantFrom({ kind: "hide" as const }, { kind: "show" as const })
+);
+
+describe("webVitalsHistograms", () => {
+  it("should name each histogram after its web vital", async () => {
+    // Act
+    const { webVitalsHistograms } = await loadModule();
+
+    // Assert
+    expect(webVitalsHistograms.lcp.id).toBe(METRICS_METER_WEB_VITALS_LCP);
+    expect(webVitalsHistograms.inp.id).toBe(METRICS_METER_WEB_VITALS_INP);
+    expect(webVitalsHistograms.cls.id).toBe(METRICS_METER_WEB_VITALS_CLS);
+    expect(webVitalsHistograms.fcp.id).toBe(METRICS_METER_WEB_VITALS_FCP);
+    expect(webVitalsHistograms.ttfb.id).toBe(METRICS_METER_WEB_VITALS_TTFB);
+  });
+});
+
+describe("webVitalsAttributes", () => {
+  it("should keep the navigation type and the rating, and drop the delta", async () => {
+    // Arrange
+    const { webVitalsAttributes } = await loadModule();
+
+    // Act
+    const attributes = webVitalsAttributes(report("v1", 120, "poor", "reload"));
+
+    // Assert
+    expect(attributes).toEqual({ navigation_type: "reload", rating: "poor" });
+  });
+});
+
 describe("reportWebVitals", () => {
-  it("names each histogram after its web vital", async () => {
-    const module = await loadModule();
-
-    expect(module.webVitalsHistograms.lcp.id).toBe(
-      METRICS_METER_WEB_VITALS_LCP
-    );
-    expect(module.webVitalsHistograms.inp.id).toBe(
-      METRICS_METER_WEB_VITALS_INP
-    );
-    expect(module.webVitalsHistograms.cls.id).toBe(
-      METRICS_METER_WEB_VITALS_CLS
-    );
-    expect(module.webVitalsHistograms.fcp.id).toBe(
-      METRICS_METER_WEB_VITALS_FCP
-    );
-    expect(module.webVitalsHistograms.ttfb.id).toBe(
-      METRICS_METER_WEB_VITALS_TTFB
-    );
-  });
-
-  it("wires listeners once and is idempotent", async () => {
+  it("should register each reporter and both hide listeners once", async () => {
+    // Arrange
     const { reportWebVitals } = await loadModule();
+
+    // Act
+    reportWebVitals();
     reportWebVitals();
 
-    expect(onLCP).toHaveBeenCalledOnce();
-    expect(onINP).toHaveBeenCalledOnce();
-    expect(onCLS).toHaveBeenCalledOnce();
-    expect(onFCP).toHaveBeenCalledOnce();
-    expect(onTTFB).toHaveBeenCalledOnce();
-    expect(listeners.visibilitychange).toHaveLength(1);
-    expect(listeners.pagehide).toHaveLength(1);
-
-    reportWebVitals();
-    expect(onLCP).toHaveBeenCalledOnce();
-  });
-
-  it("records LCP/FCP/TTFB immediately with semconv attrs", async () => {
-    const module = await loadModule();
-    module.reportWebVitals();
-
-    const metric = {
-      id: "v1",
-      value: 120,
-      delta: 120,
-      navigationType: "navigate",
-      rating: "good",
-    } as const;
-
-    onLCP.mock.calls[0]?.[0]?.(asMetric(metric));
-    onFCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v2" }));
-    onTTFB.mock.calls[0]?.[0]?.(asMetric({ ...metric, id: "v3" }));
-
-    const attributes = {
-      navigation_type: "navigate",
-      rating: "good",
-    };
-
-    for (const key of ["lcp", "fcp", "ttfb"] as const) {
-      expect(samplesOf(module, key)).toEqual([
-        { attributes, count: 1, sum: 120 },
-      ]);
+    // Assert
+    for (const reporter of [onLCP, onINP, onCLS, onFCP, onTTFB]) {
+      expect(reporter).toHaveBeenCalledOnce();
     }
 
-    onLCP.mock.calls[0]?.[0]?.(asMetric({ ...metric, value: 200 }));
+    expect(listeners.visibilitychange).toHaveLength(1);
+    expect(listeners.pagehide).toHaveLength(1);
+  });
+
+  it("should record LCP, FCP and TTFB at once with semconv attributes", async () => {
+    // Arrange
+    const module = await startReporting();
+
+    // Act
+    callbackOf(onLCP)(report("v1", 120));
+    callbackOf(onFCP)(report("v2", 120));
+    callbackOf(onTTFB)(report("v3", 120));
+
+    // Assert
+    for (const key of ["lcp", "fcp", "ttfb"] as const) {
+      expect(samplesOf(module, key)).toEqual([
+        { attributes: goodNavigation, count: 1, sum: 120 },
+      ]);
+    }
+  });
+
+  it("should ignore a second report of an LCP id that it already recorded", async () => {
+    // Arrange
+    const module = await startReporting();
+    callbackOf(onLCP)(report("v1", 120));
+
+    // Act
+    callbackOf(onLCP)(report("v1", 200));
+
+    // Assert
     expect(samplesOf(module, "lcp")).toEqual([
-      { attributes, count: 1, sum: 120 },
+      { attributes: goodNavigation, count: 1, sum: 120 },
     ]);
   });
 
-  it("defers CLS/INP until the page hides and records the latest value once", async () => {
-    const module = await loadModule();
-    module.reportWebVitals();
+  it("should not record CLS or INP while the page stays visible", async () => {
+    // Arrange
+    const module = await startReporting();
+    callbackOf(onCLS)(report("cls-1", 0.05));
+    callbackOf(onINP)(report("inp-1", 80));
 
-    const clsCb = onCLS.mock.calls[0]?.[0];
-    const inpCb = onINP.mock.calls[0]?.[0];
+    // Act
+    show();
 
-    clsCb?.(
-      asMetric({
-        id: "cls-1",
-        value: 0.05,
-        delta: 0.05,
-        navigationType: "navigate",
-        rating: "good",
-      })
-    );
-    clsCb?.(
-      asMetric({
-        id: "cls-1",
-        value: 0.12,
-        delta: 0.07,
-        navigationType: "navigate",
-        rating: "needs-improvement",
-      })
-    );
-    inpCb?.(
-      asMetric({
-        id: "inp-1",
-        value: 80,
-        delta: 80,
-        navigationType: "navigate",
-        rating: "good",
-      })
-    );
-
+    // Assert
     expect(samplesOf(module, "cls")).toEqual([]);
     expect(samplesOf(module, "inp")).toEqual([]);
-
-    show();
-    expect(samplesOf(module, "cls")).toEqual([]);
     expect(forceFlush).not.toHaveBeenCalled();
+  });
 
+  it("should record the latest CLS and INP values once when the page hides", async () => {
+    // Arrange
+    const module = await startReporting();
+    callbackOf(onCLS)(report("cls-1", 0.05));
+    callbackOf(onCLS)(report("cls-1", 0.12, "needs-improvement"));
+    callbackOf(onINP)(report("inp-1", 80));
+
+    // Act
     hide();
 
+    // Assert
     expect(samplesOf(module, "cls")).toEqual([
       {
         attributes: {
@@ -302,55 +345,46 @@ describe("reportWebVitals", () => {
       },
     ]);
     expect(samplesOf(module, "inp")).toEqual([
-      {
-        attributes: { navigation_type: "navigate", rating: "good" },
-        count: 1,
-        sum: 80,
-      },
+      { attributes: goodNavigation, count: 1, sum: 80 },
     ]);
     expect(forceFlush).toHaveBeenCalledOnce();
-
-    clsCb?.(
-      asMetric({
-        id: "cls-1",
-        value: 0.4,
-        delta: 0.28,
-        navigationType: "navigate",
-        rating: "poor",
-      })
-    );
-    hide();
-    expect(samplesOf(module, "cls")).toHaveLength(1);
   });
 
-  it("flushes the reader on hide even when nothing is pending", async () => {
-    const module = await loadModule();
-    module.reportWebVitals();
-
+  it("should keep the first hidden-time CLS value when CLS reports again later", async () => {
+    // Arrange
+    const module = await startReporting();
+    callbackOf(onCLS)(report("cls-1", 0.12));
     hide();
 
+    // Act
+    callbackOf(onCLS)(report("cls-1", 0.4, "poor"));
+    hide();
+
+    // Assert
+    expect(samplesOf(module, "cls")).toEqual([
+      { attributes: goodNavigation, count: 1, sum: 0.12 },
+    ]);
+  });
+
+  it("should flush the reader on hide even when nothing is pending", async () => {
+    // Arrange
+    const module = await startReporting();
+
+    // Act
+    hide();
+
+    // Assert
     expect(samplesOf(module, "cls")).toEqual([]);
     expect(samplesOf(module, "inp")).toEqual([]);
     expect(forceFlush).toHaveBeenCalledOnce();
   });
 
-  it("still flushes on pagehide as a backup", async () => {
-    const module = await loadModule();
-    module.reportWebVitals();
-
-    const inpCb = onINP.mock.calls[0]?.[0];
-
-    inpCb?.(
-      asMetric({
-        id: "inp-2",
-        value: 240,
-        delta: 240,
-        navigationType: "back-forward-cache",
-        rating: "needs-improvement",
-      })
+  it("should still flush on pagehide as a backup", async () => {
+    // Arrange
+    const module = await startReporting();
+    callbackOf(onINP)(
+      report("inp-2", 240, "needs-improvement", "back-forward-cache")
     );
-
-    fire("pagehide");
 
     const expected = [
       {
@@ -363,26 +397,83 @@ describe("reportWebVitals", () => {
       },
     ];
 
-    expect(samplesOf(module, "inp")).toEqual(expected);
-    expect(forceFlush).toHaveBeenCalledOnce();
-
+    // Act
     fire("pagehide");
+    fire("pagehide");
+
+    // Assert
     expect(samplesOf(module, "inp")).toEqual(expected);
   });
 
-  it("swallows a failed export, since the page is going away", async () => {
-    const module = await loadModule();
-    module.reportWebVitals();
+  it("should swallow a failed export, since the page is going away", async () => {
+    // Arrange
+    await startReporting();
     forceFlush.mockImplementationOnce(async () => {
       await Promise.reject(new Error("offline"));
     });
 
+    // Act
     hide();
-
     // `drainReader` runs detached; let its rejection settle.
     await Promise.resolve();
     await Promise.resolve();
 
+    // Assert
     expect(forceFlush).toHaveBeenCalledOnce();
+  });
+
+  it("should always record the first value of an LCP id and nothing after it", async () => {
+    // Arrange
+    const module = await startReporting();
+    let run = 0;
+
+    fc.assert(
+      fc.property(fc.array(vitalValueArb, { minLength: 1 }), (values) => {
+        // Arrange
+        startRun();
+        run += 1;
+        const id = `lcp-${String(run)}`;
+
+        // Act
+        for (const value of values) {
+          callbackOf(onLCP)(report(id, value));
+        }
+
+        // Assert
+        expect(samplesOf(module, "lcp")).toEqual([
+          { attributes: goodNavigation, count: 1, sum: values[0] },
+        ]);
+      })
+    );
+  });
+
+  it("should never record one CLS id twice, whatever the reports, hides and shows", async () => {
+    // Arrange
+    const module = await startReporting();
+    let run = 0;
+
+    fc.assert(
+      fc.property(fc.array(deferredEventArb), (events) => {
+        // Arrange
+        startRun();
+        run += 1;
+        const id = `cls-${String(run)}`;
+
+        // Act
+        for (const event of events) {
+          if (event.kind === "report") {
+            callbackOf(onCLS)(report(id, event.value));
+          } else if (event.kind === "hide") {
+            hide();
+          } else {
+            show();
+          }
+        }
+
+        // Assert
+        const [sample] = samplesOf(module, "cls");
+        expect(sample?.count ?? 0).toBeLessThanOrEqual(1);
+      })
+    );
   });
 });

@@ -26,3 +26,7 @@ Canonical five-role vocabulary with default label strings. See `docs/agents/tria
 ### Domain docs
 
 Multi-context — `GLOSSARY-MAP.md` at repo root points to per-context `GLOSSARY.md` files. See `docs/agents/domain.md`.
+
+### Unit tests
+
+Before you write, change or debug a `*.unit.test.ts`, or when a property test fails, read `docs/agents/unit-tests.md`.

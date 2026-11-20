@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
 import { resetTestEnv, testEnv } from "./vitest.env-mock";
+// Global fast-check settings and the Replay Line reporter (ADR-0009).
+import "./vitest.fast-check";
 
 const createMemoryStorage = (): Storage => {
   const store = new Map<string, string>();

@@ -15,6 +15,7 @@ export default defineProject({
   resolve: {
     alias: {
       "@": path.join(root, "src"),
+      "@test/arbitraries": path.join(root, "../../vitest.arbitraries.ts"),
       ...coreAliases,
     },
   },

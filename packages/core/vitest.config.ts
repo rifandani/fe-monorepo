@@ -9,6 +9,7 @@ const root = import.meta.dirname;
 export default defineProject({
   resolve: {
     alias: {
+      "@test/arbitraries": path.join(root, "../../vitest.arbitraries.ts"),
       "@test/msw": path.join(root, "../../vitest.msw.ts"),
       ...coreAliases,
     },

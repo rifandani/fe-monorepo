@@ -113,19 +113,20 @@ export const toCamelCase = (object: JsonValue): JsonValue =>
 export const toSnakeCase = (object: JsonValue): JsonValue =>
   mapKeysDeep(object, snake);
 
-const removeLeadingZerosRegex = /^0+[1-9]+/u;
-const removeLeadingZeroRegex = /^(?<group>0)/u;
-const removeLeadingZeros2Regex = /^0{2,}/u;
+/** Every zero before the first non-zero digit. */
+const zerosBeforeDigitRegex = /^0+(?=[1-9])/u;
+const zeroRunRegex = /^0{2,}/u;
 
 /**
- * Remove leading zero
+ * Remove the leading zeros of a number string: `"00123"` → `"123"`. A run of
+ * zeros only (`"000"`) keeps one zero.
  */
 export const removeLeadingZeros = (value: string) => {
-  if (removeLeadingZerosRegex.test(value)) {
-    return value.replace(removeLeadingZeroRegex, "");
+  if (zerosBeforeDigitRegex.test(value)) {
+    return value.replace(zerosBeforeDigitRegex, "");
   }
 
-  return value.replace(removeLeadingZeros2Regex, "0");
+  return value.replace(zeroRunRegex, "0");
 };
 
 const removeLeadingWhitespaceRegex = /^\s*$/u;

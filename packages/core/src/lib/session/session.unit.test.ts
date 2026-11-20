@@ -1,4 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
+import { test } from "@fast-check/vitest";
+import { sessionArb, signedInSessionArb } from "@test/arbitraries";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
 import {
@@ -10,7 +12,9 @@ import {
 import { Effect, Option } from "effect";
 import { KeyValueStore } from "effect/persistence";
 
-const session: AuthLoginResponseSchema = {
+// Helpers
+
+const ada: AuthLoginResponseSchema = {
   accessToken: "access",
   email: "ada@example.com",
   firstName: "Ada",
@@ -22,6 +26,7 @@ const session: AuthLoginResponseSchema = {
   username: "ada",
 };
 
+/** A Session on in-memory Persistence that records when `onEnd` ran. */
 const setup = () => {
   const persistence = makePersistence(KeyValueStore.layerMemory, {
     defaultLocale: () => "en-us",
@@ -44,70 +49,126 @@ const setup = () => {
 };
 
 describe("Session", () => {
-  it.effect("has no Access Token without a Session", () =>
+  it.effect("should have no Access Token without a Session", () =>
     Effect.gen(function* () {
+      // Arrange
       const { layer } = setup();
 
+      // Act
       const token = yield* currentAccessToken.pipe(Effect.provide(layer));
 
+      // Assert
       expect(Option.isNone(token)).toBe(true);
     })
   );
 
-  it.effect("starts a Session that the atom and the Access Token show", () =>
-    Effect.gen(function* () {
-      const { layer, persistence } = setup();
+  it.effect(
+    "should start a Session that the atom and the Access Token show",
+    () =>
+      Effect.gen(function* () {
+        // Arrange
+        const { layer, persistence } = setup();
 
-      const token = yield* startSession(session).pipe(
-        Effect.andThen(currentAccessToken),
-        Effect.provide(layer)
-      );
+        // Act
+        const token = yield* startSession(ada).pipe(
+          Effect.andThen(currentAccessToken),
+          Effect.provide(layer)
+        );
 
-      expect(token).toEqual(Option.some("access"));
-      expect(persistence.registry.get(persistence.sessionAtom)).toEqual(
-        session
-      );
-    })
+        // Assert
+        expect(token).toEqual(Option.some("access"));
+        expect(persistence.registry.get(persistence.sessionAtom)).toEqual(ada);
+      })
   );
 
-  it.effect("treats an empty Access Token as no Access Token", () =>
+  it.effect("should treat an empty Access Token as no Access Token", () =>
     Effect.gen(function* () {
-      const token = yield* currentAccessToken.pipe(
-        Effect.provide(Session.layerMemory({ ...session, accessToken: "" }))
-      );
+      // Arrange
+      const layer = Session.layerMemory({ ...ada, accessToken: "" });
 
+      // Act
+      const token = yield* currentAccessToken.pipe(Effect.provide(layer));
+
+      // Assert
       expect(Option.isNone(token)).toBe(true);
     })
   );
 
-  it.effect("ends the Session, then runs the app's onEnd step", () =>
+  it.effect("should end the Session, then run the app's onEnd step", () =>
     Effect.gen(function* () {
+      // Arrange
       const { calls, layer, persistence } = setup();
 
-      yield* startSession(session).pipe(
+      // Act
+      yield* startSession(ada).pipe(
         Effect.andThen(endSession),
         Effect.provide(layer)
       );
 
+      // Assert
       expect(persistence.registry.get(persistence.sessionAtom)).toBeNull();
       expect(calls).toEqual(["onEnd after discard"]);
     })
   );
 
-  it.effect("keeps the theme and the Locale, which are not the Session", () =>
-    Effect.gen(function* () {
-      const { layer, persistence } = setup();
-      const { registry } = persistence;
-      registry.set(persistence.themeAtom, "dark");
-      registry.set(persistence.localeAtom, "id-id");
+  it.effect(
+    "should keep the theme and the Locale, which are not the Session",
+    () =>
+      Effect.gen(function* () {
+        // Arrange
+        const { layer, persistence } = setup();
+        const { registry } = persistence;
+        registry.set(persistence.themeAtom, "dark");
+        registry.set(persistence.localeAtom, "id-id");
 
-      yield* startSession(session).pipe(
-        Effect.andThen(endSession),
-        Effect.provide(layer)
+        // Act
+        yield* startSession(ada).pipe(
+          Effect.andThen(endSession),
+          Effect.provide(layer)
+        );
+
+        // Assert
+        expect(registry.get(persistence.themeAtom)).toBe("dark");
+        expect(registry.get(persistence.localeAtom)).toBe("id-id");
+      })
+  );
+
+  test.prop([signedInSessionArb])(
+    "should always read back the Access Token of the Session it started",
+    async (session) => {
+      // Arrange
+      const { layer } = setup();
+
+      // Act
+      const token = await Effect.runPromise(
+        startSession(session).pipe(
+          Effect.andThen(currentAccessToken),
+          Effect.provide(layer)
+        )
       );
 
-      expect(registry.get(persistence.themeAtom)).toBe("dark");
-      expect(registry.get(persistence.localeAtom)).toBe("id-id");
-    })
+      // Assert
+      expect(token).toEqual(Option.some(session.accessToken));
+    }
+  );
+
+  test.prop([sessionArb])(
+    "should never have an Access Token after the Session ends",
+    async (session) => {
+      // Arrange
+      const { layer } = setup();
+
+      // Act
+      const token = await Effect.runPromise(
+        startSession(session).pipe(
+          Effect.andThen(endSession),
+          Effect.andThen(currentAccessToken),
+          Effect.provide(layer)
+        )
+      );
+
+      // Assert
+      expect(Option.isNone(token)).toBe(true);
+    }
   );
 });

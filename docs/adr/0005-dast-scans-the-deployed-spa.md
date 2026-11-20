@@ -2,7 +2,8 @@
 
 The OWASP ZAP baseline scan in `.github/workflows/dast.yml` points at a deployed
 URL held in the `SPA_TARGET_URL` repository variable. It does not build
-`apps/spa` and serve it in the runner, the way `e2e.yml` does. It fails on
+`apps/spa` and serve it in the runner, the way `e2e.yml` did at the time (it
+no longer does — see [ADR-0008](./0008-route-tests-run-in-vitest-browser-mode.md)). It fails on
 **Medium** rather than High, and there is no active-scan plan in this repository
 at all. Each of those three reads as a deviation from the obvious path, and each
 follows from the same fact: `apps/spa` is a static bundle whose security surface

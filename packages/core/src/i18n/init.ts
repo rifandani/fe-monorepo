@@ -120,6 +120,14 @@ const isNumberArg = (value: TranslationArg): value is number =>
 const isStringArg = (value: TranslationArg): value is string =>
   typeof value === "string";
 
+/**
+ * Replace the first `search` in `text` with `value`, literally. A string
+ * replacement would read `$&`, `$$`, `` $` `` and `$'` in `value` as patterns,
+ * and a value can be anything a person typed.
+ */
+const replaceLiteral = (text: string, search: string, value: string) =>
+  text.replace(search, () => value);
+
 const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
   let parentLocale = locale;
@@ -210,9 +218,10 @@ const substitutePlural = ({
 
   const numberFormatter = new Intl.NumberFormat(locale, formatter);
 
-  return result.replace(
+  return replaceLiteral(
+    result,
     replaceKey,
-    replacement.replace(`{?}`, numberFormatter.format(argValue))
+    replaceLiteral(replacement, "{?}", numberFormatter.format(argValue))
   );
 };
 
@@ -233,7 +242,7 @@ const substituteEnum = ({
     throw new Error("Missing replacement value");
   }
 
-  return result.replace(replaceKey, replacement);
+  return replaceLiteral(result, replaceKey, replacement);
 };
 
 type Formatable = number | string[] | Date;
@@ -253,7 +262,11 @@ const substituteWithFormatter =
       throw new TypeError("Invalid argument");
     }
 
-    return ctx.result.replace(ctx.replaceKey, format(ctx, ctx.argValue));
+    return replaceLiteral(
+      ctx.result,
+      ctx.replaceKey,
+      format(ctx, ctx.argValue)
+    );
   };
 
 /** Maps the `{arg:type}` annotation to the substituter handling it. */
@@ -308,7 +321,7 @@ const performSubstitution = (
         : substituters[argType];
 
     if (!substitute) {
-      return result.replace(replaceKey, String(argValue));
+      return replaceLiteral(result, replaceKey, String(argValue));
     }
 
     return substitute({

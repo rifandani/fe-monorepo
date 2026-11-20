@@ -19,6 +19,10 @@
       "exports": ["*"]
     },
     {
+      "file": "vitest.arbitraries.ts",
+      "exports": ["*"]
+    },
+    {
       "file": "apps/spa/src/features/master-design/**",
       "exports": ["*"]
     }
@@ -42,7 +46,9 @@
         "oxlint.config.ts",
         "stryker.config.mjs",
         "scripts/security/**",
-        "vitest.msw-setup.ts"
+        "vitest.msw-setup.ts",
+        "apps/spa/e2e/support/setup.ts",
+        "apps/spa/e2e/support/global-setup.ts"
       ],
       "rules": {
         "unused-files": "off"
@@ -75,6 +81,7 @@
     "@stryker-mutator/vitest-runner",
     "@opentelemetry/semantic-conventions",
     "msw",
+    "@fast-check/vitest",
     "postcss-load-config",
     "workbox-core",
     "@expo-google-fonts/space-grotesk",

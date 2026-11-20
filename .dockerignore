@@ -7,9 +7,7 @@
 **/.expo
 **/.tamagui
 **/dev-dist
-**/playwright-report
-**/playwright-test-results
-**/playwright
+**/e2e/.artifacts
 **/html
 .stryker-tmp
 .git

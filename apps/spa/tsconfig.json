@@ -3,7 +3,9 @@
   "compilerOptions": {
     "paths": {
       "react": ["./node_modules/@types/react"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // Mirrors the `@test/arbitraries` alias in vitest.config.ts.
+      "@test/arbitraries": ["../../vitest.arbitraries.ts"]
     },
     "resolveJsonModule": true,
     "types": ["vite/client", "react"]
@@ -19,7 +21,7 @@
     "dev-dist",
     "dist",
     "vite.config.*",
-    "playwright.config.*",
+    "vitest.e2e.config.*",
     "pwa-assets.config.*"
   ]
 }

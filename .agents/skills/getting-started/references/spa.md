@@ -44,6 +44,6 @@ Ask whether to keep DummyJSON for now or use the user's API. For a replacement, 
 - `.env.example`: set `VITE_API_BASE_URL` and keep the selected local environment values consistent.
 - Repo root `packages/core/src/lib/{auth,cdn,http}/`: inspect endpoint and schema definitions and adapt them to the API. Some modules keep HTTP behavior in files other than `api.ts`.
 - `src/app/routes/login.tsx`: remove the demo password hint when replacing demo authentication.
-- `e2e/_base.ts`, `e2e/auth.setup.ts`, `e2e/login.spec.ts`, and `playwright.config.ts`: update demo username/password uses and the excluded DummyJSON login URL for the chosen API.
+- `e2e/support/network.ts` and `e2e/login.e2e.test.tsx`: update the demo username/password and the mocked login handler (path, request body, response Session) for the chosen API. Route Tests never call the real API, so they do not need a test account.
 
 Run the affected SEO and API tests. Check sitemap output, asset references, and the SPA build. Record any retained demo behavior in the final status.

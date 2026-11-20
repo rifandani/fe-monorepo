@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "spa in node for vite & playwright",
+  "display": "spa in node for vite & vitest route tests",
   "compilerOptions": {
     "composite": true,
     "module": "esnext",
@@ -8,5 +8,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["vite.config.*", "playwright.config.*", "pwa-assets.config.*"]
+  "include": ["vite.config.*", "vitest.e2e.config.*", "pwa-assets.config.*"]
 }

@@ -19,3 +19,7 @@ React SPA.
 ### Feature Flags
 
 **Feature Flag**: A named boolean that gates a product surface for local development. Defaults ON in development and OFF otherwise; a developer may override the default via the Feature Flags Devtools panel, and that override persists across reloads until reset. Production builds never honor an ON override for gated surfaces. _Avoid_: kill switch, remote config, experiment, A/B test
+
+### Testing
+
+**Route Test**: A test that opens the whole app at one URL, the way a person arrives at it, and checks what that person sees and can do there. Every route, guard, provider and translation is the real one; only the network is faked. _Avoid_: E2E spec, component test, page test, integration test

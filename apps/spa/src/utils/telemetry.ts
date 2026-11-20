@@ -15,6 +15,19 @@ export interface ReportedError {
 }
 
 /**
+ * The string form of a thrown value. `String()` throws for an object with no
+ * prototype or with a `toString` that is not a function; reporting must not
+ * throw, so that case reads as the object's tag (`[object Object]`).
+ */
+const describeThrown = (thrown: unknown): string => {
+  try {
+    return String(thrown);
+  } catch {
+    return Object.prototype.toString.call(thrown);
+  }
+};
+
+/**
  * @description Normalize a thrown value — which may be anything — into a
  * `ReportedError`. A thrown non-`Error` carries no stack, so only its string
  * form survives.
@@ -24,7 +37,7 @@ export const toReportedError = (
   extra: Record<string, ErrorAttributeValue> = {}
 ): ReportedError => ({
   ...extra,
-  message: thrown instanceof Error ? thrown.message : String(thrown),
+  message: thrown instanceof Error ? thrown.message : describeThrown(thrown),
   name: thrown instanceof Error ? thrown.name : undefined,
   stack: thrown instanceof Error ? thrown.stack : undefined,
 });

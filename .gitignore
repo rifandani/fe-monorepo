@@ -1,12 +1,9 @@
 # testing
-test-results
-playwright-test-results
-playwright-report
-playwright
+# Route Test failure artifacts (screenshots, traces). Rebuilt on each run.
+**/e2e/.artifacts
+# The playwright-cli agent skill writes these.
 .playwright-cli/
 .playwright/
-blob-report
-playwright.cache
 coverage
 /.stryker-tmp
 stryker.log

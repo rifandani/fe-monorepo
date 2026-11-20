@@ -114,7 +114,7 @@
         "matcher": "Write|Edit",
         "hooks": [
           {
-            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" && bun lint:fix >&2; status=$?; if [ \"$status\" -ne 0 ]; then exit 2; fi'",
+            "command": "bash -c 'cd \"$CLAUDE_PROJECT_DIR\" && out=$(bun lint:fix 2>&1); status=$?; if [ \"$status\" -ne 0 ]; then printf \"%s\\n\" \"$out\" | tail -n 50 >&2; exit 2; fi'",
             "type": "command"
           }
         ]
