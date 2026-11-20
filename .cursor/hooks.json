@@ -8,7 +8,7 @@
     ],
     "preToolUse": [
       {
-        "command": "[ ! -f \".cursor/skills/impeccable/scripts/hook-before-edit.mjs\" ] || node \".cursor/skills/impeccable/scripts/hook-before-edit.mjs\"",
+        "command": "bash -c 'bun lint:fix 2>&1 | tail -50 >&2; exit ${PIPESTATUS[0]}'",
         "timeout": 5
       }
     ]
