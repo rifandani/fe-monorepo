@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "@xstate/example-mongodb-credit-check-api",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "vite-node index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@statelyai/sdk": "^0.20.1",
+    "express": "^5.1.0",
+    "mongodb": "^6.21.0",
+    "xstate": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.19.35",
+    "typescript": "^5.9.3",
+    "vite-node": "^0.31.4"
+  }
+}

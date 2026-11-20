@@ -1,0 +1,33 @@
+{
+  "name": "@xstate/example-trivia-game-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@statelyai/sdk": "^0.20.1",
+    "@xstate/react": "workspace:*",
+    "axios": "^1.13.6",
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.4",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.4",
+    "react-error-boundary": "^6.0.0",
+    "react-loading-overlay-ts": "^2.0.2",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.1.19",
+    "xstate": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^5.1.1",
+    "sass": "^1.97.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

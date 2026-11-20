@@ -1,0 +1,69 @@
+name: 'CI checks'
+runs:
+  using: 'composite'
+  steps:
+    - name: Build
+      run: pnpm build
+      shell: bash
+
+    - name: Strict built package declarations
+      run: node scripts/check-built-types.mjs
+      shell: bash
+
+    # Checks the built declarations, so it belongs with the build rather than
+    # with `pnpm typecheck`, which runs against `src`.
+    - name: Typecheck adapter consumers
+      run: pnpm typecheck:adapter-consumers
+      shell: bash
+
+    - name: Packed consumer
+      run: pnpm check:packed
+      shell: bash
+
+    - name: Packed Effect Oxlint consumer
+      run: pnpm check:effect-oxlint
+      shell: bash
+
+    - name: Export stability
+      run: pnpm check:exports
+      shell: bash
+
+    - name: Package files
+      run: pnpm check:files
+      shell: bash
+
+    - name: Type error quality
+      run: pnpm bench:type-errors --check
+      shell: bash
+
+    - name: Oxlint
+      run: pnpm lint
+      shell: bash
+
+    - name: Oxfmt
+      run: pnpm format:check
+      shell: bash
+
+    - name: Typecheck
+      run: pnpm typecheck
+      shell: bash
+
+    - name: Typecheck examples
+      run: pnpm typecheck:examples
+      shell: bash
+
+    - name: Test
+      run: pnpm test --silent
+      shell: bash
+
+    - name: Test tooling
+      run: pnpm test:tooling
+      shell: bash
+
+    - name: Svelte Check
+      run: pnpm --filter @xstate/svelte svelte-check
+      shell: bash
+
+    - name: Knip
+      run: pnpm knip
+      shell: bash
