@@ -27,6 +27,6 @@ Canonical five-role vocabulary with default label strings. See `docs/agents/tria
 
 Multi-context — `GLOSSARY-MAP.md` at repo root points to per-context `GLOSSARY.md` files. See `docs/agents/domain.md`.
 
-### Unit tests
+### Testing
 
-Before you write, change or debug a `*.unit.test.ts`, or when a property test fails, read `docs/agents/unit-tests.md`.
+When writing tests, call Skill tool with `/javascript-testing-expert`.
