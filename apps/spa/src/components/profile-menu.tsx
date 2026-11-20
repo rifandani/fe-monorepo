@@ -1,5 +1,8 @@
 import { useAtomValue } from "@effect/atom-react";
-import { endSession } from "@workspace/core/session/session";
+import {
+  endSession,
+  sessionActivityAtom,
+} from "@workspace/core/session/session";
 import { Button as ButtonPrimitive } from "react-aria-components/Button";
 import {
   HiArrowRightStartOnRectangle,
@@ -8,6 +11,7 @@ import {
 } from "react-icons/hi2";
 
 import { Avatar } from "@/components/ui/avatar";
+import { Loader } from "@/components/ui/loader";
 import {
   Menu,
   MenuTrigger,
@@ -29,6 +33,9 @@ const logout = async () => {
 export const ProfileMenu = () => {
   const { t } = useTranslation();
   const user = useAtomValue(persistence.sessionAtom);
+  // The state of the Session machine. A token refresh runs in the background,
+  // so the menu shows it while it runs.
+  const isRefreshing = useAtomValue(sessionActivityAtom) === "refreshing";
 
   return (
     <MenuTrigger>
@@ -37,6 +44,11 @@ export const ProfileMenu = () => {
         data-slot="menu-trigger"
       >
         <Avatar initials={user?.username?.slice(0, 2).toUpperCase() ?? "??"} />
+        {isRefreshing ? (
+          <span className="bg-background absolute -right-1 -bottom-1 rounded-full p-0.5">
+            <Loader className="size-3" aria-label={t("sessionRefreshing")} />
+          </span>
+        ) : null}
       </ButtonPrimitive>
 
       <Menu

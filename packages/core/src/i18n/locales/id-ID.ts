@@ -43,6 +43,7 @@ export default {
   loginLoading: "Sedang masuk...",
   login: "Masuk",
   logout: "Keluar",
+  sessionRefreshing: "Memperbarui sesi anda...",
   notFound: "Tidak Ditemukan",
   gone: "Maaf, kami tidak bisa menemukan halaman yang anda cari",
   welcome: "Selamat Datang Kembali",

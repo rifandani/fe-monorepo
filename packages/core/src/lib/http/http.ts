@@ -3,7 +3,7 @@ import { Session } from "@workspace/core/session/session";
 import { Context, Duration, Effect, Layer, Option, Schema } from "effect";
 import type { Cause } from "effect";
 import { constUndefined } from "effect/Function";
-import { Headers, HttpClient, HttpClientRequest } from "effect/http";
+import { HttpClient, HttpClientRequest } from "effect/http";
 import type { HttpClientError, HttpClientResponse } from "effect/http";
 
 const defaultHeader = "Authorization";
@@ -93,10 +93,14 @@ const failOnErrorStatus = (response: HttpClientResponse.HttpClientResponse) => {
 };
 
 /**
- * Send the Access Token of the `Session`, and end the Session when the server
- * rejects that token. A 401 ends the Session only when the rejected request
- * carried the token this client sent, so a failed sign-in — a 401 with no
- * Session to end — never ends one.
+ * Send the Access Token of the `Session`. When the server rejects that token
+ * (a 401), ask the Session for a new one (Session Refresh) and send the request
+ * once more with it. When there is no new token, the 401 stays the response:
+ * the refresh ended the Session, or could not finish.
+ *
+ * Only a request that carried a Session token starts a refresh, so a failed
+ * sign-in — a 401 with no Session — never does. The retry is sent once: a
+ * second 401 is the answer.
  */
 const withSession =
   (session: Session["Service"], auth: HttpAuthConfig) =>
@@ -104,42 +108,37 @@ const withSession =
     const header = auth.header ?? defaultHeader;
     const format = auth.format ?? defaultFormat;
 
-    return client.pipe(
-      HttpClient.mapRequestEffect((request) =>
-        session.accessToken.pipe(
-          Effect.map(
-            Option.match({
-              onNone: () => request,
-              onSome: (token) =>
-                HttpClientRequest.setHeader(request, header, format(token)),
-            })
-          )
+    // `request` is already preprocessed (base URL, `Accept`), so it goes to
+    // `postprocess` and never through the preprocessing a second time.
+    const send = (
+      request: HttpClientRequest.HttpClientRequest,
+      token: Option.Option<string>
+    ) =>
+      client.postprocess(
+        Effect.succeed(
+          Option.match(token, {
+            onNone: () => request,
+            onSome: (value) =>
+              HttpClientRequest.setHeader(request, header, format(value)),
+          })
         )
-      ),
-      HttpClient.tap((response) =>
-        Effect.gen(function* () {
-          if (response.status !== 401) {
-            return;
-          }
+      );
 
-          // Only the credential *this client* sent can be the one rejected.
-          // Header presence is a weaker question than that: a caller may set
-          // their own, and a 401 answering someone else's credential says
-          // nothing about our Session. So the header value is compared with
-          // the one the current token would produce.
-          const token = yield* session.accessToken;
-          const sent = Headers.get(response.request.headers, header);
+    return HttpClient.transform(client, (_, request) =>
+      Effect.gen(function* () {
+        const token = yield* session.accessToken;
+        const response = yield* send(request, token);
 
-          if (
-            Option.isNone(token) ||
-            Option.getOrUndefined(sent) !== format(token.value)
-          ) {
-            return;
-          }
+        if (response.status !== 401 || Option.isNone(token)) {
+          return response;
+        }
 
-          yield* session.end;
-        })
-      )
+        const renewed = yield* session.refresh(token.value);
+
+        return Option.isSome(renewed)
+          ? yield* send(request, renewed)
+          : response;
+      })
     );
   };
 
@@ -152,7 +151,7 @@ const withSession =
  */
 const makeHttpClient = (
   client: HttpClient.HttpClient,
-  session: Session["Service"],
+  session: Session["Service"] | undefined,
   { auth = {}, baseUrl, timeout = defaultTimeout }: HttpConfig
 ): HttpClient.HttpClient.With<HttpError> => {
   const base = client.pipe(
@@ -164,10 +163,10 @@ const makeHttpClient = (
     )
   );
 
-  return withSession(
-    session,
-    auth
-  )(base).pipe(
+  const carried =
+    session === undefined ? base : withSession(session, auth)(base);
+
+  return carried.pipe(
     HttpClient.transformResponse((response) =>
       response.pipe(Effect.flatMap(failOnErrorStatus), Effect.timeout(timeout))
     )
@@ -199,6 +198,19 @@ export class Http extends Context.Service<
           yield* Session,
           config
         );
+      })
+    );
+
+  /**
+   * @description The same API client without the Session: no Access Token and
+   * no Session Refresh. For the requests that the Session itself sends, such
+   * as the token refresh (`auth/session-refresh.ts`).
+   */
+  static readonly layerWithoutSession = (config: Omit<HttpConfig, "auth">) =>
+    Layer.effect(
+      Http,
+      Effect.gen(function* () {
+        return makeHttpClient(yield* HttpClient.HttpClient, undefined, config);
       })
     );
 }

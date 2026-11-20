@@ -1,0 +1,4 @@
+# oxfmt reads this file. Vendored repositories can carry their own formatter
+# config (repos/xstate/.oxfmtrc.json). oxfmt then formats that folder with it
+# and ignores `ignorePatterns` in oxfmt.config.ts, so the ignore is here too.
+repos/

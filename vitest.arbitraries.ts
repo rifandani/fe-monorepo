@@ -32,6 +32,31 @@ export const signedInSessionArb: fc.Arbitrary<AuthLoginResponseSchema> = fc
   .tuple(sessionArb, fc.stringMatching(/^[!-~]+$/u))
   .map(([session, accessToken]) => ({ ...session, accessToken }));
 
+/**
+ * An HTTP error status (400–599) not in `excluded`, built by shifting past each
+ * excluded value instead of filtering.
+ *
+ * 407 is always excluded: `fetch` turns a 407 (Proxy Authentication Required)
+ * into a network error, so it never reaches the client as a response.
+ */
+export const errorStatusArb = (...excluded: number[]) => {
+  // A new array, so `sort` changes nothing of the caller.
+  // oxlint-disable-next-line unicorn/no-array-sort -- the root tsconfig `lib` has no `toSorted`.
+  const skipped = [407, ...excluded].sort((a, b) => a - b);
+
+  return fc.integer({ min: 400, max: 599 - skipped.length }).map((value) => {
+    let status = value;
+
+    for (const skip of skipped) {
+      if (status >= skip) {
+        status += 1;
+      }
+    }
+
+    return status;
+  });
+};
+
 /** Runs for a Property Test whose every run goes through MSW. */
 const IO_PROPERTY_RUNS = 20;
 

@@ -25,6 +25,8 @@ interface VendoredRepo {
 
 const REPOS = {
   effect: { url: "https://github.com/Effect-TS/effect.git", branch: "main" },
+  // XState v6 is on `next` until it is stable; `main` is still v5.
+  xstate: { url: "https://github.com/statelyai/xstate.git", branch: "next" },
 } satisfies Record<string, VendoredRepo>;
 
 type RepoName = keyof typeof REPOS;

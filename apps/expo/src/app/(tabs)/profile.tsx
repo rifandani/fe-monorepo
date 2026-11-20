@@ -2,7 +2,10 @@ import { useAtomValue } from "@effect/atom-react";
 import Feather from "@expo/vector-icons/Feather";
 import { useToastController } from "@tamagui/toast";
 import type { Locale } from "@workspace/core/i18n/locale";
-import { endSession } from "@workspace/core/session/session";
+import {
+  endSession,
+  sessionActivityAtom,
+} from "@workspace/core/session/session";
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
@@ -18,6 +21,7 @@ import {
   ListItem,
   Paragraph,
   Separator,
+  Spinner,
   useTheme,
   XStack,
   YStack,
@@ -53,6 +57,28 @@ const BirthDate = ({
   );
 };
 
+/**
+ * The state of the Session machine. A token refresh runs in the background,
+ * so the profile shows it while it runs.
+ */
+const SessionRefreshing = () => {
+  const { t } = useTranslation();
+  const isRefreshing = useAtomValue(sessionActivityAtom) === "refreshing";
+
+  if (!isRefreshing) {
+    return null;
+  }
+
+  return (
+    <XStack items="center" gap="$2">
+      <Spinner size="small" />
+      <Paragraph size="$2" opacity={0.7}>
+        {t("sessionRefreshing")}
+      </Paragraph>
+    </XStack>
+  );
+};
+
 const EditProfileSection = () => {
   const { t, locale } = useTranslation();
   const user = useAtomValue(persistence.sessionAtom);
@@ -82,6 +108,7 @@ const EditProfileSection = () => {
         <H6 size="$4">{username}</H6>
         <Paragraph size="$3">{email}</Paragraph>
         <BirthDate birthDate={birthDate} locale={locale} />
+        <SessionRefreshing />
 
         <BaseButton mt="auto" p="$2" width="$11" icon={<Feather name="edit" />}>
           {t("editProfile")}

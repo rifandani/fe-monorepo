@@ -1,0 +1,34 @@
+<script lang="ts">
+  export let persistedState: Snapshot<unknown> | undefined = undefined;
+
+  import { useActor } from '../src/index.ts';
+  import { fetchMachine } from './fetchMachine.ts';
+  import type { Snapshot } from 'xstate';
+  import { createActor, createAsyncLogic } from 'xstate';
+  import { restoreActor } from 'xstate/persist';
+
+  const onFetch = () =>
+    new Promise<string>((res) => setTimeout(() => res('some data'), 50));
+
+  const logic = fetchMachine.provide({
+    actors: {
+      fetchData: createAsyncLogic({ run: onFetch })
+    }
+  });
+  const { snapshot, send } = useActor(
+    persistedState ? restoreActor(logic, persistedState) : createActor(logic)
+  );
+</script>
+
+<div>
+  {#if $snapshot.matches('idle')}
+    <button on:click={() => send({ type: 'FETCH' })}>Fetch</button>
+  {:else if $snapshot.matches('loading')}
+    <div>Loading...</div>
+  {:else if $snapshot.matches('success')}
+    <div>
+      Success! Data:
+      <div data-testid="data">{$snapshot.context.data}</div>
+    </div>
+  {/if}
+</div>

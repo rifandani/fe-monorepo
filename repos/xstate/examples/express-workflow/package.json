@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "@xstate/example-express-workflow",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@statelyai/sdk": "^0.20.1",
+    "express": "^5.1.0",
+    "xstate": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.19.35",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.3"
+  },
+  "type": "module"
+}

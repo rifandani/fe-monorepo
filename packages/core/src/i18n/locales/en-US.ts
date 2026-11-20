@@ -43,6 +43,7 @@ export default {
   loginLoading: "Logging in...",
   login: "Login",
   logout: "Logout",
+  sessionRefreshing: "Refreshing your session...",
   notFound: "Not Found",
   gone: "Sorry, we can't find the page you're looking for",
   welcome: "Welcome Back",

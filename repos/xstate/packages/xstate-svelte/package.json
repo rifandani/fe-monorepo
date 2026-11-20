@@ -1,0 +1,51 @@
+{
+  "name": "@xstate/svelte",
+  "version": "6.0.0-beta.0",
+  "description": "XState tools for Svelte",
+  "keywords": [
+    "state",
+    "machine",
+    "statechart",
+    "scxml",
+    "state",
+    "graph",
+    "svelte",
+    "store"
+  ],
+  "author": "David Khourshid <davidkpiano@gmail.com>",
+  "homepage": "https://github.com/statelyai/xstate/tree/main/packages/xstate-svelte#readme",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./dist/xstate-svelte.js",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/statelyai/xstate.git"
+  },
+  "scripts": {
+    "svelte-check": "svelte-check --workspace test"
+  },
+  "bugs": {
+    "url": "https://github.com/statelyai/xstate/issues"
+  },
+  "peerDependencies": {
+    "svelte": "^3.24.1 || ^4 || ^5",
+    "xstate": "workspace:^"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.1.1",
+    "@testing-library/svelte": "^5.2.6",
+    "@tsconfig/svelte": "^5.0.2",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.6.0",
+    "svelte-preprocess": "^6.0.5",
+    "vite": "^6.4.3",
+    "xstate": "workspace:^"
+  }
+}

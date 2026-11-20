@@ -1,0 +1,42 @@
+import { Badge, Spinner } from 'react-bootstrap';
+import Clue from './Clue';
+import { TriviaMachineContext } from '../../context/AppContext';
+
+const QuestionNumber = () => {
+  const state = TriviaMachineContext.useSelector((state) => state);
+  const { context } = state;
+  const question = context.hasLoaded ? (
+    <span>{context.question}</span>
+  ) : (
+    <Spinner
+      className="small-spinner"
+      animation="border"
+      size="sm"
+      role="status"
+    >
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+  );
+
+  return (
+    <div className="text-end">
+      <h1>
+        <div className="text-center">
+          Question #{' '}
+          <Badge data-testid="question-counter" bg="secondary">
+            {question}
+          </Badge>
+        </div>
+
+        {context.hasLoaded && context.currentCharacter && (
+          <Clue
+            key={context.currentCharacter.episode[0]}
+            episode={context.currentCharacter.episode[0]}
+          />
+        )}
+      </h1>
+    </div>
+  );
+};
+
+export default QuestionNumber;
