@@ -22,6 +22,7 @@ const presets = [
 ];
 
 const rules: OxlintConfig["rules"] = {
+  "comments/no-comments": "error",
   "sort-keys": "off",
   "no-inline-comments": "off",
   "no-nested-ternary": "off",
@@ -96,7 +97,10 @@ export default defineConfig({
   // oxlint does not merge `settings` or `env` from extends; curated react-doctor mode.
   env: core.env,
   settings: jsPluginSettings,
-  jsPlugins: ["@xstate/effect/oxlint"],
+  jsPlugins: [
+    "@xstate/effect/oxlint",
+    "./scripts/lint/oxlint-plugin-comments.ts",
+  ],
   rules,
   overrides: [
     {

@@ -10,7 +10,7 @@ export default defineConfig({
     fileParallelism: true,
     css: false,
     passWithNoTests: false,
-    projects: ["packages/core", "apps/spa", "apps/expo"],
+    projects: ["packages/core", "apps/spa", "apps/expo", "scripts/lint"],
     // `coverage` is root-only (it sits in Vitest's `NonProjectOptions`), so it cannot be split across the three `defineProject` configs.
     // Consequence: `--project <name> --coverage` measures this global `include` list against a partial run and reports every other project at 0%. Always run the whole suite (`bun test:unit:cov`).
     //
