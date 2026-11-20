@@ -49,7 +49,17 @@ Both apps share `packages/core`. Coordinate API and locale changes across them. 
 
 ## 5. Configure CI and external services
 
-For a retained SPA, inspect the workflows and the root README's Environment Variables section. Configure the GitHub `dev` and `prod` environments, their `SPA_ENV_FILE` secrets, and the `SPA_TARGET_URL` repository variable for the deployed SPA URL. The SPA's local env files supply its CI values. Keep workflow paths and the README consistent with the selected apps.
+For a retained SPA, inspect the workflows, then configure the GitHub `dev` and `prod` environments, their `SPA_ENV_FILE` secrets, and the `SPA_TARGET_URL` repository variable. The local env files are the source of truth: `apps/spa/.env.local` supplies `dev`, and `apps/spa/.env.prod` supplies `prod`. With the `gh` CLI, set the target `owner/repo` and the deployed SPA URL:
+
+```bash
+gh api -X PUT repos/<owner>/<repo>/environments/dev
+gh api -X PUT repos/<owner>/<repo>/environments/prod
+gh secret set SPA_ENV_FILE --repo <owner>/<repo> --env dev < apps/spa/.env.local
+gh secret set SPA_ENV_FILE --repo <owner>/<repo> --env prod < apps/spa/.env.prod
+gh variable set SPA_TARGET_URL --repo <owner>/<repo> --body <deployed-spa-url>
+```
+
+Verify with `gh secret list --env <env>` and `gh variable list`. Keep workflow paths consistent with the selected apps.
 
 Compare `.github/settings.yml` with `docs/agents/triage-labels.md`. Keep the existing labels unless the user chooses a different mapping; update both files when that mapping changes.
 

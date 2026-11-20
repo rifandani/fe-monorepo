@@ -2,42 +2,20 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rifandani/fe-monorepo)
 
-[![Mintlify Docs](https://img.shields.io/badge/mintlify-docs-green?logo=mintlify)](https://rifandani-fe-monorepo.mintlify.app)
-
 ## 🏁 Getting Started
 
-Open your agent and run: `Use /getting-started to set up this repo for my new app`
+Open your agent and run: `/getting-started set up this repo`
 
 ## Maintenance
 
 - /improve-codebase-architecture
 - /improve-codebase-architecture to use /effect ecosystem in both expo and spa apps
 
-## 📝 Environment Variables
-
-For first timer, you need to create the 2 environments in your github repo. First is `dev` environment, and second is `prod` environment (that's why in `.github/workflows/ci.yml` we stated `environment: dev`). In both environments, name it `SPA_ENV_FILE` (that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE`).
-
-The value for `SPA_ENV_FILE` in `dev` environment is the content of `apps/spa/.env.local`, and the value for `SPA_ENV_FILE` in `prod` environment is the content of `apps/spa/.env.prod`. CI writes the secret to `apps/spa/.env.local`. If the secret is empty, CI copies `apps/spa/.env.example` to `apps/spa/.env.local`.
-
-Source of truth is local env files. When changing them, update deployment/CI project env too.
-
-<!-- For first timer, you need to create 2 environments in your github repo.
-Go to your Github repo -> `Settings` tabs -> `Environments` -> `New environment` -> `dev` and `prod` (that's why in `.github/workflows/ci.yml` we stated `environment: dev` and `environment: prod`).
-
-To push our local env variables to the github repo, run:
-
-```bash
-# that's why in `.github/workflows/ci.yml` we stated `secrets.SPA_ENV_FILE`
-gh secret set SPA_ENV_FILE -e dev < ./apps/spa/.env.local
-gh secret set SPA_ENV_FILE -e prod < ./apps/spa/.env.prod
-```
-
-Source of truth is local env files. When changing them, update deployment/CI project env too. -->
-
 ## 🗒️ Notes
 
 - We have adjusted `/tdd` skills from original Matt Pocock's
 - Our custom skills are: `/bump-deps`, `/bump-ui`, `/delete-wt`, `/getting-started`, `/release`, `/settle-pr`, `/upkeep-implicit-state-machine`, `/upkeep-lint-suppressions`, `/upkeep-react-patterns`, `/upkeep-storage-space`, `/upkeep-warning-logs`, `/wt`
+- Don't forget to sync local env and CI env
 
 ## 📱 Apps
 
