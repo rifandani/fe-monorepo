@@ -11,7 +11,7 @@
   "dependencies": {
     "@statelyai/sdk": "^0.20.1",
     "@xstate/react": "workspace:*",
-    "next": "^15.5.4",
+    "next": "^15.5.29",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "xstate": "workspace:*"
