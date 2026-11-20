@@ -2,7 +2,6 @@ import { playwright } from "@vitest/browser-playwright";
 import { msw } from "msw/vite";
 import { defineConfig, mergeConfig } from "vitest/config";
 
-import { MOCK_API_BASE_URL } from "./e2e/support/constants";
 import viteConfig from "./vite.config";
 
 /**
@@ -22,7 +21,9 @@ export default defineConfig((configEnv) =>
       // is pinned here, so a run gives the same result on every machine and in CI.
       envDir: false,
       define: {
-        "import.meta.env.VITE_API_BASE_URL": JSON.stringify(MOCK_API_BASE_URL),
+        "import.meta.env.VITE_API_BASE_URL": JSON.stringify(
+          "https://api.spa.test"
+        ),
         "import.meta.env.VITE_APP_URL": JSON.stringify("http://localhost"),
         // Devtools overlays intercept pointer events (see `routes/__root.tsx`).
         "import.meta.env.VITE_E2E": JSON.stringify("true"),

@@ -50,25 +50,22 @@ const readInteger = (name: string): number | undefined => {
   return parsed;
 };
 
-const buildGlobalParameters = (): GlobalParameters => {
-  const parameters: GlobalParameters = {};
-  const seed = readInteger("FC_SEED") ?? (isStryker ? STRYKER_SEED : undefined);
+/** The env var `name`, else `strykerValue` under Stryker, else `undefined`. */
+const readSetting = (name: string, strykerValue: number) =>
+  readInteger(name) ?? (isStryker ? strykerValue : undefined);
 
+const buildGlobalParameters = (): GlobalParameters => {
   // `numRuns` stays unset unless overridden: the `g` one-time random mode of
   // `@fast-check/vitest` reads `numRuns ?? 1`, so a global 100 would run every
   // `g` test 100 times. `test.prop` falls back to the fast-check default (100).
-  const numRuns =
-    readInteger("FC_NUM_RUNS") ?? (isStryker ? STRYKER_NUM_RUNS : undefined);
+  const settings = {
+    seed: readSetting("FC_SEED", STRYKER_SEED),
+    numRuns: readSetting("FC_NUM_RUNS", STRYKER_NUM_RUNS),
+  };
 
-  if (seed !== undefined) {
-    parameters.seed = seed;
-  }
-
-  if (numRuns !== undefined) {
-    parameters.numRuns = numRuns;
-  }
-
-  return parameters;
+  return Object.fromEntries(
+    Object.entries(settings).filter(([, value]) => value !== undefined)
+  );
 };
 
 const escapeRegExp = (text: string) =>

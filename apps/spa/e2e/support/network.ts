@@ -3,8 +3,6 @@ import { Schema } from "effect";
 import { http, HttpResponse } from "msw";
 import { setupWorker } from "msw/browser";
 
-import { MOCK_API_BASE_URL } from "./constants";
-
 /**
  * The person every signed-in Route Test acts as. Fixed literals, never faker:
  * a failure must reproduce the same way on every run (ADR-0002).
@@ -35,8 +33,12 @@ const isEmilyCredentials = Schema.is(
   })
 );
 
-/** Build an absolute URL on the mock API, so handlers never depend on `baseURI`. */
-const api = (path: string) => `${MOCK_API_BASE_URL}/${path}`;
+/**
+ * Build an absolute URL on the mock API, so handlers never depend on `baseURI`.
+ * `vitest.e2e.config.ts` pins `VITE_API_BASE_URL` with `define`, and the app and
+ * these handlers both read it, so they cannot drift apart.
+ */
+const api = (path: string) => `${import.meta.env.VITE_API_BASE_URL}/${path}`;
 
 /**
  * The default, happy-path backend. It answers what the app needs to boot and to

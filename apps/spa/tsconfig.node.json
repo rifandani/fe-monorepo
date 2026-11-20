@@ -8,10 +8,5 @@
     "types": ["node"],
     "skipLibCheck": true
   },
-  "include": [
-    "vite.config.*",
-    "vitest.e2e.config.*",
-    "e2e/support/constants.ts",
-    "pwa-assets.config.*"
-  ]
+  "include": ["vite.config.*", "vitest.e2e.config.*", "pwa-assets.config.*"]
 }
