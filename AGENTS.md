@@ -27,6 +27,11 @@ Canonical five-role vocabulary with default label strings. See `docs/agents/tria
 
 Multi-context — `GLOSSARY-MAP.md` at repo root points to per-context `GLOSSARY.md` files. See `docs/agents/domain.md`.
 
+## Commands
+
+- Run tests with `bun run test` (Vitest). Do not use `bun test`: it starts the Bun test runner, which these tests do not support.
+- Run app and package scripts through the workspace filters: `bun spa <script>`, `bun expo <script>`, `bun core <script>` (for example, `bun spa dev`). The root has no single `dev` or `build` script.
+
 ### Testing
 
 When writing tests, call Skill tool with `/javascript-testing-expert`.

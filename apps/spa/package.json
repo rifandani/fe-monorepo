@@ -13,7 +13,6 @@
     "typerange:audit": "fr --audit",
     "test:install": "playwright install --with-deps chromium",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "test:e2e:watch": "vitest --config vitest.e2e.config.ts",
     "test:e2e:headed": "vitest --config vitest.e2e.config.ts --browser.headless=false",
     "test:unit": "vitest run --project spa",
     "check-site-meta": "bunx check-site-meta 3001 -p 3051",
