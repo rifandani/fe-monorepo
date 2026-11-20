@@ -1,8 +1,20 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
 import type { Persistence } from "@workspace/core/persistence/persistence";
+import { makeSessionMachine } from "@workspace/core/session/session-machine";
+import { SessionRefresh } from "@workspace/core/session/session-refresh";
+import { createEffectActor, sendAndAwait, waitFor } from "@xstate/effect";
 import { Context, Effect, Layer, Option } from "effect";
 import { KeyValueStore } from "effect/persistence";
+
+/**
+ * The actor stops only when the Layer closes, at app shutdown, and only then
+ * do these sends and waits fail. A caller that still waits gets `fallback`.
+ */
+const orElseSucceed =
+  <A>(fallback: A) =>
+  <E>(effect: Effect.Effect<A, E>) =>
+    Effect.orElseSucceed(effect, () => fallback);
 
 export interface SessionOptions {
   /**
@@ -15,12 +27,12 @@ export interface SessionOptions {
 
 /**
  * @description The Session of this app: the one place that starts it, reads its
- * Access Token, and ends it.
+ * Access Token, refreshes it, and ends it.
  *
  * The Session itself is `sessionAtom` in Persistence, so React and route guards
- * read it with `useAtomValue` / `registry.get`. Every write goes through here,
- * so End Session is one flow, whether the person signed out or the server
- * rejected the Access Token.
+ * read it with `useAtomValue` / `registry.get`. Every write goes through the
+ * Session machine (`session-machine.ts`), so End Session is one flow, whether
+ * the person signed out or the server refused the refresh token.
  */
 export class Session extends Context.Service<
   Session,
@@ -33,12 +45,25 @@ export class Session extends Context.Service<
     readonly accessToken: Effect.Effect<Option.Option<string>>;
     /** @description Session Start: keep the Session that a login produced. */
     readonly start: (session: AuthLoginResponseSchema) => Effect.Effect<void>;
+    /**
+     * @description Session Refresh: the server rejected `rejectedToken`. Get a
+     * new token pair, or end the Session when the server refuses the refresh
+     * token. Many callers can ask at the same time: one refresh runs, and all
+     * of them wait for it.
+     *
+     * @returns The Access Token to retry with, or `None` when there is none
+     * (the Session ended, or the refresh failed).
+     */
+    readonly refresh: (
+      rejectedToken: string
+    ) => Effect.Effect<Option.Option<string>>;
     /** @description End Session: discard the Session, then run `onEnd`. */
     readonly end: Effect.Effect<void>;
   }
 >()("@workspace/core/session/Session") {
   /**
-   * @description The Session on an app's Persistence.
+   * @description The Session on an app's Persistence. It starts the Session
+   * machine, which lives as long as the Layer, and needs `SessionRefresh`.
    *
    * @example
    *
@@ -49,34 +74,63 @@ export class Session extends Context.Service<
    * ```
    */
   static readonly layer = (
-    { registry, sessionAtom }: Pick<Persistence, "registry" | "sessionAtom">,
+    persistence: Pick<Persistence, "registry" | "sessionAtom">,
     { onEnd = Effect.void }: SessionOptions = {}
   ) =>
-    Layer.succeed(
+    Layer.effect(
       Session,
-      Session.of({
-        accessToken: Effect.sync(() =>
+      Effect.gen(function* () {
+        const { registry, sessionAtom } = persistence;
+
+        const actor = yield* createEffectActor(
+          makeSessionMachine(persistence, { onEnd })
+        );
+
+        const accessToken = Effect.sync(() =>
           Option.fromNullishOr(registry.get(sessionAtom)?.accessToken).pipe(
             Option.filter((token) => token !== "")
           )
-        ),
-        start: (session) =>
-          Effect.sync(() => {
-            registry.set(sessionAtom, session);
-          }),
-        end: Effect.sync(() => {
-          registry.set(sessionAtom, null);
-        }).pipe(Effect.andThen(onEnd)),
+        );
+
+        // `sendAndAwait` resolves after the step and its plain actions, so the
+        // atom already holds the result. `waitFor` covers the invoked work.
+        const untilIdle = waitFor(actor, (snapshot) =>
+          snapshot.matches("idle")
+        );
+
+        return Session.of({
+          accessToken,
+          start: (session) =>
+            sendAndAwait(actor, { type: "START", session }).pipe(Effect.ignore),
+          refresh: (rejectedToken) =>
+            sendAndAwait(actor, {
+              type: "ACCESS_REJECTED",
+              accessToken: rejectedToken,
+            }).pipe(
+              Effect.andThen(untilIdle),
+              Effect.andThen(accessToken),
+              Effect.map(Option.filter((token) => token !== rejectedToken)),
+              orElseSucceed(Option.none())
+            ),
+          end: sendAndAwait(actor, { type: "END" }).pipe(
+            Effect.andThen(untilIdle),
+            Effect.ignore
+          ),
+        });
       })
     );
 
   /**
    * @description A Session on in-memory storage, for tests: a second adapter at
-   * the same seam.
+   * the same seam. The server refuses every refresh token unless `refresh` says
+   * otherwise, so a rejected Access Token ends the Session.
    */
   static readonly layerMemory = (
     session: AuthLoginResponseSchema | null = null,
-    options?: SessionOptions
+    {
+      refresh = SessionRefresh.rejecting,
+      ...options
+    }: SessionOptions & { readonly refresh?: SessionRefresh["Service"] } = {}
   ) => {
     const persistence = makePersistence(KeyValueStore.layerMemory, {
       defaultLocale: () => "en-us",
@@ -84,7 +138,9 @@ export class Session extends Context.Service<
 
     persistence.registry.set(persistence.sessionAtom, session);
 
-    return Session.layer(persistence, options);
+    return Session.layer(persistence, options).pipe(
+      Layer.provide(Layer.succeed(SessionRefresh, refresh))
+    );
   };
 }
 

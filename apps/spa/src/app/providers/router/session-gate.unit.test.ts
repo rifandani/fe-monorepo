@@ -14,7 +14,8 @@ import {
   Session,
   startSession,
 } from "@workspace/core/session/session";
-import { Effect, Schema } from "effect";
+import { SessionRefresh } from "@workspace/core/session/session-refresh";
+import { Effect, Layer, Schema } from "effect";
 import { KeyValueStore } from "effect/persistence";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -50,7 +51,9 @@ const setup = async (initialEntry: string, signedIn = false) => {
     defaultLocale: () => "en-us",
   });
 
-  const session = Session.layer(persistence);
+  const session = Session.layer(persistence).pipe(
+    Layer.provide(SessionRefresh.layerRejecting)
+  );
 
   const run = async <A>(effect: Effect.Effect<A, never, Session>) =>
     await Effect.runPromise(effect.pipe(Effect.provide(session)));

@@ -37,6 +37,9 @@ const rules: OxlintConfig["rules"] = {
   // The rule reads that call as a bare `Error(…)` and its autofix inserts a
   // `new` that breaks the class. `new` on real errors stays enforced by review.
   "unicorn/throw-new-error": "off",
+  // An inline `enq(() => Effect.log(...))` in an XState transition builds an
+  // Effect that never runs. Register Effect actions in `setupEffect` instead.
+  "xstate-effect/no-inline-effect": "error",
   // `Effect.gen(function* () {…})` and `Effect.fn("name")(function* () {…})`
   // are the Effect idiom; the span or the enclosing binding names them.
   "func-names": ["error", "always", { generators: "never" }],
@@ -93,6 +96,7 @@ export default defineConfig({
   // oxlint does not merge `settings` or `env` from extends; curated react-doctor mode.
   env: core.env,
   settings: jsPluginSettings,
+  jsPlugins: ["@xstate/effect/oxlint"],
   rules,
   overrides: [
     {

@@ -10,10 +10,12 @@
         "@effect/tsgo": "0.64.1",
         "@effect/vitest": "4.1.2",
         "@fast-check/vitest": "0.5.0",
+        "@oxlint/plugins": "1.79.0",
         "@stryker-mutator/core": "10.1.1",
         "@stryker-mutator/vitest-runner": "10.1.1",
         "@vitest/coverage-v8": "5.1.0",
         "@workspace/typescript-config": "workspace:*",
+        "@xstate/effect": "1.0.0-beta.2",
         "fallow": "3.38.1",
         "fast-check": "4.10.3",
         "husky": "9.1.7",
@@ -28,6 +30,7 @@
         "typescript": "7.0.2",
         "ultracite": "8.1.1",
         "vitest": "5.1.0",
+        "xstate": "6.0.0-beta.3",
       },
     },
     "apps/expo": {
@@ -50,6 +53,7 @@
         "@tamagui/toast": "1.126.16",
         "@tanstack/react-query": "5.105.3",
         "@workspace/core": "workspace:*",
+        "@xstate/effect": "1.0.0-beta.2",
         "burnt": "0.13.0",
         "date-fns": "4.4.0",
         "effect": "4.1.2",
@@ -79,6 +83,7 @@
         "react-native-screens": "4.11.1",
         "tamagui": "1.126.16",
         "type-fest": "5.10.0",
+        "xstate": "6.0.0-beta.3",
       },
       "devDependencies": {
         "@babel/core": "7.27.4",
@@ -113,6 +118,7 @@
         "@unhead/react": "3.4.3",
         "@unhead/schema-org": "3.4.3",
         "@workspace/core": "workspace:*",
+        "@xstate/effect": "1.0.0-beta.2",
         "cn": "0.5.2",
         "effect": "4.1.2",
         "embla-carousel-react": "8.6.0",
@@ -131,6 +137,7 @@
         "tw-animate-css": "1.4.0",
         "type-fest": "5.10.0",
         "web-vitals": "6.2.3",
+        "xstate": "6.0.0-beta.3",
       },
       "devDependencies": {
         "@rolldown/plugin-babel": "0.3.0",
@@ -173,16 +180,20 @@
         "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@workspace/typescript-config": "workspace:*",
+        "@xstate/effect": "1.0.0-beta.2",
         "effect": "4.1.2",
         "typescript": "7.0.2",
+        "xstate": "6.0.0-beta.3",
       },
       "peerDependencies": {
         "@effect/atom-react": "4.1.2",
         "@tanstack/react-query": "5.105.1",
+        "@xstate/effect": "1.0.0-beta.2",
         "effect": "4.1.2",
         "radashi": "13.0.1",
         "react": ">=19.0.0",
         "type-fest": "5.10.0",
+        "xstate": "6.0.0-beta.3",
       },
     },
     "packages/typescript-config": {
@@ -1027,6 +1038,8 @@
 
     "@oxlint/binding-win32-x64-msvc": ["@oxlint/binding-win32-x64-msvc@1.90.0", "", { "os": "win32", "cpu": "x64" }, "sha512-30JiaFEBUB9peEOcvVM8ggo88SoN/IdSr9DW505JdBji/R6dM66gKEiG65hw6qcaF2f4mO0cEJ+RwRZprmun9g=="],
 
+    "@oxlint/plugins": ["@oxlint/plugins@1.79.0", "", {}, "sha512-S0uyoxakDINJ4DPgqxGlEEvrdSMeQb7Z2lKVjxoY2gwsbZbfg2Xr8Klfeo5ZeraHmmdBCELFUHkSe6KEmBpMvg=="],
+
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 
     "@pnpm/deps.graph-sequencer": ["@pnpm/deps.graph-sequencer@1100.0.1", "", {}, "sha512-pOr5+q1fLYKwFN3LAJuGZEnfXDcQ73zqgDHMtGy+K+uIoUqyY+6MeDCWFwfu+4EFuq76I5EPFofoNAI+Bmmq4A=="],
@@ -1736,6 +1749,8 @@
     "@workspace/typescript-config": ["@workspace/typescript-config@workspace:packages/typescript-config"],
 
     "@xmldom/xmldom": ["@xmldom/xmldom@0.9.12", "", {}, "sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A=="],
+
+    "@xstate/effect": ["@xstate/effect@1.0.0-beta.2", "", { "peerDependencies": { "@oxlint/plugins": "^1.76.0", "effect": "^4.0.0", "xstate": "^6.0.0-beta.3" }, "optionalPeers": ["@oxlint/plugins"] }, "sha512-BGyeP2E2vRxRtMiUKrG797qGMQfE8WqZNYiC5VLFrwIEj73C25LnyQpk5VwhYL2vUntIH629klM/sDWZ1ZjPyQ=="],
 
     "abort-controller": ["abort-controller@3.0.0", "", { "dependencies": { "event-target-shim": "^5.0.0" } }, "sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg=="],
 
@@ -3436,6 +3451,8 @@
     "xml2js": ["xml2js@0.6.0", "", { "dependencies": { "sax": ">=0.6.0", "xmlbuilder": "~11.0.0" } }, "sha512-eLTh0kA8uHceqesPqSE+VvO1CDDJWMwlQfB6LuN6T8w6MaDJ8Txm8P7s5cHD0miF0V+GGTZrDQfxPZQVsur33w=="],
 
     "xmlbuilder": ["xmlbuilder@15.1.1", "", {}, "sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg=="],
+
+    "xstate": ["xstate@6.0.0-beta.3", "", { "bin": { "xstate": "./bin/xstate.js" } }, "sha512-b6C6SQ9cern6sD531uHcwOH94lBL+701Jd/VRSkzT8oAV1AKTT9oXFZtvC5DajUU4+8gmTLBTMHjZjd0VrsmAg=="],
 
     "y18n": ["y18n@5.0.8", "", {}, "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA=="],
 

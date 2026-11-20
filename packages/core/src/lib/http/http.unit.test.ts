@@ -1,11 +1,12 @@
 import { describe, expect, it } from "@effect/vitest";
 import { fc, test } from "@fast-check/vitest";
-import { ioPropertyParameters } from "@test/arbitraries";
+import { errorStatusArb, ioPropertyParameters } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import type { HttpAuthConfig } from "@workspace/core/http/http";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
+import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { Effect, Layer, Option } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { delay, http, HttpResponse } from "msw";
@@ -35,6 +36,7 @@ const withHttp = (
     accessToken?: string;
     auth?: HttpAuthConfig;
     onEnd?: Effect.Effect<void>;
+    refresh?: SessionRefresh["Service"];
   } = {}
 ) =>
   Effect.provide(
@@ -44,7 +46,7 @@ const withHttp = (
           options.accessToken === undefined
             ? null
             : sessionWith(options.accessToken),
-          { onEnd: options.onEnd }
+          { onEnd: options.onEnd, refresh: options.refresh }
         )
       ),
       Layer.provide(FetchHttpClient.layer)
@@ -73,8 +75,45 @@ const captureRequests = () => {
   return requests;
 };
 
+/** Answers every request with `status`, and records each request. */
+const captureStatus = (status: number) => {
+  const requests: Request[] = [];
+  server.use(
+    http.get(resourceUrl, ({ request }) => {
+      requests.push(request);
+
+      return new HttpResponse(null, { status });
+    })
+  );
+
+  return requests;
+};
+
 const respondWithStatus = (status: number) => {
   server.use(http.get(resourceUrl, () => new HttpResponse(null, { status })));
+};
+
+/** A server that renews every refresh token with the Access Token `new`. */
+const renewingServer = SessionRefresh.of({
+  refresh: () =>
+    Effect.succeed({ accessToken: "new", refreshToken: "new-refresh" }),
+});
+
+/** Accepts only `Bearer new`, and records the header of each request. */
+const acceptOnlyNewToken = () => {
+  const sent: (string | null)[] = [];
+  server.use(
+    http.get(resourceUrl, ({ request }) => {
+      const header = request.headers.get("Authorization");
+      sent.push(header);
+
+      return header === "Bearer new"
+        ? HttpResponse.json({})
+        : new HttpResponse(null, { status: 401 });
+    })
+  );
+
+  return sent;
 };
 
 /** Counts how many times the Session ended. */
@@ -87,29 +126,6 @@ const sessionEndCounter = () => {
   };
 
   return counter;
-};
-
-/**
- * An HTTP error status (400–599) not in `excluded`, built by shifting past each
- * excluded value instead of filtering.
- *
- * 407 is always excluded: `fetch` turns a 407 (Proxy Authentication Required)
- * into a network error, so it never reaches the client as a response.
- */
-const errorStatusArb = (...excluded: number[]) => {
-  const skipped = [407, ...excluded].toSorted((a, b) => a - b);
-
-  return fc.integer({ min: 400, max: 599 - skipped.length }).map((value) => {
-    let status = value;
-
-    for (const skip of skipped) {
-      if (status >= skip) {
-        status += 1;
-      }
-    }
-
-    return status;
-  });
 };
 
 /** A token that is a legal header value: visible ASCII, no space. */
@@ -175,6 +191,44 @@ describe("Http", () => {
         expect(error).toMatchObject({ _tag: "HttpResponseError", status: 401 });
         expect(Option.isNone(token)).toBe(true);
         expect(counter.ended).toBe(1);
+      })
+  );
+
+  it.effect(
+    "should send a rejected request once more with the Access Token of a refresh",
+    () =>
+      Effect.gen(function* () {
+        // Arrange
+        const sent = acceptOnlyNewToken();
+
+        // Act
+        const response = yield* getThings().pipe(
+          withHttp({ accessToken: "old", refresh: renewingServer })
+        );
+
+        // Assert
+        expect(response.status).toBe(200);
+        expect(sent).toEqual(["Bearer old", "Bearer new"]);
+      })
+  );
+
+  it.effect(
+    "should fail with the second 401 and not refresh again when the retry is rejected",
+    () =>
+      Effect.gen(function* () {
+        // Arrange
+        const requests = captureStatus(401);
+
+        // Act
+        const error = yield* Effect.flip(
+          getThings().pipe(
+            withHttp({ accessToken: "old", refresh: renewingServer })
+          )
+        );
+
+        // Assert
+        expect(error).toMatchObject({ _tag: "HttpResponseError", status: 401 });
+        expect(requests).toHaveLength(2);
       })
   );
 
