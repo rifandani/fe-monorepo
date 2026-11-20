@@ -1,27 +1,56 @@
+import { fc, test } from "@fast-check/vitest";
 import { describe, expect, it } from "vitest";
 
 import { resolveToastPreset } from "./toast";
 
+// Helpers
+
+const PRESETS = ["default", "success", "error", "warning", "info"] as const;
+
+/** A value that is not one of the presets. */
+const unknownPresetArb = fc
+  .anything()
+  .filter((value) => !PRESETS.some((preset) => preset === value));
+
 describe("resolveToastPreset", () => {
-  it("passes through every known preset", () => {
-    for (const preset of [
-      "default",
-      "success",
-      "error",
-      "warning",
-      "info",
-    ] as const) {
-      expect(resolveToastPreset({ preset })).toBe(preset);
+  it("should pass through every known preset", () => {
+    for (const preset of PRESETS) {
+      // Act
+      const resolved = resolveToastPreset({ preset });
+
+      // Assert
+      expect(resolved).toBe(preset);
     }
   });
 
-  it("falls back to default when customData is absent", () => {
-    expect(resolveToastPreset()).toBe("default");
-    expect(resolveToastPreset(null)).toBe("default");
-    expect(resolveToastPreset({})).toBe("default");
+  it("should fall back to default when customData is absent", () => {
+    // Act
+    const resolved = [
+      resolveToastPreset(),
+      resolveToastPreset(null),
+      resolveToastPreset({}),
+    ];
+
+    // Assert
+    expect(resolved).toEqual(["default", "default", "default"]);
   });
 
-  it("falls back to default for an unrecognised preset", () => {
-    expect(resolveToastPreset({ preset: "bogus" })).toBe("default");
+  it("should fall back to default for an unknown preset", () => {
+    // Act
+    const resolved = resolveToastPreset({ preset: "bogus" });
+
+    // Assert
+    expect(resolved).toBe("default");
   });
+
+  test.prop([unknownPresetArb])(
+    "should always fall back to default for a value that is not a preset",
+    (preset) => {
+      // Act
+      const resolved = resolveToastPreset({ preset });
+
+      // Assert
+      expect(resolved).toBe("default");
+    }
+  );
 });

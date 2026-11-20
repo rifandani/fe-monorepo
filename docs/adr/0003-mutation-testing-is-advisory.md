@@ -4,6 +4,8 @@ We run [StrykerJS](https://stryker-mutator.io/) with the Vitest runner over the 
 
 > **Note (2026-09-02):** `@workspace/web` was removed from the monorepo. Tables and file paths below that name `apps/web/...` are historical measurements from when that app existed; they are not current mutate targets.
 
+> **Note (2026-11-20):** Property Tests run with a fixed seed and `numRuns: 10` under Stryker. A random seed would change the test names between the dry run and the mutant runs, and add verdict flips — see [ADR-0009](./0009-property-tests-use-fast-check.md#decisions).
+
 Precisely: **no mutation score can fail anything.** `break: null` means Stryker exits 0 whatever the score, and the job is never triggered by a push or pull request. A crash or a broken config will still red-X that dispatched run, which is intended — you want to know the tool is broken.
 
 Depends on [ADR-0001](./0001-unit-tests-are-pure-module-logic.md), revises nothing in it.

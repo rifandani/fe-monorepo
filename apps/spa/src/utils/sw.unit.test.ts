@@ -1,51 +1,79 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { isOffline, resolveSwPrompt } from "./sw";
 
 describe("isOffline", () => {
-  it("is false when the navigator does not report onLine at all", () => {
-    vi.stubGlobal("navigator", {});
-    expect(isOffline()).toBe(false);
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  it("follows navigator.onLine when it is present", () => {
-    vi.stubGlobal("navigator", { onLine: true });
-    expect(isOffline()).toBe(false);
+  it("should be false when the navigator does not report onLine", () => {
+    // Arrange
+    vi.stubGlobal("navigator", {});
 
+    // Act
+    const offline = isOffline();
+
+    // Assert
+    expect(offline).toBe(false);
+  });
+
+  it("should be false when navigator.onLine is true", () => {
+    // Arrange
+    vi.stubGlobal("navigator", { onLine: true });
+
+    // Act
+    const offline = isOffline();
+
+    // Assert
+    expect(offline).toBe(false);
+  });
+
+  it("should be true when navigator.onLine is false", () => {
+    // Arrange
     vi.stubGlobal("navigator", { onLine: false });
-    expect(isOffline()).toBe(true);
+
+    // Act
+    const offline = isOffline();
+
+    // Assert
+    expect(offline).toBe(true);
   });
 });
 
 describe("resolveSwPrompt", () => {
-  it("shows nothing while neither flag is set", () => {
-    expect(
-      resolveSwPrompt({ needRefresh: false, offlineReady: false })
-    ).toBeNull();
+  it("should show nothing while neither flag is set", () => {
+    // Act
+    const prompt = resolveSwPrompt({ needRefresh: false, offlineReady: false });
+
+    // Assert
+    expect(prompt).toBeNull();
   });
 
-  it("announces offline readiness without a reload action", () => {
-    expect(resolveSwPrompt({ needRefresh: false, offlineReady: true })).toEqual(
-      {
-        canReload: false,
-        messageKey: "appReady",
-      }
-    );
+  it("should announce offline readiness without a reload action", () => {
+    // Act
+    const prompt = resolveSwPrompt({ needRefresh: false, offlineReady: true });
+
+    // Assert
+    expect(prompt).toEqual({ canReload: false, messageKey: "appReady" });
   });
 
-  it("offers a reload when new content is waiting", () => {
-    expect(resolveSwPrompt({ needRefresh: true, offlineReady: false })).toEqual(
-      {
-        canReload: true,
-        messageKey: "newContentAvailable",
-      }
-    );
-  });
+  it("should offer a reload when new content is waiting", () => {
+    // Act
+    const prompt = resolveSwPrompt({ needRefresh: true, offlineReady: false });
 
-  it("keeps the offline-ready message but still offers the reload", () => {
-    expect(resolveSwPrompt({ needRefresh: true, offlineReady: true })).toEqual({
+    // Assert
+    expect(prompt).toEqual({
       canReload: true,
-      messageKey: "appReady",
+      messageKey: "newContentAvailable",
     });
+  });
+
+  it("should keep the offline-ready message but still offer the reload", () => {
+    // Act
+    const prompt = resolveSwPrompt({ needRefresh: true, offlineReady: true });
+
+    // Assert
+    expect(prompt).toEqual({ canReload: true, messageKey: "appReady" });
   });
 });

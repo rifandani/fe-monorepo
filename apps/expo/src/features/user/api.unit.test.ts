@@ -1,4 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
+import { fc, test } from "@fast-check/vitest";
+import { ioPropertyParameters } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { Http } from "@workspace/core/http/http";
 import { Session } from "@workspace/core/session/session";
@@ -8,6 +10,8 @@ import { http, HttpResponse } from "msw";
 
 import { userApi } from "@/features/user/api";
 import type { GetUserApiResponseSchema } from "@/features/user/schemas";
+
+// Helpers
 
 /**
  * `userApi` reads `Http` from context, so the test owns the base URL and no
@@ -25,7 +29,7 @@ const getDetail = (params: { id: number }) =>
 
 const detailUrl = `${MOCK_API_BASE_URL}/users/:id`;
 
-const sampleUser: GetUserApiResponseSchema = {
+const ada: GetUserApiResponseSchema = {
   age: 36,
   birthDate: "1990-01-01",
   bloodGroup: "O+",
@@ -44,62 +48,96 @@ const sampleUser: GetUserApiResponseSchema = {
   weight: 60,
 };
 
-describe("userApi.getDetail", () => {
-  it.effect("fetches and returns the decoded user detail", () =>
-    Effect.gen(function* () {
-      let capturedId: string | readonly string[] | undefined;
-      let capturedRequest: Request | undefined;
-      server.use(
-        http.get(detailUrl, ({ params, request }) => {
-          capturedId = params.id;
-          capturedRequest = request;
+/** Serves `user` and records the `:id` path param that each request carried. */
+const serveUser = (user: GetUserApiResponseSchema) => {
+  const ids: (string | readonly string[] | undefined)[] = [];
+  server.use(
+    http.get(detailUrl, ({ params }) => {
+      ids.push(params.id);
 
-          return HttpResponse.json(sampleUser);
+      return HttpResponse.json(user);
+    })
+  );
+
+  return ids;
+};
+
+describe("userApi.getDetail", () => {
+  it.effect("should fetch and return the decoded user detail", () =>
+    Effect.gen(function* () {
+      // Arrange
+      let capturedMethod: string | undefined;
+      server.use(
+        http.get(detailUrl, ({ request }) => {
+          capturedMethod = request.method;
+
+          return HttpResponse.json(ada);
         })
       );
 
+      // Act
       const result = yield* getDetail({ id: 1 });
 
-      // The path param is read off the real request rather than a spy's call args, so this
-      // covers the `users/${id}` template *and* the base URL the `Http` layer was given — neither of which the previous module-boundary
-      // mock could observe.
-      expect(capturedRequest?.method).toBe("GET");
-      expect(capturedId).toBe("1");
-      expect(result).toEqual(sampleUser);
+      // Assert
+      expect(capturedMethod).toBe("GET");
+      expect(result).toEqual(ada);
     })
   );
 
   it.effect(
-    "fails with a SchemaError when the response violates the schema",
+    "should fail with a SchemaError when the response breaks the schema",
     () =>
       Effect.gen(function* () {
+        // Arrange
         server.use(
           http.get(detailUrl, () =>
-            HttpResponse.json({ ...sampleUser, email: "not-an-email" })
+            HttpResponse.json({ ...ada, email: "not-an-email" })
           )
         );
 
+        // Act
         const error = yield* Effect.flip(getDetail({ id: 1 }));
 
+        // Assert
         expect(error._tag).toBe("SchemaError");
       })
   );
 
-  it.effect("fails with the Error Envelope on a 404", () =>
+  it.effect("should fail with the Error Envelope on a 404", () =>
     Effect.gen(function* () {
+      // Arrange
       server.use(
         http.get(detailUrl, () =>
           HttpResponse.json({ message: "User not found" }, { status: 404 })
         )
       );
 
+      // Act
       const error = yield* Effect.flip(getDetail({ id: 999 }));
 
+      // Assert
       expect(error).toMatchObject({
         _tag: "HttpResponseError",
         status: 404,
         data: { message: "User not found" },
       });
     })
+  );
+
+  test.prop([fc.integer({ min: 1 })], ioPropertyParameters())(
+    "should always request the user that the id names",
+    async (id) => {
+      // Arrange
+      // The path param is read off the real request, so this covers the
+      // `users/${id}` template and the base URL that the `Http` layer was given.
+      const ids = serveUser({ ...ada, id });
+
+      // Act
+      const result = await Effect.runPromise(getDetail({ id }));
+
+      // Assert
+      expect(ids).toEqual([String(id)]);
+      expect(result.id).toBe(id);
+    }
   );
 });

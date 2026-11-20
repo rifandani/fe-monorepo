@@ -19,6 +19,10 @@
       "exports": ["*"]
     },
     {
+      "file": "vitest.arbitraries.ts",
+      "exports": ["*"]
+    },
+    {
       "file": "apps/spa/src/features/master-design/**",
       "exports": ["*"]
     }
@@ -77,6 +81,7 @@
     "@stryker-mutator/vitest-runner",
     "@opentelemetry/semantic-conventions",
     "msw",
+    "@fast-check/vitest",
     "postcss-load-config",
     "workbox-core",
     "@expo-google-fonts/space-grotesk",

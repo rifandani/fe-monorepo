@@ -1,6 +1,12 @@
 import { describe, expect, it } from "@effect/vitest";
+import { test } from "@fast-check/vitest";
+import { sessionArb, ioPropertyParameters } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { authApi } from "@workspace/core/auth/api";
+import type {
+  AuthLoginRequestSchema,
+  AuthLoginResponseSchema,
+} from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { Session } from "@workspace/core/session/session";
@@ -8,9 +14,11 @@ import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 
+// Helpers
+
 const loginUrl = `${MOCK_API_BASE_URL}/auth/login`;
 
-const loginResponse = {
+const adaSession: AuthLoginResponseSchema = {
   accessToken: "token",
   email: "ada@example.com",
   firstName: "Ada",
@@ -22,7 +30,10 @@ const loginResponse = {
   username: "ada",
 };
 
-const credentials = { username: "ada", password: "secret1" };
+const adaCredentials: AuthLoginRequestSchema = {
+  username: "ada",
+  password: "secret1",
+};
 
 /** `authApi` reads `Http` from context, so the test owns the base URL. */
 const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
@@ -30,66 +41,74 @@ const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
   Layer.provide(FetchHttpClient.layer)
 );
 
-const login = (json: typeof credentials) =>
+const login = (json: AuthLoginRequestSchema) =>
   authApi.login(json).pipe(Effect.provide(TestHttp));
 
-describe("authApi", () => {
-  it.effect("login posts the credentials and decodes the response", () =>
+const respondWith = (response: () => Response) => {
+  server.use(http.post(loginUrl, response));
+};
+
+describe("authApi.login", () => {
+  it.effect("should post the credentials and decode the response", () =>
     Effect.gen(function* () {
+      // Arrange
       let capturedBody: unknown;
-      let capturedRequest: Request | undefined;
+      let capturedMethod: string | undefined;
       server.use(
         http.post(loginUrl, async ({ request }) => {
-          capturedRequest = request;
+          capturedMethod = request.method;
           capturedBody = await request.json();
 
-          return HttpResponse.json(loginResponse);
+          return HttpResponse.json(adaSession);
         })
       );
 
-      const result = yield* login(credentials);
+      // Act
+      const result = yield* login(adaCredentials);
 
+      // Assert
       // Capture-then-assert, so a mismatch reports an `expect` diff rather than the
       // failure a throwing resolver would surface.
-      expect(capturedRequest?.method).toBe("POST");
-      expect(capturedBody).toEqual(credentials);
-      expect(result.username).toBe("ada");
-      expect(result.accessToken).toBe("token");
+      expect(capturedMethod).toBe("POST");
+      expect(capturedBody).toEqual(adaCredentials);
+      expect(result).toEqual(adaSession);
     })
   );
 
   it.effect(
-    "login fails with a SchemaError when the response violates the schema",
+    "should fail with a SchemaError when the response breaks the schema",
     () =>
       Effect.gen(function* () {
+        // Arrange
         // This method's whole job is decoding with `authLoginResponseSchema`, and a
         // 200 that decodes cleanly proves nothing about it. Drive a well-formed-but-
         // invalid payload through the real client and assert Schema rejects it.
-        server.use(
-          http.post(loginUrl, () =>
-            HttpResponse.json({ ...loginResponse, email: "not-an-email" })
-          )
+        respondWith(() =>
+          HttpResponse.json({ ...adaSession, email: "not-an-email" })
         );
 
-        const error = yield* Effect.flip(login(credentials));
+        // Act
+        const error = yield* Effect.flip(login(adaCredentials));
 
+        // Assert
         expect(error._tag).toBe("SchemaError");
       })
   );
 
-  it.effect("login fails on a 401, carrying the Error Envelope", () =>
+  it.effect("should fail on a 401 and carry the Error Envelope", () =>
     Effect.gen(function* () {
-      server.use(
-        http.post(loginUrl, () =>
-          HttpResponse.json({ message: "Invalid credentials" }, { status: 401 })
-        )
+      // Arrange
+      respondWith(() =>
+        HttpResponse.json({ message: "Invalid credentials" }, { status: 401 })
       );
 
+      // Act
+      const error = yield* Effect.flip(login(adaCredentials));
+
+      // Assert
       // Asserting the failure alone would pass whether or not the envelope
       // survived. `toErrorMessage` reads `data`, and only a real client against
       // a real response proves `Http` populates it.
-      const error = yield* Effect.flip(login(credentials));
-
       expect(error).toBeInstanceOf(HttpResponseError);
       expect(error).toMatchObject({
         status: 401,
@@ -98,15 +117,30 @@ describe("authApi", () => {
     })
   );
 
-  it.effect("login fails on a 500", () =>
+  it.effect("should fail on a 500", () =>
     Effect.gen(function* () {
-      server.use(
-        http.post(loginUrl, () => new HttpResponse(null, { status: 500 }))
-      );
+      // Arrange
+      respondWith(() => new HttpResponse(null, { status: 500 }));
 
-      const error = yield* Effect.flip(login(credentials));
+      // Act
+      const error = yield* Effect.flip(login(adaCredentials));
 
+      // Assert
       expect(error).toMatchObject({ _tag: "HttpResponseError", status: 500 });
     })
+  );
+
+  test.prop([sessionArb], ioPropertyParameters())(
+    "should decode any Session the schema accepts unchanged",
+    async (session) => {
+      // Arrange
+      respondWith(() => HttpResponse.json(session));
+
+      // Act
+      const result = await Effect.runPromise(login(adaCredentials));
+
+      // Assert
+      expect(result).toEqual(session);
+    }
   );
 });

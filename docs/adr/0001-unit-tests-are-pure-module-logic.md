@@ -9,6 +9,7 @@ We run Vitest projects (`core`, `spa`, `expo`) for Unit tests: utils, libs, regi
 > Its first report then revised the allowlist itself on 2026-08-03 — pure Zod schema modules were scoring a free 100% — see [Amendments](#amendments).
 > On 2026-11-02 the apps moved to Effect: Zustand stores became `Atom.kvs` atoms in `*-store.ts` files, Zod became Effect Schema, and Effect tests use `@effect/vitest`. The scope rule is unchanged; only the names in it moved.
 > On 2026-11-20 the Playwright E2E suite became Route Tests in Vitest browser mode, from a separate config. UI behavior belongs there now. The unit suite still has no browser mode — see [Amendments](#amendments) and [ADR-0008](./0008-route-tests-run-in-vitest-browser-mode.md).
+> Also on 2026-11-20, unit tests gained Property Tests with fast-check. The scope rule is unchanged: a Property Test is a unit test of the same pure modules — see [ADR-0009](./0009-property-tests-use-fast-check.md).
 
 ## Considered Options
 

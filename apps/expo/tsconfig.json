@@ -12,6 +12,7 @@
       // ],
       "@/*": ["./src/*"],
       // Mirrors the `@test/*` aliases in vitest.config.ts.
+      "@test/arbitraries": ["../../vitest.arbitraries.ts"],
       "@test/msw": ["../../vitest.msw.ts"]
     },
     "strict": true

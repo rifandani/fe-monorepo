@@ -1,4 +1,6 @@
+import { fc, test } from "@fast-check/vitest";
 import {
+  canWriteToClipboard,
   createSearchParams,
   createSearchParamsWithComma,
   doDownload,
@@ -6,234 +8,478 @@ import {
   getPlatformAsync,
   getShortcutKey,
   getShortcutKeys,
-  canWriteToClipboard,
   isBrowser,
   isMacOS,
   saveFile,
 } from "@workspace/core/utils/dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("isBrowser", () => {
-  it("is false when window is undefined", () => {
-    const original = globalThis.window;
-    // @ts-expect-error -- intentional delete for node env
-    delete globalThis.window;
-    expect(isBrowser()).toBe(false);
+// Helpers
+
+/** Runs `fn` with no `window` global, as on the server, then puts it back. */
+const withoutWindow = <T>(fn: () => T): T => {
+  const original = globalThis.window;
+  // @ts-expect-error -- intentional delete for node env
+  delete globalThis.window;
+
+  try {
+    return fn();
+  } finally {
     globalThis.window = original;
+  }
+};
+
+const stubPlatform = (platform: string) => {
+  vi.stubGlobal("navigator", { platform });
+};
+
+const SPECIAL_KEYS = ["mod", "alt", "shift"];
+
+/** A key that `getShortcutKey` does not translate. */
+const plainKeyArb = fc
+  .string()
+  .filter((key) => !SPECIAL_KEYS.includes(key.toLowerCase()));
+
+const commaFreeStringArb = fc.string().map((text) => text.replaceAll(",", ""));
+
+const anchorStub = () => ({
+  href: "",
+  download: "",
+  target: "",
+  click: vi.fn(),
+  remove: vi.fn(),
+});
+
+describe("isBrowser", () => {
+  it("should be false when window is undefined", () => {
+    // Act
+    const result = withoutWindow(isBrowser);
+
+    // Assert
+    expect(result).toBe(false);
   });
 
-  it("is true when window exists", () => {
+  it("should be true when window exists", () => {
+    // Arrange
     vi.stubGlobal("window", {});
-    expect(isBrowser()).toBe(true);
+
+    // Act
+    const result = isBrowser();
+
+    // Assert
+    expect(result).toBe(true);
   });
 });
 
 describe("canWriteToClipboard", () => {
-  it("is false on the server", () => {
-    const original = globalThis.window;
-    // @ts-expect-error -- intentional delete for node env
-    delete globalThis.window;
-    expect(canWriteToClipboard()).toBe(false);
-    globalThis.window = original;
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  it("is false when the Clipboard API is missing", () => {
+  it("should be false on the server", () => {
+    // Act
+    const result = withoutWindow(canWriteToClipboard);
+
+    // Assert
+    expect(result).toBe(false);
+  });
+
+  it("should be false when the Clipboard API is missing", () => {
+    // Arrange
     vi.stubGlobal("window", {});
     vi.stubGlobal("navigator", {});
-    expect(canWriteToClipboard()).toBe(false);
+
+    // Act
+    const result = canWriteToClipboard();
+
+    // Assert
+    expect(result).toBe(false);
   });
 
-  it("is true when navigator.clipboard.writeText exists", () => {
+  it("should be true when navigator.clipboard.writeText exists", () => {
+    // Arrange
     vi.stubGlobal("window", {});
     vi.stubGlobal("navigator", { clipboard: { writeText: () => {} } });
-    expect(canWriteToClipboard()).toBe(true);
+
+    // Act
+    const result = canWriteToClipboard();
+
+    // Assert
+    expect(result).toBe(true);
   });
 });
 
 describe("createSearchParams", () => {
-  it("supports array values in object init", () => {
-    const params = createSearchParams({ sort: ["name", "price"] });
+  it("should add one entry for each item of an array value", () => {
+    // Arrange
+    const init = { sort: ["name", "price"] };
+
+    // Act
+    const params = createSearchParams(init);
+
+    // Assert
     expect(params.getAll("sort")).toEqual(["name", "price"]);
   });
 
-  it("accepts string init", () => {
-    expect(createSearchParams("a=1&b=2").get("a")).toBe("1");
+  it("should accept a query string", () => {
+    // Arrange
+    const init = "a=1&b=2";
+
+    // Act
+    const params = createSearchParams(init);
+
+    // Assert
+    expect(Object.fromEntries(params)).toEqual({ a: "1", b: "2" });
   });
+
+  test.prop([fc.dictionary(fc.string(), fc.array(fc.string()))])(
+    "should keep every value of every array key, in order",
+    (init) => {
+      // Act
+      const params = createSearchParams(init);
+
+      // Assert
+      for (const [key, values] of Object.entries(init)) {
+        expect(params.getAll(key)).toEqual(values);
+      }
+    }
+  );
 });
 
 describe("createSearchParamsWithComma", () => {
-  it("joins array values with commas", () => {
-    const params = createSearchParamsWithComma({
-      sort: "asc",
-      filters: ["model", "category"],
-    });
+  it("should join array values with commas", () => {
+    // Arrange
+    const init = { sort: "asc", filters: ["model", "category"] };
 
-    expect(params.get("sort")).toBe("asc");
-    expect(params.get("filters")).toBe("model,category");
+    // Act
+    const params = createSearchParamsWithComma(init);
+
+    // Assert
+    expect(params.toString()).toBe("sort=asc&filters=model%2Ccategory");
   });
 
-  it("returns empty params without init", () => {
-    expect([...createSearchParamsWithComma()]).toEqual([]);
+  it("should return empty params without init", () => {
+    // Act
+    const params = createSearchParamsWithComma();
+
+    // Assert
+    expect([...params]).toEqual([]);
   });
+
+  test.prop([fc.dictionary(fc.string(), fc.array(commaFreeStringArb))])(
+    "should always send one value for each array key",
+    (init) => {
+      // Act
+      const params = createSearchParamsWithComma(init);
+
+      // Assert
+      for (const [key, values] of Object.entries(init)) {
+        expect(params.getAll(key)).toEqual([values.join(",")]);
+      }
+    }
+  );
 });
 
-describe("platform helpers", () => {
+describe("getPlatform", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("getPlatform prefers userAgentData.platform", () => {
+  it("should prefer userAgentData.platform", () => {
+    // Arrange
     vi.stubGlobal("navigator", {
       userAgentData: { platform: "macOS" },
       platform: "MacIntel",
     });
-    expect(getPlatform()).toBe("macOS");
-    expect(isMacOS()).toBe(true);
+
+    // Act
+    const platform = getPlatform();
+
+    // Assert
+    expect(platform).toBe("macOS");
   });
 
-  it("getPlatform falls back to navigator.platform", () => {
-    vi.stubGlobal("navigator", { platform: "Win32" });
-    expect(getPlatform()).toBe("Win32");
-    expect(isMacOS()).toBe(false);
+  it("should fall back to navigator.platform", () => {
+    // Arrange
+    stubPlatform("Win32");
+
+    // Act
+    const platform = getPlatform();
+
+    // Assert
+    expect(platform).toBe("Win32");
   });
 
-  it("getPlatform returns an empty string when nothing is available", () => {
+  it("should return an empty string when nothing is available", () => {
+    // Arrange
     vi.stubGlobal("navigator", {});
-    expect(getPlatform()).toBe("");
-    expect(isMacOS()).toBe(false);
+
+    // Act
+    const platform = getPlatform();
+
+    // Assert
+    expect(platform).toBe("");
+  });
+});
+
+describe("getPlatformAsync", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  it("getPlatformAsync uses high entropy values", async () => {
+  it("should use the high entropy values", async () => {
+    // Arrange
     vi.stubGlobal("navigator", {
-      userAgentData: {
-        getHighEntropyValues: vi.fn(() => ({ platform: "Linux" })),
-      },
+      userAgentData: { getHighEntropyValues: () => ({ platform: "Linux" }) },
       platform: "Linux x86_64",
     });
-    await expect(getPlatformAsync()).resolves.toBe("Linux");
+
+    // Act
+    const platform = await getPlatformAsync();
+
+    // Assert
+    expect(platform).toBe("Linux");
   });
 
-  it("getPlatformAsync prefers the synchronous userAgentData.platform", async () => {
+  it("should not ask for high entropy values when userAgentData.platform is set", async () => {
+    // Arrange
     const getHighEntropyValues = vi.fn();
     vi.stubGlobal("navigator", {
       userAgentData: { platform: "macOS", getHighEntropyValues },
     });
-    await expect(getPlatformAsync()).resolves.toBe("macOS");
+
+    // Act
+    const platform = await getPlatformAsync();
+
+    // Assert
+    expect(platform).toBe("macOS");
     expect(getHighEntropyValues).not.toHaveBeenCalled();
   });
 
-  it("getPlatformAsync falls back to navigator.platform on empty entropy", async () => {
+  it("should fall back to navigator.platform when the entropy platform is empty", async () => {
+    // Arrange
+    vi.stubGlobal("navigator", {
+      userAgentData: { getHighEntropyValues: () => ({ platform: "" }) },
+      platform: "Win32",
+    });
+
+    // Act
+    const platform = await getPlatformAsync();
+
+    // Assert
+    expect(platform).toBe("Win32");
+  });
+
+  it("should fall back to navigator.platform when getHighEntropyValues rejects", async () => {
+    // Arrange
     vi.stubGlobal("navigator", {
       userAgentData: {
-        getHighEntropyValues: vi.fn(() => ({ platform: "" })),
+        getHighEntropyValues: async () =>
+          await Promise.reject(new Error("denied")),
       },
       platform: "Win32",
     });
-    await expect(getPlatformAsync()).resolves.toBe("Win32");
+
+    // Act
+    const platform = await getPlatformAsync();
+
+    // Assert
+    expect(platform).toBe("Win32");
   });
 
-  it("getPlatformAsync falls back when getHighEntropyValues rejects", async () => {
-    vi.stubGlobal("navigator", {
-      userAgentData: {
-        getHighEntropyValues: vi.fn(
-          async () => await Promise.reject(new Error("denied"))
-        ),
-      },
-      platform: "Win32",
-    });
-    await expect(getPlatformAsync()).resolves.toBe("Win32");
-  });
-
-  it("getPlatformAsync returns an empty string when nothing is available", async () => {
+  it("should return an empty string when nothing is available", async () => {
+    // Arrange
     vi.stubGlobal("navigator", {});
-    await expect(getPlatformAsync()).resolves.toBe("");
+
+    // Act
+    const platform = await getPlatformAsync();
+
+    // Assert
+    expect(platform).toBe("");
   });
 });
 
-describe("shortcut keys", () => {
+describe("isMacOS", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("should be true on MacIntel", () => {
+    // Arrange
+    stubPlatform("MacIntel");
+
+    // Act
+    const result = isMacOS();
+
+    // Assert
+    expect(result).toBe(true);
+  });
+
+  it("should be false on Win32", () => {
+    // Arrange
+    stubPlatform("Win32");
+
+    // Act
+    const result = isMacOS();
+
+    // Assert
+    expect(result).toBe(false);
+  });
+
+  test.prop([fc.string(), fc.mixedCase(fc.constant("mac")), fc.string()])(
+    "should always be true for a platform that names mac in any letter case",
+    (before, mac, after) => {
+      // Arrange
+      stubPlatform(`${before}${mac}${after}`);
+
+      // Act
+      const result = isMacOS();
+
+      // Assert
+      expect(result).toBe(true);
+    }
+  );
+});
+
+describe("getShortcutKey", () => {
   beforeEach(() => {
-    vi.stubGlobal("navigator", { platform: "MacIntel" });
+    stubPlatform("MacIntel");
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("maps mod/alt/shift on macOS", () => {
-    expect(getShortcutKey("mod")).toBe("⌘");
-    expect(getShortcutKey("alt")).toBe("⌥");
-    expect(getShortcutKey("shift")).toBe("⇧");
-    expect(getShortcutKeys(["mod", "N"])).toBe("⌘+N");
+  it("should map mod, alt and shift to symbols on macOS", () => {
+    // Act
+    const keys = SPECIAL_KEYS.map((key) => getShortcutKey(key));
+
+    // Assert
+    expect(keys).toEqual(["⌘", "⌥", "⇧"]);
   });
 
-  it("maps mod/alt/shift on non-macOS", () => {
-    vi.stubGlobal("navigator", { platform: "Win32" });
-    expect(getShortcutKey("mod")).toBe("Ctrl");
-    expect(getShortcutKey("alt")).toBe("Alt");
-    expect(getShortcutKey("shift")).toBe("Shift");
-    expect(getShortcutKeys(["mod", "N"])).toBe("Ctrl+N");
+  it("should map mod, alt and shift to words on other platforms", () => {
+    // Arrange
+    stubPlatform("Win32");
+
+    // Act
+    const keys = SPECIAL_KEYS.map((key) => getShortcutKey(key));
+
+    // Assert
+    expect(keys).toEqual(["Ctrl", "Alt", "Shift"]);
   });
 
-  it("returns unmapped keys unchanged", () => {
-    expect(getShortcutKey("N")).toBe("N");
+  test.prop([fc.mixedCase(fc.constantFrom(...SPECIAL_KEYS))])(
+    "should map a modifier whatever its letter case",
+    (key) => {
+      // Act
+      const symbol = getShortcutKey(key);
+
+      // Assert
+      expect(["⌘", "⌥", "⇧"]).toContain(symbol);
+    }
+  );
+
+  test.prop([plainKeyArb])(
+    "should never change a key that is not a modifier",
+    (key) => {
+      // Act
+      const symbol = getShortcutKey(key);
+
+      // Assert
+      expect(symbol).toBe(key);
+    }
+  );
+});
+
+describe("getShortcutKeys", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("should join the keys with '+' on macOS", () => {
+    // Arrange
+    stubPlatform("MacIntel");
+
+    // Act
+    const shortcut = getShortcutKeys(["mod", "N"]);
+
+    // Assert
+    expect(shortcut).toBe("⌘+N");
+  });
+
+  it("should join the keys with '+' on other platforms", () => {
+    // Arrange
+    stubPlatform("Win32");
+
+    // Act
+    const shortcut = getShortcutKeys(["mod", "N"]);
+
+    // Assert
+    expect(shortcut).toBe("Ctrl+N");
   });
 });
 
-describe("doDownload / saveFile", () => {
+describe("doDownload", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.useRealTimers();
   });
 
-  it("doDownload no-ops on empty url", () => {
+  it("should do nothing for an empty url", () => {
+    // Arrange
     const createElement = vi.fn();
     vi.stubGlobal("document", { createElement, body: { append: vi.fn() } });
+
+    // Act
     doDownload("");
+
+    // Assert
     expect(createElement).not.toHaveBeenCalled();
   });
 
-  it("doDownload clicks a temporary anchor", () => {
+  it("should click a temporary anchor and remove it after 100ms", () => {
+    // Arrange
     vi.useFakeTimers();
-
-    const link = {
-      href: "",
-      download: "",
-      target: "",
-      click: vi.fn(),
-      remove: vi.fn(),
-    };
-
+    const link = anchorStub();
     const append = vi.fn();
     vi.stubGlobal("document", {
-      createElement: vi.fn(() => link),
+      createElement: () => link,
       body: { append },
     });
+
+    // Act
     doDownload("https://example.com/file.pdf");
+    vi.advanceTimersByTime(100);
+
+    // Assert
     expect(append).toHaveBeenCalledWith(link);
     expect(link.click).toHaveBeenCalledOnce();
-    vi.advanceTimersByTime(100);
     expect(link.remove).toHaveBeenCalledOnce();
   });
+});
 
-  it("saveFile creates and revokes an object URL", () => {
-    const a = {
-      href: "",
-      download: "",
-      click: vi.fn(),
-      remove: vi.fn(),
-    };
+describe("saveFile", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
-    const createObjectURL = vi.fn(() => "blob:1");
+  it("should download the data under the file name and revoke its object URL", () => {
+    // Arrange
+    const anchor = anchorStub();
     const revokeObjectURL = vi.fn();
-    vi.stubGlobal("document", { createElement: vi.fn(() => a) });
+    vi.stubGlobal("document", { createElement: () => anchor });
     vi.stubGlobal("window", {
-      URL: { createObjectURL, revokeObjectURL },
+      URL: { createObjectURL: () => "blob:1", revokeObjectURL },
     });
-    saveFile(new Blob(["x"]), "x.txt");
-    expect(createObjectURL).toHaveBeenCalledOnce();
-    expect(a.download).toBe("x.txt");
-    expect(a.click).toHaveBeenCalledOnce();
+
+    // Act
+    saveFile(new Blob(["x"]), "report.txt");
+
+    // Assert
+    expect(anchor.download).toBe("report.txt");
+    expect(anchor.click).toHaveBeenCalledOnce();
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:1");
-    expect(a.remove).toHaveBeenCalledOnce();
+    expect(anchor.remove).toHaveBeenCalledOnce();
   });
 });

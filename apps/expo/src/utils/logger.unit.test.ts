@@ -20,22 +20,33 @@ vi.mock("react-native-logs", () => ({
 }));
 
 describe("logger", () => {
-  it("is created via react-native-logs createLogger", async () => {
+  it("should be the logger that react-native-logs creates", async () => {
+    // Act
     const { logger } = await import("./logger");
+
+    // Assert
     expect(mockCreateLogger).toHaveBeenCalledOnce();
     expect(logger).toBe(mockLoggerInstance);
   });
 
-  it("exposes log methods from createLogger", async () => {
+  it("should forward each level to the created logger", async () => {
+    // Arrange
     const { logger } = await import("./logger");
-    logger.debug("d");
-    logger.info("i");
-    logger.warn("w");
-    logger.error("e");
 
-    expect(mockLoggerInstance.debug).toHaveBeenCalledWith("d");
-    expect(mockLoggerInstance.info).toHaveBeenCalledWith("i");
-    expect(mockLoggerInstance.warn).toHaveBeenCalledWith("w");
-    expect(mockLoggerInstance.error).toHaveBeenCalledWith("e");
+    // Act
+    logger.debug("Signed in");
+    logger.info("Signed in");
+    logger.warn("Signed in");
+    logger.error("Signed in");
+
+    // Assert
+    for (const method of [
+      mockLoggerInstance.debug,
+      mockLoggerInstance.info,
+      mockLoggerInstance.warn,
+      mockLoggerInstance.error,
+    ]) {
+      expect(method).toHaveBeenCalledWith("Signed in");
+    }
   });
 });
