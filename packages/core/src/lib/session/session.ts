@@ -1,11 +1,13 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
 import type { Persistence } from "@workspace/core/persistence/persistence";
-import { makeSessionMachine } from "@workspace/core/session/session-machine";
+import { provideSessionMachine } from "@workspace/core/session/session-machine";
+import type { SessionActivity } from "@workspace/core/session/session-machine";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { createEffectActor, sendAndAwait, waitFor } from "@xstate/effect";
 import { Context, Effect, Layer, Option } from "effect";
 import { KeyValueStore } from "effect/persistence";
+import { Atom } from "effect/reactivity";
 
 /**
  * The actor stops only when the Layer closes, at app shutdown, and only then
@@ -15,6 +17,20 @@ const orElseSucceed =
   <A>(fallback: A) =>
   <E>(effect: Effect.Effect<A, E>) =>
     Effect.orElseSucceed(effect, () => fallback);
+
+/**
+ * @description The Session work that runs now: the state of the Session
+ * machine. `Session.layer` keeps it current in the app's registry, so React
+ * reads it with `useAtomValue(sessionActivityAtom)`, for example to show that
+ * a token refresh runs.
+ *
+ * An atom and not `createActorAtoms` from `@xstate/effect/atom`: that starts
+ * a second actor, and the Session must have one.
+ */
+export const sessionActivityAtom = Atom.make<SessionActivity>("idle").pipe(
+  Atom.keepAlive,
+  Atom.withLabel("sessionActivity")
+);
 
 export interface SessionOptions {
   /**
@@ -83,7 +99,25 @@ export class Session extends Context.Service<
         const { registry, sessionAtom } = persistence;
 
         const actor = yield* createEffectActor(
-          makeSessionMachine(persistence, { onEnd })
+          provideSessionMachine(persistence, { onEnd })
+        );
+
+        // Publish each state to React while the Layer lives.
+        const publish = (activity: SessionActivity) => {
+          registry.set(sessionActivityAtom, activity);
+        };
+
+        yield* Effect.acquireRelease(
+          Effect.sync(() =>
+            actor.subscribe((snapshot) => {
+              publish(snapshot.value);
+            })
+          ),
+          (subscription) =>
+            Effect.sync(() => {
+              subscription.unsubscribe();
+              publish("idle");
+            })
         );
 
         const accessToken = Effect.sync(() =>
@@ -92,8 +126,9 @@ export class Session extends Context.Service<
           )
         );
 
-        // `sendAndAwait` resolves after the step and its plain actions, so the
-        // atom already holds the result. `waitFor` covers the invoked work.
+        // `sendAndAwait` resolves once the actor took the event. The work it
+        // starts runs in an invoked task, which is done when the actor is
+        // back in `idle`: from then on, the atom holds the result.
         const untilIdle = waitFor(actor, (snapshot) =>
           snapshot.matches("idle")
         );
@@ -101,7 +136,10 @@ export class Session extends Context.Service<
         return Session.of({
           accessToken,
           start: (session) =>
-            sendAndAwait(actor, { type: "START", session }).pipe(Effect.ignore),
+            sendAndAwait(actor, { type: "START", session }).pipe(
+              Effect.andThen(untilIdle),
+              Effect.ignore
+            ),
           refresh: (rejectedToken) =>
             sendAndAwait(actor, {
               type: "ACCESS_REJECTED",

@@ -32,7 +32,9 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **End Session**: The single flow that discards a Session, whether the person signed out or the server refused the refresh token. Distinct from the store setter it calls. _Avoid_: logout, sign out, log off
 
-**Session Machine**: The statechart that runs Session Start, Session Refresh and End Session in order, one at a time. It holds which of these runs now; the Session itself stays in Persistence. _Avoid_: auth machine, auth state
+**Session Machine**: The statechart that runs Session Start, Session Refresh and End Session in order, one at a time. It holds which of these runs now (the Session Activity); the Session itself stays in Persistence. _Avoid_: auth machine, auth state
+
+**Session Activity**: The Session work that runs now: `idle`, `starting`, `refreshing` or `ending`. The state of the Session Machine, which React reads to show, for example, that a token refresh runs. _Avoid_: session status, auth status
 
 ### Persistence
 

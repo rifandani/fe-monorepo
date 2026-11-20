@@ -8,6 +8,7 @@ import {
   currentAccessToken,
   endSession,
   Session,
+  sessionActivityAtom,
   startSession,
 } from "@workspace/core/session/session";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
@@ -369,6 +370,32 @@ describe("Session.refresh", () => {
         expect(persistence.registry.get(persistence.sessionAtom)).toEqual(
           grace
         );
+      })
+  );
+
+  it.effect(
+    "should show a running refresh in the activity atom, and idle after it",
+    () =>
+      Effect.gen(function* () {
+        // Arrange
+        const persistence = persistenceWith(ada);
+        const seen: string[] = [];
+
+        const unsubscribe = persistence.registry.subscribe(
+          sessionActivityAtom,
+          (activity) => {
+            seen.push(activity);
+          }
+        );
+
+        // Act
+        yield* refreshSession(ada.accessToken).pipe(
+          Effect.provide(sessionOn(persistence, rotatingServer().refresh))
+        );
+        unsubscribe();
+
+        // Assert
+        expect(seen).toEqual(["refreshing", "idle"]);
       })
   );
 
