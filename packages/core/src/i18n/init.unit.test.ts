@@ -1,6 +1,7 @@
 import { fc, test } from "@fast-check/vitest";
 import { defineTranslation } from "@workspace/core/i18n/define-translation";
 import { initI18n } from "@workspace/core/i18n/init";
+import type { LanguageMessages } from "@workspace/core/i18n/init";
 import { describe, expect, it } from "vitest";
 
 const translations = {
@@ -27,9 +28,8 @@ const translations = {
     }),
     unknownPlural: defineTranslation("{count:plural}", {
       plural: {
-        // SAFETY: the fixture gives an unknown plural form on purpose, to test the fallback.
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        count: { two: "two" } as never,
+        // @ts-expect-error -- the fixture leaves out the other form on purpose, to test the fallback
+        count: { two: "two" },
       },
     }),
     status: defineTranslation("Status: {state:enum}", {
@@ -55,22 +55,20 @@ const translations = {
   },
 } as const;
 
-type FixtureParams = Record<string, Date | number | string | readonly string[]>;
+type FixtureParams = Record<string, Date | number | string | string[]>;
 
 const setup = (
   locale = "en-us",
   fallbackLocale: string | string[] = "en-us"
 ) => {
-  const { t } = initI18n({
+  const { t } = initI18n<LanguageMessages>({
     locale,
     fallbackLocale,
     translations,
   });
 
   return (key: string, params?: FixtureParams) =>
-    // SAFETY: the properties generate keys and params that the fixture does not declare, on purpose.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    t(key as never, params as never);
+    params === undefined ? t(key) : t(key, params);
 };
 
 const missingKeyArb = fc

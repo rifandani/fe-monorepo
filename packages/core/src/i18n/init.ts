@@ -1,8 +1,5 @@
 /* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string eslint/func-style */
-import type {
-  defineTranslation,
-  ParamOptions,
-} from "@workspace/core/i18n/define-translation";
+import type { ParamOptions } from "@workspace/core/i18n/define-translation";
 import type { Register } from "@workspace/core/i18n/my-translations";
 
 type RegisteredTranslations = Register extends {
@@ -13,7 +10,9 @@ type RegisteredTranslations = Register extends {
     : never
   : LanguageMessages;
 
-type I18nMessage = string | ReturnType<typeof defineTranslation>;
+type I18nMessageWithOptions = [string, ParamOptions];
+
+type I18nMessage = string | I18nMessageWithOptions;
 
 export interface LanguageMessages {
   [key: string]: I18nMessage | LanguageMessages;
@@ -25,15 +24,32 @@ type Join<K, P> = K extends string
     : never
   : never;
 
-type DotPathsFor<T extends object = RegisteredTranslations> = {
-  [K in keyof T]: T[K] extends I18nMessage
-    ? K
-    : T[K] extends object
-      ? Join<K, DotPathsFor<T[K]>>
-      : never;
-}[keyof T];
+type IsWideCatalog<T> = string extends keyof T ? true : false;
+
+type MaxCatalogDepth = 8;
+
+type DotPathsFor<
+  T,
+  Depth extends unknown[] = [],
+> = Depth["length"] extends MaxCatalogDepth
+  ? never
+  : IsWideCatalog<T> extends true
+    ? string
+    : {
+        [K in Extract<keyof T, string>]: T[K] extends I18nMessage
+          ? K
+          : T[K] extends object
+            ? Join<K, DotPathsFor<T[K], [...Depth, unknown]>>
+            : never;
+      }[Extract<keyof T, string>];
 
 type EnumMap = Record<string, Record<string, string>>;
+
+type TranslationArg = Date | number | string | string[];
+
+type TranslationArgs = Record<string, TranslationArg>;
+
+type NoParams = { readonly [Name in never]: TranslationArg };
 
 type ParseArgType<
   ParamType extends string,
@@ -52,14 +68,14 @@ type ParseArgType<
         : never;
 
 type ExtractParamArgs<
-  S extends string,
+  S,
   Enums extends EnumMap,
 > = S extends `${string}{${infer Param}}${infer Rest}`
   ? Param extends `${infer Name}:${infer Type}`
     ? Record<Name, ParseArgType<Type, Name, Enums>> &
         ExtractParamArgs<Rest, Enums>
     : Record<Param, string> & ExtractParamArgs<Rest, Enums>
-  : unknown;
+  : NoParams;
 
 type TranslationAtKeyWithParams<
   Translations,
@@ -72,38 +88,48 @@ type TranslationAtKeyWithParams<
     ? Translations[Key]
     : never;
 
-type NormalizedTranslationAtKey<T> =
-  T extends ReturnType<typeof defineTranslation>
-    ? T
-    : [T, ReturnType<typeof defineTranslation>[1]];
+type NormalizedTranslationAtKey<T> = T extends I18nMessageWithOptions
+  ? T
+  : [T, ParamOptions];
 
-type NormalizedTranslationAtKeyWithParams<Key extends string> =
-  NormalizedTranslationAtKey<
-    TranslationAtKeyWithParams<RegisteredTranslations, Key>
-  >;
+type NormalizedTranslationAtKeyWithParams<
+  Translations,
+  Key extends string,
+> = NormalizedTranslationAtKey<TranslationAtKeyWithParams<Translations, Key>>;
 
-type Params<S extends DotPathsFor> = ExtractParamArgs<
-  NormalizedTranslationAtKeyWithParams<S>[0],
-  NormalizedTranslationAtKeyWithParams<S>[1] extends {
-    enum: infer E;
-  }
-    ? keyof E extends never
-      ? EnumMap
-      : E
-    : EnumMap
->;
+type Params<T extends LanguageMessages, S extends string> =
+  IsWideCatalog<T> extends true
+    ? TranslationArgs
+    : ExtractParamArgs<
+        NormalizedTranslationAtKeyWithParams<T, S>[0],
+        NormalizedTranslationAtKeyWithParams<T, S>[1] extends {
+          enum: infer E;
+        }
+          ? keyof E extends never
+            ? EnumMap
+            : E
+          : EnumMap
+      >;
 
-type PathsWithParams = {
-  [K in DotPathsFor]: keyof Params<K> extends never ? never : K;
-}[DotPathsFor];
+type PathWithParams<T extends LanguageMessages, K> = K extends string
+  ? keyof Params<T, K> extends never
+    ? never
+    : K
+  : never;
 
-type PathsWithNoParams = {
-  [K in DotPathsFor]: keyof Params<K> extends never ? K : never;
-}[DotPathsFor];
+type PathWithNoParams<T extends LanguageMessages, K> = K extends string
+  ? keyof Params<T, K> extends never
+    ? K
+    : never
+  : never;
+
+type PathsWithParams<T extends LanguageMessages> =
+  IsWideCatalog<T> extends true ? string : PathWithParams<T, DotPathsFor<T>>;
+
+type PathsWithNoParams<T extends LanguageMessages> =
+  IsWideCatalog<T> extends true ? string : PathWithNoParams<T, DotPathsFor<T>>;
 
 const replaceKeyRegex = /-?[^-]+$/u;
-
-type TranslationArg = Date | number | string | string[];
 
 const isRenderableMessage = (
   value: I18nMessage | LanguageMessages
@@ -293,7 +319,7 @@ const substituters: SubstituterMap = {
 const performSubstitution = (
   locale: string,
   str: string,
-  args: Record<string, TranslationArg>,
+  args: TranslationArgs,
   translationParams: ParamOptions
 ): string =>
   Object.entries(args).reduce((result, [argKey, argValue]) => {
@@ -319,11 +345,11 @@ const performSubstitution = (
     });
   }, str);
 
-const getTranslation = <S extends DotPathsFor>(
+const getTranslation = (
   locale: string,
   translations: LanguageMessages,
-  key: S,
-  args?: Params<S>
+  key: string,
+  args?: TranslationArgs
 ): string | undefined => {
   const translation = getTranslationByKey(translations, key);
   const argObj = args ?? {};
@@ -338,17 +364,10 @@ const getTranslation = <S extends DotPathsFor>(
 
   const [str, translationParams] = translation;
 
-  return performSubstitution(
-    locale,
-    str,
-    argObj,
-    // SAFETY: a message that is not plain is the [string, ParamOptions] tuple that defineTranslation builds.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    translationParams as ParamOptions
-  );
+  return performSubstitution(locale, str, argObj, translationParams);
 };
 
-export const initI18n = ({
+export const initI18n = <T extends LanguageMessages = RegisteredTranslations>({
   locale,
   fallbackLocale,
   translations,
@@ -368,9 +387,9 @@ export const initI18n = ({
 
   const translationsByLocale = new Map(Object.entries(translations));
 
-  function t(key: PathsWithNoParams): string;
-  function t<S extends PathsWithParams>(key: S, args: Params<S>): string;
-  function t<S extends DotPathsFor>(key: S, args?: Params<S>) {
+  function t(key: PathsWithNoParams<T>): string;
+  function t<S extends PathsWithParams<T>>(key: S, args: Params<T, S>): string;
+  function t(key: string, args?: TranslationArgs) {
     for (const _locale of orderedLocales) {
       const translationFile = translationsByLocale.get(_locale.toLowerCase());
 
@@ -392,3 +411,6 @@ export const initI18n = ({
     t,
   };
 };
+
+export type I18n<T extends LanguageMessages = RegisteredTranslations> =
+  ReturnType<typeof initI18n<T>>;
