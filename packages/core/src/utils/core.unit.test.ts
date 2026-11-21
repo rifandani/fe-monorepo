@@ -365,10 +365,8 @@ describe("objectToFormData", () => {
   });
 
   it("should skip inherited enumerable properties", () => {
-    // SAFETY: Object.create gives an object with no own properties, which is an empty Record<string, string>.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const nested = Object.create({ inherited: "no" }) as Record<string, string>;
-    nested.own = "yes";
+    const nested = { own: "yes" };
+    Object.setPrototypeOf(nested, { inherited: "no" });
 
     const formData = objectToFormData({ nested });
 
