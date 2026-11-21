@@ -5,11 +5,24 @@ import {
   isDirective,
   judgeFile,
   parseVerdictTag,
+  planReports,
   tightenBaseline,
   verdictTag,
 } from "./comment-ratchet.ts";
 
 const exists = (): boolean => true;
+
+const FILE_LOC = 0;
+
+const prose = (loc: number) =>
+  ({ type: "Line", value: " explains the code", loc }) as const;
+
+const directive = (loc: number) =>
+  ({
+    type: "Line",
+    value: " oxlint-disable-next-line no-console",
+    loc,
+  }) as const;
 
 describe("isDirective", () => {
   it.each([
@@ -74,6 +87,48 @@ describe("judgeFile", () => {
       const verdict = judgeFile(extra + 1, 0);
 
       expect(verdict.kind).toBe("over");
+    }
+  );
+});
+
+describe("planReports", () => {
+  it("should report each prose comment of a file over its baseline", () => {
+    const comments = [prose(1), prose(2)];
+
+    const reports = planReports(comments, 1, FILE_LOC);
+
+    expect(reports.map((report) => report.loc)).toEqual([1, 2]);
+  });
+
+  it("should report the file once when its baseline is stale", () => {
+    const comments = [prose(1)];
+
+    const reports = planReports(comments, 3, FILE_LOC);
+
+    expect(
+      reports.map((report) => [report.loc, parseVerdictTag(report.message)])
+    ).toEqual([[FILE_LOC, { count: 1, allowed: 3 }]]);
+  });
+
+  it("should not count tool directives", () => {
+    const comments = [directive(1), prose(2)];
+
+    const reports = planReports(comments, 1, FILE_LOC);
+
+    expect(reports).toEqual([]);
+  });
+
+  test.prop([fc.array(fc.nat().map(prose)), fc.nat()])(
+    "should always tag each report with the prose count and the baseline",
+    (comments, allowed) => {
+      const reports = planReports(comments, allowed, FILE_LOC);
+
+      for (const report of reports) {
+        expect(parseVerdictTag(report.message)).toEqual({
+          count: comments.length,
+          allowed,
+        });
+      }
     }
   );
 });

@@ -13,13 +13,13 @@ The reason for a decision goes in an ADR. The meaning of a value goes in its nam
 
 ## The rule
 
-`comments/no-comments` (`scripts/lint/oxlint-plugin-comments.ts`) is a local oxlint JS plugin. It reports every comment in a JS or TS file, except tool directives: `oxlint-disable`, `eslint-disable`, `@ts-expect-error`, `fallow-ignore`, `Stryker disable`, `@vite-ignore`, `__PURE__`, `@type {…}` in JS config files, triple-slash references and shebangs. A directive changes what a tool does, so it is code, not prose. A reason after `--` in a directive stays, because the directive needs it.
+`comments/no-comments` (`tools/lint/oxlint-plugin-comments.ts`) is a local oxlint JS plugin. It reports every comment in a JS or TS file, except tool directives: `oxlint-disable`, `eslint-disable`, `@ts-expect-error`, `fallow-ignore`, `Stryker disable`, `@vite-ignore`, `__PURE__`, `@type {…}` in JS config files, triple-slash references and shebangs. A directive changes what a tool does, so it is code, not prose. A reason after `--` in a directive stays, because the directive needs it.
 
 The rule does not run on `apps/*/src/components/ui/**`, because `bun bump:ui` writes those files. It does not run on CSS, which oxlint does not parse.
 
 ## The ratchet
 
-`scripts/lint/comment-baseline.json` holds the number of comments that each file may still have. The rule fails when a file has more comments than its number (a file that is not in the list has zero). It also fails when a file has fewer, so the number must go down with the code. `bun run lint:comments` lowers each number to the current count and removes files with no comments. It never raises a number. To add a comment on purpose, change the JSON by hand, so that the change is visible in review.
+`tools/lint/comment-baseline.json` holds the number of comments that each file may still have. The rule fails when a file has more comments than its number (a file that is not in the list has zero). It also fails when a file has fewer, so the number must go down with the code. `bun run lint:comments` lowers each number to the current count and removes files with no comments. It never raises a number. To add a comment on purpose, change the JSON by hand, so that the change is visible in review.
 
 ## Considered Options
 

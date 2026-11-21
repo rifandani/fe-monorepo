@@ -71,6 +71,70 @@ const rules: OxlintConfig["rules"] = {
 // Every rule that a preset, one of its overrides, or this config sets. An
 // override that turns all of them off keeps the type check on its files but
 // runs no lint rule on them.
+const effectHookBanMessage =
+  "Do not call useEffect or useLayoutEffect in app code. You might not need an Effect: https://react.dev/learn/you-might-not-need-an-effect. If you must sync with an external system, use or add a shared hook in @workspace/core/hooks.";
+
+const effectHookImportBan = {
+  name: "react",
+  importNames: ["useEffect", "useLayoutEffect"],
+  message: effectHookBanMessage,
+};
+
+const filesAllowedToUseEffectHooks = [
+  "apps/*/src/components/ui/**",
+  "apps/expo/src/features/user/hooks/use-get-user.ts",
+  "apps/expo/src/hooks/use-animate-skeleton.ts",
+  "apps/spa/src/app/entry.tsx",
+  "apps/spa/src/features/master-design/catalog-nav.tsx",
+  "apps/spa/src/features/master-design/showcases/color-palette.tsx",
+  "apps/spa/src/features/master-design/use-scroll-spy.ts",
+  "apps/spa/src/providers/reload-prompt-sw.tsx",
+];
+
+const appWorkspaces = [
+  {
+    app: "spa",
+    otherApp: "expo",
+    message: "SPA code must not import the Expo app.",
+  },
+  {
+    app: "expo",
+    otherApp: "spa",
+    message: "Expo code must not import the SPA app.",
+  },
+];
+
+const appImportOverrides: NonNullable<OxlintConfig["overrides"]> =
+  appWorkspaces.flatMap(({ app, otherApp, message }) => {
+    const otherAppImport = {
+      regex: `^@workspace/${otherApp}(?:/|$)|^\\..*/${otherApp}(?:/|$)`,
+      message,
+    };
+
+    const appFiles = `apps/${app}/src/**`;
+
+    return [
+      {
+        files: [appFiles],
+        rules: {
+          "no-restricted-imports": [
+            "error",
+            { patterns: [otherAppImport], paths: [effectHookImportBan] },
+          ],
+        },
+      },
+      {
+        files: filesAllowedToUseEffectHooks.filter(
+          (file) =>
+            file.startsWith(`apps/${app}/`) || file.startsWith("apps/*/")
+        ),
+        rules: {
+          "no-restricted-imports": ["error", { patterns: [otherAppImport] }],
+        },
+      },
+    ];
+  });
+
 const allRuleNames = new Set([
   ...presets.flatMap((preset) => [
     ...Object.keys(preset.rules ?? {}),
@@ -100,7 +164,7 @@ export default defineConfig({
   settings: jsPluginSettings,
   jsPlugins: [
     "@xstate/effect/oxlint",
-    "./scripts/lint/oxlint-plugin-comments.ts",
+    "./tools/lint/oxlint-plugin-comments.ts",
   ],
   rules,
   overrides: [
@@ -151,38 +215,7 @@ export default defineConfig({
     },
     // Each Fallow preset runs inside one workspace. Keep imports between
     // workspaces in the package dependency direction: apps consume core.
-    {
-      files: ["apps/spa/src/**"],
-      rules: {
-        "no-restricted-imports": [
-          "error",
-          {
-            patterns: [
-              {
-                regex: "^@workspace/expo(?:/|$)|^\\..*/expo(?:/|$)",
-                message: "SPA code must not import the Expo app.",
-              },
-            ],
-          },
-        ],
-      },
-    },
-    {
-      files: ["apps/expo/src/**"],
-      rules: {
-        "no-restricted-imports": [
-          "error",
-          {
-            patterns: [
-              {
-                regex: "^@workspace/spa(?:/|$)|^\\..*/spa(?:/|$)",
-                message: "Expo code must not import the SPA app.",
-              },
-            ],
-          },
-        ],
-      },
-    },
+    ...appImportOverrides,
     {
       files: ["packages/core/src/**"],
       rules: {

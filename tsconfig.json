@@ -9,6 +9,7 @@
     "vitest.config.ts",
     "vitest.setup.ts",
     "vitest.env-mock.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "tools/**/*.ts"
   ]
 }
