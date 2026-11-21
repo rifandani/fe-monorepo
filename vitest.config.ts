@@ -8,7 +8,13 @@ export default defineConfig({
     fileParallelism: true,
     css: false,
     passWithNoTests: false,
-    projects: ["packages/core", "apps/spa", "apps/expo", "tools/lint"],
+    projects: [
+      "packages/core",
+      "apps/spa",
+      "apps/expo",
+      "tools/lint",
+      "scripts",
+    ],
     coverage: {
       provider: "v8",
       enabled: false,
