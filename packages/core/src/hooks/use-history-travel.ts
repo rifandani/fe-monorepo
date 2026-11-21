@@ -38,6 +38,7 @@ const pushValue = <T>(
   val: T,
   maxLength: number
 ): IData<T> => {
+  // SAFETY: present holds the initial value or a value that the setter received, which are T.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const _past = [...history.past, history.present as T];
   const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
@@ -58,6 +59,7 @@ const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
 
   return {
     future: _after,
+    // SAFETY: present holds the initial value or a value that the setter received, which are T.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     past: [...history.past, history.present as T, ..._before],
     present: _current,
@@ -68,6 +70,7 @@ const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.past);
 
   return {
+    // SAFETY: present holds the initial value or a value that the setter received, which are T.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     future: [..._after, history.present as T, ...history.future],
     past: _before,

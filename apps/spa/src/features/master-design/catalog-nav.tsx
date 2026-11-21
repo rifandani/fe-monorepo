@@ -1,6 +1,5 @@
 import { cn } from "cn";
 import type { MouseEvent } from "react";
-import { useEffect, useRef } from "react";
 
 import { categories } from "./registry";
 import type { Category, ComponentEntry } from "./types";
@@ -34,10 +33,10 @@ const isPlainClick = (event: MouseEvent) =>
   !event.shiftKey &&
   !event.altKey;
 
-const followActiveLink = (scroller: HTMLElement, activeId: string) => {
-  const link = scroller.querySelector<HTMLElement>(`a[href="#${activeId}"]`);
+const followActiveLink = (link: HTMLAnchorElement | null) => {
+  const scroller = link?.closest("nav");
 
-  if (!link) {
+  if (!link || !scroller) {
     return;
   }
 
@@ -70,6 +69,7 @@ const CatalogNavLink = ({
   <li>
     <a
       aria-current={isActive ? "location" : undefined}
+      ref={isActive ? followActiveLink : undefined}
       className={cn(
         "-ml-px block truncate rounded-r-md border-l border-transparent py-1.5 pr-3 pl-4 text-sm transition-colors duration-150",
         "text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground",
@@ -140,21 +140,13 @@ export const CatalogNav = ({
   filter,
   onNavigate,
 }: CatalogNavProps) => {
-  const scrollerRef = useRef<HTMLElement>(null);
   const query = filter.trim().toLowerCase();
   const visible = visibleCategories(query);
-
-  useEffect(() => {
-    if (scrollerRef.current && activeId !== null && activeId !== "") {
-      followActiveLink(scrollerRef.current, activeId);
-    }
-  }, [activeId]);
 
   return (
     <nav
       aria-label="Components"
       className="h-full overflow-y-auto overscroll-contain px-3 pb-6"
-      ref={scrollerRef}
     >
       {visible.length === 0 ? (
         <p className="text-muted-foreground px-3 pt-5 text-sm">

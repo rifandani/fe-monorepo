@@ -38,6 +38,7 @@ const RootRoute = () => {
         navigate={(to, options) => {
           void router.navigate({
             ...options,
+            // SAFETY: React Aria gives back the href of a link that this app made from a typed route path.
             // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             to: to as ToPathOption<RegisteredRouter, "/", "/">,
           });

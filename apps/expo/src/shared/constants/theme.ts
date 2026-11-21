@@ -125,6 +125,7 @@ const builtThemes = createThemes({
 
 export type Themes = typeof builtThemes;
 
+// SAFETY: a production client build gets its themes from the CSS that the Tamagui compiler extracts, so Tamagui never reads the fields of this object.
 // oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const hydratedFromCss = {} as Themes;
 

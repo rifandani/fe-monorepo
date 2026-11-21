@@ -23,7 +23,6 @@ const presets = [
 
 const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
-  "anti-slop/require-safety-comment-for-type-assertion": "off",
   "sort-keys": "off",
   "no-inline-comments": "off",
   "no-nested-ternary": "off",
@@ -82,13 +81,9 @@ const effectHookImportBan = {
 
 const filesAllowedToUseEffectHooks = [
   "apps/*/src/components/ui/**",
-  "apps/expo/src/features/user/hooks/use-get-user.ts",
-  "apps/expo/src/hooks/use-animate-skeleton.ts",
-  "apps/spa/src/app/entry.tsx",
-  "apps/spa/src/features/master-design/catalog-nav.tsx",
-  "apps/spa/src/features/master-design/showcases/color-palette.tsx",
-  "apps/spa/src/features/master-design/use-scroll-spy.ts",
-  "apps/spa/src/providers/reload-prompt-sw.tsx",
+  "apps/expo/src/hooks/*",
+  "apps/spa/src/hooks/*",
+  "apps/spa/src/providers/*",
 ];
 
 const appWorkspaces = [

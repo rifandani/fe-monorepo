@@ -15,6 +15,7 @@ export const useMemoizedFn = <T extends AnyFunction>(fn: T) => {
       // oxlint-disable-next-line typescript/no-unsafe-return
       fnRef.current(...args);
 
+    // SAFETY: forward takes the parameters of T and returns the result of the latest T.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     memoizedFnRef.current = forward as T;
   }

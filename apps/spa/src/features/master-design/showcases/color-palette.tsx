@@ -1,6 +1,5 @@
 import { cn } from "cn";
-import { noop } from "radashi";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { Variant, VariantGrid } from "../variant";
 
@@ -149,43 +148,35 @@ const groups: { label: string; swatches: Swatch[] }[] = [
   },
 ];
 
+const subscribeToThemeClass = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributeFilter: ["class"],
+    attributes: true,
+  });
+
+  return () => {
+    observer.disconnect();
+  };
+};
+
+const readBackgroundColor = (el: HTMLElement | null) =>
+  el ? getComputedStyle(el).backgroundColor : "";
+
+const readServerBackgroundColor = () => "";
+
 const SwatchTile = ({ name, bg }: Swatch) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [hex, setHex] = useState("");
-  const [ink, setInk] = useState("#111111");
+  const [el, setEl] = useState<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
-    const el = ref.current;
+  const backgroundColor = useSyncExternalStore(
+    subscribeToThemeClass,
+    () => readBackgroundColor(el),
+    readServerBackgroundColor
+  );
 
-    if (!el) {
-      return noop;
-    }
-
-    const update = () => {
-      const rgba = cssColorToRgba(getComputedStyle(el).backgroundColor);
-
-      if (!rgba) {
-        setHex("");
-
-        return;
-      }
-
-      setHex(formatHex(rgba.r, rgba.g, rgba.b, rgba.a));
-      setInk(contrastInk(rgba));
-    };
-
-    update();
-
-    const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, {
-      attributeFilter: ["class"],
-      attributes: true,
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  const rgba = backgroundColor ? cssColorToRgba(backgroundColor) : null;
+  const hex = rgba ? formatHex(rgba.r, rgba.g, rgba.b, rgba.a) : "";
+  const ink = rgba ? contrastInk(rgba) : "#111111";
 
   return (
     <div
@@ -194,7 +185,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
         "border-border flex h-16 min-w-24 items-center justify-center rounded-lg border px-1.5 font-mono text-[10px]",
         bg
       )}
-      ref={ref}
+      ref={setEl}
       style={{ color: ink }}
     >
       {hex || "…"}

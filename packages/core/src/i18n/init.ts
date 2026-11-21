@@ -342,6 +342,7 @@ const getTranslation = <S extends DotPathsFor>(
     locale,
     str,
     argObj,
+    // SAFETY: a message that is not plain is the [string, ParamOptions] tuple that defineTranslation builds.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     translationParams as ParamOptions
   );

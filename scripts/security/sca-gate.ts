@@ -92,6 +92,7 @@ if (!isSeverityBand(auditLevel)) {
 
 const minRank = LEVEL_RANK[auditLevel];
 
+// SAFETY: the allowlist is a file in this repository with this shape, and a missing entries field falls back to an empty list.
 // oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const raw = JSON.parse(readFileSync(allowlistPath, "utf-8")) as {
   entries?: AllowEntry[];
@@ -439,6 +440,7 @@ if (code !== 0 && code !== 1) {
 let doc: OsvDocument;
 
 try {
+  // SAFETY: osv-scanner with --format json writes an OsvDocument.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   doc = JSON.parse(stdout || "{}") as OsvDocument;
 } catch {

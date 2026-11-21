@@ -32,6 +32,8 @@ describe("isDirective", () => {
     '/ <reference types="vite/client" />',
     "* @type {import('vite').UserConfig} ",
     " Stryker disable next-line all",
+    " SAFETY: the parser checked every field before the cast",
+    "* SAFETY: the registry key is a literal union ",
   ])("should keep the tool directive %j", (value) => {
     const comment = { type: "Line", value } as const;
 
@@ -51,7 +53,9 @@ describe("isDirective", () => {
   it.each([
     " Arrange",
     "* Stryker copies the project into `.stryker-tmp` before mutating. ",
-    " SAFETY: the cast is fine",
+    " SAFETY:",
+    " SAFETY note without a colon",
+    " the cast is fine. SAFETY: checked above",
     "* @description The Session of this app ",
   ])("should treat the prose %j as a comment", (value) => {
     const comment = { type: "Block", value } as const;

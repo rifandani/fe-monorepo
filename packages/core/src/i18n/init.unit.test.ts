@@ -27,6 +27,7 @@ const translations = {
     }),
     unknownPlural: defineTranslation("{count:plural}", {
       plural: {
+        // SAFETY: the fixture gives an unknown plural form on purpose, to test the fallback.
         // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         count: { two: "two" } as never,
       },
@@ -67,6 +68,7 @@ const setup = (
   });
 
   return (key: string, params?: FixtureParams) =>
+    // SAFETY: the properties generate keys and params that the fixture does not declare, on purpose.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     t(key as never, params as never);
 };

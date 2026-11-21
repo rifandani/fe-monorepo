@@ -100,6 +100,7 @@ const asMetric = (metric: {
   navigationType: string;
   rating: string;
 }) =>
+  // SAFETY: the reporter under test reads only the fields that this fixture sets.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   metric as never;
 

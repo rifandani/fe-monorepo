@@ -43,8 +43,10 @@ export function useControllableValue<T = any>(
     trigger = "onChange",
   } = options;
 
+  // SAFETY: StandardProps<T> holds only a value, a default value and a trigger, which are all members of the Props<T> value union.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const bag = props as Props<T>;
+  // SAFETY: the prop at valuePropName is the controlled value of type T.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const value = bag[valuePropName] as T;
   const isControlled = Object.hasOwn(bag, valuePropName);
@@ -55,6 +57,7 @@ export function useControllableValue<T = any>(
     }
 
     if (Object.hasOwn(bag, defaultValuePropName)) {
+      // SAFETY: the prop at defaultValuePropName is the default value of type T.
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       return bag[defaultValuePropName] as T;
     }
@@ -73,7 +76,8 @@ export function useControllableValue<T = any>(
 
   const setState = (v: SetStateAction<T>, ...args: unknown[]) => {
     const r = isFunction(v)
-      ? // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+      ? // SAFETY: stateRef holds the controlled value, the default value or the last value set, which are all T.
+        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         v(stateRef.current as T)
       : v;
 
