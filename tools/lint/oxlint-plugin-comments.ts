@@ -18,7 +18,7 @@ const noComments = defineRule({
             context.report({
               loc: comment.loc,
               message:
-                "Do not write code comments (ADR-0011). Put the reason in a name, a test, an ADR or an issue.",
+                "Do not write code comments. Put the reason in a name, a test, an ADR or an issue.",
             });
           }
         }
