@@ -1,8 +1,8 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, onTestFinished, test } from "vitest";
 import { page } from "vitest/browser";
 
 import { emilySession } from "./support/network";
-import { renderRoute } from "./support/render-route";
+import { currentPath, renderRoute } from "./support/render-route";
 
 const unknownPath = "/hahahahaha";
 
@@ -39,5 +39,21 @@ describe("not found route", () => {
         })
       )
       .toBeVisible();
+  });
+
+  test("the link back to the Home page navigates on the client", async () => {
+    await renderRoute(unknownPath, { session: emilySession });
+    document.documentElement.dataset.noReload = "true";
+    onTestFinished(() => {
+      delete document.documentElement.dataset.noReload;
+    });
+
+    await page
+      .getByRole("link", { name: /Back to Home page|Kembali ke halaman Home/u })
+      .click();
+
+    await expect.poll(currentPath).toBe("/");
+    await expect.element(page.getByRole("heading", { level: 1 })).toBeVisible();
+    expect(document.documentElement.dataset.noReload).toBe("true");
   });
 });
