@@ -1,154 +1,117 @@
-/* oxlint-disable react/react-compiler */
-import { useRef, useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import {
+  createKeyList,
+  getIndex,
+  getKey,
+  insertKeys,
+  moveKey,
+  popKey,
+  removeKey,
+  resetKeys,
+  shiftKey,
+} from "@workspace/core/utils/key-list";
+import type { KeyList } from "@workspace/core/utils/key-list";
+import { useState } from "react";
 
-const useKeyList = () => {
-  const counterRef = useRef(-1);
-  const keyListRef = useRef<number[]>([]);
+interface DynamicList<T> {
+  keys: KeyList;
+  list: T[];
+}
 
-  return {
-    getKey: (index: number) => keyListRef.current[index],
-    getIndex: (key: number) => keyListRef.current.indexOf(key),
-    setKey: (index: number) => {
-      counterRef.current += 1;
-      keyListRef.current.splice(index, 0, counterRef.current);
-    },
-    initKeys: (count: number) => {
-      keyListRef.current = Array.from({ length: count }, () => {
-        counterRef.current += 1;
+type DynamicListUpdate<T> = (
+  update: (current: DynamicList<T>) => DynamicList<T>
+) => void;
 
-        return counterRef.current;
-      });
-    },
-    removeKey: (index: number) => {
-      keyListRef.current.splice(index, 1);
-    },
-    moveKey: (oldIndex: number, newIndex: number) => {
-      const keyTemp = [...keyListRef.current];
-      const movedKeys = keyTemp.splice(oldIndex, 1);
+const insertAt = <T>(list: T[], index: number, items: T[]) => {
+  const temp = [...list];
+  temp.splice(index, 0, ...items);
 
-      keyTemp.splice(newIndex, 0, ...movedKeys);
-      keyListRef.current = keyTemp;
-    },
-    clearKeys: () => {
-      keyListRef.current = [];
-    },
-    popKey: () => {
-      keyListRef.current = keyListRef.current.slice(0, -1);
-    },
-    shiftKey: () => {
-      keyListRef.current = keyListRef.current.slice(1);
-    },
-  };
+  return temp;
 };
 
-type KeyList = ReturnType<typeof useKeyList>;
-
-const createListMutators = <T>(
-  setList: Dispatch<SetStateAction<T[]>>,
-  keys: KeyList
-) => ({
+const createListMutators = <T>(setState: DynamicListUpdate<T>) => ({
   insert: (index: number, item: T) => {
-    setList((l) => {
-      const temp = [...l];
-      temp.splice(index, 0, item);
-      keys.setKey(index);
-
-      return temp;
-    });
+    setState(({ keys, list }) => ({
+      keys: insertKeys(keys, index, 1),
+      list: insertAt(list, index, [item]),
+    }));
   },
   merge: (index: number, items: T[]) => {
-    setList((l) => {
-      const temp = [...l];
-
-      for (const [i] of items.entries()) {
-        keys.setKey(index + i);
-      }
-
-      temp.splice(index, 0, ...items);
-
-      return temp;
-    });
+    setState(({ keys, list }) => ({
+      keys: insertKeys(keys, index, items.length),
+      list: insertAt(list, index, items),
+    }));
   },
   move: (oldIndex: number, newIndex: number) => {
     if (oldIndex === newIndex) {
       return;
     }
 
-    setList((l) => {
-      const temp = [...l];
+    setState(({ keys, list }) => {
+      const temp = [...list];
       const movedItems = temp.splice(oldIndex, 1);
-
       temp.splice(newIndex, 0, ...movedItems);
-      keys.moveKey(oldIndex, newIndex);
 
-      return temp;
+      return { keys: moveKey(keys, oldIndex, newIndex), list: temp };
     });
   },
   pop: () => {
-    keys.popKey();
-    setList((l) => l.slice(0, -1));
+    setState(({ keys, list }) => ({
+      keys: popKey(keys),
+      list: list.slice(0, -1),
+    }));
   },
   push: (item: T) => {
-    setList((l) => {
-      keys.setKey(l.length);
-
-      return [...l, item];
-    });
+    setState(({ keys, list }) => ({
+      keys: insertKeys(keys, list.length, 1),
+      list: [...list, item],
+    }));
   },
   remove: (index: number) => {
-    setList((l) => {
-      const temp = [...l];
+    setState(({ keys, list }) => {
+      const temp = [...list];
       temp.splice(index, 1);
-      keys.removeKey(index);
 
-      return temp;
+      return { keys: removeKey(keys, index), list: temp };
     });
   },
   replace: (index: number, item: T) => {
-    setList((l) => {
-      const temp = [...l];
+    setState(({ keys, list }) => {
+      const temp = [...list];
       temp[index] = item;
 
-      return temp;
+      return { keys, list: temp };
     });
   },
   resetList: (newList: T[]) => {
-    keys.clearKeys();
-    setList(() => {
-      for (const [index] of newList.entries()) {
-        keys.setKey(index);
-      }
-
-      return newList;
-    });
+    setState(({ keys }) => ({
+      keys: resetKeys(keys, newList.length),
+      list: newList,
+    }));
   },
   shift: () => {
-    keys.shiftKey();
-    setList((l) => l.slice(1));
+    setState(({ keys, list }) => ({
+      keys: shiftKey(keys),
+      list: list.slice(1),
+    }));
   },
   unshift: (item: T) => {
-    setList((l) => {
-      keys.setKey(0);
-
-      return [item, ...l];
-    });
+    setState(({ keys, list }) => ({
+      keys: insertKeys(keys, 0, 1),
+      list: [item, ...list],
+    }));
   },
 });
 
 export const useDynamicList = <T>(initialList: T[] = []) => {
-  const keys = useKeyList();
-
-  const [list, setList] = useState(() => {
-    keys.initKeys(initialList.length);
-
-    return initialList;
-  });
+  const [state, setState] = useState<DynamicList<T>>(() => ({
+    keys: createKeyList(initialList.length),
+    list: initialList,
+  }));
 
   return {
-    ...createListMutators<T>(setList, keys),
-    getIndex: keys.getIndex,
-    getKey: keys.getKey,
-    list,
+    ...createListMutators<T>(setState),
+    getIndex: (key: number) => getIndex(state.keys, key),
+    getKey: (index: number) => getKey(state.keys, index),
+    list: state.list,
   } as const;
 };
