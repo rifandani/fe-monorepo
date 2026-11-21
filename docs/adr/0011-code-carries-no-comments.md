@@ -17,19 +17,18 @@ The reason for a decision goes in an ADR. The meaning of a value goes in its nam
 
 The rule does not run on `apps/*/src/components/ui/**`, because `bun bump:ui` writes those files. It does not run on CSS, which oxlint does not parse.
 
-## The ratchet
+## Enforcement
 
-`tools/lint/comment-baseline.json` holds the number of comments that each file may still have. The rule fails when a file has more comments than its number (a file that is not in the list has zero). It also fails when a file has fewer, so the number must go down with the code. `bun run lint:comments` lowers each number to the current count and removes files with no comments. It never raises a number. To add a comment on purpose, change the JSON by hand, so that the change is visible in review.
+The audit deleted every comment, and the rule fails on each new comment. No file has an exception. When a comment seems necessary, put what it says into a name, a test, an ADR or an issue.
 
 ## Considered Options
 
 - **Allow JSDoc on exported API** — rejected. Most JSDoc in this repo said again what the name and the type say; the rest was a decision, which belongs in an ADR.
-- **`no-warning-comments` or a regex in CI** — rejected. Neither knows the difference between a directive and prose, and neither has a per-file baseline.
-- **Delete every comment at once, with no baseline** — rejected. A large change must be able to stop part way, and a new comment must fail lint from the first commit.
+- **`no-warning-comments` or a regex in CI** — rejected. Neither knows the difference between a directive and prose.
+- **A per-file baseline that only goes down** — used while the audit ran, then removed when the last file had no comments. With no comments left, it only added code.
 
 ## Consequences
 
 - The `javascript-testing-expert` skill (vendored from `dubzzz/fast-check`) asks for `// Arrange`, `// Act`, `// Assert` and `// Helpers` comments. In this repo, a blank line separates the three parts of a test instead.
 - `anti-slop/require-safety-comment-for-type-assertion` is on. Each type assertion (other than `as const`) needs a `SAFETY:` comment that states the checked invariant, immediately before the assertion or its statement. Start the comment with `SAFETY:`, or `comments/no-comments` reports it.
 - An empty `catch {}` needs a body, because `no-empty` accepts a comment as the only alternative. Return a value from the `catch`, or move the `try` into a small named function.
-- `/delete-comment` (`.agents/skills/delete-comment/SKILL.md`) runs this audit again.

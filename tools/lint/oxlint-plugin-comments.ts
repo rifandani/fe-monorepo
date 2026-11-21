@@ -1,39 +1,26 @@
-import path from "node:path";
-
 import { definePlugin, defineRule } from "@oxlint/plugins";
 
-import baselineJson from "./comment-baseline.json" with { type: "json" };
-import { planReports } from "./comment-ratchet.ts";
-import type { CommentBaseline } from "./comment-ratchet.ts";
-
-const baseline: CommentBaseline = baselineJson;
-
-const repoRoot = path.resolve(import.meta.dirname, "../..");
+import { isDirective } from "./comment-directive.ts";
 
 const noComments = defineRule({
   meta: {
     type: "suggestion",
     docs: {
       description:
-        "Ban code comments. Files in comment-baseline.json keep their count until it reaches zero.",
+        "Ban code comments. Tool directives and SAFETY: justifications stay allowed.",
     },
   },
   create(context) {
     return {
-      Program(program) {
-        const file = path
-          .relative(repoRoot, context.physicalFilename)
-          .split(path.sep)
-          .join("/");
-
-        const reports = planReports(
-          context.sourceCode.getAllComments(),
-          baseline[file] ?? 0,
-          program.loc
-        );
-
-        for (const report of reports) {
-          context.report(report);
+      Program() {
+        for (const comment of context.sourceCode.getAllComments()) {
+          if (!isDirective(comment)) {
+            context.report({
+              loc: comment.loc,
+              message:
+                "Do not write code comments (ADR-0011). Put the reason in a name, a test, an ADR or an issue.",
+            });
+          }
         }
       },
     };

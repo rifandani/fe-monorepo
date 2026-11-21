@@ -23,7 +23,6 @@
     "lint": "ultracite check --disable-nested-config",
     "lint:fix": "ultracite fix --disable-nested-config",
     "lint:doctor": "ultracite doctor",
-    "lint:comments": "node tools/lint/update-comment-baseline.ts",
     "check:health": "fallow health --css --top 10 --quiet",
     "check:dead-code": "fallow dead-code --quiet",
     "check:boundaries": "bun run --parallel --filter @workspace/spa --filter @workspace/expo --filter @workspace/core check:boundaries",
