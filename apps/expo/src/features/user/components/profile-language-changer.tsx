@@ -31,7 +31,6 @@ export const ProfileLanguageChanger = () => {
                 iconAfter={
                   locale === item ? (
                     <Feather
-                      // Maestro reads `profile-language-english-checked` and `profile-language-indonesia-checked`.
                       testID={`profile-language-${localeNames[item].toLowerCase()}-checked`}
                       name="check-circle"
                       size={20}

@@ -34,7 +34,6 @@ export const useCdnFileQuery = (
     ...queryOptions,
   });
 
-  // create file object from blob
   const file = toCdnFile(query.data?.blob, opt.filename);
 
   return { ...query, file };

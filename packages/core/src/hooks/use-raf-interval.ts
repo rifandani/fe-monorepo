@@ -15,8 +15,6 @@ interface TimerHandle {
 
 type Handle = FrameHandle | TimerHandle;
 
-// The animation-frame pair is absent outside the DOM (SSR, Node test runs),
-// where the plain timers are the fallback.
 const hasRequestAnimationFrame = () => "requestAnimationFrame" in globalThis;
 
 const setRafInterval = (callback: () => void, delay = 0): Handle => {
@@ -53,16 +51,6 @@ const clearRafInterval = (handle: Handle) => {
   cancelAnimationFrame(handle.id);
 };
 
-/**
- * A hook implements with `requestAnimationFrame` for better performance. The API is consistent with `useInterval`,
- * the advantage is that the execution of the timer can be stopped when the page is not rendering,
- * such as page hiding or minimization.
- *
- * Please note that the following two cases are likely to be inapplicable, and `useInterval` is preferred:
- *
- * - the time interval is less than 16ms
- * - want to execute the timer when page is not rendering;
- */
 export const useRafInterval = (
   fn: () => void,
   delay: number | undefined,
@@ -74,7 +62,6 @@ export const useRafInterval = (
   const fnRef = useLatest(fn);
   const timerRef = useRef<Handle>(null);
   useEffect(() => {
-    // radashi 13 `isNumber(NaN)` is true; `NaN >= 0` is false, so NaN still bails.
     if (!(isNumber(delay) && delay >= 0)) {
       return noop;
     }

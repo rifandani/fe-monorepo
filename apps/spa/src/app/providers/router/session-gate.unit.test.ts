@@ -27,8 +27,6 @@ import {
 
 vi.mock("sonner", () => ({ toast: { error: vi.fn(), info: vi.fn() } }));
 
-// Helpers
-
 const ada: AuthLoginResponseSchema = {
   accessToken: "access",
   email: "ada@example.com",
@@ -41,11 +39,6 @@ const ada: AuthLoginResponseSchema = {
   username: "ada",
 };
 
-/**
- * A real router on in-memory history, with the two guarded routes of the app,
- * and the real Session flows (`startSession`, `endSession`) on in-memory
- * Persistence. Nothing renders: the router loads and redirects by itself.
- */
 const setup = async (initialEntry: string, signedIn = false) => {
   const persistence = makePersistence(KeyValueStore.layerMemory, {
     defaultLocale: () => "en-us",
@@ -79,7 +72,6 @@ const setup = async (initialEntry: string, signedIn = false) => {
   });
 
   const router = createRouter({
-    // Node reads as a server, where the router returns a redirect and does not follow it.
     isServer: false,
     history: createMemoryHistory({ initialEntries: [initialEntry] }),
     routeTree: rootRoute.addChildren([homeRoute, loginRoute]),
@@ -102,10 +94,8 @@ const setup = async (initialEntry: string, signedIn = false) => {
 
 const decode = Schema.decodeUnknownSync(loginSearchSchema);
 
-/** An origin the schema never sees, to check where a kept redirect resolves. */
 const appOrigin = "https://app.example";
 
-/** Strings shaped like the open-redirect tricks: other hosts, `//`, `\\`, tabs. */
 const craftedRedirectArb = fc
   .tuple(
     fc.constantFrom(
@@ -117,7 +107,6 @@ const craftedRedirectArb = fc
       "/\n/",
       " /",
       "https:",
-      // Built from parts: lint rejects a literal script URL.
       ["java", "script:"].join("")
     ),
     fc.oneof(fc.string(), fc.domain(), fc.webUrl())
@@ -130,10 +119,6 @@ const redirectCandidateArb = fc.oneof(
   craftedRedirectArb
 );
 
-/**
- * A path of this app other than the login: `/` and segments that each start
- * with `s`, so none is `.`, `..`, empty or `login`.
- */
 const appPathArb = fc
   .array(fc.webSegment().map((segment) => `s${segment}`))
   .map((segments) => `/${segments.join("/")}`);
@@ -144,19 +129,15 @@ describe("requireSession", () => {
   });
 
   it("should let a signed-in person open the page", async () => {
-    // Act
     const app = await setup("/", true);
 
-    // Assert
     expect(app.href()).toBe("/");
     expect(toast.error).not.toHaveBeenCalled();
   });
 
   it("should send a signed-out person to login with this page to come back to, and say why", async () => {
-    // Act
     const app = await setup("/");
 
-    // Assert
     expect(app.href()).toBe("/login?redirect=%2F");
     expect(toast.error).toHaveBeenCalledExactlyOnceWith("Unauthorized");
   });
@@ -168,36 +149,28 @@ describe("requireNoSession", () => {
   });
 
   it("should let a signed-out person open the login", async () => {
-    // Act
     const app = await setup("/login");
 
-    // Assert
     expect(app.href()).toBe("/login");
     expect(toast.info).not.toHaveBeenCalled();
   });
 
   it("should send a signed-in person home, and say why", async () => {
-    // Act
     const app = await setup("/login", true);
 
-    // Assert
     expect(app.href()).toBe("/");
     expect(toast.info).toHaveBeenCalledExactlyOnceWith("Already Logged In");
   });
 
   it("should send a signed-in person to the page that the redirect names", async () => {
-    // Act
     const app = await setup("/login?redirect=%2F%3Ftab%3D2", true);
 
-    // Assert
     expect(app.href()).toBe("/?tab=2");
   });
 
   it("should not follow a redirect that leaves the app", async () => {
-    // Act
     const app = await setup("/login?redirect=https%3A%2F%2Fevil.example", true);
 
-    // Assert
     expect(app.href()).toBe("/");
   });
 });
@@ -209,14 +182,11 @@ describe("watch", () => {
   });
 
   it("should leave the page when End Session runs, and not blame the person", async () => {
-    // Arrange
     const app = await setup("/", true);
     app.gate.watch(app.router);
 
-    // Act
     await app.signOut();
 
-    // Assert
     await vi.waitFor(() => {
       expect(app.href()).toBe("/login?redirect=%2F");
     });
@@ -224,14 +194,11 @@ describe("watch", () => {
   });
 
   it("should leave the login when Session Start runs, and go back to where the person was", async () => {
-    // Arrange
     const app = await setup("/login?redirect=%2F%3Ftab%3D2");
     app.gate.watch(app.router);
 
-    // Act
     await app.signIn();
 
-    // Assert
     await vi.waitFor(() => {
       expect(app.href()).toBe("/?tab=2");
     });
@@ -239,46 +206,36 @@ describe("watch", () => {
   });
 
   it("should go home after a login that has no redirect", async () => {
-    // Arrange
     const app = await setup("/login");
     app.gate.watch(app.router);
 
-    // Act
     await app.signIn();
 
-    // Assert
     await vi.waitFor(() => {
       expect(app.href()).toBe("/");
     });
   });
 
   it("should not reload the router when a Session replaces a Session", async () => {
-    // Arrange
     const app = await setup("/", true);
     const invalidate = vi.spyOn(app.router, "invalidate");
     app.gate.watch(app.router);
 
-    // Act
     await app.signIn();
     await app.signIn();
-    // The listener runs in a later task. This lets any pending one finish.
     await sleep(20);
 
-    // Assert
     expect(invalidate).not.toHaveBeenCalled();
   });
 
   it("should stop reloading after the returned function runs", async () => {
-    // Arrange
     const app = await setup("/", true);
     const stop = app.gate.watch(app.router);
     stop();
 
-    // Act
     await app.signOut();
     await sleep(20);
 
-    // Assert
     expect(app.href()).toBe("/");
   });
 });
@@ -286,16 +243,13 @@ describe("watch", () => {
 describe("loginSearchSchema", () => {
   it("should keep a redirect that is a path of this app", () => {
     for (const value of ["/", "/?tab=2", "/a/b?c=d#e"]) {
-      // Act
       const search = decode({ redirect: value });
 
-      // Assert
       expect(search).toStrictEqual({ redirect: value });
     }
   });
 
   it("should drop a redirect that is not a path of this app, or that is the login", () => {
-    // Arrange
     const values = [
       42,
       "",
@@ -309,21 +263,16 @@ describe("loginSearchSchema", () => {
     ];
 
     for (const value of values) {
-      // Act
       const search = decode({ redirect: value });
 
-      // Assert
-      // An explicit `undefined`: the router lets the raw value stand over a missing key.
       expect(search).toStrictEqual({ redirect: undefined });
     }
   });
 
   it("should accept a search with no redirect and ignore every other key", () => {
-    // Act
     const empty = decode({});
     const other = decode({ other: 1 });
 
-    // Assert
     expect(empty).toStrictEqual({});
     expect(other).toStrictEqual({});
   });
@@ -331,10 +280,8 @@ describe("loginSearchSchema", () => {
   test.prop([redirectCandidateArb])(
     "should never keep a redirect that leaves the app or opens the login",
     (value) => {
-      // Act
       const { redirect } = decode({ redirect: value });
 
-      // Assert
       if (redirect !== undefined) {
         const target = new URL(redirect, appOrigin);
         expect(target.origin).toBe(appOrigin);
@@ -346,13 +293,10 @@ describe("loginSearchSchema", () => {
   test.prop([appPathArb, fc.webQueryParameters(), fc.webFragments()])(
     "should always keep a path of this app as it is",
     (path, query, fragment) => {
-      // Arrange
       const value = `${path}?${query}#${fragment}`;
 
-      // Act
       const search = decode({ redirect: value });
 
-      // Assert
       expect(search).toStrictEqual({ redirect: value });
     }
   );

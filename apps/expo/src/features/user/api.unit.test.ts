@@ -11,14 +11,6 @@ import { http, HttpResponse } from "msw";
 import { userApi } from "@/features/user/api";
 import type { GetUserApiResponseSchema } from "@/features/user/schemas";
 
-// Helpers
-
-/**
- * `userApi` reads `Http` from context, so the test owns the base URL and no
- * app singleton — nor the MMKV-backed Persistence behind its Session — is
- * loaded: the Session is the in-memory adapter.
- * The request itself is still faked at the Network Boundary (ADR-0002).
- */
 const TestHttp = Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
   Layer.provide(Session.layerMemory()),
   Layer.provide(FetchHttpClient.layer)
@@ -48,7 +40,6 @@ const ada: GetUserApiResponseSchema = {
   weight: 60,
 };
 
-/** Serves `user` and records the `:id` path param that each request carried. */
 const serveUser = (user: GetUserApiResponseSchema) => {
   const ids: (string | readonly string[] | undefined)[] = [];
   server.use(
@@ -65,7 +56,6 @@ const serveUser = (user: GetUserApiResponseSchema) => {
 describe("userApi.getDetail", () => {
   it.effect("should fetch and return the decoded user detail", () =>
     Effect.gen(function* () {
-      // Arrange
       let capturedMethod: string | undefined;
       server.use(
         http.get(detailUrl, ({ request }) => {
@@ -75,10 +65,8 @@ describe("userApi.getDetail", () => {
         })
       );
 
-      // Act
       const result = yield* getDetail({ id: 1 });
 
-      // Assert
       expect(capturedMethod).toBe("GET");
       expect(result).toEqual(ada);
     })
@@ -88,34 +76,28 @@ describe("userApi.getDetail", () => {
     "should fail with a SchemaError when the response breaks the schema",
     () =>
       Effect.gen(function* () {
-        // Arrange
         server.use(
           http.get(detailUrl, () =>
             HttpResponse.json({ ...ada, email: "not-an-email" })
           )
         );
 
-        // Act
         const error = yield* Effect.flip(getDetail({ id: 1 }));
 
-        // Assert
         expect(error._tag).toBe("SchemaError");
       })
   );
 
   it.effect("should fail with the Error Envelope on a 404", () =>
     Effect.gen(function* () {
-      // Arrange
       server.use(
         http.get(detailUrl, () =>
           HttpResponse.json({ message: "User not found" }, { status: 404 })
         )
       );
 
-      // Act
       const error = yield* Effect.flip(getDetail({ id: 999 }));
 
-      // Assert
       expect(error).toMatchObject({
         _tag: "HttpResponseError",
         status: 404,
@@ -127,15 +109,10 @@ describe("userApi.getDetail", () => {
   test.prop([fc.integer({ min: 1 })], ioPropertyParameters())(
     "should always request the user that the id names",
     async (id) => {
-      // Arrange
-      // The path param is read off the real request, so this covers the
-      // `users/${id}` template and the base URL that the `Http` layer was given.
       const ids = serveUser({ ...ada, id });
 
-      // Act
       const result = await Effect.runPromise(getDetail({ id }));
 
-      // Assert
       expect(ids).toEqual([String(id)]);
       expect(result.id).toBe(id);
     }

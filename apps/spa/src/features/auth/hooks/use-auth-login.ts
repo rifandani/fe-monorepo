@@ -13,7 +13,6 @@ import type { Except } from "type-fest";
 
 import { appRuntime } from "@/lib/layers/runtime";
 
-/** The login mutation of core, plus this app's error toast. */
 export const useAuthLogin = (
   mutationOptions?: Except<
     UseMutationOptions<

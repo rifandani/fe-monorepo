@@ -1,12 +1,10 @@
 import { cn } from "cn";
-import { noop } from "radashi";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { Variant, VariantGrid } from "../variant";
 
 interface Swatch {
   name: string;
-  /** Tailwind bg utility mapped from `@theme` in globals.css */
   bg: string;
 }
 
@@ -26,7 +24,6 @@ interface Rgba {
   a: number;
 }
 
-/** Resolve any CSS color to RGBA by painting one pixel (handles oklch/oklab). */
 const cssColorToRgba = (color: string): Rgba | null => {
   const canvas = document.createElement("canvas");
   canvas.width = 1;
@@ -37,7 +34,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
     return null;
   }
 
-  // Sentinel: if `color` is rejected, fillStyle stays on this value.
   ctx.fillStyle = "rgba(1, 2, 3, 1)";
   const sentinel = ctx.fillStyle;
   ctx.fillStyle = color;
@@ -48,7 +44,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
 
   ctx.clearRect(0, 0, 1, 1);
   ctx.fillRect(0, 0, 1, 1);
-  // 1×1 getImageData always yields RGBA; index via ?? for noUncheckedIndexedAccess.
   const pixel = ctx.getImageData(0, 0, 1, 1).data;
 
   return {
@@ -153,44 +148,35 @@ const groups: { label: string; swatches: Swatch[] }[] = [
   },
 ];
 
+const subscribeToThemeClass = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributeFilter: ["class"],
+    attributes: true,
+  });
+
+  return () => {
+    observer.disconnect();
+  };
+};
+
+const readBackgroundColor = (el: HTMLElement | null) =>
+  el ? getComputedStyle(el).backgroundColor : "";
+
+const readServerBackgroundColor = () => "";
+
 const SwatchTile = ({ name, bg }: Swatch) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [hex, setHex] = useState("");
-  const [ink, setInk] = useState("#111111");
+  const [el, setEl] = useState<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
-    const el = ref.current;
+  const backgroundColor = useSyncExternalStore(
+    subscribeToThemeClass,
+    () => readBackgroundColor(el),
+    readServerBackgroundColor
+  );
 
-    if (!el) {
-      return noop;
-    }
-
-    const update = () => {
-      const rgba = cssColorToRgba(getComputedStyle(el).backgroundColor);
-
-      if (!rgba) {
-        setHex("");
-
-        return;
-      }
-
-      setHex(formatHex(rgba.r, rgba.g, rgba.b, rgba.a));
-      setInk(contrastInk(rgba));
-    };
-
-    update();
-
-    // ThemeToggle flips `.dark` on <html>; re-read tokens when that changes.
-    const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, {
-      attributeFilter: ["class"],
-      attributes: true,
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  const rgba = backgroundColor ? cssColorToRgba(backgroundColor) : null;
+  const hex = rgba ? formatHex(rgba.r, rgba.g, rgba.b, rgba.a) : "";
+  const ink = rgba ? contrastInk(rgba) : "#111111";
 
   return (
     <div
@@ -199,7 +185,7 @@ const SwatchTile = ({ name, bg }: Swatch) => {
         "border-border flex h-16 min-w-24 items-center justify-center rounded-lg border px-1.5 font-mono text-[10px]",
         bg
       )}
-      ref={ref}
+      ref={setEl}
       style={{ color: ink }}
     >
       {hex || "…"}

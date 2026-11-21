@@ -24,8 +24,6 @@ import { persistence } from "@/lib/layers/persistence";
 import { appRuntime } from "@/lib/layers/runtime";
 import { useTranslation } from "@/providers/i18n/context";
 
-// End Session only. The Session gate of the router reacts to it and leaves the
-// page that needs a Session.
 const logout = async () => {
   await appRuntime.runPromise(endSession);
 };
@@ -33,8 +31,6 @@ const logout = async () => {
 export const ProfileMenu = () => {
   const { t } = useTranslation();
   const user = useAtomValue(persistence.sessionAtom);
-  // The state of the Session machine. A token refresh runs in the background,
-  // so the menu shows it while it runs.
   const isRefreshing = useAtomValue(sessionActivityAtom) === "refreshing";
 
   return (

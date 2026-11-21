@@ -1,6 +1,5 @@
 import { cn } from "cn";
 import type { MouseEvent } from "react";
-import { useEffect, useRef } from "react";
 
 import { categories } from "./registry";
 import type { Category, ComponentEntry } from "./types";
@@ -11,11 +10,6 @@ interface CatalogNavProps {
   onNavigate: (_sectionId: string) => void;
 }
 
-/**
- * Space kept clear above and below the active link when the nav follows the
- * page. It is larger than the sticky category label, so the label never hides
- * the active link.
- */
 const FOLLOW_MARGIN_PX = 56;
 
 const visibleCategories = (needle: string): Category[] =>
@@ -32,7 +26,6 @@ const visibleCategories = (needle: string): Category[] =>
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/** Let modified clicks (new tab, new window) keep their native behavior. */
 const isPlainClick = (event: MouseEvent) =>
   event.button === 0 &&
   !event.metaKey &&
@@ -40,14 +33,10 @@ const isPlainClick = (event: MouseEvent) =>
   !event.shiftKey &&
   !event.altKey;
 
-/**
- * Scroll the nav so that the active link stays in view. Only the nav scrolls;
- * the page position does not change.
- */
-const followActiveLink = (scroller: HTMLElement, activeId: string) => {
-  const link = scroller.querySelector<HTMLElement>(`a[href="#${activeId}"]`);
+const followActiveLink = (link: HTMLAnchorElement | null) => {
+  const scroller = link?.closest("nav");
 
-  if (!link) {
+  if (!link || !scroller) {
     return;
   }
 
@@ -80,6 +69,7 @@ const CatalogNavLink = ({
   <li>
     <a
       aria-current={isActive ? "location" : undefined}
+      ref={isActive ? followActiveLink : undefined}
       className={cn(
         "-ml-px block truncate rounded-r-md border-l border-transparent py-1.5 pr-3 pl-4 text-sm transition-colors duration-150",
         "text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground",
@@ -145,32 +135,18 @@ const CatalogNavGroup = ({
   );
 };
 
-/**
- * Left navigation for the Component Catalog. It is a scrollspy: every category
- * is always open, and the link for the section in view is marked as the
- * current location. When the page scrolls, the nav scrolls too, so the
- * current link stays visible.
- */
 export const CatalogNav = ({
   activeId,
   filter,
   onNavigate,
 }: CatalogNavProps) => {
-  const scrollerRef = useRef<HTMLElement>(null);
   const query = filter.trim().toLowerCase();
   const visible = visibleCategories(query);
-
-  useEffect(() => {
-    if (scrollerRef.current && activeId !== null && activeId !== "") {
-      followActiveLink(scrollerRef.current, activeId);
-    }
-  }, [activeId]);
 
   return (
     <nav
       aria-label="Components"
       className="h-full overflow-y-auto overscroll-contain px-3 pb-6"
-      ref={scrollerRef}
     >
       {visible.length === 0 ? (
         <p className="text-muted-foreground px-3 pt-5 text-sm">

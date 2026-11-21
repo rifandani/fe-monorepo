@@ -14,11 +14,6 @@ type TranslationContextValue = ReturnType<typeof initI18n> & {
 
 const TranslationContext = createContext<TranslationContextValue | null>(null);
 
-/**
- * @description Holds the Locale and exposes `t` / `setLocale`. The Locale itself
- * is `localeAtom`, so a pick survives a reload; the browser language is only the
- * default while nothing is stored.
- */
 export const TranslationProvider = ({ children }: { children: ReactNode }) => {
   const [locale, setLocale] = useAtom(persistence.localeAtom);
 

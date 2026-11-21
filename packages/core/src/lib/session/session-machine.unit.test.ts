@@ -3,8 +3,6 @@ import { describe, expect, it } from "vitest";
 import { machineToJSON } from "xstate";
 import { toDirectedGraph } from "xstate/graph";
 
-// Helpers
-
 interface GraphNode {
   readonly id: string;
   readonly children: readonly GraphNode[];
@@ -15,7 +13,6 @@ interface GraphNode {
   }[];
 }
 
-/** Every edge of the graph, as `source -[event]-> target`. */
 const edgesOf = (node: GraphNode): string[] => [
   ...node.edges.map(
     (edge) =>
@@ -26,13 +23,10 @@ const edgesOf = (node: GraphNode): string[] => [
 
 describe("sessionMachine", () => {
   it("should show every transition to graph tools", () => {
-    // Arrange
     const graph = toDirectedGraph(sessionMachine);
 
-    // Act
     const edges = edgesOf(graph);
 
-    // Assert
     expect(graph.analysis?.transitionTargetsComplete).toBe(true);
     expect(edges.toSorted()).toEqual([
       "session -[END]-> session.ending",
@@ -48,10 +42,8 @@ describe("sessionMachine", () => {
   });
 
   it("should export as JSON that names the work of each state", () => {
-    // Arrange
     const json = machineToJSON(sessionMachine);
 
-    // Act
     const sources = Object.entries(json.states ?? {}).map(
       ([state, config]) =>
         [
@@ -60,7 +52,6 @@ describe("sessionMachine", () => {
         ] as const
     );
 
-    // Assert
     expect(sources).toEqual([
       ["idle", []],
       ["starting", ["start"]],

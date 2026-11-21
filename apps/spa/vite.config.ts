@@ -12,10 +12,6 @@ import type { Plugin, PluginOption } from "vite";
 import { defineConfig, loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-/**
- * Dev-only: alias /sw.js → VitePWA's /dev-sw.js?dev-sw for static checkers.
- * Production build emits dist/sw.js and registers it via virtual:pwa-register.
- */
 const serveDevServiceWorker = (): Plugin => ({
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
@@ -38,7 +34,6 @@ export default defineConfig(({ mode }) => {
     env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 
   return {
-    // Expose portless's worktree-aware URL to import.meta.env (see env.ts).
     envPrefix: ["VITE_", "PORTLESS_"],
     plugins: [
       tanstackDevtools(),
@@ -197,7 +192,6 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3001,
       forwardConsole: true,
-      // Browser OTLP must be same-origin when the app is served over HTTPS (e.g. portless).
       proxy: {
         "/v1/metrics": {
           changeOrigin: true,

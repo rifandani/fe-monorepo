@@ -5,13 +5,13 @@ import { SafeToastViewport } from "@/providers/toast/safe-toast-viewport";
 import { TheToast } from "@/providers/toast/the-toast";
 
 const SWIPE_DIRECTION = "horizontal";
-const DURATION = 3000; // 3s
+const DURATION = 3000;
 
 export const AppToastProvider = ({ children, ...rest }: ToastProviderProps) => (
   <ToastProvider
     swipeDirection={SWIPE_DIRECTION}
     duration={DURATION}
-    burntOptions={{ from: "bottom" }} // only on iOS
+    burntOptions={{ from: "bottom" }}
     {...rest}
   >
     {children}

@@ -9,10 +9,6 @@ import type { Layer } from "effect";
 import type { KeyValueStore } from "effect/persistence";
 import { Atom, AtomRegistry } from "effect/reactivity";
 
-/**
- * @description The storage key of each persisted value, one key per atom, so
- * ending a Session never touches the theme or the Locale.
- */
 export const persistenceKeys = {
   locale: "app-locale",
   session: "app-user",
@@ -20,47 +16,15 @@ export const persistenceKeys = {
 } as const;
 
 export interface PersistenceOptions {
-  /**
-   * @description The Locale to use while none is stored. Called once, on the
-   * first read, so it can read the browser or the device. Give it a supported
-   * Locale: map a raw language tag with `toLocale` first.
-   */
   readonly defaultLocale: () => Locale;
 }
 
-/**
- * @description Build the persisted client state of one app on one
- * `KeyValueStore`.
- *
- * Each value is an `Atom.kvs`: it is decoded with its schema on every read, so a
- * stale or hand-edited entry reads as the default instead of reaching the app
- * half-shaped. That holds for the Locale too: a stored value that is not a
- * supported Locale reads as `defaultLocale`. Each atom is `keepAlive`, because
- * code outside React (route guards, the `Session` service) reads it where
- * nothing keeps the node mounted.
- *
- * Call it once per app. The app gives the storage (`localStorage`, MMKV); a test
- * gives an in-memory one.
- *
- * @example
- *
- * ```ts
- * export const persistence = makePersistence(
- *   KeyValueStore.layerStorage(() => localStorage),
- *   { defaultLocale: () => toLocale(navigator.language) }
- * );
- * ```
- */
 export const makePersistence = (
   storage: Layer.Layer<KeyValueStore.KeyValueStore>,
   { defaultLocale }: PersistenceOptions
 ) => {
-  // The one registry of the app. React reads it through `PersistenceProvider`;
-  // code outside React reads and writes the same instance.
   const registry = AtomRegistry.make({ scheduleTask, defaultIdleTTL: 400 });
 
-  // A synchronous storage makes `Atom.kvs` hold the persisted value on the
-  // first read, before any route resolves.
   const runtime = Atom.runtime(storage);
 
   const sessionAtom = Atom.kvs({

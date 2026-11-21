@@ -1,16 +1,4 @@
 #!/usr/bin/env node
-/**
- * SCA gate via Google OSV-Scanner.
- * Fails on high/critical findings unless temporarily allowlisted.
- * Critical severities cannot be allowlisted.
- *
- * Usage: node scripts/security/sca-gate.ts
- * Env:
- *   SCA_ALLOWLIST_PATH   default: .github/security/sca-allowlist.json
- *   SCA_AUDIT_LEVEL      default: high  (low|moderate|high|critical)
- *   OSV_SCANNER_BIN      path to osv-scanner (default: osv-scanner on PATH)
- *   OSV_SCANNER_VERSION  pinned download version if binary missing (default: 2.4.0)
- */
 import { spawnSync } from "node:child_process";
 import {
   accessSync,
@@ -73,7 +61,6 @@ const LEVEL_RANK = {
   critical: 4,
 } satisfies Record<SeverityBand, number>;
 
-/** Node's `process.arch` names mapped to the ones osv-scanner publishes. */
 const OSV_ARCHES = {
   arm64: "arm64",
   x64: "amd64",
@@ -105,8 +92,7 @@ if (!isSeverityBand(auditLevel)) {
 
 const minRank = LEVEL_RANK[auditLevel];
 
-// SAFETY: the allowlist is a repo-owned file; every field read below is optional
-// and validated in the loop that follows.
+// SAFETY: the allowlist is a file in this repository with this shape, and a missing entries field falls back to an empty list.
 // oxlint-disable-next-line typescript/no-unsafe-type-assertion
 const raw = JSON.parse(readFileSync(allowlistPath, "utf-8")) as {
   entries?: AllowEntry[];
@@ -193,6 +179,16 @@ const maxBand = (
   return LEVEL_RANK[a] >= LEVEL_RANK[b] ? a : b;
 };
 
+const isExecutable = (candidate: string): boolean => {
+  try {
+    accessSync(candidate, fsConstants.X_OK);
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const which = (cmd: string): string | null => {
   for (const dir of (process.env.PATH ?? "").split(path.delimiter)) {
     if (!dir) {
@@ -201,12 +197,8 @@ const which = (cmd: string): string | null => {
 
     const candidate = path.join(dir, cmd);
 
-    try {
-      accessSync(candidate, fsConstants.X_OK);
-
+    if (isExecutable(candidate)) {
       return candidate;
-    } catch {
-      // not found / not executable
     }
   }
 
@@ -282,7 +274,6 @@ const writeConfig = (activeEntries: AllowEntry[]) => {
     lines.push(
       "[[IgnoredVulns]]",
       `id = ${JSON.stringify(e.id)}`,
-      // Bare TOML date (not a quoted string) — osv-scanner expects LocalDate.
       `ignoreUntil = ${e.expires}`
     );
 
@@ -347,7 +338,6 @@ const resolveVulnSeverity = (
     }
   }
 
-  // Fail closed: unclassified advisory treated as high
   return sev ?? pkgMax ?? "high";
 };
 
@@ -442,7 +432,6 @@ const proc = (() => {
 const stdout = proc.stdout ?? "";
 const code = proc.status ?? 1;
 
-// 0 = no vulns, 1 = vulns found, other = scanner/tool failure
 if (code !== 0 && code !== 1) {
   console.error(`::error::osv-scanner exited with unexpected code ${code}`);
   process.exit(code === 0 ? 1 : code);
@@ -451,9 +440,7 @@ if (code !== 0 && code !== 1) {
 let doc: OsvDocument;
 
 try {
-  // SAFETY: osv-scanner's JSON schema is mirrored in `OsvDocument`, and every
-  // field it declares is optional, so a schema drift degrades to "no findings"
-  // rather than a bad read.
+  // SAFETY: osv-scanner with --format json writes an OsvDocument.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   doc = JSON.parse(stdout || "{}") as OsvDocument;
 } catch {

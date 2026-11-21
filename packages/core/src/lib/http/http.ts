@@ -10,42 +10,17 @@ const defaultHeader = "Authorization";
 const defaultFormat = (token: string) => `Bearer ${token}`;
 const defaultTimeout = Duration.seconds(10);
 
-/**
- * @description How an `Http` client sends the Access Token of the `Session`.
- */
 export interface HttpAuthConfig {
-  /**
-   * @description Name of the header the Access Token is sent in.
-   * @default "Authorization"
-   */
   header?: string;
-  /**
-   * @description Format the Access Token into a header value.
-   * @default token => `Bearer ${token}`
-   */
   format?: (token: string) => string;
 }
 
 export interface HttpConfig {
-  /**
-   * @description Base URL that every relative request path is resolved against.
-   */
   baseUrl: string;
-  /**
-   * @description How the Access Token is sent.
-   * @default the `Authorization` header, as `Bearer <token>`
-   */
   auth?: HttpAuthConfig;
-  /**
-   * @description Time limit for one request, response headers included.
-   * @default 10 seconds
-   */
   timeout?: Duration.Input;
 }
 
-/**
- * @description Every failure the `Http` client itself can produce.
- */
 export type HttpError =
   | HttpClientError.HttpClientError
   | HttpResponseError
@@ -55,11 +30,6 @@ const decodeJsonBody = Schema.decodeUnknownOption(
   Schema.fromJsonString(Schema.Unknown)
 );
 
-/**
- * Read a failed response's body the way the Error Envelope ladder expects it.
- * A body that cannot be read is reported as absent: the status code is still the
- * truthful part of the failure.
- */
 const readErrorData = (response: HttpClientResponse.HttpClientResponse) =>
   response.text.pipe(
     Effect.map((text) =>
@@ -92,24 +62,12 @@ const failOnErrorStatus = (response: HttpClientResponse.HttpClientResponse) => {
   );
 };
 
-/**
- * Send the Access Token of the `Session`. When the server rejects that token
- * (a 401), ask the Session for a new one (Session Refresh) and send the request
- * once more with it. When there is no new token, the 401 stays the response:
- * the refresh ended the Session, or could not finish.
- *
- * Only a request that carried a Session token starts a refresh, so a failed
- * sign-in — a 401 with no Session — never does. The retry is sent once: a
- * second 401 is the answer.
- */
 const withSession =
   (session: Session["Service"], auth: HttpAuthConfig) =>
   <E, R>(client: HttpClient.HttpClient.With<E, R>) => {
     const header = auth.header ?? defaultHeader;
     const format = auth.format ?? defaultFormat;
 
-    // `request` is already preprocessed (base URL, `Accept`), so it goes to
-    // `postprocess` and never through the preprocessing a second time.
     const send = (
       request: HttpClientRequest.HttpClientRequest,
       token: Option.Option<string>
@@ -142,13 +100,6 @@ const withSession =
     );
   };
 
-/**
- * @description Build the app's API client from a transport `HttpClient`.
- *
- * Resolves relative paths against `baseUrl`, asks for JSON, carries the
- * Session, fails non-2xx responses with `HttpResponseError`, and bounds every
- * request with a timeout.
- */
 const makeHttpClient = (
   client: HttpClient.HttpClient,
   session: Session["Service"] | undefined,
@@ -173,18 +124,6 @@ const makeHttpClient = (
   );
 };
 
-/**
- * @description The app's API client: an `HttpClient` already pointed at the API
- * and already carrying the Session.
- *
- * @example
- *
- * ```ts
- * const HttpLive = Http.layer({ baseUrl, auth }).pipe(
- *   Layer.provide(FetchHttpClient.layer)
- * );
- * ```
- */
 export class Http extends Context.Service<
   Http,
   HttpClient.HttpClient.With<HttpError>
@@ -201,11 +140,6 @@ export class Http extends Context.Service<
       })
     );
 
-  /**
-   * @description The same API client without the Session: no Access Token and
-   * no Session Refresh. For the requests that the Session itself sends, such
-   * as the token refresh (`auth/session-refresh.ts`).
-   */
   static readonly layerWithoutSession = (config: Omit<HttpConfig, "auth">) =>
     Layer.effect(
       Http,

@@ -7,8 +7,6 @@ import { coreAliases } from "../../vitest.core-aliases.js";
 const root = import.meta.dirname;
 
 export default defineProject({
-  // spa tsconfig uses jsx: "preserve"; unit tests still import .tsx modules
-  // (e.g. the router and its providers) so oxc must transform JSX.
   oxc: {
     jsx: { runtime: "automatic" },
   },

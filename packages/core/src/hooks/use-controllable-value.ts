@@ -12,13 +12,8 @@ interface Options<T> {
   trigger?: string;
 }
 
-/** The change handler a component passes under the configured `trigger` name. */
 type TriggerFn<T> = (value: T, ...args: unknown[]) => void;
 
-/**
- * A component's props addressed by caller-supplied names: this hook reads the
- * value, the default value and the change trigger, and nothing else.
- */
 type Props<T> = Record<string, T | TriggerFn<T> | undefined>;
 
 interface StandardProps<T> {
@@ -27,24 +22,6 @@ interface StandardProps<T> {
   onChange: (val: T) => void;
 }
 
-/**
- * In some components, we need the state to be managed by itself or controlled by it's parent.
- * This hook helps you manage this kind of state.
- *
- * - If there is no value in props, the component manage state by self (Uncontrolled Component)
- * - If props has the value field, then the state is controlled by it's parent (Controlled Component)
- * - If there is an `onChange` field in props, the `onChange` will be trigger when state change
- *
- * @example
- *
- * ```tsx
- * const [value, setValue] = useControllableValue({
- *   value: 1,
- *   onChange: (v) => {
- *     console.log(v)
- *   }
- * })
- */
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: StandardProps<T>
@@ -66,12 +43,10 @@ export function useControllableValue<T = any>(
     trigger = "onChange",
   } = options;
 
-  // SAFETY: the standard `{ value, defaultValue, onChange }` shape is exactly the
-  // name-addressed bag under this hook's default prop names.
+  // SAFETY: StandardProps<T> holds only a value, a default value and a trigger, which are all members of the Props<T> value union.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const bag = props as Props<T>;
-  // SAFETY: `valuePropName` names the prop holding this hook's value, whose type
-  // the caller states as `T` when instantiating the hook.
+  // SAFETY: the prop at valuePropName is the controlled value of type T.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const value = bag[valuePropName] as T;
   const isControlled = Object.hasOwn(bag, valuePropName);
@@ -82,7 +57,7 @@ export function useControllableValue<T = any>(
     }
 
     if (Object.hasOwn(bag, defaultValuePropName)) {
-      // SAFETY: as above, for the prop named by `defaultValuePropName`.
+      // SAFETY: the prop at defaultValuePropName is the default value of type T.
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       return bag[defaultValuePropName] as T;
     }
@@ -101,8 +76,7 @@ export function useControllableValue<T = any>(
 
   const setState = (v: SetStateAction<T>, ...args: unknown[]) => {
     const r = isFunction(v)
-      ? // SAFETY: `stateRef` is seeded from the controlled value or the default, so
-        // it holds `undefined` only when the caller's own `T` includes it.
+      ? // SAFETY: stateRef holds the controlled value, the default value or the last value set, which are all T.
         // oxlint-disable-next-line typescript/no-unsafe-type-assertion
         v(stateRef.current as T)
       : v;

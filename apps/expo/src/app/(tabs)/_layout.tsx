@@ -4,7 +4,6 @@ import { Tabs } from "expo-router";
 import { useTranslation } from "@/providers/i18n/context";
 
 export const unstable_settings = {
-  // Ensure any route can link back to `/`
   initialRouteName: "index",
 };
 
@@ -24,8 +23,6 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
-          // use href null to hide tab bar
-          // href: null,
           title: t("title"),
           tabBarIcon: HomeTabIcon,
         }}

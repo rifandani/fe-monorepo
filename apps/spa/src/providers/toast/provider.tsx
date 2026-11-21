@@ -5,10 +5,6 @@ import { Toaster } from "sonner";
 
 import { persistence } from "@/lib/layers/persistence";
 
-/**
- * Sonner forwards `style` to the DOM. React's `CSSProperties` does not model
- * custom properties, so the type adds them.
- */
 const toasterStyle: CSSProperties & Record<`--${string}`, string> = {
   "--error-bg": "var(--color-danger-subtle)",
   "--error-border":
@@ -36,12 +32,6 @@ const toastClassName = twJoin(
   "**:data-action:[--normal-bg:var(--color-primary-foreground)] **:data-action:[--normal-text:var(--color-primary)]"
 );
 
-/**
- * Callers fire toasts with `toast` from "sonner". This provider only renders
- * the `Toaster`. `Entry` owns the mode class on `<html>`. Sonner resolves
- * `system` with the same `prefers-color-scheme` query, so the picked theme
- * is passed through as it is.
- */
 export const AppToastProvider = ({ children }: PropsWithChildren) => {
   const theme = useAtomValue(persistence.themeAtom);
 

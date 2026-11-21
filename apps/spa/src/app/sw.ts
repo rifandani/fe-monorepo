@@ -10,7 +10,6 @@ declare let self: ServiceWorkerGlobalScope;
 
 const OFFLINE_CACHE = "spa-offline-v1";
 
-/** A `postMessage` from the page that asks this worker to activate now. */
 const isSkipWaitingMessage = (
   data: unknown
 ): data is { type: "SKIP_WAITING" } =>
@@ -35,7 +34,6 @@ interface PushPayloadInput {
 const isObject = (value: unknown): value is PushPayloadInput =>
   typeof value === "object" && value !== null;
 
-/** The push payload is attacker-visible JSON, so every field is checked. */
 const isPushPayload = (data: unknown): data is PushPayload =>
   isObject(data) && isOptionalString(data.body) && isOptionalString(data.title);
 
@@ -57,7 +55,6 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      // Only prune our offline cache versions — never Workbox precaches.
       const keys = await caches.keys();
       const deletions: Promise<boolean>[] = [];
 
@@ -72,20 +69,16 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// self.__WB_MANIFEST is the default injection point
 precacheAndRoute(self.__WB_MANIFEST);
 
-// clean old assets
 cleanupOutdatedCaches();
 
 let allowlist: RegExp[] | undefined;
 
-// in dev mode, we disable precaching to avoid caching issues
 if (import.meta.env.DEV) {
   allowlist = [/^\/$/u];
 }
 
-// to allow work offline
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL("index.html"), { allowlist })
 );

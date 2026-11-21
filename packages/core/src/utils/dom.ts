@@ -1,22 +1,10 @@
 import type { URLSearchParamsInit } from "@workspace/core/types/core";
 
-/**
- * Check if we are in browser, not server
- */
 export const isBrowser = () => "window" in globalThis;
 
-/**
- * Whether the async Clipboard API is usable here. It is absent on the server,
- * and browsers only expose `navigator.clipboard` in secure contexts.
- */
 export const canWriteToClipboard = () =>
   isBrowser() && navigator.clipboard?.writeText !== undefined;
 
-/**
- * This will works with below rules, otherwise it only view on new tab
- * 1. If the file source located in the same origin as the application.
- * 2. If the file source is on different location e.g s3 bucket, etc. Set the response headers `Content-Disposition: attachment`.
- */
 export const doDownload = (url: string) => {
   if (!url) {
     return;
@@ -28,37 +16,11 @@ export const doDownload = (url: string) => {
   link.target = "_blank";
   document.body.append(link);
   link.click();
-  // Delay removal to ensure download has started
   setTimeout(() => {
     link.remove();
   }, 100);
 };
 
-/**
- * Creates a URLSearchParams object using the given initializer.
- *
- * This is identical to `new URLSearchParams(init)` except it also
- * supports arrays as values in the object form of the initializer
- * instead of just strings. This is convenient when you need multiple
- * values for a given key, but don't want to use an array initializer.
- *
- * For example, instead of:
- *
- * ```tsx
- * let searchParams = new URLSearchParams([
- *   ['sort', 'name'],
- *   ['sort', 'price']
- * ]);
- * ```
- * you can do:
- *
- * ```
- * let searchParams = createSearchParams({
- *   sort: ['name', 'price']
- * });
- * ```
- */
-/** The one member of `URLSearchParamsInit` that `URLSearchParams` cannot take as-is. */
 const isParamsRecord = (
   init: URLSearchParamsInit
 ): init is Record<string, string | string[]> =>
@@ -77,27 +39,10 @@ export const createSearchParams = (
       : init
   );
 
-/**
- * instead of using `createSearchParams`, this function will convert an object into a URLSearchParams and joins array of string value with a comma
- *
- * @example
- *
- * const searchParams = createSearchParamsWithComa({
- *   sort: 'asc',
- *   filters: [
- *     "model",
- *     "category",
- *   ]
- * });
- *
- * // returns => sort=asc&filters=model,category
- * // instead of => sort=asc&filters=model&filters=category
- */
 export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
   const searchParams =
     init === undefined ? new URLSearchParams() : createSearchParams(init);
 
-  // replace array of string values with a comma separated value
   for (const [key, value] of Object.entries(init ?? {})) {
     if (Array.isArray(value)) {
       searchParams.delete(key);
@@ -108,7 +53,6 @@ export const createSearchParamsWithComma = (init?: URLSearchParamsInit) => {
   return searchParams;
 };
 
-/** `navigator` with `userAgentData`, which is not in the DOM lib yet. */
 interface ExperimentalNavigator extends Navigator {
   userAgentData?: {
     brands: {
@@ -125,77 +69,51 @@ interface ExperimentalNavigator extends Navigator {
   };
 }
 
-/**
- * Retrieves the current platform
- *
- * This function uses the `UserAgentData` API if available, otherwise falls back to the
- * `navigator.platform` property
- *
- * @returns {string} The platform name
- */
 export const getPlatform = (): string => {
   const nav: ExperimentalNavigator = navigator;
   const platform = nav.userAgentData?.platform;
 
-  // First, try the synchronous userAgentData.platform
   if (platform !== undefined && platform !== "") {
     return platform;
   }
 
-  // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
   return navigator.platform || "";
 };
 
-/**
- * Retrieves the current platform asynchronously with high entropy values
- *
- * This function uses the `UserAgentData` API's getHighEntropyValues method
- * for more accurate platform detection, with fallbacks to synchronous methods
- *
- * @returns {Promise<string>} The platform name
- */
+const readHighEntropyPlatform = async (
+  userAgentData: NonNullable<ExperimentalNavigator["userAgentData"]>
+): Promise<string> => {
+  try {
+    const values = await userAgentData.getHighEntropyValues(["platform"]);
+
+    return values.platform ?? "";
+  } catch {
+    return "";
+  }
+};
+
 export const getPlatformAsync = async (): Promise<string> => {
   const nav: ExperimentalNavigator = navigator;
   const platform = nav.userAgentData?.platform;
 
-  // First, try the synchronous userAgentData.platform
   if (platform !== undefined && platform !== "") {
     return platform;
   }
 
-  // Try high entropy values for more accurate platform info
-  if (nav.userAgentData) {
-    try {
-      const highEntropyValues = await nav.userAgentData.getHighEntropyValues([
-        "platform",
-      ]);
+  const highEntropyPlatform = nav.userAgentData
+    ? await readHighEntropyPlatform(nav.userAgentData)
+    : "";
 
-      if (highEntropyValues.platform) {
-        return highEntropyValues.platform;
-      }
-    } catch {
-      // Fall through to next fallback
-    }
+  if (highEntropyPlatform !== "") {
+    return highEntropyPlatform;
   }
 
-  // Fallback to navigator.platform (deprecated, and absent on exotic runtimes)
   return navigator.platform || "";
 };
 
-/**
- * Checks if the current platform is macOS
- *
- * @returns {boolean} `true` if the current platform is macOS, `false` otherwise
- */
 export const isMacOS = (): boolean =>
   getPlatform().toLowerCase().includes("mac");
 
-/**
- * Retrieves the shortcut key for a given key
- *
- * @param {string} key - The key to retrieve the shortcut for
- * @returns {string} The shortcut key for the given key
- */
 export const getShortcutKey = (key: string): string => {
   if (key.toLowerCase() === "mod") {
     return isMacOS() ? "⌘" : "Ctrl";
@@ -212,24 +130,9 @@ export const getShortcutKey = (key: string): string => {
   return key;
 };
 
-/**
- * Generates a string of shortcut keys for a given array of keys.
- *
- * @param {string[]} keys - The array of keys to generate shortcut keys for
- * @returns {string} A string of shortcut keys separated by spaces
- *
- * @example getShortcutKeys(['Ctrl', 'Shift', 'A']) 'Ctrl+Shift+A'
- * @example getShortcutKeys(['mod', 'N']) '⌘N' (on macOS)
- * @example getShortcutKeys(['mod', 'N']) 'Ctrl+N' (on non-macOS)
- */
 export const getShortcutKeys = (keys: string[]): string =>
   keys.map((key) => getShortcutKey(key)).join("+");
 
-/**
- * Save a file to the user's device.
- * @param data - The data to save.
- * @param fileName - The name of the file to save.
- */
 export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
   const url = window.URL.createObjectURL(data);
   const a = document.createElement("a");

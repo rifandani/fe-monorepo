@@ -3,16 +3,15 @@ import { useState } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SearchField, SearchInput } from "@/components/ui/search-field";
+import { useScrollSpy } from "@/hooks/use-scroll-spy";
 
 import { CatalogNav } from "./catalog-nav";
 import { categories, entryIds } from "./registry";
-import { useScrollSpy } from "./use-scroll-spy";
 
 export const MasterDesignCatalog = () => {
   const [filter, setFilter] = useState("");
   const { activeId, scrollTo } = useScrollSpy(entryIds);
 
-  // Honor deep links like /master-design#combo-box once sections have painted.
   useMount(() => {
     const hash = window.location.hash.slice(1);
 

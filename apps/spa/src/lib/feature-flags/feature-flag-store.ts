@@ -7,7 +7,6 @@ import { persistence } from "@/lib/layers/persistence";
 
 const { registry } = persistence;
 
-/** Key the Feature Flag overrides are persisted under in `localStorage`. */
 export const featureFlagStoreName = "app-feature-flags" as const;
 
 const featureFlagOverridesSchema = Schema.Record(
@@ -15,13 +14,6 @@ const featureFlagOverridesSchema = Schema.Record(
   Schema.optionalKey(Schema.Boolean)
 );
 
-/**
- * @description Feature Flag overrides set from the devtools panel.
- *
- * Decoded on read: an override for a flag that no longer exists is dropped,
- * and a malformed value makes the whole set fall back to "no overrides" —
- * never a half-trusted mix.
- */
 export const featureFlagOverridesAtom = Atom.kvs({
   runtime: persistence.runtime,
   key: featureFlagStoreName,
@@ -29,10 +21,6 @@ export const featureFlagOverridesAtom = Atom.kvs({
   defaultValue: () => ({}),
 }).pipe(Atom.keepAlive, Atom.withLabel("featureFlagOverrides"));
 
-/**
- * @description Read and change overrides outside React, on the same registry the
- * panel's hooks subscribe to.
- */
 export const featureFlagStore = {
   overrides: () => registry.get(featureFlagOverridesAtom),
   setOverride: (id: FeatureFlagId, enabled: boolean) => {

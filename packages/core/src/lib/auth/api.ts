@@ -10,10 +10,6 @@ import { Http } from "@workspace/core/http/http";
 import { Effect } from "effect";
 import { HttpClientRequest, HttpClientResponse } from "effect/http";
 
-/**
- * @description Auth endpoints. Each one needs the `Http` service, so the caller's
- * Layer — not this module — decides the base URL and the Session.
- */
 export const authApi = {
   login: Effect.fn("authApi.login")(function* (json: AuthLoginRequestSchema) {
     const http = yield* Http;
@@ -28,11 +24,6 @@ export const authApi = {
     );
   }),
 
-  /**
-   * @description Exchange a refresh token for a new token pair. Send it on an
-   * `Http` without the Session (`Http.layerWithoutSession`): the Access Token
-   * that this request replaces was already rejected.
-   */
   refresh: Effect.fn("authApi.refresh")(function* (
     json: AuthRefreshRequestSchema
   ) {

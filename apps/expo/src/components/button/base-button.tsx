@@ -2,9 +2,6 @@ import { Button, styled } from "tamagui";
 
 const BORDER_COLOR_PRESS = "$borderColorPress";
 
-/**
- * includes `bg`, `color`, `pressStyle.bg`, `pressStyle.borderColor`
- */
 const _baseButtonVariants = {
   disabled: {
     true: {
@@ -15,7 +12,7 @@ const _baseButtonVariants = {
     },
   },
   preset: {
-    default: {}, // unstyled
+    default: {},
     error: {
       bg: "$red5",
       color: "$red11",
@@ -86,6 +83,5 @@ const _baseButtonVariants = {
 
 export const BaseButton = styled(Button, {
   name: "BaseButton",
-  // variants: baseButtonVariants,
   defaultVariants: {},
 });

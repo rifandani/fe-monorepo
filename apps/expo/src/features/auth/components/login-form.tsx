@@ -47,7 +47,6 @@ interface LoginFormValues {
   username: string;
 }
 
-/** One labelled text input of the login form, wired to react-hook-form. */
 const LoginTextField = ({
   control,
   name,
@@ -108,7 +107,6 @@ export const LoginForm = () => {
     resolver: effectTsResolver(authLoginRequestSchema),
   });
 
-  // The login starts the Session; `Stack.Protected` then leaves this screen.
   const loginMutation = useAuthLogin();
 
   return (

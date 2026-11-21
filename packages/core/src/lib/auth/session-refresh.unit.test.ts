@@ -8,8 +8,6 @@ import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 
-// Helpers
-
 const refreshUrl = `${MOCK_API_BASE_URL}/auth/refresh`;
 
 const TestSessionRefresh = sessionRefreshLayer({
@@ -32,7 +30,6 @@ describe("sessionRefreshLayer", () => {
     "should post the refresh token without an Access Token and decode the new pair",
     () =>
       Effect.gen(function* () {
-        // Arrange
         let body: unknown;
         let authorization: string | null = "unset";
         server.use(
@@ -47,10 +44,8 @@ describe("sessionRefreshLayer", () => {
           })
         );
 
-        // Act
         const pair = yield* refresh("ada-refresh");
 
-        // Assert
         expect(body).toEqual({ refreshToken: "ada-refresh" });
         expect(authorization).toBeNull();
         expect(pair).toEqual({
@@ -62,13 +57,10 @@ describe("sessionRefreshLayer", () => {
 
   it.effect("should report a 403 as a refused refresh token", () =>
     Effect.gen(function* () {
-      // Arrange
       respondWithStatus(403);
 
-      // Act
       const error = yield* Effect.flip(refresh("expired"));
 
-      // Assert
       expect(error).toMatchObject({
         _tag: "SessionRefreshError",
         reason: "Rejected",
@@ -80,13 +72,10 @@ describe("sessionRefreshLayer", () => {
     "should report a response that breaks the schema as a failed refresh",
     () =>
       Effect.gen(function* () {
-        // Arrange
         server.use(http.post(refreshUrl, () => HttpResponse.json({})));
 
-        // Act
         const error = yield* Effect.flip(refresh("ada-refresh"));
 
-        // Assert
         expect(error).toMatchObject({ reason: "Failed" });
       })
   );
@@ -94,15 +83,12 @@ describe("sessionRefreshLayer", () => {
   test.prop([errorStatusArb(401, 403)], ioPropertyParameters())(
     "should never end the Session for an error status other than 401 and 403",
     async (status) => {
-      // Arrange
       respondWithStatus(status);
 
-      // Act
       const error = await Effect.runPromise(
         Effect.flip(refresh("ada-refresh"))
       );
 
-      // Assert
       expect(error).toMatchObject({ reason: "Failed" });
     }
   );

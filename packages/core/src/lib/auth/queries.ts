@@ -16,22 +16,8 @@ export const authKeys = {
     [...authKeys.all, "login", ...(params ? [params] : [])] as const,
 };
 
-/** @description Every failure of a login: an `HttpError` or a `SchemaError`. */
 export type AuthLoginError = Effect.Error<ReturnType<typeof authApi.login>>;
 
-/**
- * @description The login mutation: the login request, then Session Start, as
- * one Effect. Session Start belongs to the login itself, so no screen can
- * forget it.
- *
- * Takes any app runtime that provides `Http` and `Session`.
- *
- * @example
- *
- * ```ts
- * const login = useMutation(authLoginMutationOptions(appRuntime));
- * ```
- */
 export const authLoginMutationOptions = (
   runtime: ManagedRuntime.ManagedRuntime<Http | Session, unknown>
 ) =>

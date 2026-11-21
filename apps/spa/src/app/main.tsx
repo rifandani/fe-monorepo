@@ -23,7 +23,6 @@ if (!(root instanceof HTMLElement)) {
   );
 }
 
-/** Record a React root error as a failed span, without blocking React. */
 const reportRootError = (name: string, error: ReportedError) => {
   appRuntime.runFork(recordException(name, error));
 };

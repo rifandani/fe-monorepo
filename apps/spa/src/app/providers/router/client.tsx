@@ -16,7 +16,6 @@ import { recordException, toReportedError } from "@/utils/telemetry";
 import { routeTree } from "../../routeTree.gen";
 import { sessionGate } from "./session-gate";
 
-// Register the router instance for type safety
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
@@ -42,24 +41,19 @@ const ErrorRoute = ({ reset, error, info }: ErrorComponentProps) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
-        {/* Hero Section */}
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">4xx</h1>
           <h2 className="text-2xl font-semibold">Oops!</h2>
           <p className="text-muted-foreground">Something went wrong</p>
         </div>
 
-        {/* Quick Actions */}
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button
             intent="primary"
             className="flex items-center"
-            onClick={
-              // Attempt to recover by trying to re-render the segment
-              () => {
-                reset();
-              }
-            }
+            onClick={() => {
+              reset();
+            }}
           >
             Try again
           </Button>
@@ -76,14 +70,12 @@ const NotFoundRoute = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-8 text-center">
-        {/* Hero Section */}
         <div className="space-y-4">
           <h1 className="text-primary text-8xl font-bold">404</h1>
           <h2 className="text-2xl font-semibold">{t("notFound")}</h2>
           <p className="text-muted-foreground">{t("gone")}</p>
         </div>
 
-        {/* Quick Actions */}
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Link href={user ? "/" : "/login"} className="flex items-center">
             {t("backTo", {
@@ -96,7 +88,6 @@ const NotFoundRoute = () => {
   );
 };
 
-// Create a new router instance
 export const router = createRouter({
   routeTree,
   defaultOnCatch: (error, errorInfo) => {
@@ -114,11 +105,7 @@ export const router = createRouter({
     queryClient,
   },
   defaultPreload: "intent",
-  // Since we're using React Query, we don't want loader calls to ever be stale
-  // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
 });
 
-// The guards run on a navigation only. Reload the router when the Session
-// appears or disappears (a login, a sign-out, a 401), so they run again.
 sessionGate.watch(router);

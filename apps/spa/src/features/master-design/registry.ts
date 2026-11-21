@@ -87,10 +87,6 @@ import { TreeShowcase } from "./showcases/tree";
 import { VisuallyHiddenShowcase } from "./showcases/visually-hidden";
 import type { Category } from "./types";
 
-/**
- * Source of truth for the Component Catalog: drives the nav, the section
- * anchors, and the page order. Add a Component Entry here to surface it.
- */
 export const categories: Category[] = [
   {
     id: "foundation",
@@ -325,7 +321,6 @@ export const categories: Category[] = [
   },
 ];
 
-/** Flat list of every entry id, in page order (used to seed the scroll spy). */
 export const entryIds: string[] = categories.flatMap((category) =>
   category.entries.map((entry) => entry.id)
 );

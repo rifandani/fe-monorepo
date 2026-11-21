@@ -4,16 +4,11 @@ import { format, isValid, parseISO } from "date-fns";
 import { enUS, id } from "date-fns/locale";
 import type { Locale as DateFnsLocale } from "date-fns/locale";
 
-/** The `date-fns` locale of each Locale; a new Locale fails to compile here. */
 const dateFnsLocales: Record<Locale, DateFnsLocale> = {
   "en-us": enUS,
   "id-id": id,
 };
 
-/**
- * Formats an ISO / Date-parseable string for display (e.g. user `birthDate`).
- * Falls back to the raw string when parsing fails.
- */
 export const formatDisplayDate = (
   value: string,
   locale: Locale = defaultLocale
