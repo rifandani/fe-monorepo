@@ -69,9 +69,6 @@ const resolveNetworkArgs = (url: URL): string[] => {
   return [];
 };
 
-const platformArgs =
-  process.arch === "arm64" ? ["--platform", "linux/amd64"] : [];
-
 mkdirSync(REPORT_DIR, { recursive: true });
 
 chmodSync(REPORT_DIR, 0o777);
@@ -79,7 +76,6 @@ chmodSync(REPORT_DIR, 0o777);
 const args = [
   "run",
   "--rm",
-  ...platformArgs,
   ...resolveNetworkArgs(targetUrl),
   "-e",
   `ZAP_TARGET=${target}`,
