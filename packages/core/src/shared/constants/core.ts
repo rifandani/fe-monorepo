@@ -2,7 +2,6 @@ export type Theme = "system" | "light" | "dark";
 
 export const themes: Theme[] = ["system", "light", "dark"];
 
-// object version of `themes`
 export const modes = {
   system: "system",
   light: "light",

@@ -14,11 +14,6 @@ import { ReloadPromptSw } from "@/providers/reload-prompt-sw";
 import { AppToastProvider } from "@/providers/toast/provider";
 import { TRACER_REACT_ENTRY } from "@/shared/constants/global";
 
-/**
- * Sole owner of the color-mode class on `<html>`. Everywhere else reads the
- * picked theme from `themeAtom`. `system` has no class of its own: it borrows
- * whichever one the system prefers.
- */
 const ThemeClass = () => {
   const theme = useAtomValue(persistence.themeAtom);
   const preferredDark = usePreferredDark();
@@ -47,10 +42,8 @@ export const Entry = () => (
                   name={TRACER_REACT_ENTRY}
                   fallback={<Loader className="size-4.5" variant="spin" />}
                 >
-                  {/* Router entry point */}
                   <AppRouterProvider />
 
-                  {/* PWA */}
                   <ReloadPromptSw />
                 </Suspense>
               </AppToastProvider>

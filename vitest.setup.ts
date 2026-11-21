@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
 import { resetTestEnv, testEnv } from "./vitest.env-mock";
-// Global fast-check settings and the Replay Line reporter (ADR-0009).
 import "./vitest.fast-check";
 
 const createMemoryStorage = (): Storage => {
@@ -46,14 +45,9 @@ beforeEach(() => {
   resetTestEnv();
   localStorageMock.clear();
   sessionStorageMock.clear();
-  // Keep process.env.NODE_ENV aligned for modules that read it at call time
-  // via process.env (not the testEnv bag).
   vi.stubEnv("NODE_ENV", testEnv.get("NODE_ENV") ?? "test");
 });
 
 afterEach(() => {
-  // Do not call `vi.restoreAllMocks()` here. With `pool: "threads"` and
-  // `isolate: false`, files in a worker share hoisted `vi.mock` state; restoring
-  // after one file clears call history module-init tests in another.
   vi.unstubAllEnvs();
 });

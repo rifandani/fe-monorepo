@@ -7,27 +7,9 @@ import { queryClient } from "@/providers/query/client";
 
 import { worker } from "./network";
 
-/**
- * The lifecycle and the failure guards of every Route Test. It is a setup file,
- * not an opt-in fixture, so no test can forget it.
- *
- * A test fails on its own when, during it:
- *
- * 1. the app sends a request that leaves the test server and that no handler
- *    answers (the real API is never reached), or
- * 2. anything calls `console.error`.
- *
- * Uncaught errors and unhandled rejections already fail the run in Vitest.
- * Each message names the exact request or error, so the cause is in the report.
- */
-
 const unhandledRequests: string[] = [];
 const consoleErrors: string[] = [];
 
-/**
- * `console.error` calls that are expected and harmless. Add an entry only with a
- * reason, and match it as narrowly as possible.
- */
 const allowedConsoleErrors: readonly RegExp[] = [];
 
 const toText = (args: readonly unknown[]) =>
@@ -47,8 +29,6 @@ beforeAll(async () => {
 
       const { request } = frame.data;
 
-      // Same-origin requests are the test server's own: Vite modules, chunks,
-      // assets. Only a request that leaves it is "the network".
       if (new URL(request.url).origin !== globalThis.location.origin) {
         unhandledRequests.push(`${request.method} ${request.url}`);
       }
@@ -71,13 +51,10 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  // Unmount first, so no route reacts to the resets below.
   await cleanup();
 
   queryClient.clear();
   localStorage.clear();
-  // Each persisted atom caches its value: read it again from the now-empty
-  // storage, so the next test starts with the defaults.
   persistence.registry.refresh(persistence.sessionAtom);
   persistence.registry.refresh(persistence.themeAtom);
   persistence.registry.refresh(persistence.localeAtom);

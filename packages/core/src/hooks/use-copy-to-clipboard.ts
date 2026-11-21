@@ -7,20 +7,11 @@ export interface UseCopyToClipboardProps {
   timeout?: number;
 }
 
-/**
- * Hook to copy text to clipboard
- *
- * @example
- * ```tsx
- * const { isCopied, copyToClipboard } = useCopyToClipboard();
- * ```
- */
 export const useCopyToClipboard = ({
   timeout = 1000,
 }: UseCopyToClipboardProps = {}) => {
   const [isCopied, setIsCopied] = useState(false);
   const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Cleanup timeout on unmount to prevent memory leaks
   useEffect(
     () => () => {
       if (timeoutIdRef.current) {
@@ -35,7 +26,6 @@ export const useCopyToClipboard = ({
       return;
     }
 
-    // Clear any existing timeout
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
     }

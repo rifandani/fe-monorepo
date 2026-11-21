@@ -23,6 +23,4 @@ export const FitSheet = ({ state, setState, children }: FitSheetProps) => (
 
 FitSheet.Item = YGroup.Item;
 
-// `YGroup`'s `separator` prop is deprecated, so callers put separators
-// between the items.
 FitSheet.Separator = Separator;

@@ -5,10 +5,8 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import { useTranslation } from "@/providers/i18n/context";
 import { isOffline, resolveSwPrompt } from "@/utils/sw";
 
-/** How often to poll the server for a new service worker. */
 const UPDATE_CHECK_PERIOD_MS = 60 * 60 * 1000;
 
-/** Fetch the service worker script, and update the registration when it changed. */
 const checkForSwUpdate = async (
   swUrl: string,
   r: ServiceWorkerRegistration
@@ -50,7 +48,6 @@ const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
   }, UPDATE_CHECK_PERIOD_MS);
 };
 
-/** Run `run` once this worker reaches the `activated` state. */
 const whenActivated = (sw: ServiceWorker | null, run: () => void) => {
   sw?.addEventListener("statechange", () => {
     if (sw.state === "activated") {
@@ -59,10 +56,6 @@ const whenActivated = (sw: ServiceWorker | null, run: () => void) => {
   });
 };
 
-/**
- * Run `run` as soon as the registration has an active worker — immediately if
- * it already does, otherwise when the installing one activates.
- */
 const onSwActivated = (
   r: ServiceWorkerRegistration | undefined,
   run: (registration: ServiceWorkerRegistration) => void
@@ -103,12 +96,10 @@ export const ReloadPromptSw = () => {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
-    // immediate: true,
     onRegisteredSW,
     onRegisterError,
   });
 
-  // listens to reload prompt SW
   useEffect(() => {
     const prompt = resolveSwPrompt({ needRefresh, offlineReady });
 
@@ -118,7 +109,7 @@ export const ReloadPromptSw = () => {
 
     toast(t(prompt.messageKey), {
       closeButton: true,
-      duration: 60 * 1000, // 1 minute
+      duration: 60 * 1000,
       onDismiss: () => {
         setOfflineReady(false);
         setNeedRefresh(false);

@@ -19,10 +19,6 @@ export const userKeys = {
   lists: () => [...userKeys.all, "list"] as const,
 };
 
-/**
- * @description One user's detail. Skipped until `params` is known. The query's
- * `signal` interrupts the Effect, which aborts the underlying fetch.
- */
 export const userDetailQueryOptions = (
   runtime: ManagedRuntime.ManagedRuntime<Http, unknown>,
   params?: GetUserApiRequestSchema

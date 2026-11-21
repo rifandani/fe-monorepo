@@ -5,9 +5,7 @@ export type FeatureFlagId = (typeof featureFlagIds)[number];
 export interface FeatureFlagDefinition {
   id: FeatureFlagId;
   label: string;
-  /** Sticky group heading in the Feature Flags panel (shown UPPERCASE). */
   section: string;
-  /** Default when running in development and no override is stored. */
   defaultEnabled: boolean;
 }
 

@@ -30,19 +30,11 @@ export const authLoginResponseSchema = Schema.Struct({
   username: Schema.String,
 });
 
-/**
- * @description The body of a token refresh. `expiresInMins` is the lifetime of
- * the new Access Token, as in the login.
- */
 export const authRefreshRequestSchema = Schema.Struct({
   expiresInMins: Schema.optionalKey(Schema.Finite),
   refreshToken: Schema.String,
 });
 
-/**
- * @description The new token pair of a token refresh. The refresh token rotates
- * too, so both replace the ones in the Session.
- */
 export const authRefreshResponseSchema = Schema.Struct({
   accessToken: Schema.String,
   refreshToken: Schema.String,

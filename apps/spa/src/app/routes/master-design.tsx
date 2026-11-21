@@ -3,8 +3,6 @@ import { lazy } from "react";
 
 import { isFeatureEnabled } from "@/lib/feature-flags/is-enabled";
 
-// Keep this route module free of catalog/UI imports so routeTree's static
-// import cannot pull Intent UI into the main chunk (PWA 2 MiB precache limit).
 const MasterDesignPage = lazy(async () => {
   const m = await import("@/features/master-design/catalog-page");
 
@@ -13,7 +11,6 @@ const MasterDesignPage = lazy(async () => {
 
 export const Route = createFileRoute("/master-design")({
   beforeLoad: () => {
-    // Gated by the `componentCatalog` Feature Flag (ON by default in DEV only).
     if (!isFeatureEnabled("componentCatalog")) {
       throw notFound();
     }

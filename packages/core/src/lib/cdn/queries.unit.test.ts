@@ -15,8 +15,6 @@ import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
-// Helpers
-
 const fileUrl = "https://cdn.example.com/a.png";
 const key = cdnValidKeys.getArticleCoverImage;
 
@@ -30,10 +28,8 @@ const serveFile = () => {
 
 describe("cdnKeys", () => {
   it("should nest the article cover image key under the article key", () => {
-    // Act
     const queryKey = cdnKeys.getArticleCoverImage("https://cdn/x.png");
 
-    // Assert
     expect(cdnKeys.all).toEqual(["cdn"]);
     expect(cdnKeys.article()).toEqual(["cdn", "article"]);
     expect(queryKey).toEqual(["cdn", "article", "https://cdn/x.png"]);
@@ -42,28 +38,22 @@ describe("cdnKeys", () => {
 
 describe("cdnFileQueryOptions", () => {
   it("should skip the query while the URL is missing or empty", () => {
-    // Arrange
     const runtime = ManagedRuntime.make(FetchHttpClient.layer);
 
-    // Act
     const missing = cdnFileQueryOptions(runtime, { key });
     const empty = cdnFileQueryOptions(runtime, { key, url: "" });
 
-    // Assert
     expect(missing.queryFn).toBe(skipToken);
     expect(empty.queryFn).toBe(skipToken);
   });
 
   it("should download the file under its key", async () => {
-    // Arrange
     serveFile();
     const runtime = ManagedRuntime.make(FetchHttpClient.layer);
     const options = cdnFileQueryOptions(runtime, { key, url: fileUrl });
 
-    // Act
     const file = await new QueryClient().query(options);
 
-    // Assert
     expect(options.queryKey).toEqual(["cdn", "article", fileUrl]);
     expect(file.headers["content-type"]).toBe("image/png");
     expect(await file.blob.text()).toBe("img");
@@ -73,7 +63,6 @@ describe("cdnFileQueryOptions", () => {
 
 describe("cdnFileMutationOptions", () => {
   it("should download the URL given to mutate", async () => {
-    // Arrange
     serveFile();
     const runtime = ManagedRuntime.make(FetchHttpClient.layer);
 
@@ -82,10 +71,8 @@ describe("cdnFileMutationOptions", () => {
       cdnFileMutationOptions(runtime, { key })
     );
 
-    // Act
     const file = await observer.mutate(fileUrl);
 
-    // Assert
     expect(observer.options.mutationKey).toEqual(["cdn", "article", undefined]);
     expect(await file.blob.text()).toBe("img");
     await runtime.dispose();

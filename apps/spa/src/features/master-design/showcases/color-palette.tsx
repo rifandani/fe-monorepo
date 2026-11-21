@@ -6,7 +6,6 @@ import { Variant, VariantGrid } from "../variant";
 
 interface Swatch {
   name: string;
-  /** Tailwind bg utility mapped from `@theme` in globals.css */
   bg: string;
 }
 
@@ -26,7 +25,6 @@ interface Rgba {
   a: number;
 }
 
-/** Resolve any CSS color to RGBA by painting one pixel (handles oklch/oklab). */
 const cssColorToRgba = (color: string): Rgba | null => {
   const canvas = document.createElement("canvas");
   canvas.width = 1;
@@ -37,7 +35,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
     return null;
   }
 
-  // Sentinel: if `color` is rejected, fillStyle stays on this value.
   ctx.fillStyle = "rgba(1, 2, 3, 1)";
   const sentinel = ctx.fillStyle;
   ctx.fillStyle = color;
@@ -48,7 +45,6 @@ const cssColorToRgba = (color: string): Rgba | null => {
 
   ctx.clearRect(0, 0, 1, 1);
   ctx.fillRect(0, 0, 1, 1);
-  // 1×1 getImageData always yields RGBA; index via ?? for noUncheckedIndexedAccess.
   const pixel = ctx.getImageData(0, 0, 1, 1).data;
 
   return {
@@ -180,7 +176,6 @@ const SwatchTile = ({ name, bg }: Swatch) => {
 
     update();
 
-    // ThemeToggle flips `.dark` on <html>; re-read tokens when that changes.
     const observer = new MutationObserver(update);
     observer.observe(document.documentElement, {
       attributeFilter: ["class"],

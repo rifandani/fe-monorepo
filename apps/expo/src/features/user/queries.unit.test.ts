@@ -10,8 +10,6 @@ import { describe, expect, it } from "vitest";
 import { userDetailQueryOptions, userKeys } from "@/features/user/queries";
 import type { GetUserApiResponseSchema } from "@/features/user/schemas";
 
-// Helpers
-
 const makeRuntime = () =>
   ManagedRuntime.make(
     Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
@@ -41,14 +39,12 @@ const ada: GetUserApiResponseSchema = {
 
 describe("userKeys", () => {
   it("should build the list keys without and with params", () => {
-    // Act
     const keys = [
       userKeys.lists(),
       userKeys.list(),
       userKeys.list({ limit: 10 }),
     ];
 
-    // Assert
     expect(userKeys.all).toEqual(["users"]);
     expect(keys).toEqual([
       ["users", "list"],
@@ -58,14 +54,12 @@ describe("userKeys", () => {
   });
 
   it("should build the detail keys without and with params", () => {
-    // Act
     const keys = [
       userKeys.details(),
       userKeys.detail(),
       userKeys.detail({ id: 1 }),
     ];
 
-    // Assert
     expect(keys).toEqual([
       ["users", "detail"],
       ["users", "detail"],
@@ -76,25 +70,20 @@ describe("userKeys", () => {
 
 describe("userDetailQueryOptions", () => {
   it("should skip the query until the id is known", () => {
-    // Act
     const options = userDetailQueryOptions(makeRuntime());
 
-    // Assert
     expect(options.queryFn).toBe(skipToken);
   });
 
   it("should fetch the detail under its key", async () => {
-    // Arrange
     server.use(
       http.get(`${MOCK_API_BASE_URL}/users/:id`, () => HttpResponse.json(ada))
     );
     const runtime = makeRuntime();
     const options = userDetailQueryOptions(runtime, { id: 1 });
 
-    // Act
     const user = await new QueryClient().query(options);
 
-    // Assert
     expect(options.queryKey).toEqual(["users", "detail", { id: 1 }]);
     expect(user).toEqual(ada);
     await runtime.dispose();

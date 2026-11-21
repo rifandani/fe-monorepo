@@ -26,14 +26,12 @@ const applyFlagChange = (mutate: () => void): void => {
   void router.invalidate();
 };
 
-/** camelCase / PascalCase → kebab-case for display. */
 const toKebab = (id: string): string =>
   id
     .replaceAll(/(?<lower>[a-z0-9])(?<upper>[A-Z])/gu, "$<lower>-$<upper>")
     .replaceAll("_", "-")
     .toLowerCase();
 
-/** Subsequence match — `/ fuzzy filter` in the panel. */
 const fuzzyMatch = (query: string, ...haystacks: string[]): boolean => {
   const q = query.trim().toLowerCase();
 
@@ -199,7 +197,6 @@ const FlagSwitch = ({
 const FeatureFlagRow = ({ flag }: { flag: FeatureFlagDefinition }) => {
   const { id, label, defaultEnabled } = flag;
 
-  // Subscribe to the override itself, so flipping it re-renders this row.
   const override = useAtomValue(
     featureFlagOverridesAtom,
     (overrides) => overrides[id]
@@ -254,8 +251,6 @@ export const FeatureFlagsPanel = () => {
 
   const sections = groupBySection(filteredFlags);
 
-  // TanStack `pluginsTabContent` forces `width/height: 100%` on `& > *` and
-  // `& > * > *`. One extra wrapper keeps header/filter/list from each stretching.
   return (
     <div
       data-feature-flag-store={featureFlagStoreName}

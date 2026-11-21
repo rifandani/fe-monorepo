@@ -21,13 +21,8 @@ export const cdnKeys = {
     [...cdnKeys.article(), url] as const,
 };
 
-/** @description An app runtime that can reach any URL. */
 type CdnRuntime = ManagedRuntime.ManagedRuntime<HttpClient.HttpClient, unknown>;
 
-/**
- * @description Download one CDN file. Skipped while `url` is empty. The query's
- * `signal` interrupts the Effect, which aborts the underlying fetch.
- */
 export const cdnFileQueryOptions = (
   runtime: CdnRuntime,
   { key, url }: { key: CdnValidKeys; url?: string | undefined }
@@ -46,7 +41,6 @@ export const cdnFileQueryOptions = (
             await runtime.runPromise(cdnApi.getCdnFile({ url }), { signal }),
   });
 
-/** @description Download a CDN file on demand; the variable is its URL. */
 export const cdnFileMutationOptions = (
   runtime: CdnRuntime,
   { key, url }: { key: CdnValidKeys; url?: string | undefined }

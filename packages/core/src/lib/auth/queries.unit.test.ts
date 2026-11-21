@@ -14,8 +14,6 @@ import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
-// Helpers
-
 const loginUrl = `${MOCK_API_BASE_URL}/auth/login`;
 
 const adaSession: AuthLoginResponseSchema = {
@@ -32,7 +30,6 @@ const adaSession: AuthLoginResponseSchema = {
 
 const adaCredentials = { password: "secret1", username: "ada" };
 
-/** A runtime like an app's: `Http` plus an in-memory `Session`. */
 const makeRuntime = () =>
   ManagedRuntime.make(
     Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
@@ -46,11 +43,9 @@ const loginObserver = (runtime: ReturnType<typeof makeRuntime>) =>
 
 describe("authKeys", () => {
   it("should build the login key without and with params", () => {
-    // Act
     const withoutParams = authKeys.login();
     const withParams = authKeys.login(adaCredentials);
 
-    // Assert
     expect(authKeys.all).toEqual(["auth"]);
     expect(withoutParams).toEqual(["auth", "login"]);
     expect(withParams).toEqual(["auth", "login", adaCredentials]);
@@ -59,15 +54,12 @@ describe("authKeys", () => {
 
 describe("authLoginMutationOptions", () => {
   it("should log in and start the Session in one mutation", async () => {
-    // Arrange
     server.use(http.post(loginUrl, () => HttpResponse.json(adaSession)));
     const runtime = makeRuntime();
     const observer = loginObserver(runtime);
 
-    // Act
     const user = await observer.mutate(adaCredentials);
 
-    // Assert
     const token = await runtime.runPromise(currentAccessToken);
     expect(observer.options.mutationKey).toEqual(["auth", "login"]);
     expect(user).toEqual(adaSession);
@@ -76,7 +68,6 @@ describe("authLoginMutationOptions", () => {
   });
 
   it("should start no Session when the login fails", async () => {
-    // Arrange
     server.use(
       http.post(loginUrl, () =>
         HttpResponse.json({ message: "Invalid credentials" }, { status: 400 })
@@ -85,10 +76,8 @@ describe("authLoginMutationOptions", () => {
     const runtime = makeRuntime();
     const observer = loginObserver(runtime);
 
-    // Act
     const mutation = observer.mutate(adaCredentials);
 
-    // Assert
     await expect(mutation).rejects.toMatchObject({
       _tag: "HttpResponseError",
       status: 400,
@@ -101,35 +90,28 @@ describe("authLoginMutationOptions", () => {
   test.prop([signedInSessionArb], ioPropertyParameters())(
     "should always start the Session that the server returned",
     async (session) => {
-      // Arrange
       server.use(http.post(loginUrl, () => HttpResponse.json(session)));
       const runtime = makeRuntime();
 
-      // Act
       await loginObserver(runtime).mutate(adaCredentials);
 
-      // Assert
       const token = await runtime.runPromise(currentAccessToken);
       expect(token).toEqual(Option.some(session.accessToken));
       await runtime.dispose();
     }
   );
 
-  // `fetch` turns a 407 into a network error, so it never reaches `Http` as a response.
   test.prop(
     [fc.integer({ min: 400, max: 599 }).filter((s) => s !== 407)],
     ioPropertyParameters()
   )("should never start a Session when the login fails", async (status) => {
-    // Arrange
     server.use(http.post(loginUrl, () => new HttpResponse(null, { status })));
     const runtime = makeRuntime();
 
-    // Act
     await loginObserver(runtime)
       .mutate(adaCredentials)
       .catch(() => {});
 
-    // Assert
     const token = await runtime.runPromise(currentAccessToken);
     expect(Option.isNone(token)).toBe(true);
     await runtime.dispose();

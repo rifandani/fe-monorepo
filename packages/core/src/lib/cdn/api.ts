@@ -5,10 +5,6 @@ import type {
 import { Effect } from "effect";
 import { HttpClient } from "effect/http";
 
-/**
- * @description CDN files live at absolute URLs outside the API, so these use the
- * plain transport `HttpClient` — no base URL and no Session.
- */
 export const cdnApi = {
   getCdnFile: Effect.fn("cdnApi.getCdnFile")(function* ({
     url,
@@ -23,10 +19,6 @@ export const cdnApi = {
   }),
 } as const;
 
-/**
- * Wrap a downloaded CDN blob in a `File` so callers get a name and a mtime,
- * or `null` while the download has not resolved.
- */
 export const toCdnFile = (blob?: Blob, filename?: string) =>
   blob
     ? new File([blob], filename ?? "unknown-filename", {

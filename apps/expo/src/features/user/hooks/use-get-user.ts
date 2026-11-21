@@ -17,7 +17,6 @@ import type {
 import { appRuntime } from "@/lib/layers/runtime";
 import type { ToastCustomData } from "@/utils/toast";
 
-/** One user's detail, plus this app's error toast. */
 export const useGetUser = (
   params?: GetUserApiRequestSchema,
   options?: Except<

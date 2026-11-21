@@ -49,7 +49,6 @@ const NAV_FONTS = Platform.select({
   },
 }) satisfies Theme["fonts"];
 
-/** Maps the active tamagui theme onto a react-navigation theme. */
 const buildNavigationTheme = (
   tamaguiTheme: ReturnType<typeof useTheme>,
   dark: boolean
@@ -103,7 +102,6 @@ export const AppTamaguiProvider = ({
       disableInjectCSS
       config={config}
       defaultTheme={Match.value(theme).pipe(
-        // `useColorScheme` can be null before the first read.
         Match.when("system", () => scheme ?? "light"),
         Match.orElse((picked) => picked)
       )}

@@ -1,19 +1,4 @@
 #!/usr/bin/env node
-/**
- * Updates the vendored repositories under `repos/` to the tip of their
- * upstream branch, as `git subtree --squash` copies.
- *
- * Usage: bun scripts/update-vendored-repos.ts [name...]   (or bun repos:update)
- *   name   one or more keys of REPOS (default: all of them)
- *
- * Each repository gets one squash commit and one merge commit. A directory
- * that is plain files and not yet a subtree is first removed in its own
- * commit, because `git subtree add` refuses a prefix that exists.
- *
- * The upstream commit is resolved with `git ls-remote` and fetched by hash.
- * Never read it from FETCH_HEAD: when a fetch fails, FETCH_HEAD still holds
- * whatever was fetched last, and `git subtree` would vendor that instead.
- */
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
 import path from "node:path";
@@ -25,7 +10,6 @@ interface VendoredRepo {
 
 const REPOS = {
   effect: { url: "https://github.com/Effect-TS/effect.git", branch: "main" },
-  // XState v6 is on `next` until it is stable; `main` is still v5.
   xstate: { url: "https://github.com/statelyai/xstate.git", branch: "next" },
 } satisfies Record<string, VendoredRepo>;
 
@@ -33,14 +17,11 @@ type RepoName = keyof typeof REPOS;
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..");
 
-// The type annotation sits on the const and not on the arrow: that is what
-// makes TypeScript narrow after a call to it.
 const fail: (message: string) => never = (message) => {
   console.error(`repos:update: ${message}`);
   process.exit(1);
 };
 
-/** Runs git and returns trimmed stdout, or null on a non-zero exit. */
 const tryGit = (args: string[]): string | null => {
   const result = spawnSync("git", args, {
     cwd: REPO_ROOT,
@@ -54,7 +35,6 @@ const tryGit = (args: string[]): string | null => {
 const git = (args: string[]): string =>
   tryGit(args) ?? fail(`git ${args.join(" ")} failed`);
 
-/** Runs git with its output shown, for the slow or noisy steps. */
 const gitLoud = (args: string[]): void => {
   const result = spawnSync("git", args, { cwd: REPO_ROOT, stdio: "inherit" });
 
@@ -83,11 +63,6 @@ const resolveUpstream = ({ url, branch }: VendoredRepo): string => {
 const isTracked = (prefix: string): boolean =>
   git(["ls-files", "--", prefix]) !== "";
 
-/**
- * The upstream commit the last squash vendored, or null if the prefix is not
- * a subtree on this branch. A squash-merged pull request drops the subtree
- * commits, so a plain copy can follow a subtree in history.
- */
 const currentSplit = (prefix: string): string | null => {
   if (!isTracked(prefix)) {
     return null;
@@ -116,7 +91,6 @@ const fetchCommit = (repo: VendoredRepo, target: string): void => {
   }
 };
 
-/** Clears the prefix for `git subtree add`, if it is not a subtree yet. */
 const removePlainCopy = (prefix: string): void => {
   if (isTracked(prefix)) {
     console.log(`${prefix}: not a subtree yet, removing the plain copy`);
@@ -130,8 +104,6 @@ const removePlainCopy = (prefix: string): void => {
     ]);
   }
 
-  // Ignored files (an editor's .vscode/, for example) survive `git rm` and
-  // make `git subtree add` refuse the prefix.
   rmSync(path.join(REPO_ROOT, prefix), { recursive: true, force: true });
 };
 

@@ -8,15 +8,6 @@ import { useState } from "react";
 
 const COPIED_RESET_MS = 2000;
 
-/**
- * Writes text to the clipboard via `@reactuses/core`, adding a short-lived
- * `copied` flag for UI feedback.
- *
- * The flag resets itself after {@link COPIED_RESET_MS}; `useTimeoutFn` clears
- * the pending timer on unmount.
- *
- * @returns `copied` feedback flag and a `copy` function resolving to whether the write succeeded
- */
 export const useClipboard = () => {
   const [, copyToClipboard] = useClipboardBase();
   const [copied, setCopied] = useState(false);

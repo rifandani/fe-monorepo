@@ -10,9 +10,7 @@ import { buildSeoMetadata, ldParams } from "@/utils/seo";
 
 export const useSeo = (params: SeoMetaInput) => {
   const { description, metadata, title } = buildSeoMetadata(params);
-  // create SEO meta tags
   useSeoMeta(metadata);
-  // create schema.org JSON-LD <script>
   useSchemaOrg([
     defineWebSite({ ...ldParams, description, title }),
     defineWebPage({ ...ldParams, description, title }),

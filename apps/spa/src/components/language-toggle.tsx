@@ -32,7 +32,6 @@ export const LanguageToggle = () => {
         selectionMode="single"
         selectedKeys={new Set([locale])}
         onSelectionChange={(selection) => {
-          // `selectionMode="single"` rules out the "all" sentinel.
           const [key] = selection === "all" ? [] : selection;
 
           if (isLocale(key)) {

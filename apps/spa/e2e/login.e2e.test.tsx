@@ -9,7 +9,6 @@ import { currentPath, renderRoute } from "./support/render-route";
 const invalidUsername = "km";
 const invalidPassword = "0lelp";
 
-// Valid for the form, but the API refuses them.
 const wrongUsername = "1emilys";
 const wrongPassword = "1emilyspass";
 
@@ -55,7 +54,6 @@ describe("login route", () => {
       submitButton,
     } = loginForm();
 
-    // default form state
     await expect.element(usernameInput).toBeVisible();
     await expect.element(passwordInput).toBeVisible();
     await expect.element(usernameAlert).not.toBeInTheDocument();
@@ -89,7 +87,6 @@ describe("login route", () => {
 
     const mutationError = page.getByTestId("mutation-error");
 
-    // default form state
     await expect.element(usernameInput).toBeVisible();
     await expect.element(passwordInput).toBeVisible();
     await expect.element(usernameAlert).not.toBeInTheDocument();
@@ -97,14 +94,12 @@ describe("login route", () => {
     await expect.element(mutationError).not.toBeInTheDocument();
     await expect.element(submitButton).toBeVisible();
 
-    // values the form refuses
     await usernameInput.fill(invalidUsername);
     await passwordInput.fill(invalidPassword);
     await expect.element(usernameAlert).toBeVisible();
     await expect.element(passwordAlert).toBeVisible();
     await expect.element(submitButton).toBeDisabled();
 
-    // values the form accepts, but the API refuses
     await usernameInput.fill(wrongUsername);
     await passwordInput.fill(wrongPassword);
     await expect.element(usernameAlert).not.toBeInTheDocument();

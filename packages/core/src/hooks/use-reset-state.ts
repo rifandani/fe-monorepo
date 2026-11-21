@@ -3,9 +3,6 @@ import { useState } from "react";
 
 type ResetState = () => void;
 
-/**
- * `useResetState` works similar to `React.useState`, it provides a `reset` method
- */
 export const useResetState = <S>(
   initialState: S | (() => S)
 ): [S, Dispatch<SetStateAction<S>>, ResetState] => {

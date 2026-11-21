@@ -1,7 +1,6 @@
 import type { LanguageMessages } from "@workspace/core/i18n/init";
 
 export default {
-  // #region COMMON
   locale: "id-ID",
   backTo: "Kembali ke halaman {target}",
   errorMinLength: "{field} harus memiliki minimal {length} karakter",
@@ -34,8 +33,6 @@ export default {
   downloadAndInstallUpdate: "Unduh dan instal pembaruan",
   rememberMe: "Ingat saya",
   appName: "Aplikasi Expo",
-  // #endregion COMMON
-  // #region AUTH
   username: "Username",
   usernamePlaceholder: "Username anda...",
   password: "Password",
@@ -49,8 +46,5 @@ export default {
   welcome: "Selamat Datang Kembali",
   noAccount: "Tidak punya akun?",
   registerHere: "Daftar disini",
-  // #endregion AUTH
-  // #region HOME
   title: "Beranda",
-  // #endregion HOME
 } as const satisfies LanguageMessages;

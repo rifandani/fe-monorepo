@@ -22,7 +22,6 @@ const isTheme = (key: Key): key is Theme =>
 export const ThemeToggle = () => {
   const { t } = useTranslation();
 
-  // `Entry` owns applying the mode to `<html>`; this only reads and writes the pick
   const [theme, setTheme] = useAtom(persistence.themeAtom);
 
   return (
@@ -39,7 +38,6 @@ export const ThemeToggle = () => {
         selectionMode="single"
         selectedKeys={new Set([theme])}
         onSelectionChange={(selection) => {
-          // `selectionMode="single"` rules out the "all" sentinel.
           const [key] = selection === "all" ? [] : selection;
 
           if (key !== undefined && isTheme(key)) {

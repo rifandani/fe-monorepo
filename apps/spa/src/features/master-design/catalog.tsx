@@ -12,7 +12,6 @@ export const MasterDesignCatalog = () => {
   const [filter, setFilter] = useState("");
   const { activeId, scrollTo } = useScrollSpy(entryIds);
 
-  // Honor deep links like /master-design#combo-box once sections have painted.
   useMount(() => {
     const hash = window.location.hash.slice(1);
 

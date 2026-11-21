@@ -12,7 +12,6 @@ export interface Options<T> {
   onError?: (error: Error) => void;
 }
 
-/** Storage and `JSON.parse` both throw `Error` subclasses; anything else is wrapped. */
 const toError = (cause: unknown) =>
   cause instanceof Error ? cause : new Error(String(cause));
 
@@ -20,10 +19,6 @@ const logError = (error: Error) => {
   console.error(error);
 };
 
-/**
- * Serializes a value before storing in storage
- * Uses custom serializer if provided, otherwise JSON.stringify
- */
 const serialize = <T>(value: T, options: Options<T>) => {
   if (options.serializer) {
     return options.serializer(value);
@@ -32,22 +27,15 @@ const serialize = <T>(value: T, options: Options<T>) => {
   return JSON.stringify(value);
 };
 
-/**
- * Deserializes a value retrieved from storage
- * Uses custom deserializer if provided, otherwise JSON.parse
- */
 const deserialize = <T>(value: string, options: Options<T>): T => {
   if (options.deserializer) {
     return options.deserializer(value);
   }
 
-  // SAFETY: storage holds what `serialize` wrote under this key, so it parses
-  // back to `T`. A custom `deserializer` is the way to validate it.
   // oxlint-disable-next-line typescript/no-unsafe-return
   return JSON.parse(value);
 };
 
-/** Resolves `defaultValue`, calling it when it is a factory */
 const resolveDefaultValue = <T>(options: Options<T>) => {
   if (isFunction(options.defaultValue)) {
     return options.defaultValue();
@@ -59,10 +47,6 @@ const resolveDefaultValue = <T>(options: Options<T>) => {
 const hasStoredValue = (value: string | null | undefined): value is string =>
   Boolean(value);
 
-/**
- * Retrieves and deserializes the stored value from storage
- * Falls back to defaultValue if storage access fails or value doesn't exist
- */
 const readStoredValue = <T>(
   storage: Storage | undefined,
   key: string,
@@ -82,26 +66,13 @@ const readStoredValue = <T>(
   return resolveDefaultValue(options);
 };
 
-/**
- * Creates a custom hook for managing state in browser storage (localStorage/sessionStorage)
- * @param getStorage Function that returns the storage object to use (localStorage or sessionStorage)
- * @returns A hook that manages state with the specified storage
- */
 export const createUseStorageState = (
   getStorage: () => Storage | undefined
 ) => {
-  /**
-   * Custom hook for managing state that persists in browser storage
-   * @param key Storage key to store/retrieve the value
-   * @param options Configuration options for storage behavior
-   * @returns [storedValue, setValue] tuple for reading/writing storage
-   */
   const useStorageState = <T>(key: string, options: Options<T> = {}) => {
     let storage: Storage | undefined;
     const { onError = logError } = options;
 
-    // Try to get storage instance, with error handling
-    // https://github.com/alibaba/hooks/issues/800
     try {
       storage = getStorage();
     } catch (error) {
@@ -112,15 +83,10 @@ export const createUseStorageState = (
       readStoredValue(storage, key, options, onError);
 
     const [state, setState] = useState(getStoredValue);
-    // Update state when key changes
     useUpdateEffect(() => {
       setState(getStoredValue());
     }, [key]);
 
-    /**
-     * Updates both the React state and storage value
-     * @param value New value or function to update current value
-     */
     const updateState = (value?: SetState<T>) => {
       const currentState = isFunction(value) ? value(state) : value;
       setState(currentState);

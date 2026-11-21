@@ -3,27 +3,14 @@ import { isNumber } from "radashi";
 import { useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-/**
- * Interface representing the history data structure
- * @template T Type of the value being tracked
- */
 interface IData<T> {
   present?: T;
   past: T[];
   future: T[];
 }
 
-/**
- * Calculates the target index in an array based on step direction
- * @param step Number of steps to move (positive for forward, negative for backward)
- * @param length Length of the target array
- * @returns Clamped index within array bounds
- */
 const dumpIndex = (step: number, length: number) => {
-  let index =
-    step > 0
-      ? step - 1 // move forward
-      : length + step; // move backward
+  let index = step > 0 ? step - 1 : length + step;
 
   if (index >= length - 1) {
     index = length - 1;
@@ -36,13 +23,6 @@ const dumpIndex = (step: number, length: number) => {
   return index;
 };
 
-/**
- * Splits an array into three parts based on a target index
- * @template T Array element type
- * @param step Number of steps to determine split point
- * @param targetArr Array to split
- * @returns Object containing current element and arrays before/after it
- */
 const split = <T>(step: number, targetArr: T[]) => {
   const index = dumpIndex(step, targetArr.length);
 
@@ -53,24 +33,16 @@ const split = <T>(step: number, targetArr: T[]) => {
   };
 };
 
-/**
- * Records `val` as the new present, dropping the oldest entry once `maxLength` is exceeded
- * @template T Type of value to track history for
- */
 const pushValue = <T>(
   history: IData<T>,
   val: T,
   maxLength: number
 ): IData<T> => {
-  // SAFETY: `present` is only absent before the first value is set, and every
-  // caller of this helper has already committed one.
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const _past = [...history.past, history.present as T];
   const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
 
-  // maximum number of records exceeded
   if (maxLengthNum > 0 && _past.length > maxLengthNum) {
-    // delete first
     _past.splice(0, 1);
   }
 
@@ -81,31 +53,21 @@ const pushValue = <T>(
   };
 };
 
-/**
- * Moves `step` entries out of the future and into the past
- * @template T Type of value to track history for
- */
 const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.future);
 
   return {
     future: _after,
-    // SAFETY: travelling implies a committed `present` - see `updateHistory`.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     past: [...history.past, history.present as T, ..._before],
     present: _current,
   };
 };
 
-/**
- * Moves `step` entries out of the past and into the future
- * @template T Type of value to track history for
- */
 const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
   const { _before, _current, _after } = split(step, history.past);
 
   return {
-    // SAFETY: travelling implies a committed `present` - see `updateHistory`.
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     future: [..._after, history.present as T, ...history.future],
     past: _before,
@@ -113,23 +75,12 @@ const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
   };
 };
 
-/**
- * Builds the history actions over the current `history` snapshot.
- *
- * Kept outside the hook so its body stays a thin `useMemoizedFn` wiring layer.
- */
 const createHistoryActions = <T>(
   history: IData<T | undefined>,
   setHistory: Dispatch<SetStateAction<IData<T | undefined>>>,
   maxLength: number
 ) => ({
-  /**
-   * Moves through history by specified number of steps
-   * @param step Positive for forward, negative for backward movement
-   */
   go: (step: number) => {
-    // Travelling forward consumes `future`, backward consumes `past`; a zero
-    // step, or an empty source stack, is a no-op.
     const [source, travel] =
       step > 0
         ? ([history.future, travelForward] as const)
@@ -141,35 +92,12 @@ const createHistoryActions = <T>(
 
     setHistory(travel(history, step));
   },
-  /**
-   * Updates current value and manages history state
-   * @param val New value to set as present
-   */
   updateValue: (val: T) => {
     setHistory(pushValue(history, val, maxLength));
   },
 });
 
-/**
- * A hook to manage state change history. It provides encapsulation methods to travel through the history.
- * @template T Type of value to track history for
- * @param initialValue Initial value to start with
- * @param maxLength Maximum number of past states to keep (0 for unlimited)
- * @returns Object containing current value and methods to traverse history
- *
- * @example
- * ```ts
- * const { value, back, forward, go, reset } = useHistoryTravel(0)
- * // Update value
- * setValue(1)
- * // Go back one step
- * back()
- * ```
- */
 const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
-  /**
-   * Main history state containing past, present and future values
-   */
   const [history, setHistory] = useState<IData<T | undefined>>({
     future: [],
     past: [],
@@ -177,7 +105,6 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
   });
 
   const { present, past, future } = history;
-  // Reference to track initial value for reset functionality
   const initialValueRef = useRef(initialValue);
 
   const { go, updateValue } = createHistoryActions<T>(
@@ -186,8 +113,6 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
     maxLength
   );
 
-  // Stays in the hook body: the react-compiler rule forbids handing a ref
-  // across a function boundary during render.
   const reset = (...params: [initial?: T]) => {
     const _initial = params.length > 0 ? params[0] : initialValueRef.current;
     initialValueRef.current = _initial;

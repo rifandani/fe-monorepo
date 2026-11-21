@@ -20,7 +20,6 @@ declare module "react-aria-components" {
   }
 }
 
-// E2E runs must not mount devtools: their overlays intercept pointer events.
 const Devtools =
   import.meta.env.DEV && import.meta.env.VITE_E2E !== "true"
     ? lazy(async () => {
@@ -35,16 +34,10 @@ const RootRoute = () => {
 
   return (
     <>
-      {/*
-       * RAC such as Link, Menu, Tabs, Table, and many others support rendering elements as links that perform navigation when the user interacts with them.
-       * It needs to be wrapped by RAC RouterProvider component.
-       */}
       <RACRouterProvider
         navigate={(to, options) => {
           void router.navigate({
             ...options,
-            // SAFETY: react-aria hands back an href built from this app's own
-            // links; TanStack cannot verify that through the generic `navigate` hook.
             // oxlint-disable-next-line typescript/no-unsafe-type-assertion
             to: to as ToPathOption<RegisteredRouter, "/", "/">,
           });

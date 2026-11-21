@@ -1,5 +1,3 @@
-// Deep import: AreaChart is intentionally not re-exported from the `ui` barrel
-// (keeps recharts out of the main chunk), so the catalog imports it directly.
 import { AreaChart } from "@/components/ui/area-chart";
 
 import { revenueConfig, revenueData } from "../fixtures";

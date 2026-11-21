@@ -1,11 +1,5 @@
 import type { ChartConfig } from "@/components/ui/chart";
 
-/**
- * Deterministic sample data shared across data-driven showcases. Hand-written
- * constants (no faker) so the catalog renders identically on every reload,
- * which keeps it useful for eyeballing visual regressions.
- */
-
 export const revenueData = [
   { month: "Jan", Revenue: 4200, Expenses: 2400 },
   { month: "Feb", Revenue: 4600, Expenses: 2210 },
@@ -29,7 +23,6 @@ export const shareData = [
   { name: "Other", value: 90 },
 ];
 
-/** HSL so hue-channel color widgets don't throw (`Unknown color channel: hue` on RGB hex). */
 export const brandHsl = "hsl(216, 98%, 52%)";
 
 export const shareConfig = {

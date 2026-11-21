@@ -8,11 +8,6 @@ import { envConfigProvider } from "@/lib/layers/env";
 import { HttpLive } from "@/lib/layers/http";
 import { TelemetryLive } from "@/lib/layers/telemetry";
 
-/**
- * @description Every service the app's Effects may use. The annotation is the
- * contract: `Layer`'s output is contravariant, so this fails to compile if any
- * of these services goes missing — every core endpoint needs one of them.
- */
 const AppLayer: Layer.Layer<
   Http | HttpClient.HttpClient | Session,
   Config.ConfigError
@@ -20,15 +15,4 @@ const AppLayer: Layer.Layer<
   Layer.provide(ConfigProvider.layer(envConfigProvider))
 );
 
-/**
- * @description The bridge from React, TanStack Query and the router into Effect.
- *
- * Built once and never disposed: an SPA lives as long as its tab.
- *
- * @example
- *
- * ```ts
- * queryFn: ({ signal }) => appRuntime.runPromise(effect, { signal })
- * ```
- */
 export const appRuntime = ManagedRuntime.make(AppLayer);

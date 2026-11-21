@@ -7,10 +7,6 @@ interface CookieAttributes {
   secure?: boolean;
   httponly?: boolean;
   samesite?: "strict" | "lax" | "none";
-  /**
-   * Attributes outside the set above: `name=value` keeps the trimmed value,
-   * a bare flag becomes `true`.
-   */
   [key: string]: string | number | boolean | Date | undefined;
 }
 
@@ -46,7 +42,6 @@ const COOKIE_ATTR_HANDLERS = {
     attrObj.httponly = true;
   },
   samesite: (attrObj, attrValue) => {
-    // An unknown `SameSite` value is dropped, the same as a missing one.
     const sameSite = attrValue.trim().toLowerCase();
 
     attrObj.samesite = isSameSite(sameSite) ? sameSite : undefined;
@@ -62,7 +57,6 @@ const applyCookieAttribute = (
   attrObj: CookieAttributes,
   attribute: string
 ): void => {
-  // Split on the *first* `=` only: an attribute value may itself contain `=`.
   const separatorIndex = attribute.indexOf("=");
   const hasValue = separatorIndex !== -1;
   const attrValue = hasValue ? attribute.slice(separatorIndex + 1) : "";
@@ -103,7 +97,6 @@ export const parseSetCookieHeader = (
           .map((part) => part.trim())
       : [];
 
-    // A valueless cookie (`novalue`) keeps an empty value; a nameless one is dropped.
     const equalsIndex = nameValue.indexOf("=");
 
     const name =

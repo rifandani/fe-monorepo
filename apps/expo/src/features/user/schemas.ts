@@ -21,7 +21,6 @@ const userSchema = Schema.Struct({
   height: Schema.Finite,
   weight: Schema.Finite,
   eyeColor: Schema.String,
-  // ... and a lot more
 });
 
 const getUserApiRequestSchema = Schema.Struct({

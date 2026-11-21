@@ -1,7 +1,6 @@
 import type { LanguageMessages } from "@workspace/core/i18n/init";
 
 export default {
-  // #region COMMON
   locale: "en-US",
   backTo: "Back to {target} page",
   errorMinLength: "{field} must have at least {length} characters",
@@ -34,8 +33,6 @@ export default {
   downloadAndInstallUpdate: "Download and install update",
   rememberMe: "Remember me",
   appName: "Expo App",
-  // #endregion COMMON
-  // #region AUTH
   username: "Username",
   usernamePlaceholder: "Your username...",
   password: "Password",
@@ -49,8 +46,5 @@ export default {
   welcome: "Welcome Back",
   noAccount: "Don't have an account?",
   registerHere: "Register here",
-  // #endregion AUTH
-  // #region HOME
   title: "Home",
-  // #endregion HOME
 } as const satisfies LanguageMessages;

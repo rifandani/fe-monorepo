@@ -15,7 +15,6 @@ import type { Except } from "type-fest";
 import { appRuntime } from "@/lib/layers/runtime";
 import type { ToastCustomData } from "@/utils/toast";
 
-/** The login mutation of core, plus this app's error toast. */
 export const useAuthLogin = (
   mutationOptions?: Except<
     UseMutationOptions<

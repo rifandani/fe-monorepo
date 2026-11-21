@@ -2,10 +2,8 @@ import { noop } from "radashi";
 import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 
-/** Fraction of the viewport height where the "active section" threshold sits. */
 const THRESHOLD_RATIO = 0.2;
 
-/** Idle time after the last scroll event before click-suppression is lifted. */
 const SETTLE_MS = 150;
 
 const isPageBottom = () =>
@@ -30,16 +28,11 @@ const idAtThreshold = (ids: string[], line: number): string | null => {
   return current;
 };
 
-/** Last section whose top has crossed the viewport threshold, or the last id at page bottom. */
 const activeSectionId = (ids: string[]): string | null =>
   isPageBottom()
     ? lastId(ids)
     : idAtThreshold(ids, window.innerHeight * THRESHOLD_RATIO);
 
-/**
- * Pins the spy and restarts the settle window. Hoisted out of the hook so the
- * scroll effect can call it without taking an unstable dependency.
- */
 const suppress = (
   suppressedRef: RefObject<boolean>,
   settleTimer: RefObject<ReturnType<typeof setTimeout> | null>
@@ -57,22 +50,9 @@ const suppress = (
 
 interface ScrollSpy {
   activeId: string | null;
-  /** Scroll a section into view and pin it active until the smooth scroll settles. */
   scrollTo: (_sectionId: string) => void;
 }
 
-/**
- * Highlights the section a reader is looking at while scrolling the window.
- *
- * The active section is the last one whose top has crossed a line ~20% down the
- * viewport, with a bottom-of-page override so short trailing sections can still
- * win. During a click-initiated smooth scroll the spy is suppressed so the
- * highlight jumps straight to the target instead of flickering through every
- * section it passes. The active id is mirrored to the URL hash via
- * `replaceState` (no history spam) and honored on first load for deep links.
- *
- * `ids` is expected to be a stable reference (the module-level registry order).
- */
 export const useScrollSpy = (ids: string[]): ScrollSpy => {
   const [activeId, setActiveId] = useState<string | null>(ids[0] ?? null);
   const suppressedRef = useRef(false);
@@ -95,7 +75,6 @@ export const useScrollSpy = (ids: string[]): ScrollSpy => {
 
     const onScroll = () => {
       if (suppressedRef.current) {
-        // Keep the highlight pinned; just extend the settle window.
         suppress(suppressedRef, settleTimer);
 
         return;

@@ -23,6 +23,7 @@ const presets = [
 
 const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
+  "anti-slop/require-safety-comment-for-type-assertion": "off",
   "sort-keys": "off",
   "no-inline-comments": "off",
   "no-nested-ternary": "off",

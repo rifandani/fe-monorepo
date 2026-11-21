@@ -57,10 +57,6 @@ const BirthDate = ({
   );
 };
 
-/**
- * The state of the Session machine. A token refresh runs in the background,
- * so the profile shows it while it runs.
- */
 const SessionRefreshing = () => {
   const { t } = useTranslation();
   const isRefreshing = useAtomValue(sessionActivityAtom) === "refreshing";
@@ -192,7 +188,6 @@ const LogoutListItem = () => {
       icon={<Feather name="log-out" color={$red10} />}
       iconAfter={<Feather name="chevron-right" color={$red10} />}
       onPress={() => {
-        // `Stack.Protected` guards on `sessionAtom`, so ending it is the navigation.
         void appRuntime.runPromise(endSession);
       }}
     >

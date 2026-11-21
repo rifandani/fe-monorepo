@@ -32,15 +32,11 @@ type ParseOptionType<
 
 type ExtractParamOptions<S extends string> =
   S extends `${string}{${infer Param}}${infer Rest}`
-    ? Param extends `${infer Name}:${infer Type}` // If the string contains a parameter
-      ? ParseOptionType<Type, Name> & ExtractParamOptions<Rest> // If the string contains a parameter with a type
-      : ExtractParamOptions<Rest> // If the string has no parameter type
-    : unknown; // If the string has no parameters
+    ? Param extends `${infer Name}:${infer Type}`
+      ? ParseOptionType<Type, Name> & ExtractParamOptions<Rest>
+      : ExtractParamOptions<Rest>
+    : unknown;
 
-// "Hello "
-// "name" = Param
-// "! Your last login was {lastLoginDate:date}." = Rest
-// "Hello {name}! Your last login was {lastLoginDate:date}."
 export interface ParamOptions {
   date?: Record<string, Intl.DateTimeFormatOptions>;
   number?: Record<string, Intl.NumberFormatOptions>;

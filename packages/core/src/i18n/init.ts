@@ -57,9 +57,9 @@ type ExtractParamArgs<
 > = S extends `${string}{${infer Param}}${infer Rest}`
   ? Param extends `${infer Name}:${infer Type}`
     ? Record<Name, ParseArgType<Type, Name, Enums>> &
-        ExtractParamArgs<Rest, Enums> // If the string contains a parameter with a type
-    : Record<Param, string> & ExtractParamArgs<Rest, Enums> // If the string has no parameter type
-  : unknown; // If the string has no parameters
+        ExtractParamArgs<Rest, Enums>
+    : Record<Param, string> & ExtractParamArgs<Rest, Enums>
+  : unknown;
 
 type TranslationAtKeyWithParams<
   Translations,
@@ -103,10 +103,8 @@ type PathsWithNoParams = {
 
 const replaceKeyRegex = /-?[^-]+$/u;
 
-/** A value a `{name:type}` placeholder can be given, per `ParseArgType`. */
 type TranslationArg = Date | number | string | string[];
 
-/** A catalog entry that renders, as opposed to a nested group of entries. */
 const isRenderableMessage = (
   value: I18nMessage | LanguageMessages
 ): value is I18nMessage => typeof value === "string" || Array.isArray(value);
@@ -120,11 +118,6 @@ const isNumberArg = (value: TranslationArg): value is number =>
 const isStringArg = (value: TranslationArg): value is string =>
   typeof value === "string";
 
-/**
- * Replace the first `search` in `text` with `value`, literally. A string
- * replacement would read `$&`, `$$`, `` $` `` and `$'` in `value` as patterns,
- * and a value can be anything a person typed.
- */
 const replaceLiteral = (text: string, search: string, value: string) =>
   text.replace(search, () => value);
 
@@ -151,7 +144,6 @@ const getTranslationByKey = (
       throw new Error("[getTranslationByKey]: Invalid key!");
     }
 
-    // A message before the last key segment means the key does not exist.
     if (current === undefined || isRenderableMessage(current)) {
       current = undefined;
       break;
@@ -160,7 +152,6 @@ const getTranslationByKey = (
     current = current[k];
   }
 
-  // An empty message counts as missing, so the next locale can supply it.
   return current !== undefined && current !== "" && isRenderableMessage(current)
     ? current
     : undefined;
@@ -247,11 +238,6 @@ const substituteEnum = ({
 
 type Formatable = number | string[] | Date;
 
-/**
- * Narrows `argValue` with `isValid`, then substitutes the `Intl`-formatted
- * value into `result`. Shared by the `number`, `list` and `date` annotations,
- * which differ only in their guard and formatter.
- */
 const substituteWithFormatter =
   <T extends Formatable>(
     isValid: (value: TranslationArg) => value is T,
@@ -269,7 +255,6 @@ const substituteWithFormatter =
     );
   };
 
-/** Maps the `{arg:type}` annotation to the substituter handling it. */
 type Substituter = (ctx: SubstitutionContext) => string;
 
 interface SubstituterMap {
@@ -353,8 +338,6 @@ const getTranslation = <S extends DotPathsFor>(
 
   const [str, translationParams] = translation;
 
-  // SAFETY: `defineTranslation` builds the tuple, so its second element is the
-  // `ParamOptions` it was given; the catalog type widens it on the way out.
   return performSubstitution(
     locale,
     str,
@@ -382,7 +365,6 @@ export const initI18n = ({
     ...fallbackLocales.flatMap(getOrderedLocaleAndParentLocales),
   ]);
 
-  // The catalog is keyed by lowercase locale, so look it up by plain string.
   const translationsByLocale = new Map(Object.entries(translations));
 
   function t(key: PathsWithNoParams): string;

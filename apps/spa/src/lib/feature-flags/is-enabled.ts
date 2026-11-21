@@ -8,13 +8,11 @@ export interface ResolveFeatureEnabledInput {
   defaultEnabled: boolean;
 }
 
-/** Pure resolver — used by `isFeatureEnabled` and unit tests. */
 export const resolveFeatureEnabled = ({
   isDev,
   override,
   defaultEnabled,
 }: ResolveFeatureEnabledInput): boolean => {
-  // Production floor: never honor an ON override outside DEV.
   if (!isDev) {
     return false;
   }
@@ -26,10 +24,6 @@ export const resolveFeatureEnabled = ({
   return defaultEnabled;
 };
 
-/**
- * Resolve whether a Feature Flag is on.
- * Outside DEV, always false (prod never honors ON overrides).
- */
 export const isFeatureEnabled = (id: FeatureFlagId): boolean =>
   resolveFeatureEnabled({
     isDev: import.meta.env.DEV,

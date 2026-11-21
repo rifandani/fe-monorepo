@@ -9,18 +9,6 @@ interface UseAutoScrollOptions {
   intervalMs?: number;
 }
 
-/**
- * Custom hook to auto-scroll to a target element and pause when the user scrolls away.
- *
- * @example
- * ```tsx
- * const { anchorRef, isAutoScroll } = useAutoScroll({
- *    isLoading: status === 'submitted' || status === 'streaming',
- *    dependency: messages.length,
- *    isStreaming: () => status === 'streaming',
- *  });
- * ```
- */
 export const useAutoScroll = ({
   isLoading,
   dependency,
@@ -30,7 +18,6 @@ export const useAutoScroll = ({
 }: UseAutoScrollOptions) => {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
-  // Detect user scroll to toggle auto-scroll
   useEffect(() => {
     const anchor = anchorRef.current;
 
@@ -57,7 +44,6 @@ export const useAutoScroll = ({
       observer.disconnect();
     };
   }, [threshold]);
-  // Auto-scroll on updates and during streaming
   useEffect(() => {
     if (!isAutoScroll) {
       return noop;
@@ -72,7 +58,6 @@ export const useAutoScroll = ({
     scrollToBottom();
     let intervalId: ReturnType<typeof setInterval> | undefined;
 
-    // `isAutoScroll` is already guaranteed by the early return above.
     if (isStreaming() && isLoading) {
       intervalId = setInterval(scrollToBottom, intervalMs);
     }

@@ -1,20 +1,4 @@
 #!/usr/bin/env bun
-/**
- * Local runner for the OWASP ZAP Automation Framework plans in `.github/security/zap/`.
- *
- * This exists so a laptop run and a CI run are the same run. `zaproxy/action-af`
- * issues a `docker run` that mounts the repository root at `/zap/wrk` and puts
- * the container on the host network; this reproduces that, so a plan verified
- * here behaves identically in `.github/workflows/dast.yml`.
- *
- * Usage:
- *   ZAP_TARGET=http://spa.fe-monorepo.localhost:4100 bun zap:spa
- *
- * `ZAP_TARGET` has no default on purpose. The scan reaches whatever it is
- * pointed at, so the target is always an explicit act.
- *
- * Reports land in `.zap-reports/` (gitignored), one SARIF and one HTML per plan.
- */
 
 import { spawnSync } from "node:child_process";
 import { chmodSync, existsSync, mkdirSync, readdirSync } from "node:fs";
@@ -66,9 +50,6 @@ const parseTarget = (value: string): URL => {
 
 const targetUrl = parseTarget(target);
 
-// `localhost` inside the container is the container. Docker writes its own
-// `127.0.0.1 localhost` into /etc/hosts and will not let an `--add-host` entry
-// win against it, so there is no way to rescue a bare-localhost target.
 if (targetUrl.hostname === "localhost" && process.platform !== "linux") {
   fail(
     `ZAP_TARGET points at \`localhost\`, which inside the container is the container itself.\n` +
@@ -76,15 +57,6 @@ if (targetUrl.hostname === "localhost" && process.platform !== "linux") {
   );
 }
 
-/**
- * How the container reaches the app.
- *
- * Linux (and CI) uses the host network, matching what `action-af` does. On
- * macOS there is no host network, so a `*.localhost` hostname is mapped to the
- * host gateway — mapping the real hostname rather than using
- * `host.docker.internal` keeps the `Origin` header the app sees correct. A
- * public target needs neither.
- */
 const resolveNetworkArgs = (url: URL): string[] => {
   if (process.platform === "linux") {
     return ["--network", "host"];
@@ -97,14 +69,11 @@ const resolveNetworkArgs = (url: URL): string[] => {
   return [];
 };
 
-// The arm64 `:stable` image ships a zero-filled `/zap/zap.sh` and dies with
-// "exec format error". Forcing the amd64 image costs emulation speed and works.
 const platformArgs =
   process.arch === "arm64" ? ["--platform", "linux/amd64"] : [];
 
 mkdirSync(REPORT_DIR, { recursive: true });
 
-// ZAP runs as uid 1000 in the container and has to write into the mount.
 chmodSync(REPORT_DIR, 0o777);
 
 const args = [
