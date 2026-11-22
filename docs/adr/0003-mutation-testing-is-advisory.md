@@ -122,17 +122,16 @@ Sorting the HTML report by score sends you to `seo.tsx` and away from the rate l
 
 The report's own filters are **status-only** (`Killed`, `Survived`, `Timeout`, `NoCoverage`, `Ignored`, `CompileError`, `RuntimeError`) — `mutation-testing-elements` has no mutator-name filter, so it cannot do this for you. Query `coverage/stryker/mutation.json` ad hoc when you want a ranking.
 
-**Mutator class is a hint you eyeball, never a filter that hides.** A committed `scripts/mutation-triage.mjs` used to bucket the four literal mutators as "noise" and suppress them behind a count. It was deleted, because the premise is false often enough to matter — every one of these is killable and was being hidden:
+**Mutator class is a hint you eyeball, never a filter that hides.** A committed `scripts/mutation-triage.mjs` used to bucket the four literal mutators as "noise" and suppress them behind a count. It was deleted, because the premise is false often enough to matter — both of these are killable and were being hidden:
 
 | Site | Mutant | Why it is behaviour, not noise |
 | --- | --- | --- |
-| `rate-limit/core.ts:23` | `standardHeaders = "draft-6"` → `""` | Selects which RFC draft header format the limiter emits |
-| `packages/core/src/utils/core.ts:268` | `createObjectToFormData("index")` → `""` | That argument is the array-index key format for generated FormData keys |
-| `packages/core/src/utils/dom.ts:27` | `link.target = "_blank"` → `""` | Changes whether the download opens in a new tab |
+| `apps/web/src/core/middlewares/rate-limit/core.ts:23` | `standardHeaders = "draft-6"` → `""` | Selects which RFC draft header format the limiter emits |
+| `packages/core/src/utils/core.ts:239` | `createObjectToFormData("index")` → `""` | That argument is the array-index key format for generated FormData keys |
 
 That is the same error as the blanket `!**/constants/**` glob above — a proxy standing in for reading the report — except in code, where it fails silently on every run instead of loudly once. The accepted-noise classes named in this ADR are specific sites argued individually; they are not a mutator whitelist.
 
-It is also why `mutator.excludedMutations` stays empty rather than dropping `StringLiteral` globally, tempting as ~103 survivors makes it: the three rows above would vanish with it.
+It is also why `mutator.excludedMutations` stays empty rather than dropping `StringLiteral` globally, tempting as ~103 survivors makes it: both rows above would vanish with it.
 
 ### Where the score is low
 
@@ -174,7 +173,7 @@ Stryker also warns that 251 mutants (16%) are *static* — evaluated at module l
 Three environment fixes were needed before the first successful run. Each is a workaround with a removal condition, not a preference.
 
 1. **`plugins: ["@stryker-mutator/vitest-runner"]`** — bun installs into an isolated `node_modules/.bun/` store and symlinks, which defeats Stryker's default `@stryker-mutator/*` plugin glob. Without it the runner never loads and `vitest` is reported as an unknown config option — a warning, not an error, so it fails confusingly later.
-2. **`tsconfigFile` pointed at a non-existent file** — see the comment in `stryker.config.mjs`. #6111 is not confined to the typescript-checker: Stryker's own `TSConfigPreprocessor` calls `ts.parseConfigFileTextToJson`, which typescript@7 removed, and it runs on every project that has a `tsconfig.json`. Declining the checker does **not** avoid it. Safe here only because no tsconfig in this repo uses a relative `extends` or any `references` — the preprocessor would have nothing to rewrite anyway.
+2. **`tsconfigFile` pointed at a non-existent file** ([#6111](https://github.com/stryker-mutator/stryker-js/issues/6111)) — set to `""`, so `TSConfigPreprocessor` finds no file and does nothing. Revert to the default when #6111 is released, or when a tsconfig gains a relative `extends`. #6111 is not confined to the typescript-checker: Stryker's own `TSConfigPreprocessor` calls `ts.parseConfigFileTextToJson`, which typescript@7 removed, and it runs on every project that has a `tsconfig.json`. Declining the checker does **not** avoid it. Safe here only because no tsconfig in this repo uses a relative `extends` or any `references` — the preprocessor would have nothing to rewrite anyway.
 3. **`ignorePatterns`** — Stryker copies the project into `.stryker-tmp` with `fs.copyFile`, which fails on anything that is not a regular file. `.claude/skills` is a symlink to a directory (ENOTSUP) and `apps/expo/ios/Pods` is full of broken symlinks (ENOENT). Pruning tooling, docs and native build output also takes the sandbox from 12,303 files to 603, which is most of why a run is under 3 minutes.
 
 `.fallowrc.json` also needs two entries, since fallow reads only the import graph: `stryker.config.mjs` joins the root-config `unused-files: off` override (nothing imports a file its own CLI loads), and `@stryker-mutator/core` / `@stryker-mutator/vitest-runner` join `ignoreDependencies` — they are resolved by binary and by plugin name (`testRunner: "vitest"`), never imported, so fallow reports them unused. That array is a flat list of package names with nowhere to put a `$comment`; this paragraph is the record.
