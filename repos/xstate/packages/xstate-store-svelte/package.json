@@ -37,7 +37,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.1.1",
     "@testing-library/svelte": "^5.2.6",
     "svelte": "^5.0.0",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "preconstruct": {
     "entrypoints": [

@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
+    "vite": "^6.4.5"
   },
   "dependencies": {
     "@statelyai/sdk": "^0.20.1",

@@ -155,7 +155,7 @@
   "devDependencies": {
     "ajv": "^8.12.0",
     "rxjs": "^7.8.1",
-    "zod": "^3.25.51"
+    "zod": "^4.6.6"
   },
   "preconstruct": {
     "umdName": "XState",
