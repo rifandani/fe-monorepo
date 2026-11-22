@@ -5,61 +5,104 @@ import { isFunction } from "radashi";
 import type { SetStateAction } from "react";
 import { useMemo, useRef } from "react";
 
-interface Options<T> {
+interface Options<
+  T,
+  V extends string = "value",
+  D extends string = "defaultValue",
+  C extends string = "onChange",
+> {
   defaultValue?: T;
-  defaultValuePropName?: string;
-  valuePropName?: string;
-  trigger?: string;
+  defaultValuePropName?: D;
+  valuePropName?: V;
+  trigger?: C;
 }
 
 type TriggerFn<T> = (value: T, ...args: unknown[]) => void;
 
-type Props<T> = Record<string, T | TriggerFn<T> | undefined>;
+type NonInferredKey<N> = N extends string ? N : never;
 
-interface StandardProps<T> {
+type ControllableProps<
+  T,
+  V extends string = "value",
+  D extends string = "defaultValue",
+  C extends string = "onChange",
+> = { [K in NonInferredKey<V>]?: T } & { [K in NonInferredKey<D>]?: T } & {
+  [K in NonInferredKey<C>]?: TriggerFn<T>;
+};
+
+type ValueAt<P, K extends string> = P extends { [Q in K]?: infer X }
+  ? Exclude<X, undefined>
+  : never;
+
+type StandardProps<T> = ControllableProps<T> & {
   value: T;
-  defaultValue?: T;
   onChange: (val: T) => void;
+};
+
+type Updater<T> = T | ((prevState: T | undefined) => T);
+
+const readProp = <K extends string, X>(
+  props: { [P in K]?: X },
+  key: K
+): X | undefined => props[key];
+
+interface PropNames<V extends string, D extends string, C extends string> {
+  defaultValuePropName: D | "defaultValue";
+  trigger: C | "onChange";
+  valuePropName: V | "value";
 }
+
+const resolvePropNames = <V extends string, D extends string, C extends string>(
+  options: Options<unknown, V, D, C>
+): PropNames<V, D, C> => ({
+  defaultValuePropName: options.defaultValuePropName ?? "defaultValue",
+  trigger: options.trigger ?? "onChange",
+  valuePropName: options.valuePropName ?? "value",
+});
 
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: StandardProps<T>
-): [T, (v: SetStateAction<T>) => void];
-// oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
-export function useControllableValue<T = any>(
-  props?: Props<T>,
-  options?: Options<T>
-): [T, (v: SetStateAction<T>, ...args: unknown[]) => void];
-// oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
-export function useControllableValue<T = any>(
-  props: Props<T> | StandardProps<T> = {},
-  options: Options<T> = {}
+): readonly [T, (v: SetStateAction<T>) => void];
+export function useControllableValue<
+  P extends object,
+  V extends string = "value",
+  D extends string = "defaultValue",
+  C extends string = "onChange",
+  T = ValueAt<P, V | D>,
+>(
+  props?: P & ControllableProps<T, V, D, C>,
+  options?: Options<T, V, D, C>
+): readonly [T | undefined, (v: Updater<T>, ...args: unknown[]) => void];
+export function useControllableValue<
+  T,
+  V extends string,
+  D extends string,
+  C extends string,
+>(
+  props: ControllableProps<
+    T,
+    V | "value",
+    D | "defaultValue",
+    C | "onChange"
+  > = {},
+  options: Options<T, V, D, C> = {}
 ) {
-  const {
-    defaultValue,
-    defaultValuePropName = "defaultValue",
-    valuePropName = "value",
-    trigger = "onChange",
-  } = options;
+  const { defaultValue } = options;
 
-  // SAFETY: StandardProps<T> holds only a value, a default value and a trigger, which are all members of the Props<T> value union.
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const bag = props as Props<T>;
-  // SAFETY: the prop at valuePropName is the controlled value of type T.
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const value = bag[valuePropName] as T;
-  const isControlled = Object.hasOwn(bag, valuePropName);
+  const { defaultValuePropName, trigger, valuePropName } =
+    resolvePropNames(options);
+
+  const value = readProp<V | "value", T>(props, valuePropName);
+  const isControlled = Object.hasOwn(props, valuePropName);
 
   const initialValue = useMemo(() => {
     if (isControlled) {
       return value;
     }
 
-    if (Object.hasOwn(bag, defaultValuePropName)) {
-      // SAFETY: the prop at defaultValuePropName is the default value of type T.
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      return bag[defaultValuePropName] as T;
+    if (Object.hasOwn(props, defaultValuePropName)) {
+      return readProp<D | "defaultValue", T>(props, defaultValuePropName);
     }
 
     return defaultValue;
@@ -74,19 +117,15 @@ export function useControllableValue<T = any>(
 
   const update = useUpdate();
 
-  const setState = (v: SetStateAction<T>, ...args: unknown[]) => {
-    const r = isFunction(v)
-      ? // SAFETY: stateRef holds the controlled value, the default value or the last value set, which are all T.
-        // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-        v(stateRef.current as T)
-      : v;
+  const setState = (v: Updater<T>, ...args: unknown[]) => {
+    const r = isFunction(v) ? v(stateRef.current) : v;
 
     if (!isControlled) {
       stateRef.current = r;
       update();
     }
 
-    const onChange = bag[trigger];
+    const onChange = readProp<C | "onChange", TriggerFn<T>>(props, trigger);
 
     if (isFunction(onChange)) {
       onChange(r, ...args);

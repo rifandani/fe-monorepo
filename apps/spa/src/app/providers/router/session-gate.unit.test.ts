@@ -107,7 +107,8 @@ const craftedRedirectArb = fc
       "/\n/",
       " /",
       "https:",
-      ["java", "script:"].join("")
+      // oxlint-disable-next-line no-script-url -- the test feeds an attack string to the guard
+      "javascript:"
     ),
     fc.oneof(fc.string(), fc.domain(), fc.webUrl())
   )

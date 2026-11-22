@@ -5,22 +5,6 @@ export const isBrowser = () => "window" in globalThis;
 export const canWriteToClipboard = () =>
   isBrowser() && navigator.clipboard?.writeText !== undefined;
 
-export const doDownload = (url: string) => {
-  if (!url) {
-    return;
-  }
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = url;
-  link.target = "_blank";
-  document.body.append(link);
-  link.click();
-  setTimeout(() => {
-    link.remove();
-  }, 100);
-};
-
 const isParamsRecord = (
   init: URLSearchParamsInit
 ): init is Record<string, string | string[]> =>
@@ -132,13 +116,3 @@ export const getShortcutKey = (key: string): string => {
 
 export const getShortcutKeys = (keys: string[]): string =>
   keys.map((key) => getShortcutKey(key)).join("+");
-
-export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
-  const url = window.URL.createObjectURL(data);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
-  a.remove();
-};

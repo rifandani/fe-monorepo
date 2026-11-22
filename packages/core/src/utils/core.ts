@@ -132,8 +132,16 @@ const isWalkable = (value: FormDataValue): value is FormDataRecord =>
 const isLeaf = (value: FormDataValue): value is boolean | number | string =>
   typeof value !== "object" && value !== undefined;
 
-const toCommaItem = (item: FormDataValue) =>
-  isLeaf(item) || item instanceof Date ? String(item) : "";
+const toDateString = (date: Date) =>
+  Number.isNaN(date.getTime()) ? "" : date.toISOString();
+
+const toCommaItem = (item: FormDataValue) => {
+  if (item instanceof Date) {
+    return toDateString(item);
+  }
+
+  return isLeaf(item) ? String(item) : "";
+};
 
 const appendObjectEntries = (
   obj: FormDataRecord,
@@ -157,8 +165,14 @@ const appendFormDataValue = (
   append: FormDataAppend,
   arrayMode: "index" | "comma"
 ) => {
-  if (value instanceof File) {
+  if (value instanceof Blob) {
     formData.append(rootName, value);
+
+    return;
+  }
+
+  if (value instanceof Date) {
+    formData.append(rootName, toDateString(value));
 
     return;
   }

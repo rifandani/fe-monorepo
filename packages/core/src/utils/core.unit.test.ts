@@ -356,6 +356,46 @@ describe("objectToFormData", () => {
     expect(avatar instanceof File ? avatar.name : undefined).toBe("hi.txt");
   });
 
+  it("should append a nested Blob as a file under its dotted key", () => {
+    const blob = new Blob(["hi"], { type: "text/plain" });
+
+    const formData = objectToFormData({ a: { b: blob } });
+
+    expect(formData.get("a.b")).toBeInstanceOf(Blob);
+  });
+
+  it("should append a Blob array item as a file under its indexed key", () => {
+    const blob = new Blob(["hi"], { type: "text/plain" });
+
+    const formData = objectToFormData({ a: [blob] });
+
+    expect(formData.get("a[0]")).toBeInstanceOf(Blob);
+  });
+
+  it("should append a root-level Date as its ISO string", () => {
+    const createdAt = new Date("2026-11-21T08:30:00.000Z");
+
+    const formData = objectToFormData({ createdAt });
+
+    expect(formData.get("createdAt")).toBe("2026-11-21T08:30:00.000Z");
+  });
+
+  it("should append a nested Date as its ISO string", () => {
+    const payload = { order: { paidAt: new Date("2026-01-02T03:04:05.000Z") } };
+
+    const formData = objectToFormData(payload);
+
+    expect(formData.get("order.paidAt")).toBe("2026-01-02T03:04:05.000Z");
+  });
+
+  it("should append an invalid Date as an empty string", () => {
+    const payload = { order: { paidAt: new Date(Number.NaN) } };
+
+    const formData = objectToFormData(payload);
+
+    expect(Object.fromEntries(formData)).toEqual({ "order.paidAt": "" });
+  });
+
   it("should skip null and undefined leaves", () => {
     const payload = { empty: null, missing: undefined, kept: "yes" };
 
@@ -365,10 +405,8 @@ describe("objectToFormData", () => {
   });
 
   it("should skip inherited enumerable properties", () => {
-    // SAFETY: Object.create gives an object with no own properties, which is an empty Record<string, string>.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const nested = Object.create({ inherited: "no" }) as Record<string, string>;
-    nested.own = "yes";
+    const nested = { own: "yes" };
+    Object.setPrototypeOf(nested, { inherited: "no" });
 
     const formData = objectToFormData({ nested });
 
@@ -392,6 +430,45 @@ describe("objectToFormDataArrayWithComma", () => {
     const formData = objectToFormDataArrayWithComma(payload);
 
     expect(formData.get("filters")).toBe("model,category");
+  });
+
+  it("should write Date items as ISO strings", () => {
+    const payload = {
+      days: [
+        new Date("2026-11-20T00:00:00.000Z"),
+        new Date("2026-11-21T00:00:00.000Z"),
+      ],
+    };
+
+    const formData = objectToFormDataArrayWithComma(payload);
+
+    expect(formData.get("days")).toBe(
+      "2026-11-20T00:00:00.000Z,2026-11-21T00:00:00.000Z"
+    );
+  });
+
+  it("should write an invalid Date item as an empty string", () => {
+    const payload = { days: [new Date(Number.NaN), "today"] };
+
+    const formData = objectToFormDataArrayWithComma(payload);
+
+    expect(formData.get("days")).toBe(",today");
+  });
+
+  it("should write a Blob item as an empty string", () => {
+    const payload = { files: [new Blob(["hi"]), "name"] };
+
+    const formData = objectToFormDataArrayWithComma(payload);
+
+    expect(formData.get("files")).toBe(",name");
+  });
+
+  it("should append a nested Blob as a file", () => {
+    const blob = new Blob(["hi"], { type: "text/plain" });
+
+    const formData = objectToFormDataArrayWithComma({ a: { b: blob } });
+
+    expect(formData.get("a.b")).toBeInstanceOf(Blob);
   });
 
   test.prop([fc.array(commaFreeStringArb, { minLength: 1 })])(

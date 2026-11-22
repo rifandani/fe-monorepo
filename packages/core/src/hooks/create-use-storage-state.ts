@@ -8,7 +8,7 @@ export type SetState<S> = S | ((prevState?: S) => S);
 export interface Options<T> {
   defaultValue?: T | (() => T);
   serializer?: (value: T) => string;
-  deserializer?: (value: string) => T;
+  deserializer: (value: string) => T;
   onError?: (error: Error) => void;
 }
 
@@ -25,15 +25,6 @@ const serialize = <T>(value: T, options: Options<T>) => {
   }
 
   return JSON.stringify(value);
-};
-
-const deserialize = <T>(value: string, options: Options<T>): T => {
-  if (options.deserializer) {
-    return options.deserializer(value);
-  }
-
-  // oxlint-disable-next-line typescript/no-unsafe-return
-  return JSON.parse(value);
 };
 
 const resolveDefaultValue = <T>(options: Options<T>) => {
@@ -57,7 +48,7 @@ const readStoredValue = <T>(
     const raw = storage?.getItem(key);
 
     if (hasStoredValue(raw)) {
-      return deserialize(raw, options);
+      return options.deserializer(raw);
     }
   } catch (error) {
     onError(toError(error));
@@ -69,7 +60,7 @@ const readStoredValue = <T>(
 export const createUseStorageState = (
   getStorage: () => Storage | undefined
 ) => {
-  const useStorageState = <T>(key: string, options: Options<T> = {}) => {
+  const useStorageState = <T>(key: string, options: Options<T>) => {
     let storage: Storage | undefined;
     const { onError = logError } = options;
 

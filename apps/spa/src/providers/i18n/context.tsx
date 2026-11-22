@@ -1,5 +1,6 @@
 import { useAtom } from "@effect/atom-react";
 import { initI18n } from "@workspace/core/i18n/init";
+import type { I18n } from "@workspace/core/i18n/init";
 import { catalogs, defaultLocale } from "@workspace/core/i18n/locale";
 import type { Locale } from "@workspace/core/i18n/locale";
 import type { ReactNode } from "react";
@@ -7,7 +8,7 @@ import { createContext, use } from "react";
 
 import { persistence } from "@/lib/layers/persistence";
 
-type TranslationContextValue = ReturnType<typeof initI18n> & {
+type TranslationContextValue = I18n & {
   setLocale: (locale: Locale) => void;
   locale: Locale;
 };

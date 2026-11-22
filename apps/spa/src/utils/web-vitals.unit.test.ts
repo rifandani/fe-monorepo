@@ -93,17 +93,6 @@ const documentStub: DocumentStub = {
   visibilityState: "visible",
 };
 
-const asMetric = (metric: {
-  id: string;
-  value: number;
-  delta: number;
-  navigationType: string;
-  rating: string;
-}) =>
-  // SAFETY: the reporter under test reads only the fields that this fixture sets.
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  metric as never;
-
 const resetHarness = () => {
   listeners.pagehide.length = 0;
   listeners.visibilitychange.length = 0;
@@ -175,18 +164,38 @@ const show = () => {
 const report = (
   id: string,
   value: number,
-  rating = "good",
-  navigationType = "navigate"
-) => asMetric({ id, value, delta: value, navigationType, rating });
+  rating: WebVitalsMetric["rating"] = "good",
+  navigationType: WebVitalsMetric["navigationType"] = "navigate"
+): WebVitalsMetric => ({
+  name: "LCP",
+  value,
+  rating,
+  delta: value,
+  id,
+  entries: [],
+  navigationType,
+  navigationId: 1,
+});
+
+const reporterNames: readonly [typeof onLCP, WebVitalsMetric["name"]][] = [
+  [onLCP, "LCP"],
+  [onINP, "INP"],
+  [onCLS, "CLS"],
+  [onFCP, "FCP"],
+  [onTTFB, "TTFB"],
+];
 
 const callbackOf = (reporter: typeof onLCP) => {
-  const callback = reporter.mock.calls[0]?.[0];
+  const recordMetric = reporter.mock.calls[0]?.[0];
+  const name = reporterNames.find(([candidate]) => candidate === reporter)?.[1];
 
-  if (callback === undefined) {
+  if (recordMetric === undefined || name === undefined) {
     throw new Error("reportWebVitals did not register this reporter");
   }
 
-  return callback;
+  return (metric: WebVitalsMetric) => {
+    recordMetric({ ...metric, name });
+  };
 };
 
 const startReporting = async () => {

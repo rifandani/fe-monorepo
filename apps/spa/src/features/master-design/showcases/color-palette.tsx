@@ -1,6 +1,8 @@
 import { cn } from "cn";
 import { useState, useSyncExternalStore } from "react";
 
+import { pixelToRgba } from "../utils/rgba";
+import type { Rgba } from "../utils/rgba";
 import { Variant, VariantGrid } from "../variant";
 
 interface Swatch {
@@ -16,13 +18,6 @@ const formatHex = (r: number, g: number, b: number, a = 1): string => {
 
   return a < 1 ? `${rgb}${byteHex(a * 255)}` : rgb;
 };
-
-interface Rgba {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
 
 const cssColorToRgba = (color: string): Rgba | null => {
   const canvas = document.createElement("canvas");
@@ -44,14 +39,8 @@ const cssColorToRgba = (color: string): Rgba | null => {
 
   ctx.clearRect(0, 0, 1, 1);
   ctx.fillRect(0, 0, 1, 1);
-  const pixel = ctx.getImageData(0, 0, 1, 1).data;
 
-  return {
-    r: pixel[0] ?? 0,
-    g: pixel[1] ?? 0,
-    b: pixel[2] ?? 0,
-    a: (pixel[3] ?? 0) / 255,
-  };
+  return pixelToRgba(ctx.getImageData(0, 0, 1, 1).data);
 };
 
 const toLinearChannel = (c: number): number => {

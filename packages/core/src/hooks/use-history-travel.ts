@@ -1,86 +1,16 @@
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
-import { isNumber } from "radashi";
+import {
+  pushValue,
+  travelBackward,
+  travelForward,
+} from "@workspace/core/utils/history-travel";
+import type { History } from "@workspace/core/utils/history-travel";
 import { useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-interface IData<T> {
-  present?: T;
-  past: T[];
-  future: T[];
-}
-
-const dumpIndex = (step: number, length: number) => {
-  let index = step > 0 ? step - 1 : length + step;
-
-  if (index >= length - 1) {
-    index = length - 1;
-  }
-
-  if (index < 0) {
-    index = 0;
-  }
-
-  return index;
-};
-
-const split = <T>(step: number, targetArr: T[]) => {
-  const index = dumpIndex(step, targetArr.length);
-
-  return {
-    _after: targetArr.slice(index + 1),
-    _before: targetArr.slice(0, index),
-    _current: targetArr[index],
-  };
-};
-
-const pushValue = <T>(
-  history: IData<T>,
-  val: T,
-  maxLength: number
-): IData<T> => {
-  // SAFETY: present holds the initial value or a value that the setter received, which are T.
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const _past = [...history.past, history.present as T];
-  const maxLengthNum = isNumber(maxLength) ? maxLength : Number(maxLength);
-
-  if (maxLengthNum > 0 && _past.length > maxLengthNum) {
-    _past.splice(0, 1);
-  }
-
-  return {
-    future: [],
-    past: _past,
-    present: val,
-  };
-};
-
-const travelForward = <T>(history: IData<T>, step: number): IData<T> => {
-  const { _before, _current, _after } = split(step, history.future);
-
-  return {
-    future: _after,
-    // SAFETY: present holds the initial value or a value that the setter received, which are T.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    past: [...history.past, history.present as T, ..._before],
-    present: _current,
-  };
-};
-
-const travelBackward = <T>(history: IData<T>, step: number): IData<T> => {
-  const { _before, _current, _after } = split(step, history.past);
-
-  return {
-    // SAFETY: present holds the initial value or a value that the setter received, which are T.
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    future: [..._after, history.present as T, ...history.future],
-    past: _before,
-    present: _current,
-  };
-};
-
-const createHistoryActions = <T>(
-  history: IData<T | undefined>,
-  setHistory: Dispatch<SetStateAction<IData<T | undefined>>>,
+const createHistoryActions = <V>(
+  history: History<V>,
+  setHistory: Dispatch<SetStateAction<History<V>>>,
   maxLength: number
 ) => ({
   go: (step: number) => {
@@ -95,13 +25,13 @@ const createHistoryActions = <T>(
 
     setHistory(travel(history, step));
   },
-  updateValue: (val: T) => {
+  updateValue: (val: V) => {
     setHistory(pushValue(history, val, maxLength));
   },
 });
 
 const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
-  const [history, setHistory] = useState<IData<T | undefined>>({
+  const [history, setHistory] = useState<History<T | undefined>>({
     future: [],
     past: [],
     present: initialValue,
@@ -110,14 +40,14 @@ const useHistoryTravel = <T>(initialValue?: T, maxLength = 0) => {
   const { present, past, future } = history;
   const initialValueRef = useRef(initialValue);
 
-  const { go, updateValue } = createHistoryActions<T>(
+  const { go, updateValue } = createHistoryActions(
     history,
     setHistory,
     maxLength
   );
 
-  const reset = (...params: [initial?: T]) => {
-    const _initial = params.length > 0 ? params[0] : initialValueRef.current;
+  const reset = (...params: [] | [initial: T | undefined]) => {
+    const [_initial] = params.length > 0 ? params : [initialValueRef.current];
     initialValueRef.current = _initial;
     setHistory({
       future: [],

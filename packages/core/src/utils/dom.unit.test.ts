@@ -3,14 +3,12 @@ import {
   canWriteToClipboard,
   createSearchParams,
   createSearchParamsWithComma,
-  doDownload,
   getPlatform,
   getPlatformAsync,
   getShortcutKey,
   getShortcutKeys,
   isBrowser,
   isMacOS,
-  saveFile,
 } from "@workspace/core/utils/dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -37,14 +35,6 @@ const plainKeyArb = fc
   .filter((key) => !SPECIAL_KEYS.includes(key.toLowerCase()));
 
 const commaFreeStringArb = fc.string().map((text) => text.replaceAll(",", ""));
-
-const anchorStub = () => ({
-  href: "",
-  download: "",
-  target: "",
-  click: vi.fn(),
-  remove: vi.fn(),
-});
 
 describe("isBrowser", () => {
   it("should be false when window is undefined", () => {
@@ -337,60 +327,5 @@ describe("getShortcutKeys", () => {
     const shortcut = getShortcutKeys(["mod", "N"]);
 
     expect(shortcut).toBe("Ctrl+N");
-  });
-});
-
-describe("doDownload", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.useRealTimers();
-  });
-
-  it("should do nothing for an empty url", () => {
-    const createElement = vi.fn();
-    vi.stubGlobal("document", { createElement, body: { append: vi.fn() } });
-
-    doDownload("");
-
-    expect(createElement).not.toHaveBeenCalled();
-  });
-
-  it("should click a temporary anchor and remove it after 100ms", () => {
-    vi.useFakeTimers();
-    const link = anchorStub();
-    const append = vi.fn();
-    vi.stubGlobal("document", {
-      createElement: () => link,
-      body: { append },
-    });
-
-    doDownload("https://example.com/file.pdf");
-    vi.advanceTimersByTime(100);
-
-    expect(append).toHaveBeenCalledWith(link);
-    expect(link.click).toHaveBeenCalledOnce();
-    expect(link.remove).toHaveBeenCalledOnce();
-  });
-});
-
-describe("saveFile", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("should download the data under the file name and revoke its object URL", () => {
-    const anchor = anchorStub();
-    const revokeObjectURL = vi.fn();
-    vi.stubGlobal("document", { createElement: () => anchor });
-    vi.stubGlobal("window", {
-      URL: { createObjectURL: () => "blob:1", revokeObjectURL },
-    });
-
-    saveFile(new Blob(["x"]), "report.txt");
-
-    expect(anchor.download).toBe("report.txt");
-    expect(anchor.click).toHaveBeenCalledOnce();
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:1");
-    expect(anchor.remove).toHaveBeenCalledOnce();
   });
 });
