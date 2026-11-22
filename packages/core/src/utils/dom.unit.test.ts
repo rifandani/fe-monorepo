@@ -9,7 +9,6 @@ import {
   getShortcutKeys,
   isBrowser,
   isMacOS,
-  saveFile,
 } from "@workspace/core/utils/dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -36,13 +35,6 @@ const plainKeyArb = fc
   .filter((key) => !SPECIAL_KEYS.includes(key.toLowerCase()));
 
 const commaFreeStringArb = fc.string().map((text) => text.replaceAll(",", ""));
-
-const anchorStub = () => ({
-  href: "",
-  download: "",
-  click: vi.fn(),
-  remove: vi.fn(),
-});
 
 describe("isBrowser", () => {
   it("should be false when window is undefined", () => {
@@ -335,27 +327,5 @@ describe("getShortcutKeys", () => {
     const shortcut = getShortcutKeys(["mod", "N"]);
 
     expect(shortcut).toBe("Ctrl+N");
-  });
-});
-
-describe("saveFile", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("should download the data under the file name and revoke its object URL", () => {
-    const anchor = anchorStub();
-    const revokeObjectURL = vi.fn();
-    vi.stubGlobal("document", { createElement: () => anchor });
-    vi.stubGlobal("window", {
-      URL: { createObjectURL: () => "blob:1", revokeObjectURL },
-    });
-
-    saveFile(new Blob(["x"]), "report.txt");
-
-    expect(anchor.download).toBe("report.txt");
-    expect(anchor.click).toHaveBeenCalledOnce();
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:1");
-    expect(anchor.remove).toHaveBeenCalledOnce();
   });
 });

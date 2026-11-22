@@ -116,13 +116,3 @@ export const getShortcutKey = (key: string): string => {
 
 export const getShortcutKeys = (keys: string[]): string =>
   keys.map((key) => getShortcutKey(key)).join("+");
-
-export const saveFile = (data: Blob | MediaSource, fileName: string): void => {
-  const url = window.URL.createObjectURL(data);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
-  a.remove();
-};
