@@ -3,7 +3,6 @@ import {
   canWriteToClipboard,
   createSearchParams,
   createSearchParamsWithComma,
-  doDownload,
   getPlatform,
   getPlatformAsync,
   getShortcutKey,
@@ -41,7 +40,6 @@ const commaFreeStringArb = fc.string().map((text) => text.replaceAll(",", ""));
 const anchorStub = () => ({
   href: "",
   download: "",
-  target: "",
   click: vi.fn(),
   remove: vi.fn(),
 });
@@ -337,39 +335,6 @@ describe("getShortcutKeys", () => {
     const shortcut = getShortcutKeys(["mod", "N"]);
 
     expect(shortcut).toBe("Ctrl+N");
-  });
-});
-
-describe("doDownload", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-    vi.useRealTimers();
-  });
-
-  it("should do nothing for an empty url", () => {
-    const createElement = vi.fn();
-    vi.stubGlobal("document", { createElement, body: { append: vi.fn() } });
-
-    doDownload("");
-
-    expect(createElement).not.toHaveBeenCalled();
-  });
-
-  it("should click a temporary anchor and remove it after 100ms", () => {
-    vi.useFakeTimers();
-    const link = anchorStub();
-    const append = vi.fn();
-    vi.stubGlobal("document", {
-      createElement: () => link,
-      body: { append },
-    });
-
-    doDownload("https://example.com/file.pdf");
-    vi.advanceTimersByTime(100);
-
-    expect(append).toHaveBeenCalledWith(link);
-    expect(link.click).toHaveBeenCalledOnce();
-    expect(link.remove).toHaveBeenCalledOnce();
   });
 });
 
