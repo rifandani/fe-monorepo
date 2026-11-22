@@ -1,3 +1,4 @@
+import { invariant } from "@workspace/core/utils/invariant";
 import { isNumber } from "radashi";
 
 export interface History<V> {
@@ -26,7 +27,8 @@ const hasItems = <V>(items: readonly V[]): items is readonly [V, ...V[]] =>
 export const split = <V>(step: number, targetArr: readonly [V, ...V[]]) => {
   const index = dumpIndex(step, targetArr.length);
   const fromCurrent = targetArr.slice(index);
-  const [_current, ..._after] = hasItems(fromCurrent) ? fromCurrent : targetArr;
+  invariant(hasItems(fromCurrent), "index is always inside targetArr");
+  const [_current, ..._after] = fromCurrent;
 
   return {
     _after,

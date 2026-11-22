@@ -1,11 +1,12 @@
+import { isFunction } from "radashi";
+
 const isProduction = process.env.NODE_ENV === "production";
 const prefix = "Invariant failed";
 
-export const invariant = (
-  // oxlint-disable-next-line typescript/no-explicit-any -- assertion predicate accepts any condition
-  condition: any,
+export const invariant: (
+  condition: unknown,
   message?: string | (() => string)
-): asserts condition => {
+) => asserts condition = (condition, message) => {
   const passed = Boolean(condition);
 
   if (passed) {
@@ -16,8 +17,9 @@ export const invariant = (
     throw new Error(prefix);
   }
 
-  const provided: string | undefined =
-    typeof message === "function" ? message() : message;
+  const provided: string | undefined = isFunction(message)
+    ? message()
+    : message;
 
   const value: string =
     provided === undefined || provided === ""

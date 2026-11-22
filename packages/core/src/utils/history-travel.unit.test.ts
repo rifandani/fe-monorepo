@@ -183,6 +183,18 @@ describe("travelBackward", () => {
     expect(result).toEqual({ future: ["c", "d"], past: ["a"], present: "b" });
   });
 
+  it("should return the same history when the past is empty", () => {
+    const history: History<string> = {
+      future: ["b"],
+      past: [],
+      present: "a",
+    };
+
+    const result = travelBackward(history, -1);
+
+    expect(result).toBe(history);
+  });
+
   test.prop([historyWithPastArb, fc.integer({ max: -1 })])(
     "should always keep the timeline when going back",
     (history, step) => {
@@ -204,6 +216,18 @@ describe("travelForward", () => {
     const result = travelForward(history, 1);
 
     expect(result).toEqual({ future: ["d"], past: ["a", "b"], present: "c" });
+  });
+
+  it("should return the same history when the future is empty", () => {
+    const history: History<string> = {
+      future: [],
+      past: ["a"],
+      present: "b",
+    };
+
+    const result = travelForward(history, 1);
+
+    expect(result).toBe(history);
   });
 
   test.prop([historyWithFutureArb, fc.integer({ min: 1 })])(

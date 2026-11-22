@@ -46,6 +46,20 @@ const readProp = <K extends string, X>(
   key: K
 ): X | undefined => props[key];
 
+interface PropNames<V extends string, D extends string, C extends string> {
+  defaultValuePropName: D | "defaultValue";
+  trigger: C | "onChange";
+  valuePropName: V | "value";
+}
+
+const resolvePropNames = <V extends string, D extends string, C extends string>(
+  options: Options<unknown, V, D, C>
+): PropNames<V, D, C> => ({
+  defaultValuePropName: options.defaultValuePropName ?? "defaultValue",
+  trigger: options.trigger ?? "onChange",
+  valuePropName: options.valuePropName ?? "value",
+});
+
 // oxlint-disable-next-line typescript/no-explicit-any -- TS overloads
 export function useControllableValue<T = any>(
   props: StandardProps<T>
@@ -75,9 +89,9 @@ export function useControllableValue<
   options: Options<T, V, D, C> = {}
 ) {
   const { defaultValue } = options;
-  const valuePropName = options.valuePropName ?? "value";
-  const defaultValuePropName = options.defaultValuePropName ?? "defaultValue";
-  const trigger = options.trigger ?? "onChange";
+
+  const { defaultValuePropName, trigger, valuePropName } =
+    resolvePropNames(options);
 
   const value = readProp<V | "value", T>(props, valuePropName);
   const isControlled = Object.hasOwn(props, valuePropName);
