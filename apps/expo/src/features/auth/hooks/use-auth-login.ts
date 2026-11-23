@@ -1,5 +1,3 @@
-// oxlint-disable promise/prefer-await-to-callbacks
-/* oxlint-disable react-doctor/query-mutation-missing-invalidation */
 import { useToastController } from "@tamagui/toast";
 import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";

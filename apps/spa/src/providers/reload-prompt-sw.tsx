@@ -123,7 +123,7 @@ export const ReloadPromptSw = () => {
         },
       }),
     });
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- the toast shows only when the service worker state changes
   }, [offlineReady, needRefresh]);
 
   return <aside id="ReloadPromptSW" className="hidden" />;

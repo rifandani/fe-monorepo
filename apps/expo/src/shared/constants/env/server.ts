@@ -1,4 +1,4 @@
-// fallow-ignore-file unused-file
+// fallow-ignore-file unused-file -- template env schema kept for apps built from this template
 import { Schema } from "effect";
 
 const envServerSchema = Schema.Struct({

@@ -11,6 +11,7 @@ import { userDetailQueryOptions, userKeys } from "@/features/user/queries";
 import type { GetUserApiResponseSchema } from "@/features/user/schemas";
 
 const makeRuntime = () =>
+  // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- the unit under test takes a ManagedRuntime, as the app does
   ManagedRuntime.make(
     Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
       Layer.provide(Session.layerMemory()),

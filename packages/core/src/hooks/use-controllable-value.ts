@@ -1,4 +1,3 @@
-/* oxlint-disable react/react-compiler react-doctor/react-compiler-no-manual-memoization eslint/func-style */
 import { useMemoizedFn } from "@workspace/core/hooks/use-memoized-fn";
 import { useUpdate } from "@workspace/core/hooks/use-update";
 import { isFunction } from "radashi";
@@ -106,7 +105,7 @@ export function useControllableValue<
     }
 
     return defaultValue;
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- the initial value is read once, on mount
   }, []);
 
   const stateRef = useRef(initialValue);

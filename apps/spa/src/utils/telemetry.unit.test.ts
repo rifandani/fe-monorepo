@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 import { fc, test } from "@fast-check/vitest";
-import { Effect, Exit, Tracer } from "effect";
+import { Effect, Exit, Schema, Tracer } from "effect";
 
 import { recordException, toReportedError } from "./telemetry";
 
@@ -125,16 +125,18 @@ describe("recordException", () => {
       })
   );
 
-  test.prop([fc.string(), fc.string()])(
+  it.effect.prop(
     "should always succeed, so reporting a failure never becomes one",
-    async (name, message) => {
-      const { tracer } = recordingTracer();
+    [Schema.String, Schema.String],
+    ([name, message]) =>
+      Effect.gen(function* () {
+        const { tracer } = recordingTracer();
 
-      const exit = await Effect.runPromiseExit(
-        recordException(name, { message }).pipe(Effect.withTracer(tracer))
-      );
+        const exit = yield* Effect.exit(
+          recordException(name, { message }).pipe(Effect.withTracer(tracer))
+        );
 
-      expect(Exit.isSuccess(exit)).toBe(true);
-    }
+        expect(Exit.isSuccess(exit)).toBe(true);
+      })
   );
 });

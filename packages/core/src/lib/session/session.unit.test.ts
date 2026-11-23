@@ -1,6 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { fc, test } from "@fast-check/vitest";
-import { sessionArb, signedInSessionArb } from "@test/arbitraries";
+import { sessionArbitrary, signedInSessionArbitrary } from "@test/arbitraries";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
 import type { Persistence } from "@workspace/core/persistence/persistence";
@@ -13,7 +12,7 @@ import {
 } from "@workspace/core/session/session";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { SessionRefreshError } from "@workspace/core/session/session-refresh-error";
-import { Deferred, Effect, Fiber, Layer, Option } from "effect";
+import { Deferred, Effect, Fiber, Layer, Option, Schema } from "effect";
 import { KeyValueStore } from "effect/persistence";
 
 const ada: AuthLoginResponseSchema = {
@@ -168,37 +167,37 @@ describe("Session", () => {
       })
   );
 
-  test.prop([signedInSessionArb])(
+  it.effect.prop(
     "should always read back the Access Token of the Session it started",
-    async (session) => {
-      const { layer } = setup();
+    [signedInSessionArbitrary],
+    ([session]) =>
+      Effect.gen(function* () {
+        const { layer } = setup();
 
-      const token = await Effect.runPromise(
-        startSession(session).pipe(
+        const token = yield* startSession(session).pipe(
           Effect.andThen(currentAccessToken),
           Effect.provide(layer)
-        )
-      );
+        );
 
-      expect(token).toEqual(Option.some(session.accessToken));
-    }
+        expect(token).toEqual(Option.some(session.accessToken));
+      })
   );
 
-  test.prop([sessionArb])(
+  it.effect.prop(
     "should never have an Access Token after the Session ends",
-    async (session) => {
-      const { layer } = setup();
+    [sessionArbitrary],
+    ([session]) =>
+      Effect.gen(function* () {
+        const { layer } = setup();
 
-      const token = await Effect.runPromise(
-        startSession(session).pipe(
+        const token = yield* startSession(session).pipe(
           Effect.andThen(endSession),
           Effect.andThen(currentAccessToken),
           Effect.provide(layer)
-        )
-      );
+        );
 
-      expect(Option.isNone(token)).toBe(true);
-    }
+        expect(Option.isNone(token)).toBe(true);
+      })
   );
 });
 
@@ -347,25 +346,25 @@ describe("Session.refresh", () => {
       })
   );
 
-  test.prop([fc.integer({ min: 1, max: 50 })])(
+  it.effect.prop(
     "should always serve any number of concurrent rejections with one refresh",
-    async (rejections) => {
-      const persistence = persistenceWith(ada);
-      const server = rotatingServer();
+    [Schema.Int.check(Schema.isBetween({ minimum: 1, maximum: 50 }))],
+    ([rejections]) =>
+      Effect.gen(function* () {
+        const persistence = persistenceWith(ada);
+        const server = rotatingServer();
 
-      const tokens = await Effect.runPromise(
-        Effect.all(
+        const tokens = yield* Effect.all(
           Array.from({ length: rejections }, () =>
             refreshSession(ada.accessToken)
           ),
           { concurrency: "unbounded" }
-        ).pipe(Effect.provide(sessionOn(persistence, server.refresh)))
-      );
+        ).pipe(Effect.provide(sessionOn(persistence, server.refresh)));
 
-      expect(server.calls()).toBe(1);
-      expect(tokens).toEqual(
-        Array.from({ length: rejections }, () => Option.some("access-1"))
-      );
-    }
+        expect(server.calls()).toBe(1);
+        expect(tokens).toEqual(
+          Array.from({ length: rejections }, () => Option.some("access-1"))
+        );
+      })
   );
 });

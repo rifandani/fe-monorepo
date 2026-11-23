@@ -1,6 +1,5 @@
-// fallow-ignore-file unused-file
-// fallow-ignore-file unused-export
-/* oxlint-disable react/react-compiler */
+// fallow-ignore-file unused-file -- template hook kept for apps built from this template
+// fallow-ignore-file unused-export -- template hook kept for apps built from this template
 import { useEffect } from "react";
 import {
   interpolate,
@@ -31,7 +30,7 @@ export const useSkeletonAnimation = ({
       Infinity,
       true
     );
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- the animation starts once, on mount
   }, []);
 
   return animatedStyle;

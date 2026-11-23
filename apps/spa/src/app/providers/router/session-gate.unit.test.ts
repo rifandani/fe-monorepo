@@ -1,5 +1,3 @@
-import { setTimeout as sleep } from "node:timers/promises";
-
 import { fc, test } from "@fast-check/vitest";
 import {
   createMemoryHistory,
@@ -49,6 +47,7 @@ const setup = async (initialEntry: string, signedIn = false) => {
   );
 
   const run = async <A>(effect: Effect.Effect<A, never, Session>) =>
+    // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- the router under test is Promise-based, so the test drives the Session from outside an Effect test
     await Effect.runPromise(effect.pipe(Effect.provide(session)));
 
   if (signedIn) {
@@ -224,20 +223,19 @@ describe("watch", () => {
 
     await app.signIn();
     await app.signIn();
-    await sleep(20);
 
     expect(invalidate).not.toHaveBeenCalled();
   });
 
   it("should stop reloading after the returned function runs", async () => {
     const app = await setup("/", true);
+    const invalidate = vi.spyOn(app.router, "invalidate");
     const stop = app.gate.watch(app.router);
     stop();
 
     await app.signOut();
-    await sleep(20);
 
-    expect(app.href()).toBe("/");
+    expect(invalidate).not.toHaveBeenCalled();
   });
 });
 

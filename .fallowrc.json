@@ -48,7 +48,9 @@
         "scripts/security/**",
         "vitest.msw-setup.ts",
         "apps/spa/e2e/support/setup.ts",
-        "apps/spa/e2e/support/global-setup.ts"
+        "apps/spa/e2e/support/global-setup.ts",
+        "scripts/hooks/block-git-hook-bypass.ts",
+        "tools/lint/vitest.rule-tester.ts"
       ],
       "rules": {
         "unused-files": "off"
@@ -72,7 +74,9 @@
       "apps/spa/src/features/master-design/**",
       "**/*.{test,spec}.{ts,tsx}",
       "**/e2e/**",
-      "scripts/security/**"
+      "scripts/security/**",
+      "tools/lint/anti-slop-effect/**",
+      "tools/lint/landmines/**"
     ],
     "thresholdOverrides": []
   },

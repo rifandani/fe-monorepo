@@ -32,7 +32,7 @@ export const useRafInterval = (
         clearRafTimer(timerRef.current);
       }
     };
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- fnRef holds the latest callback; only a new delay restarts the timer
   }, [delay]);
 
   const clear = () => {

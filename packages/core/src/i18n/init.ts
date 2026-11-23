@@ -1,4 +1,4 @@
-/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string eslint/func-style */
+/* oxlint-disable react-doctor/js-hoist-intl -- each formatter needs the locale and options of its own call */
 import type { ParamOptions } from "@workspace/core/i18n/define-translation";
 import type { Register } from "@workspace/core/i18n/my-translations";
 

@@ -8,6 +8,7 @@ import {
 } from "@workspace/core/auth/queries";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
 import { Layer, ManagedRuntime, Option } from "effect";
 import { FetchHttpClient } from "effect/http";
@@ -31,6 +32,7 @@ const adaSession: AuthLoginResponseSchema = {
 const adaCredentials = { password: "secret1", username: "ada" };
 
 const makeRuntime = () =>
+  // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- the unit under test takes a ManagedRuntime, as the app does
   ManagedRuntime.make(
     Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
       Layer.provideMerge(Session.layerMemory()),
@@ -78,10 +80,8 @@ describe("authLoginMutationOptions", () => {
 
     const mutation = observer.mutate(adaCredentials);
 
-    await expect(mutation).rejects.toMatchObject({
-      _tag: "HttpResponseError",
-      status: 400,
-    });
+    await expect(mutation).rejects.toBeInstanceOf(HttpResponseError);
+    await expect(mutation).rejects.toMatchObject({ status: 400 });
     const token = await runtime.runPromise(currentAccessToken);
     expect(Option.isNone(token)).toBe(true);
     await runtime.dispose();

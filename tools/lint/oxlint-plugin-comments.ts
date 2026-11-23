@@ -1,8 +1,8 @@
 import { definePlugin, defineRule } from "@oxlint/plugins";
 
-import { isDirective } from "./comment-directive.ts";
+import { hasReason, isDirective, isSuppression } from "./comment-directive.ts";
 
-const noComments = defineRule({
+export const noComments = defineRule({
   meta: {
     type: "suggestion",
     docs: {
@@ -27,7 +27,32 @@ const noComments = defineRule({
   },
 });
 
+export const directiveReason = defineRule({
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        "Require a reason on every suppression directive: oxlint, eslint, TypeScript, fallow, Stryker, coverage and gitleaks.",
+    },
+  },
+  create(context) {
+    return {
+      Program() {
+        for (const comment of context.sourceCode.getAllComments()) {
+          if (isSuppression(comment) && !hasReason(comment)) {
+            context.report({
+              loc: comment.loc,
+              message:
+                "This suppression has no reason. Add `-- <reason>` after the directive (for Stryker, `: <reason>` also works), for example `// @ts-expect-error -- the global is deleted on purpose`. Name the invariant that makes it safe.",
+            });
+          }
+        }
+      },
+    };
+  },
+});
+
 export default definePlugin({
   meta: { name: "comments" },
-  rules: { "no-comments": noComments },
+  rules: { "directive-reason": directiveReason, "no-comments": noComments },
 });

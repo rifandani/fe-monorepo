@@ -1,4 +1,3 @@
-/* oxlint-disable promise/prefer-await-to-callbacks react-doctor/query-mutation-missing-invalidation */
 import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { authLoginMutationOptions } from "@workspace/core/auth/queries";

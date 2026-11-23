@@ -1,14 +1,18 @@
 import { describe, expect, it } from "@effect/vitest";
 import { fc, test } from "@fast-check/vitest";
-import { ioPropertyParameters } from "@test/arbitraries";
+import { ioPropertyOptions } from "@test/arbitraries";
 import { server } from "@test/msw";
 import { cdnApi, toCdnFile } from "@workspace/core/cdn/api";
-import { Effect } from "effect";
+import { Arbitrary, Effect, Schema } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 import { afterEach, beforeEach, vi } from "vitest";
 
 const fileUrl = "https://cdn.example.com/a.png";
+
+const bytesArbitrary = Arbitrary.schema(
+  Schema.Array(Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 255 })))
+).pipe(Arbitrary.map((values) => Uint8Array.from(values)));
 
 const getCdnFile = (url: string) =>
   cdnApi.getCdnFile({ url }).pipe(Effect.provide(FetchHttpClient.layer));
@@ -56,15 +60,22 @@ describe("cdnApi.getCdnFile", () => {
     })
   );
 
-  test.prop([fc.uint8Array()], ioPropertyParameters())(
+  it.effect.prop(
     "should always keep every byte of the body",
-    async (bytes) => {
-      serveBody(bytes);
+    [bytesArbitrary],
+    ([bytes]) =>
+      Effect.gen(function* () {
+        serveBody(bytes);
 
-      const result = await Effect.runPromise(getCdnFile(fileUrl));
+        const result = yield* getCdnFile(fileUrl);
 
-      expect(new Uint8Array(await result.blob.arrayBuffer())).toEqual(bytes);
-    }
+        const body = yield* Effect.promise(
+          async () => await result.blob.arrayBuffer()
+        );
+
+        expect(new Uint8Array(body)).toEqual(bytes);
+      }),
+    ioPropertyOptions()
   );
 });
 

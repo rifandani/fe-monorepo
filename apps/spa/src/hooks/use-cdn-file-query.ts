@@ -1,5 +1,4 @@
-// fallow-ignore-file unused-file
-/* oxlint-disable react/react-compiler */
+// fallow-ignore-file unused-file -- template hook kept for apps built from this template
 import type { UndefinedInitialDataOptions } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { toCdnFile } from "@workspace/core/cdn/api";

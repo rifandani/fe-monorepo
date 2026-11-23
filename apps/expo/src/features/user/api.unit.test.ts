@@ -1,10 +1,10 @@
 import { describe, expect, it } from "@effect/vitest";
-import { fc, test } from "@fast-check/vitest";
-import { ioPropertyParameters } from "@test/arbitraries";
+import { ioPropertyOptions } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { Http } from "@workspace/core/http/http";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { Session } from "@workspace/core/session/session";
-import { Effect, Layer } from "effect";
+import { Effect, Layer, Schema } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
 
@@ -98,23 +98,26 @@ describe("userApi.getDetail", () => {
 
       const error = yield* Effect.flip(getDetail({ id: 999 }));
 
+      expect(error).toBeInstanceOf(HttpResponseError);
       expect(error).toMatchObject({
-        _tag: "HttpResponseError",
         status: 404,
         data: { message: "User not found" },
       });
     })
   );
 
-  test.prop([fc.integer({ min: 1 })], ioPropertyParameters())(
+  it.effect.prop(
     "should always request the user that the id names",
-    async (id) => {
-      const ids = serveUser({ ...ada, id });
+    [Schema.Int.check(Schema.isGreaterThan(0))],
+    ([id]) =>
+      Effect.gen(function* () {
+        const ids = serveUser({ ...ada, id });
 
-      const result = await Effect.runPromise(getDetail({ id }));
+        const result = yield* getDetail({ id });
 
-      expect(ids).toEqual([String(id)]);
-      expect(result.id).toBe(id);
-    }
+        expect(ids).toEqual([String(id)]);
+        expect(result.id).toBe(id);
+      }),
+    ioPropertyOptions()
   );
 });
