@@ -147,23 +147,6 @@ export default defineConfig({
     },
     {
       files: [
-        "packages/core/src/utils/error.ts",
-        "apps/spa/src/utils/telemetry.ts",
-      ],
-      rules: {
-        "anti-slop/no-unknown-parameters": "off",
-      },
-    },
-    {
-      files: ["scripts/security/sca-gate-core.ts"],
-      rules: {
-        "anti-slop/no-unknown-parameters": "off",
-        "anti-slop/no-unsafe-dictionary-type": "off",
-        "anti-slop/no-runtime-typeof": "off",
-      },
-    },
-    {
-      files: [
         "packages/core/src/i18n/locales/en-US.ts",
         "packages/core/src/i18n/locales/id-ID.ts",
       ],
@@ -203,6 +186,8 @@ export default defineConfig({
     "**/.repos",
     "**/repos",
     "**/.impeccable",
-    "**/docs",
+    "docs/**",
+    "apps/*/docs/**",
+    "packages/*/docs/**",
   ],
 });

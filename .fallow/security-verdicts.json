@@ -1,0 +1,104 @@
+[
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "8d3d4755a7c40cb7",
+    "verdict": "dismissed",
+    "reason": "The pattern is built from a translation argument name, which comes from code at the call site, not from user input. escapeRegExp makes the name literal, and the pattern has no nested quantifier."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "6a8a0695ab5538fd",
+    "verdict": "dismissed",
+    "reason": "Outgoing request header in the client. The header name comes from HttpAuthConfig in code, and the value is the access token from our own auth API. fetch rejects CR/LF in header values with a TypeError."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "c37b7b3fa8737c7b",
+    "verdict": "dismissed",
+    "reason": "Generated UI component (components/ui). The CSS comes from ChartConfig colors and the chart id, which are set in code. No user input reaches the style element."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "8ec5c148d696c5de",
+    "verdict": "dismissed",
+    "reason": "Developer and CI script. SCA_ALLOWLIST_PATH is set by the operator who runs the script; there is no lower-trust caller."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "6cdcd3c7540eddbf",
+    "verdict": "dismissed",
+    "reason": "Developer and CI script. The SARIF path is the operator's own argv; the script only reads it."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "a17e3cf3919d1a6c",
+    "verdict": "dismissed",
+    "reason": "File names come from readdirSync of the directory the operator gave, filtered to .sarif files. The script only reads them."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "4fd844fe0f9d5189",
+    "verdict": "dismissed",
+    "reason": "Lookup of osv-scanner in the operator's own PATH, the same as a shell does."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "813b749dc4bc1942",
+    "verdict": "dismissed",
+    "reason": "Cache path for the osv-scanner download. Version, platform and arch come from the operator's env and process; the folder is under node_modules/.cache."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "542d3afb2cbd6bb5",
+    "verdict": "dismissed",
+    "reason": "mkdtempSync makes a new private folder under os.tmpdir(); the config file is written with flag wx and mode 0o600."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "7d4be43bd0898a87",
+    "verdict": "dismissed",
+    "reason": "Fixed file name inside the private mkdtempSync folder."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "d62ee1b4d1a1980f",
+    "verdict": "dismissed",
+    "reason": "spawnSync with an argument array and no shell. The binary comes from OSV_SCANNER_BIN, PATH or the pinned release download, all chosen by the operator."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "630f29afaacecbfe",
+    "verdict": "dismissed",
+    "reason": "Developer and CI script. The plan name is the operator's own argv and is only checked for existence."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "d9dee00f04d4ab20",
+    "verdict": "dismissed",
+    "reason": "The ZAP container runs as its own user and must write reports into the bind-mounted .zap-reports folder, whose host owner has a different uid on CI. The folder is git-ignored and holds only scan output."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "dfa35cd00ad68998",
+    "verdict": "dismissed",
+    "reason": "Developer script. The prefix comes from the REPOS map in the script, not from outside input."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "3340afed6c4a2988",
+    "verdict": "dismissed",
+    "reason": "Test configuration. Alias paths come from the exports map in the tracked packages/core/package.json; no untrusted source reaches them."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "44663dd5fad172b3",
+    "verdict": "dismissed",
+    "reason": "E2E setup. The root and the trace folder come from the Vitest config in the repo; no untrusted source reaches them."
+  },
+  {
+    "schema_version": "fallow-security-verdict/v1",
+    "finding_id": "02b62ab91c102a9a",
+    "verdict": "dismissed",
+    "reason": "E2E setup. The root and the trace folder come from the Vitest config in the repo; no untrusted source reaches them."
+  }
+]

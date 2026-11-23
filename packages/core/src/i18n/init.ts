@@ -147,6 +147,10 @@ const isStringArg = (value: TranslationArg): value is string =>
 const replaceLiteral = (text: string, search: string, value: string) =>
   text.replace(search, () => value);
 
+const REGEXP_SYNTAX = /[$()*+.?[\\\]^{|}]/gu;
+
+const escapeRegExp = (text: string) => text.replaceAll(REGEXP_SYNTAX, "\\$&");
+
 const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
   let parentLocale = locale;
@@ -323,7 +327,11 @@ const performSubstitution = (
   translationParams: ParamOptions
 ): string =>
   Object.entries(args).reduce((result, [argKey, argValue]) => {
-    const match = new RegExp(`\\{${argKey}:?([^}]*)?\\}`, "u").exec(result);
+    const match = new RegExp(
+      `\\{${escapeRegExp(argKey)}:?([^}]*)?\\}`,
+      "u"
+    ).exec(result);
+
     const [replaceKey, argType] = match ?? [`{${argKey}}`, undefined];
 
     const substitute =

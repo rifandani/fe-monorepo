@@ -142,7 +142,7 @@ prisma/_sqlite/migrations
 
 # docker
 otel-lgtm
-.fallow/
+.fallow/*
 
 # agent worktrees
 .worktrees/

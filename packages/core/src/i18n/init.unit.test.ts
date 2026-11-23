@@ -8,6 +8,7 @@ const translations = {
   "en-us": {
     welcome: "Welcome",
     greeting: defineTranslation("Hello {name}!", {}),
+    signature: defineTranslation("Hi {firstXname}, I am {first.name}", {}),
     inbox: defineTranslation("{count:plural}", {
       plural: {
         count: {
@@ -270,6 +271,13 @@ describe("initI18n substitutions", () => {
     expect(text).toBe("Tags: US$$");
   });
 
+  it("should match a param name literally, not as a pattern", () => {
+    const t = setup();
+
+    const text = t("signature", { "first.name": "Ada" });
+
+    expect(text).toBe("Hi {firstXname}, I am Ada");
+  });
   test.prop([fc.string()])(
     "should always place a plain param literally",
     (name) => {
