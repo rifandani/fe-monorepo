@@ -15,6 +15,6 @@
   "dependencies": {
     "@statelyai/sdk": "^0.20.1",
     "xstate": "workspace:*",
-    "zod": "^3.25.51"
+    "zod": "^4.6.6"
   }
 }
