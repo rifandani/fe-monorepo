@@ -4,6 +4,8 @@ Unit tests use [fast-check](https://fast-check.dev/) through `@fast-check/vitest
 
 Depends on [ADR-0001](./0001-unit-tests-are-pure-module-logic.md) (scope of the unit suite) and [ADR-0003](./0003-mutation-testing-is-advisory.md) (Stryker). Revises neither; each has a note that points here.
 
+> On 2026-11-24, Model Tests were added with `@xstate/test` ([ADR-0011](./0011-model-tests-use-xstate-test.md)). Its `propertyTest()` runs on fast-check (`fc.check`), so the settings of this ADR (seed policy, run budget, Stryker, Replay Line) apply to it unchanged. The rejection of Property Tests in Route Tests below still holds: a Route Test Model Test uses `testPaths()`, which runs a fixed set of paths, not random runs.
+
 ## Vocabulary
 
 **Property Test**: A test that states a rule that is always (or never) true for a family of inputs, and lets fast-check generate the inputs and shrink a failure to a minimal counterexample. In code it is `test.prop([...arbitraries])(...)`. _Avoid_: fuzz test, random test, generative test
