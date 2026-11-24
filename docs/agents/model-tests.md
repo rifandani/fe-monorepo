@@ -17,12 +17,13 @@ Write a Model Test for a flow whose result depends on the order of events: a sta
 2. **Write the Model in the test file.** Use `createMachine` from `xstate`, with `types<…>()` for context and event payloads. Keep it in `pure` mode, with no invokes and no delays. Do not import the machine under test as the Model.
    - In the unit suite, put the expected values in context, and use transition functions.
    - In Route Tests, use payload-free events and object transitions with literal targets, so the graph is static and finite.
-3. **Write the SUT Adapter.** `create()` builds a new system for each run: new Persistence, new layers, new stubs. `send(event)` performs the event. `dispose()` releases everything, and finishes any request that the stubs still hold.
+3. **Write the SUT Adapter.** `create()` builds a new system for each run: new Persistence, new layers, new stubs. `send(event)` performs the event. `dispose()` releases everything. In Route Tests, it also completes each request that MSW still holds, and resets the app with `resetApp()` from `e2e/support/`.
    - Hold a server answer in a `Deferred` (unit suite) or in a `Promise.withResolvers()` inside an MSW handler (Route Tests), and complete it when the Model sends the answer event.
    - Start a request that must overlap other events in a new fiber (`runtime.runFork`), and do not wait for it.
 4. **Choose the oracle.**
    - Unit suite: `sut.projectModel(snapshot)` and `session.read()` return the same Projection. `session.settle()` waits until two macrotask turns in a row show the same Projection.
    - Route Tests: `states` assertions keyed by leaf state value (`"signedIn.refreshing"`), with `expect.element` and `expect.poll`. Do not use `read()` with a fixed wait.
+   - When two transitions go to the same state but must leave different data, add a `check()` to the SUT session. It runs after each step. For example, the Route Test checks that the Session holds the last Access Token that the server gave.
 5. **Choose the generator for each event.**
    - `propertyTest()` sends only the events in `events`. Use a fast-check arbitrary for the payload, `when` to offer an event only in some states, and `resolve` for a payload that depends on the Model state (for example the current token).
    - `testPaths()` offers every payload-free event that the Model handles.

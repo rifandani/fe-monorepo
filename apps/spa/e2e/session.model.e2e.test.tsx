@@ -6,7 +6,6 @@ import { Effect } from "effect";
 import { HttpClientRequest } from "effect/http";
 import { http, HttpResponse } from "msw";
 import { describe, expect, test } from "vitest";
-import { cleanup } from "vitest-browser-react/pure";
 import { page } from "vitest/browser";
 import { createMachine } from "xstate";
 import type { EventFrom, SnapshotFrom } from "xstate";
@@ -15,8 +14,13 @@ import { persistence } from "@/lib/layers/persistence";
 import { appRuntime } from "@/lib/layers/runtime";
 
 import { loginForm } from "./support/login-form";
-import { emily, worker } from "./support/network";
-import { currentPath, renderRoute } from "./support/render-route";
+import { api, emily, emilySession, worker } from "./support/network";
+import {
+  currentPath,
+  currentSession,
+  renderRoute,
+} from "./support/render-route";
+import { resetApp } from "./support/reset-app";
 
 type RefreshResult = "tokens" | "refused" | "failed";
 
@@ -62,8 +66,6 @@ type ModelSnapshot = SnapshotFrom<typeof sessionUiModel>;
 
 type ModelEvent = EventFrom<typeof sessionUiModel>;
 
-const api = (path: string) => `${import.meta.env.VITE_API_BASE_URL}/${path}`;
-
 const protectedPath = "e2e/protected";
 
 const profileMenuButton = () =>
@@ -80,19 +82,11 @@ const rejectedRequest = Effect.gen(function* () {
   yield* client.execute(HttpClientRequest.get(protectedPath));
 }).pipe(Effect.ignore);
 
-const refreshResponse = (result: RefreshResult, refreshes: number) => {
-  if (result === "tokens") {
-    return HttpResponse.json({
-      accessToken: `e2e-access-${String(refreshes)}`,
-      refreshToken: `e2e-refresh-${String(refreshes)}`,
-    });
-  }
+const refusedRefresh = () =>
+  HttpResponse.json({ message: "refused" }, { status: 401 });
 
-  return HttpResponse.json(
-    { message: result },
-    { status: result === "refused" ? 401 : 500 }
-  );
-};
+const failedRefresh = () =>
+  HttpResponse.json({ message: "failed" }, { status: 500 });
 
 const logInWith = async (password: string) => {
   const { usernameInput, passwordInput, submitButton } = loginForm();
@@ -106,6 +100,7 @@ const createSession = async () => {
   const rejectedTokens = new Set<string>();
   const waitingRefreshes: ((result: RefreshResult) => void)[] = [];
   let refreshes = 0;
+  let issuedAccessToken = emilySession.accessToken;
 
   worker.use(
     http.get(api(protectedPath), ({ request }) => {
@@ -122,9 +117,21 @@ const createSession = async () => {
       waitingRefreshes.push(resolve);
       const result = await promise;
 
-      refreshes += 1;
+      if (result === "refused") {
+        return refusedRefresh();
+      }
 
-      return refreshResponse(result, refreshes);
+      if (result === "failed") {
+        return failedRefresh();
+      }
+
+      refreshes += 1;
+      issuedAccessToken = `e2e-access-${String(refreshes)}`;
+
+      return HttpResponse.json({
+        accessToken: issuedAccessToken,
+        refreshToken: `e2e-refresh-${String(refreshes)}`,
+      });
     })
   );
 
@@ -136,6 +143,7 @@ const createSession = async () => {
   const send = async (event: ModelEvent) => {
     switch (event.type) {
       case "LOGIN_VALID": {
+        issuedAccessToken = emilySession.accessToken;
         await logInWith(emily.password);
         break;
       }
@@ -152,9 +160,7 @@ const createSession = async () => {
       }
 
       case "REQUEST_REJECTED": {
-        const token = persistence.registry.get(
-          persistence.sessionAtom
-        )?.accessToken;
+        const token = currentSession()?.accessToken;
 
         if (token !== undefined) {
           rejectedTokens.add(token);
@@ -193,26 +199,34 @@ const createSession = async () => {
     await expect
       .poll(() => persistence.registry.get(sessionActivityAtom))
       .toBe("idle");
-    await cleanup();
-    persistence.registry.set(persistence.sessionAtom, null);
-    worker.resetHandlers();
+    await resetApp();
+  };
+
+  const check = async () => {
+    if (currentSession() === null) {
+      return;
+    }
+
+    await expect
+      .poll(() => currentSession()?.accessToken)
+      .toBe(issuedAccessToken);
   };
 
   await renderRoute("/login");
 
-  return { send, dispose };
+  return { send, check, dispose };
 };
 
 const expectSignedOut = async () => {
   await expect.poll(currentPath).toBe("/login");
   await expect.element(loginForm().usernameInput).toBeVisible();
-  expect(persistence.registry.get(persistence.sessionAtom)).toBeNull();
+  expect(currentSession()).toBeNull();
 };
 
 const expectSignedIn = async () => {
   await expect.poll(currentPath).toBe("/");
   await expect.element(profileMenuButton()).toBeVisible();
-  expect(persistence.registry.get(persistence.sessionAtom)).not.toBeNull();
+  expect(currentSession()).not.toBeNull();
 };
 
 const sessionUiSut: TestSut<ModelSnapshot, ModelEvent> = {

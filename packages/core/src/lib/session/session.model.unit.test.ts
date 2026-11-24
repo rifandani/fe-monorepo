@@ -166,7 +166,7 @@ const createSession = () => {
     | Deferred.Deferred<AuthRefreshResponseSchema, SessionRefreshError>
     | undefined;
 
-  const server = SessionRefresh.of({
+  const refreshStub = SessionRefresh.of({
     refresh: () =>
       Effect.gen(function* () {
         refreshCalls += 1;
@@ -185,7 +185,7 @@ const createSession = () => {
   // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- @xstate/test drives the SUT through Promises and creates one per run, so each run builds its own runtime and dispose() releases it
   const runtime = ManagedRuntime.make(
     Session.layer(persistence).pipe(
-      Layer.provide(Layer.succeed(SessionRefresh, server))
+      Layer.provide(Layer.succeed(SessionRefresh, refreshStub))
     )
   );
 
