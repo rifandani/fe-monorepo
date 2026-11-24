@@ -1,4 +1,4 @@
-/* oxlint-disable unicorn/prefer-module */
+/* oxlint-disable unicorn/prefer-module -- Expo loads this config as CommonJS */
 const path = require("node:path");
 
 const { getDefaultConfig } = require("expo/metro-config");

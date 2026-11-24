@@ -1,3 +1,4 @@
+import { describe, expect, it } from "@effect/vitest";
 import { fc, test } from "@fast-check/vitest";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import type { ErrorResponseSchema } from "@workspace/core/http/schemas";
@@ -6,7 +7,6 @@ import {
   toErrorMessage,
 } from "@workspace/core/utils/error";
 import { Effect, Schema } from "effect";
-import { describe, expect, it } from "vitest";
 
 const httpError = (
   data?: ErrorResponseSchema | Record<string, string> | string,
@@ -53,20 +53,22 @@ describe("toErrorMessage", () => {
     expect(message).toBe(error.message);
   });
 
-  it("should not leak schema detail when the response shape is wrong", () => {
-    const failure = Effect.runSync(
-      Effect.flip(
-        Schema.decodeUnknownEffect(Schema.Struct({ email: Schema.Finite }))({
-          email: "nope",
-        })
-      )
-    );
+  it.effect(
+    "should not leak schema detail when the response shape is wrong",
+    () =>
+      Effect.gen(function* () {
+        const failure = yield* Effect.flip(
+          Schema.decodeUnknownEffect(Schema.Struct({ email: Schema.Finite }))({
+            email: "nope",
+          })
+        );
 
-    const message = toErrorMessage(failure);
+        const message = toErrorMessage(failure);
 
-    expect(failure._tag).toBe("SchemaError");
-    expect(message).toBe(genericErrorMessage);
-  });
+        expect(failure).toBeInstanceOf(Schema.SchemaError);
+        expect(message).toBe(genericErrorMessage);
+      })
+  );
 
   it("should read the message of any other Error", () => {
     const error = new Error("Request timed out");

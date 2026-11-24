@@ -8,25 +8,25 @@ const isTextBody = Schema.is(Schema.NonEmptyString);
 
 export const genericErrorMessage = "Something went wrong. Please try again.";
 
-export const toErrorMessage = (error: unknown): string => {
-  if (error instanceof HttpResponseError) {
-    if (isErrorResponse(error.data)) {
-      return error.data.message;
+export const toErrorMessage = (cause: unknown): string => {
+  if (cause instanceof HttpResponseError) {
+    if (isErrorResponse(cause.data)) {
+      return cause.data.message;
     }
 
-    if (isTextBody(error.data)) {
-      return error.data;
+    if (isTextBody(cause.data)) {
+      return cause.data;
     }
 
-    return error.message;
+    return cause.message;
   }
 
-  if (Predicate.isTagged(error, "SchemaError")) {
+  if (Predicate.isTagged(cause, "SchemaError")) {
     return genericErrorMessage;
   }
 
-  if (error instanceof Error) {
-    return error.message;
+  if (cause instanceof Error) {
+    return cause.message;
   }
 
   return genericErrorMessage;

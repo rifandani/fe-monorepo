@@ -1,6 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { test } from "@fast-check/vitest";
-import { sessionArb, ioPropertyParameters } from "@test/arbitraries";
+import { ioPropertyOptions, sessionArbitrary } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { authApi } from "@workspace/core/auth/api";
 import type {
@@ -103,18 +102,22 @@ describe("authApi.login", () => {
 
       const error = yield* Effect.flip(login(adaCredentials));
 
-      expect(error).toMatchObject({ _tag: "HttpResponseError", status: 500 });
+      expect(error).toBeInstanceOf(HttpResponseError);
+      expect(error).toMatchObject({ status: 500 });
     })
   );
 
-  test.prop([sessionArb], ioPropertyParameters())(
+  it.effect.prop(
     "should decode any Session the schema accepts unchanged",
-    async (session) => {
-      respondWith(() => HttpResponse.json(session));
+    [sessionArbitrary],
+    ([session]) =>
+      Effect.gen(function* () {
+        respondWith(() => HttpResponse.json(session));
 
-      const result = await Effect.runPromise(login(adaCredentials));
+        const result = yield* login(adaCredentials);
 
-      expect(result).toEqual(session);
-    }
+        expect(result).toEqual(session);
+      }),
+    ioPropertyOptions()
   );
 });

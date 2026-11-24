@@ -1,5 +1,6 @@
 import { fc } from "@fast-check/vitest";
-import { Effect, Metric } from "effect";
+import type { Effect } from "effect";
+import { Context, Metric } from "effect";
 import { describe, expect, it, vi } from "vitest";
 import type { Metric as WebVitalsMetric } from "web-vitals";
 
@@ -121,12 +122,8 @@ type WebVitalsModule = Awaited<ReturnType<typeof loadModule>>;
 type HistogramKey = keyof WebVitalsModule["webVitalsHistograms"];
 
 const samplesOf = (module: WebVitalsModule, key: HistogramKey) =>
-  Effect.runSync(
-    Effect.provideService(
-      Metric.snapshot,
-      Metric.MetricRegistry,
-      harness.registry.current
-    )
+  Metric.snapshotUnsafe(
+    Context.make(Metric.MetricRegistry, harness.registry.current)
   )
     .filter(
       (snapshot) =>

@@ -8,22 +8,22 @@ export interface ReportedError {
   [key: string]: ErrorAttributeValue;
 }
 
-const describeThrown = (thrown: unknown): string => {
+const describeThrown = (cause: unknown): string => {
   try {
-    return String(thrown);
+    return String(cause);
   } catch {
-    return Object.prototype.toString.call(thrown);
+    return Object.prototype.toString.call(cause);
   }
 };
 
 export const toReportedError = (
-  thrown: unknown,
+  cause: unknown,
   extra: Record<string, ErrorAttributeValue> = {}
 ): ReportedError => ({
   ...extra,
-  message: thrown instanceof Error ? thrown.message : describeThrown(thrown),
-  name: thrown instanceof Error ? thrown.name : undefined,
-  stack: thrown instanceof Error ? thrown.stack : undefined,
+  message: cause instanceof Error ? cause.message : describeThrown(cause),
+  name: cause instanceof Error ? cause.name : undefined,
+  stack: cause instanceof Error ? cause.stack : undefined,
 });
 
 const errorAttributes = (error: ReportedError) =>

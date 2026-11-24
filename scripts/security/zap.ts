@@ -89,7 +89,7 @@ const args = [
   `/zap/wrk/.github/security/zap/${plan}.yaml`,
 ];
 
-console.log(`zap: ${plan} → ${target}`);
+console.log(`zap: ${plan} → ${targetUrl.origin}${targetUrl.pathname}`);
 
 const result = spawnSync("docker", args, { stdio: "inherit" });
 

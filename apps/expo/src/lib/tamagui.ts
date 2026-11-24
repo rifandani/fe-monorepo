@@ -1,4 +1,4 @@
-/* oxlint-disable typescript/no-empty-interface typescript/no-empty-object-type */
+/* oxlint-disable typescript/no-empty-interface typescript/no-empty-object-type -- module augmentation needs an empty interface */
 import { defaultConfig } from "@tamagui/config/v4";
 import { createTamagui } from "tamagui";
 

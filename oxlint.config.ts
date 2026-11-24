@@ -20,6 +20,22 @@ const presets = [
 
 const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
+  "comments/directive-reason": "error",
+  "effect-tests/no-manual-effect-runtime-in-tests": "error",
+  "anti-slop-effect/no-manual-effect-error-tag": "error",
+  "anti-slop-effect/no-manual-tag-comparison": "error",
+  "anti-slop-effect/no-manual-tagged-construction": "error",
+  "anti-slop-effect/no-manual-tagged-type": "error",
+  "anti-slop-effect/no-service-constructor-imports": "error",
+  "anti-slop-effect/prefer-effect-match": "error",
+  "anti-slop-effect/prefer-tagged-error-handling": "error",
+  "anti-slop-effect/require-cause-when-narrowing": "error",
+  "anti-slop-effect/require-operation-span": "error",
+  "landmines/no-fixed-sleep": "error",
+  "landmines/no-flake-masking": "error",
+  "landmines/no-flake-masking-timeout": ["warn", { check: "timeout" }],
+  "landmines/no-test-doubles": "warn",
+  "landmines/no-unsignaled-poll": "error",
   "sort-keys": "off",
   "no-inline-comments": "off",
   "no-nested-ternary": "off",
@@ -130,9 +146,36 @@ export default defineConfig({
   jsPlugins: [
     "@xstate/effect/oxlint",
     "./tools/lint/oxlint-plugin-comments.ts",
+    "./tools/lint/effect-tests.ts",
+    {
+      name: "anti-slop-effect",
+      specifier: "./tools/lint/anti-slop-effect/index.ts",
+    },
+    { name: "landmines", specifier: "./tools/lint/landmines/index.ts" },
   ],
   rules,
   overrides: [
+    {
+      files: ["tools/lint/anti-slop-effect/**", "tools/lint/landmines/**"],
+      rules: {
+        "anti-slop/no-runtime-typeof": "off",
+        "anti-slop/require-readable-spacing": "off",
+        "import/consistent-type-specifier-style": "off",
+        "anti-slop-effect/no-service-constructor-imports": "off",
+        "eslint/complexity": "off",
+        "eslint/func-style": "off",
+        "eslint/no-nested-ternary": "off",
+        "eslint/no-use-before-define": "off",
+        "eslint/no-useless-return": "off",
+        "eslint/prefer-destructuring": "off",
+        "promise/prefer-await-to-callbacks": "off",
+        "typescript/consistent-return": "off",
+        "typescript/strict-boolean-expressions": "off",
+        "unicorn/consistent-function-scoping": "off",
+        "unicorn/no-lonely-if": "off",
+        "unicorn/prefer-array-index-of": "off",
+      },
+    },
     {
       files: ["apps/spa/src/**"],
       rules: {
@@ -143,23 +186,6 @@ export default defineConfig({
       files: ["**/*.unit.test.ts", "**/*.unit.test.tsx", "**/e2e/**"],
       rules: {
         "anti-slop/no-module-mocking": "off",
-      },
-    },
-    {
-      files: [
-        "packages/core/src/utils/error.ts",
-        "apps/spa/src/utils/telemetry.ts",
-      ],
-      rules: {
-        "anti-slop/no-unknown-parameters": "off",
-      },
-    },
-    {
-      files: ["scripts/security/sca-gate-core.ts"],
-      rules: {
-        "anti-slop/no-unknown-parameters": "off",
-        "anti-slop/no-unsafe-dictionary-type": "off",
-        "anti-slop/no-runtime-typeof": "off",
       },
     },
     {
@@ -203,6 +229,8 @@ export default defineConfig({
     "**/.repos",
     "**/repos",
     "**/.impeccable",
-    "**/docs",
+    "docs/**",
+    "apps/*/docs/**",
+    "packages/*/docs/**",
   ],
 });

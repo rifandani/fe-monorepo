@@ -1,5 +1,4 @@
-/* oxlint-disable import/no-cycle */
-// fallow-ignore-file circular-dependency
+// fallow-ignore-file circular-dependency -- the devtools panel needs the router, and the router mounts the devtools
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { FormDevtoolsPanel } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";

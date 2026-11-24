@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
-import { fc, test } from "@fast-check/vitest";
 import { Effect, Schema } from "effect";
+import { KeyValueStore } from "effect/persistence";
 import { vi } from "vitest";
 
 import { appStorageId, makeMmkvKeyValueStore } from "./mmkv";
@@ -123,8 +123,8 @@ describe("makeMmkvKeyValueStore", () => {
 
       const error = yield* Effect.flip(store.get("key"));
 
+      expect(error).toBeInstanceOf(KeyValueStore.KeyValueStoreError);
       expect(error).toMatchObject({
-        _tag: "KeyValueStoreError",
         method: "get",
         key: "key",
         message: "MMKV get failed for key key",
@@ -143,41 +143,45 @@ describe("makeMmkvKeyValueStore", () => {
 
       const error = yield* Effect.flip(store.clear);
 
+      expect(error).toBeInstanceOf(KeyValueStore.KeyValueStoreError);
       expect(error).toMatchObject({
-        _tag: "KeyValueStoreError",
         method: "clear",
         message: "MMKV clear failed",
       });
     })
   );
 
-  test.prop([fc.dictionary(fc.string(), fc.string())])(
+  it.effect.prop(
     "should always read back every value it set, and list exactly those keys",
-    (entries) => {
-      const store = makeMmkvKeyValueStore(memoryMmkv());
+    [Schema.Record(Schema.String, Schema.String)],
+    ([entries]) =>
+      Effect.gen(function* () {
+        const store = makeMmkvKeyValueStore(memoryMmkv());
 
-      for (const [key, value] of Object.entries(entries)) {
-        Effect.runSync(store.set(key, value));
-      }
+        for (const [key, value] of Object.entries(entries)) {
+          yield* store.set(key, value);
+        }
 
-      for (const [key, value] of Object.entries(entries)) {
-        expect(Effect.runSync(store.get(key))).toBe(value);
-      }
+        for (const [key, value] of Object.entries(entries)) {
+          expect(yield* store.get(key)).toBe(value);
+        }
 
-      expect(Effect.runSync(store.keys).toSorted()).toEqual(
-        Object.keys(entries).toSorted()
-      );
-    }
+        expect((yield* store.keys).toSorted()).toEqual(
+          Object.keys(entries).toSorted()
+        );
+      })
   );
 
-  test.prop([fc.string({ minLength: 1 })])(
+  it.effect.prop(
     "should always name the key in the error of a failed read",
-    (key) => {
-      const store = makeMmkvKeyValueStore(brokenMmkv());
+    [Schema.NonEmptyString],
+    ([key]) =>
+      Effect.gen(function* () {
+        const store = makeMmkvKeyValueStore(brokenMmkv());
 
-      const error = Effect.runSync(Effect.flip(store.get(key)));
+        const error = yield* Effect.flip(store.get(key));
 
-      expect(error.message).toBe(`MMKV get failed for key ${key}`);
-    }
+        expect(error.message).toBe(`MMKV get failed for key ${key}`);
+      })
   );
 });

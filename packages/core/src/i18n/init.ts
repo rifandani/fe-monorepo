@@ -1,4 +1,4 @@
-/* oxlint-disable react-doctor/js-hoist-intl sonarjs/no-duplicate-string eslint/func-style */
+/* oxlint-disable react-doctor/js-hoist-intl -- each formatter needs the locale and options of its own call */
 import type { ParamOptions } from "@workspace/core/i18n/define-translation";
 import type { Register } from "@workspace/core/i18n/my-translations";
 
@@ -146,6 +146,10 @@ const isStringArg = (value: TranslationArg): value is string =>
 
 const replaceLiteral = (text: string, search: string, value: string) =>
   text.replace(search, () => value);
+
+const REGEXP_SYNTAX = /[$()*+.?[\\\]^{|}]/gu;
+
+const escapeRegExp = (text: string) => text.replaceAll(REGEXP_SYNTAX, "\\$&");
 
 const getOrderedLocaleAndParentLocales = (locale: string) => {
   const locales = [];
@@ -323,7 +327,11 @@ const performSubstitution = (
   translationParams: ParamOptions
 ): string =>
   Object.entries(args).reduce((result, [argKey, argValue]) => {
-    const match = new RegExp(`\\{${argKey}:?([^}]*)?\\}`, "u").exec(result);
+    const match = new RegExp(
+      `\\{${escapeRegExp(argKey)}:?([^}]*)?\\}`,
+      "u"
+    ).exec(result);
+
     const [replaceKey, argType] = match ?? [`{${argKey}}`, undefined];
 
     const substitute =

@@ -1,9 +1,9 @@
 import { describe, expect, it } from "@effect/vitest";
-import { test } from "@fast-check/vitest";
-import { errorStatusArb, ioPropertyParameters } from "@test/arbitraries";
+import { errorStatusArbitrary, ioPropertyOptions } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { sessionRefreshLayer } from "@workspace/core/auth/session-refresh";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
+import { SessionRefreshError } from "@workspace/core/session/session-refresh-error";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -61,10 +61,8 @@ describe("sessionRefreshLayer", () => {
 
       const error = yield* Effect.flip(refresh("expired"));
 
-      expect(error).toMatchObject({
-        _tag: "SessionRefreshError",
-        reason: "Rejected",
-      });
+      expect(error).toBeInstanceOf(SessionRefreshError);
+      expect(error).toMatchObject({ reason: "Rejected" });
     })
   );
 
@@ -80,16 +78,17 @@ describe("sessionRefreshLayer", () => {
       })
   );
 
-  test.prop([errorStatusArb(401, 403)], ioPropertyParameters())(
+  it.effect.prop(
     "should never end the Session for an error status other than 401 and 403",
-    async (status) => {
-      respondWithStatus(status);
+    [errorStatusArbitrary(401, 403)],
+    ([status]) =>
+      Effect.gen(function* () {
+        respondWithStatus(status);
 
-      const error = await Effect.runPromise(
-        Effect.flip(refresh("ada-refresh"))
-      );
+        const error = yield* Effect.flip(refresh("ada-refresh"));
 
-      expect(error).toMatchObject({ reason: "Failed" });
-    }
+        expect(error).toMatchObject({ reason: "Failed" });
+      }),
+    ioPropertyOptions()
   );
 });

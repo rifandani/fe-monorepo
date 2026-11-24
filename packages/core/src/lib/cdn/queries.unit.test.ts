@@ -18,6 +18,10 @@ import { describe, expect, it } from "vitest";
 const fileUrl = "https://cdn.example.com/a.png";
 const key = cdnValidKeys.getArticleCoverImage;
 
+const makeRuntime = () =>
+  // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- the unit under test takes a ManagedRuntime, as the app does
+  ManagedRuntime.make(FetchHttpClient.layer);
+
 const serveFile = () => {
   server.use(
     http.get(fileUrl, () =>
@@ -38,7 +42,7 @@ describe("cdnKeys", () => {
 
 describe("cdnFileQueryOptions", () => {
   it("should skip the query while the URL is missing or empty", () => {
-    const runtime = ManagedRuntime.make(FetchHttpClient.layer);
+    const runtime = makeRuntime();
 
     const missing = cdnFileQueryOptions(runtime, { key });
     const empty = cdnFileQueryOptions(runtime, { key, url: "" });
@@ -49,7 +53,7 @@ describe("cdnFileQueryOptions", () => {
 
   it("should download the file under its key", async () => {
     serveFile();
-    const runtime = ManagedRuntime.make(FetchHttpClient.layer);
+    const runtime = makeRuntime();
     const options = cdnFileQueryOptions(runtime, { key, url: fileUrl });
 
     const file = await new QueryClient().query(options);
@@ -64,7 +68,7 @@ describe("cdnFileQueryOptions", () => {
 describe("cdnFileMutationOptions", () => {
   it("should download the URL given to mutate", async () => {
     serveFile();
-    const runtime = ManagedRuntime.make(FetchHttpClient.layer);
+    const runtime = makeRuntime();
 
     const observer = new MutationObserver(
       new QueryClient(),

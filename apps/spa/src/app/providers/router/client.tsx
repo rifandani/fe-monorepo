@@ -1,4 +1,3 @@
-/* oxlint-disable import/no-cycle */
 import { useAtomValue } from "@effect/atom-react";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRouter } from "@tanstack/react-router";

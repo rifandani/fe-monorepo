@@ -1,4 +1,4 @@
-// fallow-ignore-file unused-file
+// fallow-ignore-file unused-file -- template component kept for apps built from this template
 import type { ComponentPropsWithoutRef } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";

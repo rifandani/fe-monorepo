@@ -1,4 +1,4 @@
-/* oxlint-disable import/no-cycle typescript/ban-types */
+/* oxlint-disable typescript/ban-types -- `{} & string` keeps route autocompletion and still accepts any string */
 import type { QueryClient } from "@tanstack/react-query";
 import type {
   NavigateOptions,

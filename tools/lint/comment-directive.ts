@@ -8,3 +8,20 @@ const DIRECTIVE_PATTERN =
 
 export const isDirective = (comment: SourceComment): boolean =>
   comment.type === "Shebang" || DIRECTIVE_PATTERN.test(comment.value);
+
+const SUPPRESSION_PATTERN =
+  /^[\s*]*(?:(?:oxlint|eslint)-disable(?:-next-line|-line)?\b|@ts-(?:expect-error|ignore|nocheck)\b|fallow-ignore(?:-next-line|-file)?\b|Stryker disable\b|istanbul ignore\b|[vc]8 ignore (?!stop\b)|gitleaks:allow)/u;
+
+const STRYKER_PATTERN = /^[\s*]*Stryker disable\b/u;
+
+const DASH_REASON_PATTERN = /\s--\s+\S/u;
+
+const COLON_REASON_PATTERN = /:\s*\S/u;
+
+export const isSuppression = (comment: SourceComment): boolean =>
+  comment.type !== "Shebang" && SUPPRESSION_PATTERN.test(comment.value);
+
+export const hasReason = (comment: SourceComment): boolean =>
+  DASH_REASON_PATTERN.test(comment.value) ||
+  (STRYKER_PATTERN.test(comment.value) &&
+    COLON_REASON_PATTERN.test(comment.value));

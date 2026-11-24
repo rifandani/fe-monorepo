@@ -1,10 +1,14 @@
 import { describe, expect, it } from "@effect/vitest";
-import { fc, test } from "@fast-check/vitest";
-import { errorStatusArb, ioPropertyParameters } from "@test/arbitraries";
+import {
+  accessTokenArbitrary,
+  errorStatusArbitrary,
+  ioPropertyOptions,
+} from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import type { HttpAuthConfig } from "@workspace/core/http/http";
+import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { Effect, Layer, Option } from "effect";
@@ -116,8 +120,6 @@ const sessionEndCounter = () => {
   return counter;
 };
 
-const accessTokenArb = fc.stringMatching(/^[!-~]+$/u);
-
 describe("Http", () => {
   it.effect("should resolve a relative path against the base URL", () =>
     Effect.gen(function* () {
@@ -163,7 +165,8 @@ describe("Http", () => {
           currentAccessToken,
         ]).pipe(withHttp({ accessToken: "abc123", onEnd: counter.onEnd }));
 
-        expect(error).toMatchObject({ _tag: "HttpResponseError", status: 401 });
+        expect(error).toBeInstanceOf(HttpResponseError);
+        expect(error).toMatchObject({ status: 401 });
         expect(Option.isNone(token)).toBe(true);
         expect(counter.ended).toBe(1);
       })
@@ -196,7 +199,8 @@ describe("Http", () => {
           )
         );
 
-        expect(error).toMatchObject({ _tag: "HttpResponseError", status: 401 });
+        expect(error).toBeInstanceOf(HttpResponseError);
+        expect(error).toMatchObject({ status: 401 });
         expect(requests).toHaveLength(2);
       })
   );
@@ -259,8 +263,8 @@ describe("Http", () => {
 
       const error = yield* Effect.flip(getThings().pipe(withHttp()));
 
+      expect(error).toBeInstanceOf(HttpResponseError);
       expect(error).toMatchObject({
-        _tag: "HttpResponseError",
         status: 403,
         method: "GET",
         url: resourceUrl,
@@ -289,7 +293,7 @@ describe("Http", () => {
 
       const error = yield* Effect.flip(getThings().pipe(withHttp()));
 
-      expect(error).toMatchObject({ _tag: "HttpResponseError" });
+      expect(error).toBeInstanceOf(HttpResponseError);
       expect("data" in error ? error.data : "missing").toBeUndefined();
     })
   );
@@ -346,47 +350,53 @@ describe("Http", () => {
       })
   );
 
-  test.prop([accessTokenArb], ioPropertyParameters())(
+  it.effect.prop(
     "should always send the Access Token as a Bearer header",
-    async (accessToken) => {
-      const requests = captureRequests();
+    [accessTokenArbitrary],
+    ([accessToken]) =>
+      Effect.gen(function* () {
+        const requests = captureRequests();
 
-      await Effect.runPromise(getThings().pipe(withHttp({ accessToken })));
+        yield* getThings().pipe(withHttp({ accessToken }));
 
-      expect(requests[0]?.headers.get("Authorization")).toBe(
-        `Bearer ${accessToken}`
-      );
-    }
+        expect(requests[0]?.headers.get("Authorization")).toBe(
+          `Bearer ${accessToken}`
+        );
+      }),
+    ioPropertyOptions()
   );
 
-  test.prop([errorStatusArb()], ioPropertyParameters())(
+  it.effect.prop(
     "should always fail an error status with an HttpResponseError for that status",
-    async (status) => {
-      respondWithStatus(status);
+    [errorStatusArbitrary()],
+    ([status]) =>
+      Effect.gen(function* () {
+        respondWithStatus(status);
 
-      const error = await Effect.runPromise(
-        Effect.flip(getThings().pipe(withHttp()))
-      );
+        const error = yield* Effect.flip(getThings().pipe(withHttp()));
 
-      expect(error).toMatchObject({ _tag: "HttpResponseError", status });
-    }
+        expect(error).toBeInstanceOf(HttpResponseError);
+        expect(error).toMatchObject({ status });
+      }),
+    ioPropertyOptions()
   );
 
-  test.prop([errorStatusArb(401)], ioPropertyParameters())(
+  it.effect.prop(
     "should never end the Session for an error status other than 401",
-    async (status) => {
-      const counter = sessionEndCounter();
-      respondWithStatus(status);
+    [errorStatusArbitrary(401)],
+    ([status]) =>
+      Effect.gen(function* () {
+        const counter = sessionEndCounter();
+        respondWithStatus(status);
 
-      await Effect.runPromise(
-        Effect.flip(
+        yield* Effect.flip(
           getThings().pipe(
             withHttp({ accessToken: "abc123", onEnd: counter.onEnd })
           )
-        )
-      );
+        );
 
-      expect(counter.ended).toBe(0);
-    }
+        expect(counter.ended).toBe(0);
+      }),
+    ioPropertyOptions()
   );
 });

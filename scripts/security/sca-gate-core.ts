@@ -1,50 +1,6 @@
+import { flow, Predicate, Result, Schema, SchemaIssue } from "effect";
+
 export type SeverityBand = "low" | "moderate" | "high" | "critical";
-
-export interface AllowEntry {
-  id: string;
-  package?: string;
-  severity?: string;
-  expires: string;
-  reason?: string;
-}
-
-export interface OsvVuln {
-  id: string;
-  summary?: string;
-  aliases?: string[];
-  database_specific?: { severity?: string };
-}
-
-export interface OsvGroup {
-  ids?: string[];
-  max_severity?: string;
-}
-
-export interface OsvPackage {
-  package?: { name?: string; version?: string };
-  vulnerabilities: OsvVuln[];
-  groups?: OsvGroup[];
-}
-
-export interface OsvResult {
-  packages: OsvPackage[];
-}
-
-export interface OsvDocument {
-  results: OsvResult[];
-}
-
-export interface Finding {
-  id: string;
-  package: string;
-  version: string;
-  severity: SeverityBand;
-  summary: string;
-}
-
-export type Decoded<T> =
-  | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly error: string };
 
 export const LEVEL_RANK = {
   low: 1,
@@ -55,149 +11,6 @@ export const LEVEL_RANK = {
 
 export const isSeverityBand = (value: string): value is SeverityBand =>
   Object.hasOwn(LEVEL_RANK, value);
-
-class DecodeError extends Error {
-  override name = "DecodeError";
-}
-
-type Reader<T> = (input: unknown, at: string) => T;
-
-const reject = (at: string, expected: string): never => {
-  throw new DecodeError(`${at}: expected ${expected}`);
-};
-
-const isRecord = (input: unknown): input is Readonly<Record<string, unknown>> =>
-  typeof input === "object" && input !== null && !Array.isArray(input);
-
-const readRecord: Reader<Readonly<Record<string, unknown>>> = (input, at) =>
-  isRecord(input) ? input : reject(at, "an object");
-
-const readString: Reader<string> = (input, at) =>
-  typeof input === "string" ? input : reject(at, "a string");
-
-const readNonEmptyString: Reader<string> = (input, at) => {
-  const value = readString(input, at);
-
-  return value === "" ? reject(at, "a non-empty string") : value;
-};
-
-const readArray =
-  <T>(readItem: Reader<T>): Reader<T[]> =>
-  (input, at) => {
-    if (!Array.isArray(input)) {
-      return reject(at, "an array");
-    }
-
-    const items: readonly unknown[] = input;
-
-    return items.map((item, index) => readItem(item, `${at}[${index}]`));
-  };
-
-const required = <T>(
-  record: Readonly<Record<string, unknown>>,
-  key: string,
-  read: Reader<T>,
-  at: string
-): T => read(record[key], `${at}.${key}`);
-
-const optional = <T>(
-  record: Readonly<Record<string, unknown>>,
-  key: string,
-  read: Reader<T>,
-  at: string
-): T | undefined =>
-  Object.hasOwn(record, key) ? read(record[key], `${at}.${key}`) : undefined;
-
-const attempt = <T>(run: () => T): Decoded<T> => {
-  try {
-    return { ok: true, value: run() };
-  } catch (error) {
-    if (error instanceof DecodeError) {
-      return { ok: false, error: error.message };
-    }
-
-    throw error;
-  }
-};
-
-const readStrings = readArray(readString);
-
-const readDatabaseSpecific: Reader<OsvVuln["database_specific"]> = (
-  input,
-  at
-) => ({
-  severity: optional(readRecord(input, at), "severity", readString, at),
-});
-
-const readVuln: Reader<OsvVuln> = (input, at) => {
-  const record = readRecord(input, at);
-
-  return {
-    id: required(record, "id", readString, at),
-    summary: optional(record, "summary", readString, at),
-    aliases: optional(record, "aliases", readStrings, at),
-    database_specific: optional(
-      record,
-      "database_specific",
-      readDatabaseSpecific,
-      at
-    ),
-  };
-};
-
-const readGroup: Reader<OsvGroup> = (input, at) => {
-  const record = readRecord(input, at);
-
-  return {
-    ids: optional(record, "ids", readStrings, at),
-    max_severity: optional(record, "max_severity", readString, at),
-  };
-};
-
-const readPackageInfo: Reader<OsvPackage["package"]> = (input, at) => {
-  const record = readRecord(input, at);
-
-  return {
-    name: optional(record, "name", readString, at),
-    version: optional(record, "version", readString, at),
-  };
-};
-
-const readPackage: Reader<OsvPackage> = (input, at) => {
-  const record = readRecord(input, at);
-
-  return {
-    package: optional(record, "package", readPackageInfo, at),
-    vulnerabilities: required(
-      record,
-      "vulnerabilities",
-      readArray(readVuln),
-      at
-    ),
-    groups: optional(record, "groups", readArray(readGroup), at),
-  };
-};
-
-const readResult: Reader<OsvResult> = (input, at) => ({
-  packages: required(
-    readRecord(input, at),
-    "packages",
-    readArray(readPackage),
-    at
-  ),
-});
-
-const readDocument: Reader<OsvDocument> = (input, at) => ({
-  results: required(
-    readRecord(input, at),
-    "results",
-    readArray(readResult),
-    at
-  ),
-});
-
-export const decodeOsvDocument = (input: unknown): Decoded<OsvDocument> =>
-  attempt(() => readDocument(input, "osv-scanner output"));
 
 const CALENDAR_DATE = /^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$/u;
 
@@ -218,54 +31,157 @@ export const isCalendarDate = (value: string): boolean => {
   return date.toISOString().slice(0, 10) === value;
 };
 
-const readCalendarDate: Reader<string> = (input, at) => {
-  const value = readString(input, at);
+const CalendarDateSchema = Schema.String.check(
+  Schema.makeFilter(isCalendarDate, {
+    expected: "a real date in YYYY-MM-DD form",
+  })
+);
 
-  return isCalendarDate(value)
-    ? value
-    : reject(at, "a real date in YYYY-MM-DD form");
+const AllowEntrySchema = Schema.Struct({
+  id: Schema.NonEmptyString,
+  package: Schema.optionalKey(Schema.String),
+  severity: Schema.optionalKey(Schema.String),
+  expires: CalendarDateSchema,
+  reason: Schema.optionalKey(Schema.String),
+});
+
+export type AllowEntry = typeof AllowEntrySchema.Type;
+
+const AllowlistSchema = Schema.Struct({
+  entries: Schema.Array(AllowEntrySchema),
+});
+
+const OsvVulnSchema = Schema.Struct({
+  id: Schema.String,
+  summary: Schema.optionalKey(Schema.String),
+  aliases: Schema.optionalKey(Schema.Array(Schema.String)),
+  database_specific: Schema.optionalKey(
+    Schema.Struct({ severity: Schema.optionalKey(Schema.String) })
+  ),
+});
+
+type OsvVuln = typeof OsvVulnSchema.Type;
+
+const OsvGroupSchema = Schema.Struct({
+  ids: Schema.optionalKey(Schema.Array(Schema.String)),
+  max_severity: Schema.optionalKey(Schema.String),
+});
+
+type OsvGroup = typeof OsvGroupSchema.Type;
+
+const OsvPackageSchema = Schema.Struct({
+  package: Schema.optionalKey(
+    Schema.Struct({
+      name: Schema.optionalKey(Schema.String),
+      version: Schema.optionalKey(Schema.String),
+    })
+  ),
+  vulnerabilities: Schema.Array(OsvVulnSchema),
+  groups: Schema.optionalKey(Schema.Array(OsvGroupSchema)),
+});
+
+type OsvPackage = typeof OsvPackageSchema.Type;
+
+const OsvDocumentSchema = Schema.Struct({
+  results: Schema.Array(
+    Schema.Struct({ packages: Schema.Array(OsvPackageSchema) })
+  ),
+});
+
+export type OsvDocument = typeof OsvDocumentSchema.Type;
+
+export interface Finding {
+  id: string;
+  package: string;
+  version: string;
+  severity: SeverityBand;
+  summary: string;
+}
+
+export type Decoded<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly error: string };
+
+const toDecoded = <T>(result: Result.Result<T, string>): Decoded<T> =>
+  Result.isSuccess(result)
+    ? { ok: true, value: result.success }
+    : { ok: false, error: result.failure };
+
+const formatIssue = SchemaIssue.makeFormatterStandardSchemaV1();
+
+type IssuePath = NonNullable<
+  ReturnType<typeof formatIssue>["issues"][number]["path"]
+>;
+
+const pathKey = (segment: IssuePath[number]): PropertyKey =>
+  Predicate.isPropertyKey(segment) ? segment : segment.key;
+
+const formatPath = (label: string, issuePath: IssuePath) =>
+  issuePath
+    .map(pathKey)
+    .reduce<string>(
+      (at, key) =>
+        Predicate.isNumber(key) ? `${at}[${key}]` : `${at}.${String(key)}`,
+      label
+    );
+
+const describeError = (label: string, error: Schema.SchemaError): string => {
+  const [first] = formatIssue(error.issue).issues;
+
+  return first === undefined
+    ? `${label}: ${error.message}`
+    : `${formatPath(label, first.path ?? [])}: ${first.message}`;
 };
 
-const readAllowEntry: Reader<AllowEntry> = (input, at) => {
-  const record = readRecord(input, at);
+const decodeResult = <S extends Schema.ConstraintDecoder<unknown>>(
+  schema: S,
+  label: string
+) =>
+  flow(
+    Schema.decodeUnknownResult(schema),
+    Result.mapError((schemaError) => describeError(label, schemaError))
+  );
 
-  return {
-    id: required(record, "id", readNonEmptyString, at),
-    package: optional(record, "package", readString, at),
-    severity: optional(record, "severity", readString, at),
-    expires: required(record, "expires", readCalendarDate, at),
-    reason: optional(record, "reason", readString, at),
+const decodeJsonResult = <S extends Schema.ConstraintDecoder<unknown>>(
+  schema: S,
+  label: string
+) => {
+  const decode = decodeResult(schema, label);
+
+  return (text: string): Result.Result<S["Type"], string> => {
+    try {
+      return decode(JSON.parse(text));
+    } catch {
+      return Result.fail(`${label} is not valid JSON`);
+    }
   };
 };
 
-export const decodeAllowlist = (input: unknown): Decoded<AllowEntry[]> =>
-  attempt(() =>
-    required(
-      readRecord(input, "allowlist"),
-      "entries",
-      readArray(readAllowEntry),
-      "allowlist"
-    )
-  );
+const OSV_LABEL = "osv-scanner output";
+const ALLOWLIST_LABEL = "allowlist";
 
-const decodeJson = <T>(
-  text: string,
-  label: string,
-  decode: (input: unknown) => Decoded<T>
-): Decoded<T> => {
-  let json: unknown;
+const entriesOf = Result.map(
+  (allowlist: typeof AllowlistSchema.Type) => allowlist.entries
+);
 
-  try {
-    json = JSON.parse(text);
-  } catch {
-    return { ok: false, error: `${label} is not valid JSON` };
-  }
+export const decodeOsvDocument = flow(
+  decodeResult(OsvDocumentSchema, OSV_LABEL),
+  toDecoded
+);
 
-  return decode(json);
-};
+export const decodeAllowlist = flow(
+  decodeResult(AllowlistSchema, ALLOWLIST_LABEL),
+  entriesOf,
+  toDecoded
+);
 
-export const readAllowlist = (text: string): Decoded<AllowEntry[]> =>
-  decodeJson(text, "allowlist", decodeAllowlist);
+export const readAllowlist = flow(
+  decodeJsonResult(AllowlistSchema, ALLOWLIST_LABEL),
+  entriesOf,
+  toDecoded
+);
+
+const readOsvJson = decodeJsonResult(OsvDocumentSchema, OSV_LABEL);
 
 const countVulnerabilities = (doc: OsvDocument): number =>
   doc.results
@@ -280,7 +196,7 @@ export const readScannerOutput = (
     return { ok: false, error: "osv-scanner output is empty" };
   }
 
-  const decoded = decodeJson(stdout, "osv-scanner output", decodeOsvDocument);
+  const decoded = toDecoded(readOsvJson(stdout));
 
   if (
     decoded.ok &&
