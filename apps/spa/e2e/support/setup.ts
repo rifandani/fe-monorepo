@@ -1,11 +1,8 @@
 import { HttpNetworkFrame } from "msw/experimental";
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
-import { cleanup } from "vitest-browser-react/pure";
-
-import { persistence } from "@/lib/layers/persistence";
-import { queryClient } from "@/providers/query/client";
 
 import { worker } from "./network";
+import { resetApp } from "./reset-app";
 
 const unhandledRequests: string[] = [];
 const consoleErrors: string[] = [];
@@ -51,15 +48,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
-  await cleanup();
-
-  queryClient.clear();
-  localStorage.clear();
-  persistence.registry.refresh(persistence.sessionAtom);
-  persistence.registry.refresh(persistence.themeAtom);
-  persistence.registry.refresh(persistence.localeAtom);
-
-  worker.resetHandlers();
+  await resetApp();
   vi.restoreAllMocks();
 
   const failures = [

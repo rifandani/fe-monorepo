@@ -27,7 +27,8 @@ const isEmilyCredentials = Schema.is(
   })
 );
 
-const api = (path: string) => `${import.meta.env.VITE_API_BASE_URL}/${path}`;
+export const api = (path: string) =>
+  `${import.meta.env.VITE_API_BASE_URL}/${path}`;
 
 const defaultHandlers = [
   http.post(api("auth/login"), async ({ request }) => {

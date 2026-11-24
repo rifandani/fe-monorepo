@@ -36,6 +36,7 @@ export const ProfileMenu = () => {
   return (
     <MenuTrigger>
       <ButtonPrimitive
+        aria-label={t("account")}
         className="focus-visible:ring-primary relative inline text-start outline-hidden focus-visible:ring-1"
         data-slot="menu-trigger"
       >

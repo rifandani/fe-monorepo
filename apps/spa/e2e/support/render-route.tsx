@@ -26,3 +26,6 @@ export const renderRoute = async (
 };
 
 export const currentPath = () => router.state.location.pathname;
+
+export const currentSession = () =>
+  persistence.registry.get(persistence.sessionAtom);

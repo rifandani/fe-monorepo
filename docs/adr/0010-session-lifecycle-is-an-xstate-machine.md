@@ -36,6 +36,6 @@ The library roles stay separate: Effect for services, layers, errors and tracing
 
 ## Consequences
 
-- `xstate` and `@xstate/effect` are beta (`6.0.0-beta.3`, `1.0.0-beta.2`), pinned exactly. `@xstate/effect` is marked experimental, and `effect/reactivity`, which it builds on, is an unstable Effect module. Upgrades can break; read the vendored source in `repos/xstate` (branch `next`) before an upgrade.
+- `xstate` and `@xstate/effect` are beta (`6.0.0-beta.5`, `1.0.0-beta.3` since 2026-11-24, for `@xstate/test`; see [ADR-0011](./0011-model-tests-use-xstate-test.md)), pinned exactly. `@xstate/effect` is marked experimental, and `effect/reactivity`, which it builds on, is an unstable Effect module. Upgrades can break; read the vendored source in `repos/xstate` (branch `next`) before an upgrade.
 - The `xstate-effect/no-inline-effect` lint rule is on: an inline `enq(() => Effect.log(...))` builds an Effect that never runs.
 - The Session Machine has no persisted snapshot. After a restart it starts in `idle`, and the Session comes from `sessionAtom`.

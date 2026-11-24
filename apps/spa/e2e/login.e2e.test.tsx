@@ -3,6 +3,7 @@ import { page } from "vitest/browser";
 
 import { persistence } from "@/lib/layers/persistence";
 
+import { loginForm } from "./support/login-form";
 import { emily, emilySession } from "./support/network";
 import { currentPath, renderRoute } from "./support/render-route";
 
@@ -11,14 +12,6 @@ const invalidPassword = "0lelp";
 
 const wrongUsername = "1emilys";
 const wrongPassword = "1emilyspass";
-
-const loginForm = () => ({
-  usernameInput: page.getByRole("textbox", { name: /username/iu }),
-  passwordInput: page.getByRole("textbox", { name: /password/iu }),
-  usernameAlert: page.getByText(/username must contain at least/iu),
-  passwordAlert: page.getByText(/password must contain at least/iu),
-  submitButton: page.getByRole("button", { name: /login|masuk/iu }),
-});
 
 describe("login route", () => {
   test("a signed-in person goes back to the Home page", async () => {
@@ -83,9 +76,8 @@ describe("login route", () => {
       usernameAlert,
       passwordAlert,
       submitButton,
+      mutationError,
     } = loginForm();
-
-    const mutationError = page.getByTestId("mutation-error");
 
     await expect.element(usernameInput).toBeVisible();
     await expect.element(passwordInput).toBeVisible();

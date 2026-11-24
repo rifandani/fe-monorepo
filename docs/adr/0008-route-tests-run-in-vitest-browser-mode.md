@@ -4,6 +4,8 @@ The spa end-to-end suite moved from the Playwright test runner to Vitest browser
 
 The old suite started a Vite dev server (or a build and a preview server on CI), sent its requests to the real DummyJSON API, and signed in once through a setup project that saved a storage state. So a run depended on a third-party service and on an env file, and a failure could come from the network, the server or the test. The new suite needs no server process, no env file, no secret and no external host. It starts the same Vite pipeline as the app, inside the Vitest runner that the unit tests already use.
 
+> On 2026-11-24, Route Tests gained a Model Test (`apps/spa/e2e/session.model.e2e.test.tsx`) with `@xstate/test`. It runs `testPaths()` in this suite, with its own SUT Adapter on `vitest/browser` locators and `worker.use(...)`; `@xstate/test/playwright` is not used, because it needs a Playwright `Page`. See [ADR-0011](./0011-model-tests-use-xstate-test.md).
+
 ## Decisions
 
 - **Files and config.** Tests are `apps/spa/e2e/*.e2e.test.tsx`. Support code is in `apps/spa/e2e/support/`. They run from `apps/spa/vitest.e2e.config.ts`, which merges `vite.config.ts`. It is **not** a project of the root `vitest.config.ts`: `test:unit`, coverage and Stryker load the root config, and none of them may start a browser. The scripts are `bun spa test:e2e` (also `bun spa:test:e2e` from the root), `test:e2e:watch`, `test:e2e:headed`, and `test:install` for Chromium.
