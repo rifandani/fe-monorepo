@@ -28,8 +28,6 @@ Depends on [ADR-0001](./0001-unit-tests-are-pure-module-logic.md) (scope of the 
 - **Test style.** Unit tests follow the `javascript-testing-expert` skill (`.claude/skills/javascript-testing-expert/SKILL.md`): `describe` per function, `it("should …")`, a visible `// Arrange` / `// Act` / `// Assert`, Example Tests before Property Tests. Two repo rules win over the skill: file names stay `*.unit.test.ts` (ADR-0001), and the `// Helpers` section sits after the imports, above the `describe`s, because lint has `no-use-before-define` and `func-style`.
 - **Arbitraries.** Use defaults. No `maxLength` or `min`/`max` unless the code under test requires it. Prefer constrained arbitraries and `map` over `filter` and `fc.pre`. Build inputs whose expected outcome you know; do not re-implement the code in the test.
 
-The how-to for agents is `docs/agents/unit-tests.md`.
-
 ## Considered Options
 
 - **Effect's `it.prop` for Effect files, fast-check elsewhere** — rejected; two engines and two configs. Reconsider if a test needs a Schema-derived arbitrary that is hard to write by hand.

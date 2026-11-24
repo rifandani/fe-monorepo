@@ -45,4 +45,4 @@ A flow whose next step depends on the current step (ADR-0010) has bugs that occu
 
 - `@xstate/test` is `2.0.0-beta.3`, pinned exactly in the root `devDependencies`. It needs `xstate ≥ 6.0.0-beta.5`, so `xstate` moved to `6.0.0-beta.5` and `@xstate/effect` to `1.0.0-beta.3` (ADR-0010). Its peer range is `vitest ^3 || ^4`; Vitest 5 works, because the package imports only Vitest types.
 - The profile menu button has an accessible name (`aria-label={t("account")}`), so a Route Test and a screen reader can find it.
-- The how-to for agents is `docs/agents/model-tests.md`.
+- The how-to for agents is `docs/test/model-tests.md`.
