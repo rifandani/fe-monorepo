@@ -1,0 +1,292 @@
+# @xstate/test
+
+## 2.0.0-beta.3
+
+### Minor Changes
+
+- e67ce38: Use `testPaths(machine, { cases })` to exercise exact payloads for enabled
+  events, including events that lead to the same state. Set `checkUnhandled`
+  per event to verify that the implementation ignores it where the machine
+  has no enabled transition.
+  
+  ```ts
+  await testPaths(machine, {
+    cases: { APPROVE: [{ script: 0 }] },
+    checkUnhandled: { APPROVE: true },
+    sut
+  });
+  ```
+  
+  Use `createTestModel()` to test and replay a standalone specification written
+  with TypeScript functions.
+
+## 2.0.0-beta.2
+
+### Minor Changes
+
+- 2ca7466: Add a SUT session `receive({ signal })` hook for live model-based tests. Let an observed event advance the model and determine which inputs the test can send next. Replay fixtures check the recorded output and report when the SUT takes a different legal branch.
+- e2af1dc: Add experimental `cover` support to `testPaths()`. Define named step predicates or consecutive step sequences to find and run walks that collectively cover them. The planner prefers fewer SUT sessions, then fewer events. Set `maxPaths` to cap the number of sessions.
+  
+  ```ts
+  await testPaths(model, {
+    sut,
+    cover: {
+      requirements: {
+        consecutiveUndos: [
+          ({ event }) => event.type === 'UNDO',
+          ({ event }) => event.type === 'UNDO'
+        ]
+      }
+    }
+  });
+  ```
+- e2af1dc: Import from `@xstate/test/paths` to generate and run deterministic test paths or replay fixtures without installing fast-check.
+  
+  ```ts
+  import { testPaths } from '@xstate/test/paths';
+  
+  await testPaths(machine, { pathGenerator: 'shortest', sut });
+  ```
+
+### Patch Changes
+
+- 268d54e: Preserve the original error when the test adapter's `send()` throws or rejects. The failure trace shows the completed steps and the attempted event, and the replay fixture retries the failed send.
+
+## 2.0.0-beta.1
+
+### Major Changes
+
+- 3cbcc3f: Serialized output no longer uses field names that start with `$` or `_`. Stores such as Convex reject both prefixes, and MongoDB restricts `$`-prefixed field names, so persisted snapshots, `systemTransition` snapshots and effect descriptors could not be stored without rewriting them.
+  
+  | Before                    | After                    | Where                                                                                                      |
+  | ------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+  | `{ $actor: address, incarnation }` | `{ '@actor': address, incarnation }` | `SerializedActorRef`: persisted context, `systemTransition` snapshots, effect descriptors, `sendTo` targets, dead letters, `@xstate/effect` actor `toJSON()` |
+  | `_nextTimerId`            | `nextTimerId`            | Persisted snapshots, `systemTransition` snapshots                                                          |
+  | `_nextActorIds`           | `nextActorIds`           | Persisted snapshots, `systemTransition` snapshots                                                          |
+  | `_stateInputs`            | `stateInputs`            | `systemTransition` snapshots (persisted snapshots already used `stateInputs`)                              |
+  | `{ $error: name, message }` | `{ '@error': name, message }` | `systemTransition` snapshots, `@xstate/test` traces                                                        |
+  | `{ $stateNode: id }`, `{ $systemMapper: key }` | `{ '@stateNode': id }`, `{ '@systemMapper': key }` | `systemTransition` snapshots                                                                        |
+  
+  ```ts
+  // Before
+  { $actor: 'order/worker', incarnation: 'a:1' }
+  // After
+  { '@actor': 'order/worker', incarnation: 'a:1' }
+  ```
+  
+  `snapshot.toJSON()` no longer includes the private `_nextTimerId` and `_nextActorIds` counters.
+  
+  Snapshots written by `6.0.0-beta.1` with the old field names still restore: `restoreActor`, `restoreMachineSnapshot` and `systemTransition` read both shapes. New snapshots use only the new names. Schemas that validate persisted snapshots (for example with `machineVersions`) must use the new names.
+
+## 2.0.0-beta.0
+
+### Patch Changes
+
+- 6cf6982: XState v6 enters beta. No further breaking changes are planned for APIs tagged `@public`; any that are needed will be called out with a migration path. APIs tagged `@experimental` may still change.
+
+## 2.0.0-alpha.4
+
+### Major Changes
+
+- 5b6df81: `@xstate/test/effect-schema` now requires stable Effect 4 (`effect@^4.0.0`). `fromEffectSchema()` builds fast-check arbitraries from the schema's AST. It supports primitives, literals, enums, unions, arrays, tuples, structs with optional properties, records with string keys, and refinements. Unsupported nodes such as `Schema.Date` throw an error naming the node. Pass `override` to supply an arbitrary for them:
+  
+  ```ts
+  import * as fc from 'fast-check';
+  import * as Schema from 'effect/Schema';
+  import { fromEffectSchema } from '@xstate/test/effect-schema';
+  
+  fromEffectSchema(Schema.Struct({ at: Schema.Date }), {
+    override: (ast) =>
+      ast._tag === 'Declaration' ? fc.date({ noInvalidDate: true }) : undefined
+  });
+  ```
+- 5b6df81: The `@xstate/test` entry point no longer exports the internal types `PropertyExecutionConfig` and `PropertyTargetObservation`.
+  
+  The `vitest` peer dependency now accepts Vitest 3 and Vitest 4.
+
+## 2.0.0-alpha.3
+
+### Major Changes
+
+- d2c518b: Names are consistent:
+  
+  | Before                   | After                     |
+  | ------------------------ | ------------------------- |
+  | `createFailureDatabase`  | `createTestFailureStore`  |
+  | `FailureDatabaseOptions` | `TestFailureStoreOptions` |
+  | `serializeTestSuite`     | `testSuiteToJSON`         |
+  | `ModelTestFailure`       | `ModelTestFailureError`   |
+  
+  `testSuiteToJSON` still returns the JSON string that `parseTestSuite` reads. The error's `name` is now `'ModelTestFailureError'`.
+
+## 2.0.0-alpha.2
+
+### Patch Changes
+
+- dd5eb47: Preserve transition coverage identity when microsteps contain resolved function-target records.
+
+## 2.0.0-alpha.1
+
+### Major Changes
+
+- 97e9166: `@xstate/test` 2.0 is model-based and property-based testing for XState v6,
+  built on fast-check. A state machine is the model: `@xstate/test` generates
+  event sequences from it, sends each sequence to the machine and to the system
+  under test (SUT), and fails when the two disagree or a declared property stops
+  holding. All exports are experimental. `xstate` and `fast-check` are required
+  peer dependencies.
+  
+  `propertyTest()` generates random event sequences and shrinks a failing one to
+  a minimal counterexample. fast-check options (`seed`, `numRuns`,
+  `maxCommands`, …) are top-level options:
+  
+  ```ts
+  import * as fc from 'fast-check';
+  import { propertyTest } from '@xstate/test';
+  
+  await propertyTest(cartMachine, {
+    numRuns: 100,
+    events: {
+      ADD: fc.record({ sku: fc.constantFrom('apple', 'pear') }),
+      CHECKOUT: fc.constant({})
+    },
+    sut: {
+      create: () => {
+        const cart = createCart();
+        return {
+          send: (event) => {
+            if (event.type === 'ADD') cart.add(event.sku);
+          },
+          read: () => cart.items()
+        };
+      },
+      projectModel: (snapshot) => snapshot.context.items
+    },
+    invariant: ({ snapshot }) => {
+      expect(Object.values(snapshot.context.items).every((n) => n > 0)).toBe(true);
+    }
+  });
+  ```
+  
+  `testPaths()` walks the machine's state graph and runs every path it finds. It
+  takes the same `events`, `sut`, `states`, `invariant`, and `reference` options:
+  
+  ```ts
+  import { testPaths } from '@xstate/test';
+  
+  await testPaths(cartMachine, { pathGenerator: 'simple', events, sut: cartSut });
+  ```
+  
+  `pick()` builds an event case whose payload comes from the current snapshot.
+  The case is skipped when there is nothing to pick:
+  
+  ```ts
+  import { pick } from '@xstate/test';
+  
+  await propertyTest(cartMachine, {
+    events: {
+      REMOVE: pick(
+        (snapshot) => Object.keys(snapshot.context.items),
+        (sku) => ({ sku })
+      )
+    },
+    sut: cartSut
+  });
+  ```
+  
+  A failure throws `ModelTestFailure`, with the trace, the fast-check seed, and a
+  JSON-safe `fixture`. `replayTest()` replays a fixture without generating
+  anything. `failures: true` saves failing fixtures to `.xstate-test` and replays
+  them before the next campaign:
+  
+  ```ts
+  import { ModelTestFailure, replayTest } from '@xstate/test';
+  
+  await expect(
+    replayTest(cartMachine, fixture, { sut: cartSut })
+  ).rejects.toBeInstanceOf(ModelTestFailure);
+  
+  await propertyTest(cartMachine, { events, sut: cartSut, failures: true });
+  ```
+  
+  Both functions resolve with a `coverage` object: state nodes, transitions,
+  transition pairs, event types, `meta.requirements`, labels, and temporal
+  properties. `formatTestCoverage()` renders it as text or markdown;
+  `formatTestCoverageJUnit()`, `formatTestCoverageHTML()`, and
+  `testCoverageToJSON()` export it; `assertTestCoverage()` enforces thresholds:
+  
+  ```ts
+  import { assertTestCoverage, formatTestCoverage } from '@xstate/test';
+  
+  const { coverage } = await propertyTest(cartMachine, { events, sut: cartSut });
+  console.log(formatTestCoverage(coverage));
+  assertTestCoverage(coverage, { transitions: 1, stateNodes: 1 });
+  ```
+  
+  `generateTestSuite()` keeps a small set of fixtures from a passing campaign
+  that preserves its coverage. `serializeTestSuite()` and `parseTestSuite()`
+  store it, and `describeTestSuite()` registers one test per fixture:
+  
+  ```ts
+  import { describeTestSuite, generateTestSuite } from '@xstate/test';
+  
+  const suite = await generateTestSuite(cartMachine, {
+    seed: 1,
+    numRuns: 200,
+    events,
+    sut: cartSut
+  });
+  describeTestSuite(suite, cartMachine, { invariant: () => {}, sut: cartSut });
+  ```
+  
+  `@xstate/test/vitest` registers a model test in one call. `it.model` runs
+  `propertyTest()` and `it.paths` runs `testPaths()`; failures are saved per
+  test:
+  
+  ```ts
+  import { it } from '@xstate/test/vitest';
+  
+  it.model('the cart matches the model', cartMachine, { events, sut: cartSut });
+  ```
+  
+  `@xstate/test/playwright` provides `createPlaywrightSut()`, a `sut` that drives
+  a Playwright page:
+  
+  ```ts
+  import { createPlaywrightSut } from '@xstate/test/playwright';
+  
+  await propertyTest(formMachine, {
+    events,
+    sut: createPlaywrightSut(page, {
+      reset: async (page) => {
+        await page.goto('/');
+      },
+      events: { NEXT: (page) => page.click('#next') },
+      read: async (page) => ({ step: await page.locator('#step').textContent() }),
+      projectModel: (snapshot) => ({ step: String(snapshot.value) })
+    })
+  });
+  ```
+  
+  Event generators are derived from the machine's `schemas.events` for every
+  event type `events` does not configure. Zod schemas are supported directly,
+  and Effect Schemas through `@xstate/test/effect-schema`. Pass
+  `deriveEvents: false` to turn this off:
+  
+  ```ts
+  import * as z from 'zod';
+  
+  const counterMachine = createMachine({
+    schemas: { events: { INC: z.object({ by: z.number().int().min(1).max(5) }) } },
+    context: { count: 0 },
+    on: {
+      INC: ({ context, event }) => ({ context: { count: context.count + event.by } })
+    }
+  });
+  
+  await propertyTest(counterMachine, {
+    invariant: ({ snapshot }) => {
+      expect(snapshot.context.count).toBeGreaterThanOrEqual(0);
+    }
+  });
+  ```

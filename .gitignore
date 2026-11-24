@@ -1,155 +1,51 @@
-# testing
-# Route Test failure artifacts (screenshots, traces). Rebuilt on each run.
-**/e2e/.artifacts
-# The playwright-cli agent skill writes these.
-.playwright-cli/
-.playwright/
+# eslint
+.eslintcache
+
+# Coverage directory used by tools like istanbul
 coverage
-/.stryker-tmp
-stryker.log
-# The vitest runner writes ./stryker-setup-${STRYKER_MUTATOR_WORKER}.js into cwd,
-# one per worker, and does not always clean them up.
-stryker-setup-*.js
-html
-build
-.next
-out
-stats.html
-.react-router
-.tanstack
-.vitest
+.nyc_output
 
-# misc
-.DS_Store
-**/.env
-**/.env.*
-!**/.env.example
-.repos
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
-build
-dev-dist
-build
-dist
-dist-ssr
-*.local
-*.pem
-.npm-cache
-.tmp-skills
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Editor directories and files
-.idea
+# Other
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-.yarn/install-state.gz
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# Expo
-.expo/
 dist/
-web-build/
-android/
-ios/
-# created using `npm run build:ios:dev:local` scripts
-build-*.tar.gz
-*.apk
-*.aab
-*.app
-*.ipa
+lib/
+es/
+editor/
+_examples/
+__examples/
+*.tsbuildinfo
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
-
-# tamagui
-.tamagui
-
-# expo router
-expo-env.d.ts
-
-# Xcode
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-project.xcworkspace
-
-# Android/IntelliJ
-build/
+# JetBrains IDE's
 .idea
-.gradle
-local.properties
-*.iml
-*.hprof
+.fleet
 
-# BUCK
-buck-out/
-\.buckd/
-*.keystore
+# Documentation
+packages/core/docs/
+docs-src/
+netlify/
+docs/.cache
+!docs/examples/
+*.pdf
 
-# fastlane
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+./public/
+.cache
 
-# database
-*.db
-*.db-journal
-prisma/_sqlite/migrations
+# Docs
+api/
 
-# docker
-otel-lgtm
-.fallow/
+# pnpm
+.pnpm-lock.yaml
 
-# agent worktrees
-.worktrees/
-.claude/worktrees/
-
-# PR Lens writes its previews here. They are rebuilt on demand.
-.pr-lens/
-
-# OWASP ZAP writes DAST reports here. They are rebuilt on demand.
-.zap-reports/
+# Scratch
+xstate_discussions.json
+ideas.md
+.claude
+CONVERT_SPEC.md
+TODO.md
+V6_CHANGES.md
+V6_REVIEW.mdCODEMOD_SPEC.md
+.scratch

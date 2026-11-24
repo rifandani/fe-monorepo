@@ -2,17 +2,21 @@
   "$schema": "https://unpkg.com/@changesets/config@4.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [
-    [
-      "@workspace/core",
-      "@workspace/expo",
-      "@workspace/spa",
-      "@workspace/typescript-config"
-    ]
-  ],
+  "format": false,
   "linked": [],
-  "access": "restricted",
-  "updateInternalDependencies": "patch",
-  "ignore": [],
-  "privatePackages": { "version": true, "tag": false }
+  "access": "public",
+  "baseBranch": "main",
+  "ignore": [
+    "@xstate/example-*",
+    "store-*",
+    "local-store-*",
+    "@xstate/store",
+    "@xstate/store-*"
+  ],
+  "snapshot": {
+    "useCalculatedVersion": true
+  },
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "onlyUpdatePeerDependentsWhenOutOfRange": true
+  }
 }

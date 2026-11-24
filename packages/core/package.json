@@ -1,49 +1,172 @@
 {
-  "name": "@workspace/core",
-  "version": "1.1.2",
-  "private": true,
-  "description": "Shared core module for React Monorepo",
-  "license": "MIT",
-  "author": "Tri Rizeki Rifandani",
-  "type": "module",
+  "name": "xstate",
+  "version": "6.0.0-beta.5",
+  "description": "Finite State Machines and Statecharts for the Modern Web.",
+  "main": "dist/xstate.cjs.js",
+  "bin": {
+    "xstate": "./bin/xstate.js"
+  },
+  "module": "dist/xstate.esm.js",
+  "umd:main": "dist/xstate.umd.min.js",
   "exports": {
-    "./assets/*": "./src/shared/assets/*",
-    "./auth/*": "./src/lib/auth/*.ts",
-    "./cdn/*": "./src/lib/cdn/*.ts",
-    "./constants/*": "./src/shared/constants/*.ts",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./http/*": "./src/lib/http/*.ts",
-    "./i18n/*": "./src/i18n/*.ts",
-    "./persistence/*": "./src/lib/persistence/*.ts",
-    "./session/*": "./src/lib/session/*.ts",
-    "./types/*": "./src/types/*.ts",
-    "./utils/*": "./src/utils/*.ts"
+    ".": {
+      "types": {
+        "import": "./dist/xstate.cjs.mjs",
+        "default": "./dist/xstate.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate.development.esm.js",
+        "import": "./dist/xstate.development.cjs.mjs",
+        "default": "./dist/xstate.development.cjs.js"
+      },
+      "module": "./dist/xstate.esm.js",
+      "import": "./dist/xstate.cjs.mjs",
+      "default": "./dist/xstate.cjs.js"
+    },
+    "./fsm": {
+      "types": {
+        "import": "./dist/xstate-fsm.cjs.mjs",
+        "default": "./dist/xstate-fsm.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-fsm.development.esm.js",
+        "import": "./dist/xstate-fsm.development.cjs.mjs",
+        "default": "./dist/xstate-fsm.development.cjs.js"
+      },
+      "module": "./dist/xstate-fsm.esm.js",
+      "import": "./dist/xstate-fsm.cjs.mjs",
+      "default": "./dist/xstate-fsm.cjs.js"
+    },
+    "./graph": {
+      "types": {
+        "import": "./dist/xstate-graph.cjs.mjs",
+        "default": "./dist/xstate-graph.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-graph.development.esm.js",
+        "import": "./dist/xstate-graph.development.cjs.mjs",
+        "default": "./dist/xstate-graph.development.cjs.js"
+      },
+      "module": "./dist/xstate-graph.esm.js",
+      "import": "./dist/xstate-graph.cjs.mjs",
+      "default": "./dist/xstate-graph.cjs.js"
+    },
+    "./actors": {
+      "types": {
+        "import": "./dist/xstate-actors.cjs.mjs",
+        "default": "./dist/xstate-actors.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-actors.development.esm.js",
+        "import": "./dist/xstate-actors.development.cjs.mjs",
+        "default": "./dist/xstate-actors.development.cjs.js"
+      },
+      "module": "./dist/xstate-actors.esm.js",
+      "import": "./dist/xstate-actors.cjs.mjs",
+      "default": "./dist/xstate-actors.cjs.js"
+    },
+    "./durable": {
+      "types": {
+        "import": "./dist/xstate-durable.cjs.mjs",
+        "default": "./dist/xstate-durable.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-durable.development.esm.js",
+        "import": "./dist/xstate-durable.development.cjs.mjs",
+        "default": "./dist/xstate-durable.development.cjs.js"
+      },
+      "module": "./dist/xstate-durable.esm.js",
+      "import": "./dist/xstate-durable.cjs.mjs",
+      "default": "./dist/xstate-durable.cjs.js"
+    },
+    "./persist": {
+      "types": {
+        "import": "./dist/xstate-persist.cjs.mjs",
+        "default": "./dist/xstate-persist.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-persist.development.esm.js",
+        "import": "./dist/xstate-persist.development.cjs.mjs",
+        "default": "./dist/xstate-persist.development.cjs.js"
+      },
+      "module": "./dist/xstate-persist.esm.js",
+      "import": "./dist/xstate-persist.cjs.mjs",
+      "default": "./dist/xstate-persist.cjs.js"
+    },
+    "./validation": {
+      "types": {
+        "import": "./dist/xstate-validation.cjs.mjs",
+        "default": "./dist/xstate-validation.cjs.js"
+      },
+      "development": {
+        "module": "./dist/xstate-validation.development.esm.js",
+        "import": "./dist/xstate-validation.development.cjs.mjs",
+        "default": "./dist/xstate-validation.development.cjs.js"
+      },
+      "module": "./dist/xstate-validation.esm.js",
+      "import": "./dist/xstate-validation.cjs.mjs",
+      "default": "./dist/xstate-validation.cjs.js"
+    },
+    "./package.json": "./package.json"
   },
-  "scripts": {
-    "test:unit": "vitest run --project core",
-    "typerange": "fr",
-    "typerange:audit": "fr --audit",
-    "check:boundaries": "fallow architecture --boundaries --quiet"
+  "imports": {
+    "#is-development": {
+      "development": "./src/true.ts",
+      "default": "./src/false.ts"
+    }
   },
+  "sideEffects": false,
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/xstate"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "actors",
+    "graph",
+    "validation",
+    "durable",
+    "persist",
+    "fsm",
+    "bin"
+  ],
+  "keywords": [
+    "statechart",
+    "state machine",
+    "finite state machine",
+    "finite automata",
+    "scxml",
+    "state",
+    "interpreter",
+    "graph"
+  ],
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/statelyai/xstate.git"
+  },
+  "author": "David Khourshid <davidkpiano@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/statelyai/xstate/issues"
+  },
+  "homepage": "https://github.com/statelyai/xstate/tree/main/packages/core#readme",
   "devDependencies": {
-    "@effect/atom-react": "4.1.2",
-    "@tanstack/react-query": "5.105.3",
-    "@types/node": "26.6.6",
-    "@types/react": "19.3.0",
-    "@workspace/typescript-config": "workspace:*",
-    "@xstate/effect": "1.0.0-beta.2",
-    "effect": "4.1.2",
-    "typescript": "7.0.2",
-    "xstate": "6.0.0-beta.3"
+    "ajv": "^8.12.0",
+    "rxjs": "^7.8.1",
+    "zod": "^3.25.51"
   },
-  "peerDependencies": {
-    "@effect/atom-react": "4.1.2",
-    "@tanstack/react-query": "5.105.1",
-    "@xstate/effect": "1.0.0-beta.2",
-    "effect": "4.1.2",
-    "radashi": "13.0.1",
-    "react": ">=19.0.0",
-    "type-fest": "5.10.0",
-    "xstate": "6.0.0-beta.3"
+  "preconstruct": {
+    "umdName": "XState",
+    "entrypoints": [
+      "./index.ts",
+      "./actors/index.ts",
+      "./graph/index.ts",
+      "./validation/index.ts",
+      "./durable/index.ts",
+      "./persist/index.ts",
+      "./fsm/index.ts"
+    ]
   }
 }

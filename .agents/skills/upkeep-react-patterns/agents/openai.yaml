@@ -1,5 +1,0 @@
-interface:
-  display_name: "Upkeep React Patterns"
-  short_description: "Refactor React patterns across SPA and Expo apps"
-policy:
-  allow_implicit_invocation: false

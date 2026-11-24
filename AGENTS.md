@@ -1,37 +1,21 @@
-## Language
+This is a monorepo containing XState, @xstate/store, and related packages.
 
-Always talk in ASD-STE100 Simplified Technical English.
+## Dev environment
 
-## Vendored Repositories
+- Use pnpm to install dependencies
 
-This project vendors external repositories under @repos/ for coding-agent reference.
+## PR instructions
 
-- Use vendored repositories as read-only reference material when working with related libraries.
-- Prefer examples and patterns from vendored source code over generated guesses or web search results.
-- Do not edit files under @repos/ unless explicitly asked.
-- Do not import from @repos/; application code should continue importing from normal package dependencies.
+- Run `pnpm test` to run the tests in all packages, only for changes that affect mulitple packages.
+- Run `pnpm test:core` to only run core XState tests.
+- Run `pnpm test:store` to only run @xstate/store tests.
+- Run `pnpm lint` and `pnpm format:check` to check linting and formatting.
+- Run `pnpm typecheck` to make sure that there are no type errors.
+- Before making a PR, run `pnpm changeset` to create a changeset with a short description of the changes, and a code example if applicable. Do not include implementation details; only pertinent details for developers using the package.
+- For every new feature or behavior change, audit the relevant docs and READMEs and fix missing or inaccurate guidance in the same PR.
 
-When working with a related library, inspect its vendored repository for idiomatic usage, tests, module structure, API design, examples, and docs. If the vendored repository contains agent-oriented guidance such as LLMS.md, AGENTS.md, or AGENT.md, read that guidance before making changes.
+## XState v6 (alpha)
 
-## Agent skills
-
-### Issue tracker
-
-GitHub Issues on `rifandani/fe-monorepo` via `gh` CLI; external PRs are not a triage surface. See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-Canonical five-role vocabulary with default label strings. See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Multi-context — `GLOSSARY-MAP.md` at repo root points to per-context `GLOSSARY.md` files. See `docs/agents/domain.md`.
-
-## Commands
-
-- Run tests with `bun run test` (Vitest). Do not use `bun test`: it starts the Bun test runner, which these tests do not support.
-- Run app and package scripts through the workspace filters: `bun spa <script>`, `bun expo <script>`, `bun core <script>` (for example, `bun spa dev`). The root has no single `dev` or `build` script.
-
-### Testing
-
-When writing tests, call Skill tool with `/javascript-testing-expert`.
+- v6 alpha syntax differs from v5 — do not assume v5 patterns (e.g. `{ onDone: { actions } }` invoke config is wrong in v6). Verify against the current types/source in `packages/core` before writing machine configs.
+- When generated code reads an invoked actor's `onDone.event.output`, use `s.createInvoke({ src, onDone })` or register the source in `setup({ actors })`. A bare inline invoke cannot correlate the source with its output and may require narrowing. See `docs/invoke.md`.
+- In Vue examples that hold a machine in reactive state, use `shallowRef(machine)` or `markRaw(machine)`, especially before `restoreActor(machine, persisted)`. See `packages/xstate-vue/docs/input-and-snapshots.md`.

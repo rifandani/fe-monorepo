@@ -1,100 +1,118 @@
 {
-  "name": "fe-monorepo",
-  "version": "1.0.0",
+  "name": "xstate-monorepo",
   "private": true,
-  "description": "React.js and Expo Monorepo Template",
-  "license": "MIT",
-  "author": "Tri Rizeki Rifandani",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "type": "module",
+  "description": "Finite State Machines and Statecharts for the Modern Web.",
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "scripts/*",
+      "examples/*"
+    ]
+  },
+  "preconstruct": {
+    "packages": [
+      "packages/!(xstate-dev)"
+    ],
+    "globals": {
+      "react": "React"
+    },
+    "exports": {
+      "importConditionDefaultExport": "default"
+    },
+    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
+      "importsConditions": true,
+      "typeModule": true,
+      "distInRoot": true
+    }
+  },
+  "manypkg": {
+    "ignoredRules": [
+      "EXTERNAL_MISMATCH"
+    ]
+  },
   "scripts": {
-    "prepare": "husky && effect-tsgo patch --no-typescript --oxlint",
-    "compose:up": "docker compose -f docker/docker-compose.yml up --build",
-    "clean": "rimraf --glob \"**/node_modules\" \"**/dev-dist\" \"**/dist\" \"**/build\" \"**/html\" \"**/e2e/.artifacts\" \"**/.vitest\" \"**/bun.lock\" \"**/.next\" \"**/.tanstack\" \"**/.expo\" \"**/.tamagui\" && bun pm cache rm && bun install",
-    "bump:deps": "bunx npm-check-updates --workspaces -u --peer -x expo*,@expo*,@dev-plugins*,@babel*,metro*,react-native*,@react-navigation*,tamagui,@tamagui*",
-    "bump:skills": "npx --yes skills update --project --yes",
-    "bump:ui": "bunx shadcn@latest add @intentui/all -o -c apps/spa",
-    "portless": "portless proxy start --https",
-    "cs": "changeset",
-    "cs:v": "changeset version",
-    "lint": "ultracite check --disable-nested-config",
-    "lint:fix": "ultracite fix --disable-nested-config",
-    "lint:doctor": "ultracite doctor",
-    "check:health": "fallow health --css --top 10 --quiet",
-    "check:dead-code": "fallow dead-code --quiet",
-    "check:boundaries": "bun run --parallel --filter @workspace/spa --filter @workspace/expo --filter @workspace/core check:boundaries",
-    "check:dupes": "fallow dupes --mode semantic --quiet",
-    "check:security": "fallow security --surface  --quiet",
-    "check:security:survivors": "fallow security --format json --quiet -o node_modules/.cache/fallow-security.json && fallow security survivors --candidates node_modules/.cache/fallow-security.json --verdicts .fallow/security-verdicts.json --require-verdict-for-each-candidate",
-    "audit:sca": "node scripts/security/sca-gate.ts",
-    "zap:spa:serve": "VITE_API_BASE_URL=http://127.0.0.1:9/api bun spa build && bun spa preview --port 4100 --strictPort --host",
-    "zap:spa": "bun scripts/security/zap.ts spa-baseline",
-    "repos:update": "bun scripts/update-vendored-repos.ts",
-    "check:all": "bun run check:boundaries && fallow --quiet",
-    "check:viz": "fallow viz --out .fallow/map.html",
-    "check:fix": "fallow fix --yes --no-create-config",
-    "typerange": "bun run --parallel core:typerange spa:typerange expo:typerange",
-    "core": "bun --elide-lines=0 --filter @workspace/core",
-    "spa": "bun --elide-lines=0 --filter @workspace/spa",
-    "expo": "bun --elide-lines=0 --filter @workspace/expo",
-    "core:typerange": "bun core typerange",
-    "spa:typerange": "bun spa typerange",
-    "expo:typerange": "bun expo typerange",
+    "preinstall": "node ./scripts/ensure-pnpm.js",
+    "postinstall": "manypkg check && preconstruct dev",
+    "build": "preconstruct build && node scripts/build-package-docs.mjs",
+    "watch": "preconstruct watch",
+    "update:examples": "pnpm update:examples:deps && pnpm update:examples:links",
+    "update:examples:deps": "node ./scripts/update-example-deps.js",
+    "update:examples:links": "node ./scripts/update-example-links.js",
+    "fix": "manypkg fix",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "check:files": "node scripts/check-package-files.mjs",
+    "lint": "oxlint --quiet --report-unused-disable-directives-severity=error && oxlint --quiet --report-unused-disable-directives-severity=error -c .oxlintrc.templates.json templates",
+    "lint:fix": "oxlint --fix --report-unused-disable-directives-severity=error && oxlint --fix --report-unused-disable-directives-severity=error -c .oxlintrc.templates.json templates",
+    "typecheck": "pnpm typecheck:packages && pnpm typecheck:fsm-only",
+    "typecheck:packages": "tsc",
+    "typecheck:adapter-consumers": "node scripts/typecheck-adapter-consumers.mjs",
+    "typecheck:examples": "node ./scripts/typecheck-examples.js",
+    "typecheck:fsm-only": "node scripts/typecheck-fsm-only.mjs",
     "test": "vitest run",
-    "test:unit": "vitest run",
-    "test:unit:cov": "vitest run --coverage",
-    "test:unit:fuzz": "FC_NUM_RUNS=1000 vitest run --testTimeout=120000",
-    "test:mutate": "stryker run",
-    "test:mutate:inc": "stryker run --incremental",
-    "core:test:unit": "vitest run --project core",
-    "spa:test:unit": "vitest run --project spa",
-    "spa:test:e2e": "bun spa test:e2e",
-    "expo:test:unit": "vitest run --project expo"
+    "test:watch": "vitest",
+    "test:core": "vitest run --project xstate",
+    "test:core:watch": "vitest --project xstate",
+    "test:core:coverage": "vitest run --project xstate --coverage --coverage.provider=istanbul --coverage.include=packages/core/src/**/*.ts --coverage.exclude=**/*.test.ts",
+    "test:store": "vitest run --project @xstate/store*",
+    "test:store:watch": "vitest --project @xstate/store*",
+    "bench:size": "node scripts/bundle-size.mjs",
+    "bench:core-runtime": "node scripts/bench-core-runtime.mjs",
+    "bench:type-errors": "node scripts/type-error-quality.mjs",
+    "check:exports": "node scripts/check-export-stability.mjs",
+    "check:packed": "node scripts/check-packed-consumer.mjs",
+    "check:effect-oxlint": "node scripts/check-effect-oxlint-consumer.mjs",
+    "check:release-tags": "node scripts/check-release-tags.mjs",
+    "changeset": "changeset",
+    "release": "changeset publish",
+    "version": "changeset version",
+    "test:tooling": "node scripts/build-package-docs.mjs && node --test scripts/typecheck-examples.test.cjs scripts/check-export-stability.test.mjs scripts/check-release-tags.test.mjs scripts/agent-cli.test.mjs"
   },
-  "devDependencies": {
-    "@changesets/cli": "3.0.3",
-    "@chenglou/freerange": "0.0.5",
-    "@effect/tsgo": "0.64.1",
-    "@effect/vitest": "4.1.2",
-    "@fast-check/vitest": "0.5.0",
-    "@oxlint/plugins": "1.79.0",
-    "@stryker-mutator/core": "10.1.1",
-    "@stryker-mutator/vitest-runner": "10.1.1",
-    "@vitest/coverage-v8": "5.1.0",
-    "@workspace/typescript-config": "workspace:*",
-    "@xstate/effect": "1.0.0-beta.2",
-    "fallow": "3.38.1",
-    "fast-check": "4.10.3",
-    "husky": "9.1.7",
-    "msw": "3.0.3",
-    "oxfmt": "0.76.0",
-    "oxlint": "1.90.0",
-    "oxlint-plugin-react-doctor": "0.9.22",
-    "oxlint-tsgolint": "7.0.2005",
-    "portless": "0.17.0",
-    "rimraf": "6.1.4",
-    "tailwindcss": "4.3.4",
-    "typescript": "7.0.2",
-    "ultracite": "8.1.1",
-    "vitest": "5.1.0",
-    "xstate": "6.0.0-beta.3"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/statelyai/xstate.git"
   },
-  "overrides": {
-    "@react-navigation/core": "7.25.0",
-    "@xmldom/xmldom": "0.9.12",
-    "postcss": "8.5.32"
+  "author": "David Khourshid <davidkpiano@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/statelyai/xstate/issues"
   },
-  "engines": {
-    "node": ">=26.0.0"
+  "homepage": "https://github.com/statelyai/xstate#readme",
+  "dependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-transform-class-static-block": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@changesets/cli": "^3.0.0",
+    "@manypkg/cli": "^0.22.0",
+    "@oxlint/plugins": "^1.76.0",
+    "@preconstruct/cli": "^2.8.13",
+    "@types/node": "25.2.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/coverage-istanbul": "3.2.7",
+    "babel-preset-solid": "^1.9.12",
+    "eslint-plugin-jsdoc": "^63.3.2",
+    "happy-dom": "^20.14.0",
+    "husky": "^3.1.0",
+    "knip": "6.27.0",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "pako": "2.1.0",
+    "synckit": "^0.8.8",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vitest": "^3.2.7"
   },
-  "packageManager": "bun@1.4.4",
-  "trustedDependencies": [
-    "@tailwindcss/oxide",
-    "esbuild",
-    "sharp",
-    "unrs-resolver"
-  ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "!(CLAUDE).{ts,tsx,mts,cts,js,jsx,mjs,cjs,json,jsonc,json5,css,scss,less,yml,yaml,html}": "oxfmt --write"
+  },
+  "packageManager": "pnpm@11.8.0+sha512.c1f5e7c4cb241c8f174b743851d82f42b802324afc8b0f116b96adb15aa06664948dde36960a3ba1079ba5b4b29dd0140135b94b5b5f5263592249d68e555f26"
 }

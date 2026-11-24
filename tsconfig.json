@@ -1,12 +1,24 @@
 {
-  "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
-    "moduleResolution": "bundler"
+    "target": "esnext",
+    "isolatedModules": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "lib": ["es2024", "dom"],
+    "strict": true,
+    "stripInternal": true,
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    "vitest.env-mock.ts",
-    "scripts/**/*.ts"
+  "exclude": [
+    "**/examples",
+    "**/templates",
+    "scripts/type-error-fixtures",
+    "packages/xstate-effect/test/lint-fixtures",
+    "packages/xstate-react/test/lint-fixtures"
   ]
 }

@@ -2,12 +2,26 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "expo",
-      "request": "attach",
-      "name": "Debug Expo app",
-      "projectRoot": "${workspaceFolder}/apps/expo",
-      "bundlerPort": "8081",
-      "bundlerHost": "127.0.0.1"
+      "type": "node",
+      "request": "launch",
+      "name": "Vitest Current Test File",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Vitest Current Test File (no timeout)",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}", "--testTimeout=2147483647"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
