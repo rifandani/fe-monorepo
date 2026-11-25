@@ -10,9 +10,9 @@ import type { KeyValueStore } from "effect/persistence";
 import { Atom, AtomRegistry } from "effect/reactivity";
 
 export const persistenceKeys = {
-  locale: "app-locale",
-  session: "app-user",
-  theme: "app-theme",
+  locale: "app-locale.v1",
+  session: "app-user.v1",
+  theme: "app-theme.v1",
 } as const;
 
 export interface PersistenceOptions {

@@ -7,7 +7,7 @@ import { persistence } from "@/lib/layers/persistence";
 
 const { registry } = persistence;
 
-export const featureFlagStoreName = "app-feature-flags" as const;
+export const featureFlagStoreName = "app-feature-flags.v1" as const;
 
 const featureFlagOverridesSchema = Schema.Record(
   Schema.Literals(featureFlagIds),

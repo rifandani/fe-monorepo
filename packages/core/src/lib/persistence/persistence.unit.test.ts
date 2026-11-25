@@ -10,6 +10,8 @@ import {
 import { KeyValueStore } from "effect/persistence";
 import { describe, expect, it } from "vitest";
 
+import storedV1 from "./stored-v1.json" with { type: "json" };
+
 const ada: AuthLoginResponseSchema = {
   accessToken: "access",
   email: "ada@example.com",
@@ -131,8 +133,37 @@ describe("makePersistence", () => {
     expect(JSON.parse(entries.get(persistenceKeys.locale) ?? "")).toBe("en-us");
   });
 
-  it("should keep the Session key that the Route Tests read", () => {
-    expect(persistenceKeys.session).toBe("app-user");
+  it("should version every persistence key", () => {
+    expect(persistenceKeys).toEqual({
+      locale: "app-locale.v1",
+      session: "app-user.v1",
+      theme: "app-theme.v1",
+    });
+  });
+
+  it("should decode the committed v1 snapshot of every stored shape", () => {
+    const { persistence } = setup(
+      Object.fromEntries(
+        Object.entries(storedV1).map(([key, value]) => [
+          key,
+          JSON.stringify(value),
+        ])
+      )
+    );
+
+    const { registry } = persistence;
+
+    const values = [
+      registry.get(persistence.sessionAtom),
+      registry.get(persistence.themeAtom),
+      registry.get(persistence.localeAtom),
+    ];
+
+    expect(values).toEqual([
+      storedV1["app-user.v1"],
+      storedV1["app-theme.v1"],
+      storedV1["app-locale.v1"],
+    ]);
   });
 
   it("should build an independent registry for each call", () => {

@@ -22,6 +22,7 @@ const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
   "comments/directive-reason": "error",
   "effect-tests/no-manual-effect-runtime-in-tests": "error",
+  "persistence/versioned-kvs-key": "error",
   "anti-slop-effect/no-manual-effect-error-tag": "error",
   "anti-slop-effect/no-manual-tag-comparison": "error",
   "anti-slop-effect/no-manual-tagged-construction": "error",
@@ -147,6 +148,7 @@ export default defineConfig({
     "@xstate/effect/oxlint",
     "./tools/lint/oxlint-plugin-comments.ts",
     "./tools/lint/effect-tests.ts",
+    "./tools/lint/persistence.ts",
     {
       name: "anti-slop-effect",
       specifier: "./tools/lint/anti-slop-effect/index.ts",

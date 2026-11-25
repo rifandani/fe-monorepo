@@ -16,7 +16,7 @@
 
 ## What core owns
 
-**Persistence.** `makePersistence(kvsLayer, { defaultLocale })` returns the one atom registry, the atom runtime, and the Session, theme and Locale atoms. Each app calls it once, with `localStorage` (spa) or MMKV (expo). Tests call it with `KeyValueStore.layerMemory`.
+**Persistence.** `makePersistence(kvsLayer, { defaultLocale })` returns the one atom registry, the atom runtime, and the Session, theme and Locale atoms. Each app calls it once, with `localStorage` (spa) or MMKV (expo). Tests call it with `KeyValueStore.layerMemory`. Every `Atom.kvs` key comes from `persistenceKeys` (or `featureFlagStoreName` in spa) and has a version suffix (for example `app-user.v1`), enforced by the `persistence/versioned-kvs-key` oxlint rule. A schema change of a stored value needs either a new key version and a migration from the old version, or a schema that decodes both shapes; otherwise `Atom.kvs` falls back to its default and drops stored data with no error. Committed snapshots of each stored shape are decoded by unit tests.
 
 **The Session.** `Session` is a `Context.Service` with `accessToken`, `start` and `end`. `Http` gets it from its Layers. Before, `Http` took two callbacks (`getToken`, `onUnauthorized`), which the Layer graph could not see, and each app had its own End Session. Now there is one End Session flow, as the glossary says. The app gives only its extra step (`onEnd`: clear the query cache). `Session.layerMemory` is the second adapter at the same seam, so a test needs no module mocks.
 

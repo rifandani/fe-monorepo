@@ -1,0 +1,15 @@
+{
+  "app-locale.v1": "en-us",
+  "app-theme.v1": "dark",
+  "app-user.v1": {
+    "accessToken": "v1-access-token",
+    "email": "ada@example.com",
+    "firstName": "Ada",
+    "gender": "female",
+    "id": 1,
+    "image": "https://example.com/ada.png",
+    "lastName": "Lovelace",
+    "refreshToken": "v1-refresh-token",
+    "username": "ada"
+  }
+}
