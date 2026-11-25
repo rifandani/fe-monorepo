@@ -20,6 +20,10 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Error Envelope**: The `{ message }` body the API returns on a failed request. Present on most failures, absent on some — a caller may never assume it parsed. _Avoid_: error response, error body, error payload
 
+**Retry Safety**: The statement that a mutation is idempotent (sending it again has the same effect as sending it once) or not. Each mutation option factory declares it in `meta.retrySafety`; a not-idempotent mutation never retries. _Avoid_: retryable, safe mutation
+
+**Unknown Outcome**: A timeout of a not-idempotent mutation. The server possibly did the work, so the UI tells the person to check the result before they try again. _Avoid_: failed, lost request
+
 ### Session
 
 **Session**: What one successful login produces — the signed-in person together with the credentials that prove it. Each app persists exactly one, or none. _Avoid_: user, appUser, auth state, current user

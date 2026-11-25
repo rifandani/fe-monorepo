@@ -6,7 +6,7 @@ import type {
   AuthLoginRequestSchema,
   AuthLoginResponseSchema,
 } from "@workspace/core/auth/schemas";
-import { toErrorMessage } from "@workspace/core/utils/error";
+import { toMutationErrorMessage } from "@workspace/core/http/retry-safety";
 import { toast } from "sonner";
 import type { Except } from "type-fest";
 
@@ -19,15 +19,17 @@ export const useAuthLogin = (
       AuthLoginError,
       AuthLoginRequestSchema
     >,
-    "mutationKey" | "mutationFn"
+    "mutationKey" | "mutationFn" | "retry" | "meta"
   >
 ) => {
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
 
+  const loginOptions = authLoginMutationOptions(appRuntime);
+
   return useMutation({
-    ...authLoginMutationOptions(appRuntime),
+    ...loginOptions,
     onError: (error, variables, onMutateResult, context) => {
-      toast.error(toErrorMessage(error));
+      toast.error(toMutationErrorMessage(error, loginOptions.meta));
       onError?.(error, variables, onMutateResult, context);
     },
     ..._mutationOptions,

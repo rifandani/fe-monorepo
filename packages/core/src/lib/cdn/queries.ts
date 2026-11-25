@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { cdnApi } from "@workspace/core/cdn/api";
 import type { GetCdnFileSuccessSchema } from "@workspace/core/cdn/schemas";
+import { idempotentMutation } from "@workspace/core/http/retry-safety";
 import type { ManagedRuntime } from "effect";
 import type { HttpClient, HttpClientError } from "effect/http";
 
@@ -50,6 +51,7 @@ export const cdnFileMutationOptions = (
     HttpClientError.HttpClientError,
     string
   >({
+    ...idempotentMutation,
     mutationKey: cdnKeys[key](url),
     mutationFn: async (fileUrl) =>
       await runtime.runPromise(cdnApi.getCdnFile({ url: fileUrl })),

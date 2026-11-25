@@ -20,7 +20,7 @@ export const useCdnFileMutation = (
   opt: Opt,
   mutationOptions?: Except<
     UseMutationOptions<GetCdnFileSuccessSchema, CdnError, string>,
-    "mutationKey" | "mutationFn"
+    "mutationKey" | "mutationFn" | "retry" | "meta"
   >
 ) => {
   const mutation = useMutation({

@@ -7,7 +7,7 @@ import type {
   AuthLoginRequestSchema,
   AuthLoginResponseSchema,
 } from "@workspace/core/auth/schemas";
-import { toErrorMessage } from "@workspace/core/utils/error";
+import { toMutationErrorMessage } from "@workspace/core/http/retry-safety";
 import type { Except } from "type-fest";
 
 import { appRuntime } from "@/lib/layers/runtime";
@@ -20,16 +20,18 @@ export const useAuthLogin = (
       AuthLoginError,
       AuthLoginRequestSchema
     >,
-    "mutationKey" | "mutationFn"
+    "mutationKey" | "mutationFn" | "retry" | "meta"
   >
 ) => {
   const toast = useToastController();
   const { onError, ..._mutationOptions } = mutationOptions ?? {};
 
+  const loginOptions = authLoginMutationOptions(appRuntime);
+
   return useMutation({
-    ...authLoginMutationOptions(appRuntime),
+    ...loginOptions,
     onError: (error, variables, onMutateResult, context) => {
-      toast.show(toErrorMessage(error), {
+      toast.show(toMutationErrorMessage(error, loginOptions.meta), {
         customData: {
           preset: "error",
         } satisfies ToastCustomData,

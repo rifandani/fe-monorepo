@@ -1,5 +1,5 @@
 import { fc, test } from "@fast-check/vitest";
-import { MutationObserver } from "@tanstack/react-query";
+import { MutationObserver, QueryClient } from "@tanstack/react-query";
 import { signedInSessionArb, ioPropertyParameters } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import {
@@ -9,11 +9,13 @@ import {
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
+import { isUnknownOutcome } from "@workspace/core/http/retry-safety";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
 import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { Layer, ManagedRuntime, Option } from "effect";
+import type { Duration } from "effect";
 import { FetchHttpClient } from "effect/http";
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
 
 const loginUrl = `${MOCK_API_BASE_URL}/auth/login`;
@@ -32,10 +34,10 @@ const adaSession: AuthLoginResponseSchema = {
 
 const adaCredentials = { password: "secret1", username: "ada" };
 
-const makeRuntime = () =>
+const makeRuntime = (timeout?: Duration.Input) =>
   // oxlint-disable-next-line effect-tests/no-manual-effect-runtime-in-tests -- the unit under test takes a ManagedRuntime, as the app does
   ManagedRuntime.make(
-    Http.layer({ baseUrl: MOCK_API_BASE_URL }).pipe(
+    Http.layer({ baseUrl: MOCK_API_BASE_URL, timeout }).pipe(
       Layer.provideMerge(Session.layerMemory()),
       Layer.provide(FetchHttpClient.layer)
     )
@@ -46,6 +48,14 @@ const loginObserver = (runtime: ReturnType<typeof makeRuntime>) =>
     makeTestQueryClient(),
     authLoginMutationOptions(runtime)
   );
+
+const retryingClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: 3, retryDelay: 0 },
+    },
+  });
 
 describe("authKeys", () => {
   it("should build the login key without and with params", () => {
@@ -88,6 +98,47 @@ describe("authLoginMutationOptions", () => {
     await expect(mutation).rejects.toMatchObject({ status: 400 });
     const token = await runtime.runPromise(currentAccessToken);
     expect(Option.isNone(token)).toBe(true);
+    await runtime.dispose();
+  });
+
+  it("should send a login only once when the client retries mutations", async () => {
+    let attempts = 0;
+    server.use(
+      http.post(loginUrl, () => {
+        attempts += 1;
+
+        return new HttpResponse(null, { status: 503 });
+      })
+    );
+    const runtime = makeRuntime();
+
+    const observer = new MutationObserver(
+      retryingClient(),
+      authLoginMutationOptions(runtime)
+    );
+
+    await observer.mutate(adaCredentials).catch(() => {});
+
+    expect(attempts).toBe(1);
+    await runtime.dispose();
+  });
+
+  it("should report an unknown outcome when the login times out", async () => {
+    server.use(
+      http.post(loginUrl, async () => {
+        await delay(200);
+
+        return HttpResponse.json(adaSession);
+      })
+    );
+    const runtime = makeRuntime("10 millis");
+    const options = authLoginMutationOptions(runtime);
+    const observer = new MutationObserver(makeTestQueryClient(), options);
+
+    await observer.mutate(adaCredentials).catch(() => {});
+
+    const { error } = observer.getCurrentResult();
+    expect(isUnknownOutcome(error, options.meta)).toBe(true);
     await runtime.dispose();
   });
 
