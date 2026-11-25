@@ -23,6 +23,7 @@ const rules: OxlintConfig["rules"] = {
   "comments/directive-reason": "error",
   "effect-tests/no-manual-effect-runtime-in-tests": "error",
   "persistence/versioned-kvs-key": "error",
+  "tanstack-query/explicit-retry": "error",
   "anti-slop-effect/no-manual-effect-error-tag": "error",
   "anti-slop-effect/no-manual-tag-comparison": "error",
   "anti-slop-effect/no-manual-tagged-construction": "error",
@@ -149,6 +150,7 @@ export default defineConfig({
     "./tools/lint/oxlint-plugin-comments.ts",
     "./tools/lint/effect-tests.ts",
     "./tools/lint/persistence.ts",
+    "./tools/lint/tanstack-query.ts",
     {
       name: "anti-slop-effect",
       specifier: "./tools/lint/anti-slop-effect/index.ts",

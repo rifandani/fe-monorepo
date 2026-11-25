@@ -56,7 +56,12 @@ describe("cdnFileQueryOptions", () => {
     const runtime = makeRuntime();
     const options = cdnFileQueryOptions(runtime, { key, url: fileUrl });
 
-    const file = await new QueryClient().query(options);
+    const file = await new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    }).query(options);
 
     expect(options.queryKey).toEqual(["cdn", "article", fileUrl]);
     expect(file.headers["content-type"]).toBe("image/png");
@@ -71,7 +76,12 @@ describe("cdnFileMutationOptions", () => {
     const runtime = makeRuntime();
 
     const observer = new MutationObserver(
-      new QueryClient(),
+      new QueryClient({
+        defaultOptions: {
+          queries: { retry: false },
+          mutations: { retry: false },
+        },
+      }),
       cdnFileMutationOptions(runtime, { key })
     );
 

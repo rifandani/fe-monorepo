@@ -83,7 +83,12 @@ describe("userDetailQueryOptions", () => {
     const runtime = makeRuntime();
     const options = userDetailQueryOptions(runtime, { id: 1 });
 
-    const user = await new QueryClient().query(options);
+    const user = await new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    }).query(options);
 
     expect(options.queryKey).toEqual(["users", "detail", { id: 1 }]);
     expect(user).toEqual(ada);

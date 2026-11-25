@@ -41,7 +41,15 @@ const makeRuntime = () =>
   );
 
 const loginObserver = (runtime: ReturnType<typeof makeRuntime>) =>
-  new MutationObserver(new QueryClient(), authLoginMutationOptions(runtime));
+  new MutationObserver(
+    new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    }),
+    authLoginMutationOptions(runtime)
+  );
 
 describe("authKeys", () => {
   it("should build the login key without and with params", () => {
