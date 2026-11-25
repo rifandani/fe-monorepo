@@ -1,48 +1,17 @@
 import { definePlugin, defineRule } from "@oxlint/plugins";
 import type { ESTree } from "@oxlint/plugins";
 
+import {
+  findProperty,
+  moduleImportAliases,
+  namedImportAliases,
+  unwrapExpression,
+} from "./ast.ts";
+
 const QUERY_CLIENT_NAME = "QueryClient";
 const RETRY_KINDS = ["queries", "mutations"] as const;
 
 type RetryKind = (typeof RETRY_KINDS)[number];
-
-const unwrapExpression = (node: ESTree.Expression): ESTree.Expression => {
-  let current = node;
-
-  while (
-    current.type === "ParenthesizedExpression" ||
-    current.type === "TSAsExpression" ||
-    current.type === "TSSatisfiesExpression" ||
-    current.type === "TSTypeAssertion" ||
-    current.type === "TSNonNullExpression"
-  ) {
-    current = current.expression;
-  }
-
-  return current;
-};
-
-const isNamedProperty = (
-  property: ESTree.ObjectExpression["properties"][number],
-  name: string
-): property is ESTree.ObjectProperty =>
-  property.type === "Property" &&
-  !property.computed &&
-  ((property.key.type === "Identifier" && property.key.name === name) ||
-    (property.key.type === "Literal" && property.key.value === name));
-
-const findProperty = (
-  object: ESTree.ObjectExpression,
-  name: string
-): ESTree.ObjectProperty | undefined =>
-  object.properties.find((property) => isNamedProperty(property, name));
-
-const isQueryClientSpecifier = (
-  specifier: ESTree.ImportDeclarationSpecifier
-): specifier is ESTree.ImportSpecifier =>
-  specifier.type === "ImportSpecifier" &&
-  specifier.imported.type === "Identifier" &&
-  specifier.imported.name === QUERY_CLIENT_NAME;
 
 interface QueryClientNames {
   readonly classes: ReadonlySet<string>;
@@ -61,14 +30,12 @@ const collectQueryClientNames = (program: ESTree.Program): QueryClientNames => {
       continue;
     }
 
-    for (const specifier of statement.specifiers) {
-      if (isQueryClientSpecifier(specifier)) {
-        classes.add(specifier.local.name);
-      }
+    for (const alias of namedImportAliases(statement, QUERY_CLIENT_NAME)) {
+      classes.add(alias);
+    }
 
-      if (specifier.type === "ImportNamespaceSpecifier") {
-        namespaces.add(specifier.local.name);
-      }
+    for (const alias of moduleImportAliases(statement)) {
+      namespaces.add(alias);
     }
   }
 

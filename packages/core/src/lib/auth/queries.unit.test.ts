@@ -1,5 +1,5 @@
 import { fc, test } from "@fast-check/vitest";
-import { MutationObserver, QueryClient } from "@tanstack/react-query";
+import { MutationObserver } from "@tanstack/react-query";
 import { signedInSessionArb, ioPropertyParameters } from "@test/arbitraries";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import {
@@ -10,6 +10,7 @@ import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { Http } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
+import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { Layer, ManagedRuntime, Option } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -42,12 +43,7 @@ const makeRuntime = () =>
 
 const loginObserver = (runtime: ReturnType<typeof makeRuntime>) =>
   new MutationObserver(
-    new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
-    }),
+    makeTestQueryClient(),
     authLoginMutationOptions(runtime)
   );
 

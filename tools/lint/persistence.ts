@@ -1,6 +1,13 @@
 import { definePlugin, defineRule } from "@oxlint/plugins";
 import type { ESTree, SourceCode } from "@oxlint/plugins";
 
+import {
+  findProperty,
+  moduleImportAliases,
+  namedImportAliases,
+  unwrapExpression,
+} from "./ast.ts";
+
 const PERSISTENCE_KEYS_NAME = "persistenceKeys";
 const FEATURE_FLAG_KEY_NAME = "featureFlagStoreName";
 const VERSIONED_KEY_PATTERN = /^[^.\s].*\.v[1-9]\d*$/u;
@@ -12,22 +19,6 @@ type LiteralValue = Extract<
 
 const isStringLiteralValue = (value: LiteralValue): value is string =>
   value === String(value);
-
-const unwrapExpression = (node: ESTree.Expression): ESTree.Expression => {
-  let current = node;
-
-  while (
-    current.type === "ParenthesizedExpression" ||
-    current.type === "TSAsExpression" ||
-    current.type === "TSSatisfiesExpression" ||
-    current.type === "TSTypeAssertion" ||
-    current.type === "TSNonNullExpression"
-  ) {
-    current = current.expression;
-  }
-
-  return current;
-};
 
 const staticStringValue = (
   expression: ESTree.Expression
@@ -77,51 +68,17 @@ const isAllowedKeyExpression = (expression: ESTree.Expression): boolean => {
   );
 };
 
-const findKeyProperty = (
-  object: ESTree.ObjectExpression
-): ESTree.ObjectProperty | undefined => {
-  for (const property of object.properties) {
-    if (
-      property.type === "Property" &&
-      !property.computed &&
-      ((property.key.type === "Identifier" && property.key.name === "key") ||
-        (property.key.type === "Literal" && property.key.value === "key"))
-    ) {
-      return property;
-    }
-  }
-
-  return undefined;
-};
-
-const isNamedAtomSpecifier = (
-  specifier: ESTree.ImportDeclarationSpecifier
-): specifier is ESTree.ImportSpecifier =>
-  specifier.type === "ImportSpecifier" &&
-  specifier.imported.type === "Identifier" &&
-  specifier.imported.name === "Atom";
-
-const isWholeModuleSpecifier = (
-  specifier: ESTree.ImportDeclarationSpecifier
-): boolean =>
-  specifier.type === "ImportNamespaceSpecifier" ||
-  specifier.type === "ImportDefaultSpecifier";
-
 const atomAliasesFromImport = (
   statement: ESTree.ImportDeclaration
 ): readonly string[] => {
   const source = statement.source.value;
 
   if (source === "effect/reactivity") {
-    return statement.specifiers
-      .filter(isNamedAtomSpecifier)
-      .map((specifier) => specifier.local.name);
+    return namedImportAliases(statement, "Atom");
   }
 
   if (source === "effect/reactivity/Atom") {
-    return statement.specifiers
-      .filter(isWholeModuleSpecifier)
-      .map((specifier) => specifier.local.name);
+    return moduleImportAliases(statement);
   }
 
   return [];
@@ -202,7 +159,7 @@ export const versionedKvsKey = defineRule({
           return;
         }
 
-        const keyProperty = findKeyProperty(options);
+        const keyProperty = findProperty(options, "key");
 
         if (keyProperty === undefined) {
           context.report({ messageId: "unlistedKey", node: options });
