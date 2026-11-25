@@ -32,6 +32,12 @@ A flow whose next step depends on the current step (ADR-0010) has bugs that occu
 - **The Route Test checks the Access Token.** `REFRESH_SUCCEEDS` and `REFRESH_FAILS` both go to `signedIn.idle`. The SUT Adapter keeps the last Access Token that the MSW server gave, and its `check()` makes sure that the Session holds it after each step. So a refresh that does not keep the new tokens fails.
 - **The SPA has no screen that sends a request with the Access Token.** The Route Test SUT Adapter sends `REQUEST_REJECTED` through `appRuntime` with the app's `Http`, to an MSW handler that answers 401 to a rejected token. The refresh then goes through the real `Http`, `SessionRefresh`, Session Machine and profile menu. MSW holds `auth/refresh` until the Model sends the response.
 
+## Two tabs
+
+> Added on 2026-11-25 for the cross-tab Session Refresh (ADR-0010, "Cross-tab").
+
+The same file has a second Model Test, "Session across tabs". Its SUT Adapter builds two `Session` services on one shared memory store and one memory Session Lock. Its Model context is larger than the rule above: the stored Session, the Session that each tab shows, the tab that holds the lock, the tab that waits, the number of refresh requests, and the number of `onEnd` calls in each tab. It adds the event `RELOAD` (a tab loads the page again and reads the store). `LOGIN`, `SIGN_OUT` and `REQUEST_REJECTED` name a tab. Both tabs start with one stored Session, so each run can reach two refreshes at the same time.
+
 ## Considered Options
 
 - **The Session Machine as its own Model** — rejected. The SUT runs the same machine, so the test agrees with itself. It checks only the wiring of `Session.layer`.

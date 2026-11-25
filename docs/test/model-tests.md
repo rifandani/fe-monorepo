@@ -2,7 +2,7 @@
 
 A Model Test runs a small expected-state machine (the **Model**) and the real code side by side with the same events, and compares them after each step. [ADR-0011](../adr/0011-model-tests-use-xstate-test.md) defines the vocabulary (Model, SUT Adapter, Projection); the vendored source in `repos/xstate/packages/xstate-test` (README and `test/`) defines the API.
 
-Examples: `packages/core/src/lib/session/session.model.unit.test.ts` and `apps/spa/e2e/session.model.e2e.test.tsx`.
+Examples: `packages/core/src/lib/session/session.model.unit.test.ts` (one Session, and two tabs on one store) and `apps/spa/e2e/session.model.e2e.test.tsx`.
 
 ## When to write one
 

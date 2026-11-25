@@ -4,9 +4,9 @@ import { themes } from "@workspace/core/constants/core";
 import type { Theme } from "@workspace/core/constants/core";
 import { localeSchema } from "@workspace/core/i18n/locale";
 import type { Locale } from "@workspace/core/i18n/locale";
-import { Schema } from "effect";
+import { Effect, Option, Schema } from "effect";
 import type { Layer } from "effect";
-import type { KeyValueStore } from "effect/persistence";
+import { KeyValueStore } from "effect/persistence";
 import { Atom, AtomRegistry } from "effect/reactivity";
 
 export const persistenceKeys = {
@@ -27,12 +27,39 @@ export const makePersistence = (
 
   const runtime = Atom.runtime(storage);
 
+  const sessionSchema = Schema.NullOr(authLoginResponseSchema);
+
   const sessionAtom = Atom.kvs({
     runtime,
     key: persistenceKeys.session,
-    schema: Schema.NullOr(authLoginResponseSchema),
+    schema: sessionSchema,
     defaultValue: () => null,
   }).pipe(Atom.keepAlive, Atom.withLabel("session"));
+
+  const storedSessionAtom = runtime
+    .atom(
+      KeyValueStore.KeyValueStore.use((store) =>
+        KeyValueStore.toSchemaStore(store, sessionSchema).get(
+          persistenceKeys.session
+        )
+      )
+    )
+    .pipe(Atom.withLabel("storedSession"));
+
+  const reloadSession = Effect.suspend(() => {
+    registry.refresh(storedSessionAtom);
+
+    return AtomRegistry.getResult(registry, storedSessionAtom, {
+      suspendOnWaiting: true,
+    });
+  }).pipe(
+    Effect.map(Option.getOrNull),
+    Effect.tap((session) =>
+      Effect.sync(() => {
+        registry.set(sessionAtom, session);
+      })
+    )
+  );
 
   const themeAtom = Atom.kvs({
     runtime,
@@ -48,7 +75,14 @@ export const makePersistence = (
     defaultValue: defaultLocale,
   }).pipe(Atom.keepAlive, Atom.withLabel("locale"));
 
-  return { registry, runtime, sessionAtom, themeAtom, localeAtom } as const;
+  return {
+    registry,
+    runtime,
+    sessionAtom,
+    reloadSession,
+    themeAtom,
+    localeAtom,
+  } as const;
 };
 
 export type Persistence = ReturnType<typeof makePersistence>;

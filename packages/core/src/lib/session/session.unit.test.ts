@@ -2,7 +2,6 @@ import { describe, expect, it } from "@effect/vitest";
 import { sessionArbitrary, signedInSessionArbitrary } from "@test/arbitraries";
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
-import type { Persistence } from "@workspace/core/persistence/persistence";
 import {
   currentAccessToken,
   endSession,
@@ -10,6 +9,7 @@ import {
   sessionActivityAtom,
   startSession,
 } from "@workspace/core/session/session";
+import type { SessionStore } from "@workspace/core/session/session-machine";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { SessionRefreshError } from "@workspace/core/session/session-refresh-error";
 import { Deferred, Effect, Fiber, Layer, Option, Schema } from "effect";
@@ -28,7 +28,7 @@ const ada: AuthLoginResponseSchema = {
 };
 
 const sessionOn = (
-  persistence: Pick<Persistence, "registry" | "sessionAtom">,
+  persistence: SessionStore,
   refresh: SessionRefresh["Service"],
   options?: Parameters<typeof Session.layer>[1]
 ) =>
