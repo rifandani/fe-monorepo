@@ -1,11 +1,21 @@
-import type { MutationMeta } from "@tanstack/react-query";
+import type {
+  DefaultError,
+  MutationMeta,
+  UseMutationOptions,
+} from "@tanstack/react-query";
 import { toErrorMessage } from "@workspace/core/utils/error";
 import { Cause } from "effect";
 
 export type RetrySafety = "idempotent" | "not-idempotent";
 
-export interface RetrySafetyMeta {
+export interface RetrySafetyMeta extends Record<string, unknown> {
   readonly retrySafety: RetrySafety;
+}
+
+declare module "@tanstack/react-query" {
+  interface Register {
+    mutationMeta: RetrySafetyMeta;
+  }
 }
 
 export const idempotentMutation = {
@@ -33,3 +43,42 @@ export const toMutationErrorMessage = (
   meta: MutationMeta | undefined
 ): string =>
   isUnknownOutcome(cause, meta) ? unknownOutcomeMessage : toErrorMessage(cause);
+
+export type CallerMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TOnMutateResult = unknown,
+> = Omit<
+  UseMutationOptions<TData, TError, TVariables, TOnMutateResult>,
+  "mutationKey" | "mutationFn" | "retry" | "meta"
+>;
+
+export const withRetrySafety = <
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TOnMutateResult = unknown,
+>(
+  owned: UseMutationOptions<TData, TError, TVariables, TOnMutateResult>,
+  caller:
+    | NoInfer<CallerMutationOptions<TData, TError, TVariables, TOnMutateResult>>
+    | undefined,
+  showError: (message: string) => void
+): UseMutationOptions<TData, TError, TVariables, TOnMutateResult> => {
+  const {
+    retry: _retry,
+    meta: _meta,
+    ...callerOptions
+  }: UseMutationOptions<TData, TError, TVariables, TOnMutateResult> = caller ??
+  {};
+
+  return {
+    ...callerOptions,
+    ...owned,
+    onError: async (error, variables, onMutateResult, context) => {
+      showError(toMutationErrorMessage(error, context.meta));
+      await caller?.onError?.(error, variables, onMutateResult, context);
+    },
+  };
+};

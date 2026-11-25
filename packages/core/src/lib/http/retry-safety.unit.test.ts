@@ -1,4 +1,6 @@
 import { fc, test } from "@fast-check/vitest";
+import { MutationObserver, QueryClient } from "@tanstack/react-query";
+import type { UseMutationOptions } from "@tanstack/react-query";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import {
   idempotentMutation,
@@ -6,9 +8,11 @@ import {
   notIdempotentMutation,
   toMutationErrorMessage,
   unknownOutcomeMessage,
+  withRetrySafety,
 } from "@workspace/core/http/retry-safety";
 import type { ErrorResponseSchema } from "@workspace/core/http/schemas";
 import { toErrorMessage } from "@workspace/core/utils/error";
+import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { Cause } from "effect";
 import { describe, expect, it } from "vitest";
 
@@ -23,25 +27,6 @@ const loginResponseError = (
     data,
     message: `Request failed with status code ${String(status)}`,
   });
-
-describe("notIdempotentMutation", () => {
-  it("should turn off retries and declare the mutation not idempotent", () => {
-    const options = { ...notIdempotentMutation };
-
-    expect(options).toEqual({
-      meta: { retrySafety: "not-idempotent" },
-      retry: 0,
-    });
-  });
-});
-
-describe("idempotentMutation", () => {
-  it("should declare the mutation idempotent and keep the client retry policy", () => {
-    const options = { ...idempotentMutation };
-
-    expect(options).toEqual({ meta: { retrySafety: "idempotent" } });
-  });
-});
 
 describe("isUnknownOutcome", () => {
   it("should be true for a timeout of a mutation that is not idempotent", () => {
@@ -107,4 +92,110 @@ describe("toMutationErrorMessage", () => {
       expect(message).toBe(serverMessage);
     }
   );
+});
+
+const retryingClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: 2, retryDelay: 0 },
+    },
+  });
+
+const timingOutMutation = (
+  retrySafety: typeof notIdempotentMutation | typeof idempotentMutation
+) => {
+  let attempts = 0;
+
+  const owned: UseMutationOptions = {
+    ...retrySafety,
+    mutationFn: async () => {
+      attempts += 1;
+
+      return await Promise.reject(new Cause.TimeoutError());
+    },
+  };
+
+  return { owned, attempts: () => attempts };
+};
+
+describe("withRetrySafety", () => {
+  it("should show the unknown outcome for a timeout of a mutation that is not idempotent", async () => {
+    const shown: string[] = [];
+    const { owned } = timingOutMutation(notIdempotentMutation);
+
+    const observer = new MutationObserver(
+      makeTestQueryClient(),
+      withRetrySafety(owned, undefined, (message) => {
+        shown.push(message);
+      })
+    );
+
+    await observer.mutate().catch(() => {});
+
+    expect(shown).toEqual([unknownOutcomeMessage]);
+  });
+
+  it("should call the caller onError after it shows the message", async () => {
+    const calls: string[] = [];
+    const { owned } = timingOutMutation(notIdempotentMutation);
+
+    const observer = new MutationObserver(
+      makeTestQueryClient(),
+      withRetrySafety(
+        owned,
+        {
+          onError: () => {
+            calls.push("caller");
+          },
+        },
+        () => {
+          calls.push("show");
+        }
+      )
+    );
+
+    await observer.mutate().catch(() => {});
+
+    expect(calls).toEqual(["show", "caller"]);
+  });
+
+  it("should keep the declared retry safety when a caller sends retry and meta", async () => {
+    const shown: string[] = [];
+    const { owned, attempts } = timingOutMutation(notIdempotentMutation);
+
+    const untypedCaller: UseMutationOptions<unknown, unknown> = {
+      retry: 3,
+      meta: idempotentMutation.meta,
+    };
+
+    const observer = new MutationObserver(
+      retryingClient(),
+      withRetrySafety(owned, untypedCaller, (message) => {
+        shown.push(message);
+      })
+    );
+
+    await observer.mutate().catch(() => {});
+
+    expect(attempts()).toBe(1);
+    expect(shown).toEqual([unknownOutcomeMessage]);
+  });
+
+  it("should keep the client retry policy for an idempotent mutation", async () => {
+    const { owned, attempts } = timingOutMutation(idempotentMutation);
+
+    const untypedCaller: UseMutationOptions<unknown, unknown> = {
+      retry: 0,
+    };
+
+    const observer = new MutationObserver(
+      retryingClient(),
+      withRetrySafety(owned, untypedCaller, () => {})
+    );
+
+    await observer.mutate().catch(() => {});
+
+    expect(attempts()).toBe(3);
+  });
 });
