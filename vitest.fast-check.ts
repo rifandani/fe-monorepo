@@ -1,3 +1,4 @@
+import { Arbitrary } from "effect";
 import {
   configureGlobal,
   defaultReportMessage,
@@ -82,6 +83,12 @@ const replayLinePlugin: Plugin<unknown> = () => ({
   },
 });
 
-configureGlobal(buildGlobalParameters());
+const globalParameters = buildGlobalParameters();
+
+configureGlobal(globalParameters);
+
+Arbitrary.configureGlobal({
+  check: { seed: globalParameters.seed, runs: globalParameters.numRuns },
+});
 
 installGlobalPlugin(replayLinePlugin);
