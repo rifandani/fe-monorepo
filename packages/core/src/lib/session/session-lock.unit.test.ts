@@ -1,6 +1,6 @@
 import { setImmediate as nextMacrotask } from "node:timers/promises";
 
-import { describe, expect, it } from "@effect/vitest";
+import { afterEach, describe, expect, it } from "@effect/vitest";
 import {
   makeMemorySessionLock,
   makeWebSessionLock,
@@ -8,6 +8,7 @@ import {
 import type { SessionLock } from "@workspace/core/session/session-lock";
 import { SessionRefreshError } from "@workspace/core/session/session-refresh-error";
 import { Context, Deferred, Effect, Fiber } from "effect";
+import { vi } from "vitest";
 
 class Greeting extends Context.Service<Greeting, string>()("test/Greeting") {}
 
@@ -76,6 +77,36 @@ describe("makeWebSessionLock with one name", () => {
 
         const second = yield* Effect.forkChild(
           makeWebSessionLock(name).withLock(record(log, "second"))
+        );
+
+        yield* settle;
+        log.push("gate opens");
+        yield* Deferred.succeed(gate, true);
+        yield* Fiber.join(first);
+        yield* Fiber.join(second);
+
+        expect(log).toEqual(["first", "gate opens", "second"]);
+      })
+  );
+});
+
+describe("makeWebSessionLock without Web Locks", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it.effect(
+    "should still start a second effect only after the first one ends",
+    () =>
+      Effect.gen(function* () {
+        vi.stubGlobal("navigator", {});
+        const lock = makeWebSessionLock("session-lock-test-no-locks");
+        vi.unstubAllGlobals();
+        const log: string[] = [];
+        const { first, gate } = yield* holdLock(lock, log);
+
+        const second = yield* Effect.forkChild(
+          lock.withLock(record(log, "second"))
         );
 
         yield* settle;

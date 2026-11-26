@@ -11,7 +11,7 @@ import type { HttpAuthConfig } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
-import { Effect, Layer, Metric, Option, Schema } from "effect";
+import { Effect, Fiber, Layer, Metric, Option, Schema } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { delay, http, HttpResponse } from "msw";
 
@@ -33,12 +33,16 @@ const withHttp = (
   options: {
     accessToken?: string;
     auth?: HttpAuthConfig;
+    baseUrl?: string;
     onEnd?: Effect.Effect<void>;
     refresh?: SessionRefresh["Service"];
   } = {}
 ) =>
   Effect.provide(
-    Http.layer({ baseUrl: MOCK_API_BASE_URL, auth: options.auth }).pipe(
+    Http.layer({
+      baseUrl: options.baseUrl ?? MOCK_API_BASE_URL,
+      auth: options.auth,
+    }).pipe(
       Layer.provideMerge(
         Session.layerMemory(
           options.accessToken === undefined
@@ -111,6 +115,28 @@ const withSlowHttp = Effect.provide(
     Layer.provide(FetchHttpClient.layer)
   )
 );
+
+const holdUntilCancelled = () => {
+  const { promise, resolve } = Promise.withResolvers<true>();
+  server.use(
+    http.get(resourceUrl, async () => {
+      resolve(true);
+      await delay("infinite");
+
+      return HttpResponse.json({});
+    })
+  );
+
+  return { arrived: promise };
+};
+
+const withTransport = (transport: HttpClient.HttpClient, baseUrl: string) =>
+  Effect.provide(
+    Http.layer({ baseUrl }).pipe(
+      Layer.provide(Session.layerMemory()),
+      Layer.provide(Layer.succeed(HttpClient.HttpClient, transport))
+    )
+  );
 
 const respondToAnyThing = () => {
   server.use(http.get(`${resourceUrl}/:id`, () => HttpResponse.json({})));
@@ -427,6 +453,71 @@ describe("Http", () => {
         },
       ]);
     }).pipe(withMetricRegistry)
+  );
+
+  it.live("should count a request that is interrupted as cancelled", () =>
+    Effect.gen(function* () {
+      const { arrived } = holdUntilCancelled();
+      const request = yield* Effect.forkChild(getThings().pipe(withHttp()));
+
+      yield* Effect.promise(async () => {
+        await arrived;
+      });
+      yield* Fiber.interrupt(request);
+
+      expect(yield* recordedRequests).toEqual([
+        {
+          attributes: {
+            "error.type": "cancelled",
+            "http.request.method": "GET",
+            "url.template": "/things",
+          },
+          count: 1,
+        },
+      ]);
+    }).pipe(withMetricRegistry)
+  );
+
+  it.effect("should count a request whose transport dies as _OTHER", () =>
+    Effect.gen(function* () {
+      const dyingTransport = HttpClient.make(() => Effect.die("transport bug"));
+
+      yield* Effect.exit(
+        getThings().pipe(withTransport(dyingTransport, MOCK_API_BASE_URL))
+      );
+
+      expect(yield* recordedRequests).toEqual([
+        {
+          attributes: {
+            "error.type": "_OTHER",
+            "http.request.method": "GET",
+            "url.template": "/things",
+          },
+          count: 1,
+        },
+      ]);
+    }).pipe(withMetricRegistry)
+  );
+
+  it.effect(
+    "should count a request with a relative URL that it cannot send by its route template",
+    () =>
+      Effect.gen(function* () {
+        yield* Effect.flip(
+          getPath("things/42").pipe(withHttp({ baseUrl: "/api" }))
+        );
+
+        expect(yield* recordedRequests).toEqual([
+          {
+            attributes: {
+              "error.type": "InvalidUrlError",
+              "http.request.method": "GET",
+              "url.template": "/api/things/{id}",
+            },
+            count: 1,
+          },
+        ]);
+      }).pipe(withMetricRegistry)
   );
 
   it.effect(

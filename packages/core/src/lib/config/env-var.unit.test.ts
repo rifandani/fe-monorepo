@@ -50,6 +50,26 @@ describe("makeEnvVar", () => {
       })
   );
 
+  it.effect("should give the reason when the env source cannot be read", () =>
+    Effect.gen(function* () {
+      const values = { [NAME]: "https://api.example.com" };
+
+      const unreadable = ConfigProvider.make(() =>
+        Effect.fail(
+          new ConfigProvider.SourceError({ message: "env file is locked" })
+        )
+      );
+
+      const message = yield* Effect.flip(
+        urlConfig(values).parse(unreadable)
+      ).pipe(Effect.map((error) => error.message));
+
+      expect(message).toBe(
+        `SourceError: Env variable ${NAME} is "https://api.example.com". env file is locked. Fix: ${FIX}.`
+      );
+    })
+  );
+
   it.effect("should say that a variable is not set", () =>
     Effect.gen(function* () {
       const values = {};

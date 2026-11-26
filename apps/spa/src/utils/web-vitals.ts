@@ -68,10 +68,6 @@ const record = (
 
 const recordPending = (): void => {
   for (const [id, entry] of pending) {
-    if (recordedIds.has(id)) {
-      continue;
-    }
-
     recordedIds.add(id);
     record(entry.histogram, entry.value, entry.attributes);
   }
