@@ -6,13 +6,13 @@ import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-web";
 import { Effect } from "effect";
 
-import { EnvConfig, readEnv } from "@/lib/layers/env";
+import { env, EnvConfig } from "@/lib/layers/env";
 import type { otelLogLevels } from "@/lib/layers/env";
 import { SERVICE_NAME, SERVICE_VERSION } from "@/shared/constants/global";
 
 const otlpEndpoint = import.meta.env.DEV
   ? globalThis.location.origin
-  : readEnv(EnvConfig.otelEndpoint);
+  : env.otelEndpoint;
 
 const logLevelMap = {
   ALL: DiagLogLevel.ALL,

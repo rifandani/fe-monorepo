@@ -21,6 +21,7 @@ const presets = [
 const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
   "comments/directive-reason": "error",
+  "effect-config/no-scattered-read-env": "error",
   "effect-tests/no-manual-effect-runtime-in-tests": "error",
   "persistence/versioned-kvs-key": "error",
   "tanstack-query/explicit-retry": "error",
@@ -149,6 +150,7 @@ export default defineConfig({
   jsPlugins: [
     "@xstate/effect/oxlint",
     "./tools/lint/oxlint-plugin-comments.ts",
+    "./tools/lint/effect-config.ts",
     "./tools/lint/effect-tests.ts",
     "./tools/lint/persistence.ts",
     "./tools/lint/tanstack-query.ts",

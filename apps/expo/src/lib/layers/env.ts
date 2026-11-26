@@ -1,6 +1,7 @@
-import { makeEnvVar } from "@workspace/core/config/env-var";
+import { allEnvVars, makeEnvVar } from "@workspace/core/config/env-var";
 import { urlStringSchema } from "@workspace/core/http/schemas";
-import { ConfigProvider } from "effect";
+import { ConfigProvider, Effect } from "effect";
+import type { Config } from "effect";
 
 const env = {
   EXPO_PUBLIC_API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
@@ -17,3 +18,8 @@ const envVar = makeEnvVar({
 export const EnvConfig = {
   apiBaseUrl: envVar(urlStringSchema, "EXPO_PUBLIC_API_BASE_URL"),
 } as const;
+
+const readEnv = <A>(config: Config.Config<A>): A =>
+  Effect.runSync(config.parse(envConfigProvider));
+
+readEnv(allEnvVars(EnvConfig));

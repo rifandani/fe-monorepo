@@ -15,7 +15,9 @@ export default defineConfig((configEnv) =>
         ),
         "import.meta.env.VITE_APP_URL": JSON.stringify("http://localhost"),
         "import.meta.env.VITE_E2E": JSON.stringify("true"),
-        "import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT": JSON.stringify(""),
+        "import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT": JSON.stringify(
+          "http://localhost:4318"
+        ),
         "import.meta.env.VITE_OTEL_LOG_LEVEL": JSON.stringify("NONE"),
         "import.meta.env.PORTLESS_URL": JSON.stringify(""),
       },

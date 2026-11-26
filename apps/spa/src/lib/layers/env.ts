@@ -1,4 +1,4 @@
-import { makeEnvVar } from "@workspace/core/config/env-var";
+import { allEnvVars, makeEnvVar } from "@workspace/core/config/env-var";
 import { urlStringSchema } from "@workspace/core/http/schemas";
 import { ConfigProvider, Effect, Schema } from "effect";
 import type { Config } from "effect";
@@ -24,7 +24,7 @@ export const otelLogLevels = [
   "NONE",
 ] as const;
 
-const env = {
+const envValues = {
   VITE_API_BASE_URL: resolvedApiBaseUrl,
   VITE_APP_URL: portlessUrl ?? import.meta.env.VITE_APP_URL,
   VITE_OTEL_EXPORTER_OTLP_ENDPOINT: import.meta.env
@@ -32,10 +32,10 @@ const env = {
   VITE_OTEL_LOG_LEVEL: import.meta.env.VITE_OTEL_LOG_LEVEL,
 };
 
-export const envConfigProvider = ConfigProvider.fromUnknown(env);
+export const envConfigProvider = ConfigProvider.fromUnknown(envValues);
 
 const envVar = makeEnvVar({
-  values: env,
+  values: envValues,
   fix: (name) =>
     `set ${name} in apps/spa/.env.local (apps/spa/.env.example lists each variable)`,
 });
@@ -47,5 +47,7 @@ export const EnvConfig = {
   otelLogLevel: envVar(Schema.Literals(otelLogLevels), "VITE_OTEL_LOG_LEVEL"),
 } as const;
 
-export const readEnv = <A>(config: Config.Config<A>): A =>
+const readEnv = <A>(config: Config.Config<A>): A =>
   Effect.runSync(config.parse(envConfigProvider));
+
+export const env = readEnv(allEnvVars(EnvConfig));

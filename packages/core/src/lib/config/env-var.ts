@@ -70,3 +70,37 @@ export const makeEnvVar =
         )
       )
     );
+
+type EnvVars = Readonly<Record<string, Config.Config<unknown>>>;
+
+const rejectionOf = (config: Config.Config<unknown>) =>
+  config.pipe(
+    Config.map((): Config.ConfigError | undefined => undefined),
+    Config.orElse((rejection) => Config.succeed(rejection))
+  );
+
+const describeRejections = (
+  rejections: readonly Config.ConfigError[]
+): string =>
+  [
+    rejections.length === 1
+      ? "1 env variable is not valid."
+      : `${rejections.length} env variables are not valid.`,
+    ...rejections.map(({ cause }) => cause.message),
+  ].join("\n");
+
+export const allEnvVars = <const Vars extends EnvVars>(vars: Vars) =>
+  Config.all(Object.values(vars).map(rejectionOf)).pipe(
+    Config.flatMap((results) => {
+      const rejections = results.filter((result) => result !== undefined);
+
+      return rejections.length === 0
+        ? Config.all(vars)
+        : Config.fail(
+            new ConfigProvider.SourceError({
+              message: describeRejections(rejections),
+              cause: rejections,
+            })
+          );
+    })
+  );
