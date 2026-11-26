@@ -37,9 +37,9 @@
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^6.0.8",
-    "vite": "^6.4.3",
+    "vite": "^6.4.5",
     "vue": "3.5.27",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "preconstruct": {
     "entrypoints": [

@@ -36,7 +36,7 @@
     "fast-check": "^4.9.0",
     "vitest": "^3.2.7",
     "xstate": "workspace:^",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "preconstruct": {
     "umdName": "XStateTest",
