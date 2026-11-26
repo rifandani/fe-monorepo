@@ -5,6 +5,14 @@ export default {
   backTo: "Kembali ke halaman {target}",
   errorMinLength: "{field} harus memiliki minimal {length} karakter",
   error: "{module} eror",
+  errorGeneric: "Terjadi kesalahan. Silakan coba lagi.",
+  errorRequestRejected:
+    "Server tidak dapat menyelesaikan permintaan. Silakan coba lagi.",
+  errorTimeout: "Server tidak merespons tepat waktu. Silakan coba lagi.",
+  errorNetwork:
+    "Tidak dapat terhubung ke server. Periksa koneksi Anda dan coba lagi.",
+  errorUnknownOutcome:
+    "Server tidak merespons tepat waktu. Tindakan mungkin sudah selesai. Periksa hasilnya sebelum mencoba lagi.",
   theme: "Tema",
   system: "Sistem",
   light: "Terang",

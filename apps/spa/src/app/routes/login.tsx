@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { toErrorMessage } from "@workspace/core/utils/error";
+import { failureMessage, toFailure } from "@workspace/core/http/failure";
 import { Schema } from "effect";
 
 import {
@@ -58,7 +58,7 @@ const LoginForm = () => {
           intent="danger"
           className="mt-4"
         >
-          {toErrorMessage(loginMutation.error)}
+          {failureMessage(toFailure(loginMutation.error), t)}
         </Note>
       )}
 

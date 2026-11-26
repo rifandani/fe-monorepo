@@ -2,11 +2,11 @@ import { useHead, useSeoMeta } from "@unhead/react";
 import { createHead, UnheadProvider } from "@unhead/react/client";
 import { TemplateParamsPlugin } from "@unhead/react/plugins";
 
-import { EnvConfig, readEnv } from "@/lib/layers/env";
+import { env } from "@/lib/layers/env";
 import { buildSeoMetadata } from "@/utils/seo";
 
 const defaultSeo = buildSeoMetadata({});
-const appUrl = readEnv(EnvConfig.appUrl);
+const { appUrl } = env;
 
 const head = createHead({
   plugins: [TemplateParamsPlugin],

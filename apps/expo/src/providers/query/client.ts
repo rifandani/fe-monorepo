@@ -6,6 +6,11 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: secondsToMilliseconds(30),
       networkMode: "offlineFirst",
+      retry: 3,
+    },
+    mutations: {
+      networkMode: "always",
+      retry: false,
     },
   },
 });

@@ -9,9 +9,12 @@ import {
 } from "@/shared/constants/global";
 import { recordException, toReportedError } from "@/utils/telemetry";
 import type { ReportedError } from "@/utils/telemetry";
+import { deliverTelemetryOnHide } from "@/utils/telemetry-delivery";
 import { reportWebVitals } from "@/utils/web-vitals";
 
 import "@/styles/globals.css";
+
+deliverTelemetryOnHide();
 
 reportWebVitals();
 
@@ -24,6 +27,7 @@ if (!(root instanceof HTMLElement)) {
 }
 
 const reportRootError = (name: string, error: ReportedError) => {
+  // oxlint-disable-next-line landmines/no-unowned-task -- appRuntime owns the fiber and interrupts it on dispose; recordException cannot fail
   appRuntime.runFork(recordException(name, error));
 };
 

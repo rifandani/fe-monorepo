@@ -4,8 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { buildSeoMetadata, ldParams, resolveOgImage } from "./seo";
 
 vi.mock("@/lib/layers/env", () => ({
-  EnvConfig: {},
-  readEnv: () => "https://spa.test",
+  env: { appUrl: "https://spa.test" },
 }));
 
 vi.mock("@/shared/constants/global", () => ({

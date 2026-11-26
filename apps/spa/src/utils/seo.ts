@@ -1,7 +1,7 @@
 import type { useSeoMeta } from "@unhead/react";
 import { assign } from "radashi";
 
-import { EnvConfig, readEnv } from "@/lib/layers/env";
+import { env } from "@/lib/layers/env";
 import { SERVICE_NAME } from "@/shared/constants/global";
 
 export type SeoMetaInput = Parameters<typeof useSeoMeta>[0] & {
@@ -14,7 +14,7 @@ const isImagePath = <T>(image: T): image is T & string =>
 
 const appName = SERVICE_NAME;
 const appDescription = "Bulletproof React.js 19 Template";
-const appBaseUrl = readEnv(EnvConfig.appUrl);
+const appBaseUrl = env.appUrl;
 const appPublisher = "Rizeki Rifandani";
 
 export const ldParams = {

@@ -3,6 +3,7 @@ import { RuleTester } from "oxlint/plugins-dev";
 import { noFixedSleep } from "./rules/no-fixed-sleep.ts";
 import { noFlakeMasking } from "./rules/no-flake-masking.ts";
 import { noTestDoubles } from "./rules/no-test-doubles.ts";
+import { noUnownedTask } from "./rules/no-unowned-task.ts";
 import { noUnsignaledPoll } from "./rules/no-unsignaled-poll.ts";
 
 const tester = new RuleTester({
@@ -265,5 +266,56 @@ tester.run("landmines/no-test-doubles", noTestDoubles, {
       filename: "packages/core/test/fixtures/network.ts",
       errors: [{ messageId: "double" }],
     },
+  ],
+});
+
+const fork = 'import { Effect } from "effect";';
+
+tester.run("landmines/no-unowned-task", noUnownedTask, {
+  valid: [
+    "const intervalId = setInterval(tick, 1000); clearInterval(intervalId);",
+    "timer.current = setTimeout(run, 10);",
+    "let id; id = window.setTimeout(run, 10);",
+    "function start() { return setInterval(tick, 1000); }",
+    "const start = () => setTimeout(run, 10);",
+    "const handle = { kind: 'timeout', id: setTimeout(run, 10) };",
+    "stopLater(setTimeout(run, 10));",
+    "import { setTimeout } from 'node:timers/promises'; await setTimeout(10);",
+    "function setTimeout(run) { run(); } setTimeout(work);",
+    "const setInterval = (run) => run(); setInterval(work);",
+    "scheduler.setTimeout(run, 10);",
+    "queueMicrotask(run);",
+    "const fiber = runtime.runFork(program);",
+    "fibers.add(appRuntime.runFork(program));",
+    `${fork} const fiber = Effect.runFork(program);`,
+    "runtime.runPromise(program);",
+    "const window = fakeWindow; window.setTimeout(run, 10);",
+    "const id = ready ? setTimeout(run, 10) : undefined;",
+    "const id = enabled && setInterval(tick, 1000);",
+  ],
+  invalid: [
+    ...[
+      "setInterval(tick, 1000);",
+      "setTimeout(run, 10);",
+      "void setTimeout(run, 10);",
+      "(setTimeout(run, 10));",
+      "window.setTimeout(run, 10);",
+      "globalThis.setInterval(tick, 1000);",
+      "self.setInterval(tick, 1000);",
+      "setInterval(tick, 1000) as unknown;",
+      "function start() { setInterval(() => { void check(); }, 60_000); }",
+      "enabled && setInterval(tick, 1000);",
+      "ready ? setTimeout(run, 10) : skip();",
+      "(setTimeout(run, 10), done());",
+      "(setTimeout as typeof globalThis.setTimeout)(run, 10);",
+    ].map((code) => reported(code, "timer")),
+    ...[
+      "runtime.runFork(program);",
+      "void appRuntime.runFork(program);",
+      "runtime?.runFork(program);",
+      "const report = (error) => { appRuntime.runFork(record(error)); };",
+      `${fork} Effect.runFork(program);`,
+      'import { runFork } from "effect/Effect"; runFork(program);',
+    ].map((code) => reported(code, "fork")),
   ],
 });

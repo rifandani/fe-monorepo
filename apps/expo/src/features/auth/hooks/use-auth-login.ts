@@ -1,5 +1,3 @@
-import { useToastController } from "@tamagui/toast";
-import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { authLoginMutationOptions } from "@workspace/core/auth/queries";
 import type { AuthLoginError } from "@workspace/core/auth/queries";
@@ -7,35 +5,26 @@ import type {
   AuthLoginRequestSchema,
   AuthLoginResponseSchema,
 } from "@workspace/core/auth/schemas";
-import { toErrorMessage } from "@workspace/core/utils/error";
-import type { Except } from "type-fest";
+import { withRetrySafety } from "@workspace/core/http/retry-safety";
+import type { CallerMutationOptions } from "@workspace/core/http/retry-safety";
 
+import { useFailurePresenter } from "@/hooks/use-failure-presenter";
 import { appRuntime } from "@/lib/layers/runtime";
-import type { ToastCustomData } from "@/utils/toast";
 
 export const useAuthLogin = (
-  mutationOptions?: Except<
-    UseMutationOptions<
-      AuthLoginResponseSchema,
-      AuthLoginError,
-      AuthLoginRequestSchema
-    >,
-    "mutationKey" | "mutationFn"
+  mutationOptions?: CallerMutationOptions<
+    AuthLoginResponseSchema,
+    AuthLoginError,
+    AuthLoginRequestSchema
   >
 ) => {
-  const toast = useToastController();
-  const { onError, ..._mutationOptions } = mutationOptions ?? {};
+  const presenter = useFailurePresenter();
 
-  return useMutation({
-    ...authLoginMutationOptions(appRuntime),
-    onError: (error, variables, onMutateResult, context) => {
-      toast.show(toErrorMessage(error), {
-        customData: {
-          preset: "error",
-        } satisfies ToastCustomData,
-      });
-      onError?.(error, variables, onMutateResult, context);
-    },
-    ..._mutationOptions,
-  });
+  return useMutation(
+    withRetrySafety(
+      authLoginMutationOptions(appRuntime),
+      mutationOptions,
+      presenter
+    )
+  );
 };

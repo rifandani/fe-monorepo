@@ -3,6 +3,7 @@ import { definePlugin } from "@oxlint/plugins";
 import { noFixedSleep } from "./rules/no-fixed-sleep.ts";
 import { noFlakeMasking } from "./rules/no-flake-masking.ts";
 import { noTestDoubles } from "./rules/no-test-doubles.ts";
+import { noUnownedTask } from "./rules/no-unowned-task.ts";
 import { noUnsignaledPoll } from "./rules/no-unsignaled-poll.ts";
 
 export default definePlugin({
@@ -12,6 +13,7 @@ export default definePlugin({
     "no-flake-masking": noFlakeMasking,
     "no-flake-masking-timeout": noFlakeMasking,
     "no-test-doubles": noTestDoubles,
+    "no-unowned-task": noUnownedTask,
     "no-unsignaled-poll": noUnsignaledPoll,
   },
 });

@@ -21,7 +21,12 @@ const presets = [
 const rules: OxlintConfig["rules"] = {
   "comments/no-comments": "error",
   "comments/directive-reason": "error",
+  "effect-config/no-scattered-read-env": "error",
   "effect-tests/no-manual-effect-runtime-in-tests": "error",
+  "persistence/versioned-kvs-key": "error",
+  "state/no-boolean-flag-cluster": "warn",
+  "tanstack-query/explicit-retry": "error",
+  "tanstack-query/mutations-fail-offline": "error",
   "anti-slop-effect/no-manual-effect-error-tag": "error",
   "anti-slop-effect/no-manual-tag-comparison": "error",
   "anti-slop-effect/no-manual-tagged-construction": "error",
@@ -35,6 +40,7 @@ const rules: OxlintConfig["rules"] = {
   "landmines/no-flake-masking": "error",
   "landmines/no-flake-masking-timeout": ["warn", { check: "timeout" }],
   "landmines/no-test-doubles": "warn",
+  "landmines/no-unowned-task": "error",
   "landmines/no-unsignaled-poll": "error",
   "sort-keys": "off",
   "no-inline-comments": "off",
@@ -146,7 +152,11 @@ export default defineConfig({
   jsPlugins: [
     "@xstate/effect/oxlint",
     "./tools/lint/oxlint-plugin-comments.ts",
+    "./tools/lint/effect-config.ts",
     "./tools/lint/effect-tests.ts",
+    "./tools/lint/persistence.ts",
+    "./tools/lint/state.ts",
+    "./tools/lint/tanstack-query.ts",
     {
       name: "anti-slop-effect",
       specifier: "./tools/lint/anti-slop-effect/index.ts",
@@ -186,6 +196,18 @@ export default defineConfig({
       files: ["**/*.unit.test.ts", "**/*.unit.test.tsx", "**/e2e/**"],
       rules: {
         "anti-slop/no-module-mocking": "off",
+      },
+    },
+    {
+      files: [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/e2e/**",
+      ],
+      rules: {
+        "landmines/no-unowned-task": "off",
       },
     },
     {

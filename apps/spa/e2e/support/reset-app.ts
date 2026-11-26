@@ -1,3 +1,4 @@
+import { onlineManager } from "@tanstack/react-query";
 import { cleanup } from "vitest-browser-react/pure";
 
 import { persistence } from "@/lib/layers/persistence";
@@ -8,6 +9,7 @@ import { worker } from "./network";
 export const resetApp = async () => {
   await cleanup();
 
+  onlineManager.setOnline(true);
   queryClient.clear();
   localStorage.clear();
   persistence.registry.refresh(persistence.sessionAtom);

@@ -1,7 +1,8 @@
-import { QueryClient, skipToken } from "@tanstack/react-query";
+import { skipToken } from "@tanstack/react-query";
 import { MOCK_API_BASE_URL, server } from "@test/msw";
 import { Http } from "@workspace/core/http/http";
 import { Session } from "@workspace/core/session/session";
+import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { Layer, ManagedRuntime } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -83,7 +84,7 @@ describe("userDetailQueryOptions", () => {
     const runtime = makeRuntime();
     const options = userDetailQueryOptions(runtime, { id: 1 });
 
-    const user = await new QueryClient().query(options);
+    const user = await makeTestQueryClient().query(options);
 
     expect(options.queryKey).toEqual(["users", "detail", { id: 1 }]);
     expect(user).toEqual(ada);

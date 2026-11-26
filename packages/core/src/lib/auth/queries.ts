@@ -5,6 +5,7 @@ import type {
   AuthLoginResponseSchema,
 } from "@workspace/core/auth/schemas";
 import type { Http } from "@workspace/core/http/http";
+import { notIdempotentMutation } from "@workspace/core/http/retry-safety";
 import { startSession } from "@workspace/core/session/session";
 import type { Session } from "@workspace/core/session/session";
 import { Effect } from "effect";
@@ -26,6 +27,7 @@ export const authLoginMutationOptions = (
     AuthLoginError,
     AuthLoginRequestSchema
   >({
+    ...notIdempotentMutation,
     mutationKey: authKeys.login(),
     mutationFn: async (json) =>
       await runtime.runPromise(

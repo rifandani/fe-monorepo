@@ -11,7 +11,7 @@ import type { HttpAuthConfig } from "@workspace/core/http/http";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import { currentAccessToken, Session } from "@workspace/core/session/session";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
-import { Effect, Layer, Option } from "effect";
+import { Effect, Fiber, Layer, Metric, Option, Schema } from "effect";
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/http";
 import { delay, http, HttpResponse } from "msw";
 
@@ -33,12 +33,16 @@ const withHttp = (
   options: {
     accessToken?: string;
     auth?: HttpAuthConfig;
+    baseUrl?: string;
     onEnd?: Effect.Effect<void>;
     refresh?: SessionRefresh["Service"];
   } = {}
 ) =>
   Effect.provide(
-    Http.layer({ baseUrl: MOCK_API_BASE_URL, auth: options.auth }).pipe(
+    Http.layer({
+      baseUrl: options.baseUrl ?? MOCK_API_BASE_URL,
+      auth: options.auth,
+    }).pipe(
       Layer.provideMerge(
         Session.layerMemory(
           options.accessToken === undefined
@@ -56,6 +60,13 @@ const getThings = (options?: { headers?: Record<string, string> }) =>
     const client = yield* Http;
 
     return yield* client.get("things", options);
+  });
+
+const getPath = (path: string) =>
+  Effect.gen(function* () {
+    const client = yield* Http;
+
+    return yield* client.get(path);
   });
 
 const captureRequests = () => {
@@ -86,6 +97,49 @@ const captureStatus = (status: number) => {
 
 const respondWithStatus = (status: number) => {
   server.use(http.get(resourceUrl, () => new HttpResponse(null, { status })));
+};
+
+const respondAfter = (milliseconds: number) => {
+  server.use(
+    http.get(resourceUrl, async () => {
+      await delay(milliseconds);
+
+      return HttpResponse.json({});
+    })
+  );
+};
+
+const withSlowHttp = Effect.provide(
+  Http.layer({ baseUrl: MOCK_API_BASE_URL, timeout: "10 millis" }).pipe(
+    Layer.provide(Session.layerMemory()),
+    Layer.provide(FetchHttpClient.layer)
+  )
+);
+
+const holdUntilCancelled = () => {
+  const { promise, resolve } = Promise.withResolvers<true>();
+  server.use(
+    http.get(resourceUrl, async () => {
+      resolve(true);
+      await delay("infinite");
+
+      return HttpResponse.json({});
+    })
+  );
+
+  return { arrived: promise };
+};
+
+const withTransport = (transport: HttpClient.HttpClient, baseUrl: string) =>
+  Effect.provide(
+    Http.layer({ baseUrl }).pipe(
+      Layer.provide(Session.layerMemory()),
+      Layer.provide(Layer.succeed(HttpClient.HttpClient, transport))
+    )
+  );
+
+const respondToAnyThing = () => {
+  server.use(http.get(`${resourceUrl}/:id`, () => HttpResponse.json({})));
 };
 
 const renewingServer = SessionRefresh.of({
@@ -119,6 +173,37 @@ const sessionEndCounter = () => {
 
   return counter;
 };
+
+const recorded = (id: string, type: "Counter" | "Histogram") =>
+  Metric.snapshot.pipe(
+    Effect.map((snapshots) =>
+      snapshots.flatMap((snapshot) =>
+        snapshot.id === id && snapshot.type === type
+          ? [{ attributes: snapshot.attributes, count: snapshot.state.count }]
+          : []
+      )
+    )
+  );
+
+const recordedRequests = recorded("http.client.requests", "Counter");
+
+const recordedDurations = recorded("http.client.request.duration", "Histogram");
+
+const withMetricRegistry = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+  Effect.provideService(effect, Metric.MetricRegistry, new Map());
+
+const resourceIdsSchema = Schema.NonEmptyArray(
+  Schema.Union([
+    Schema.Int.check(Schema.isGreaterThanOrEqualTo(0)),
+    Schema.String.check(Schema.isUUID()),
+  ])
+);
+
+const recordedUrlTemplates = recordedRequests.pipe(
+  Effect.map((records) =>
+    records.map((record) => record.attributes?.["url.template"])
+  )
+);
 
 describe("Http", () => {
   it.effect("should resolve a relative path against the base URL", () =>
@@ -300,26 +385,173 @@ describe("Http", () => {
 
   it.live("should fail a request that exceeds the timeout", () =>
     Effect.gen(function* () {
-      server.use(
-        http.get(resourceUrl, async () => {
-          await delay(200);
+      respondAfter(200);
 
-          return HttpResponse.json({});
-        })
-      );
-
-      const layer = Http.layer({
-        baseUrl: MOCK_API_BASE_URL,
-        timeout: "10 millis",
-      }).pipe(
-        Layer.provide(Session.layerMemory()),
-        Layer.provide(FetchHttpClient.layer)
-      );
-
-      const error = yield* Effect.flip(getThings().pipe(Effect.provide(layer)));
+      const error = yield* Effect.flip(getThings().pipe(withSlowHttp));
 
       expect(error._tag).toBe("TimeoutError");
     })
+  );
+
+  it.effect(
+    "should count a successful request with its method, status and route",
+    () =>
+      Effect.gen(function* () {
+        captureRequests();
+
+        yield* getThings().pipe(withHttp());
+
+        expect(yield* recordedRequests).toEqual([
+          {
+            attributes: {
+              "http.request.method": "GET",
+              "http.response.status_code": "200",
+              "url.template": "/things",
+            },
+            count: 1,
+          },
+        ]);
+      }).pipe(withMetricRegistry)
+  );
+
+  it.effect(
+    "should count a request that fails with an error status as that error",
+    () =>
+      Effect.gen(function* () {
+        respondWithStatus(503);
+
+        yield* Effect.flip(getThings().pipe(withHttp()));
+
+        expect(yield* recordedRequests).toEqual([
+          {
+            attributes: {
+              "error.type": "503",
+              "http.request.method": "GET",
+              "http.response.status_code": "503",
+              "url.template": "/things",
+            },
+            count: 1,
+          },
+        ]);
+      }).pipe(withMetricRegistry)
+  );
+
+  it.live("should count a request that times out as a timeout", () =>
+    Effect.gen(function* () {
+      respondAfter(200);
+
+      yield* Effect.flip(getThings().pipe(withSlowHttp));
+
+      expect(yield* recordedRequests).toEqual([
+        {
+          attributes: {
+            "error.type": "timeout",
+            "http.request.method": "GET",
+            "url.template": "/things",
+          },
+          count: 1,
+        },
+      ]);
+    }).pipe(withMetricRegistry)
+  );
+
+  it.live("should count a request that is interrupted as cancelled", () =>
+    Effect.gen(function* () {
+      const { arrived } = holdUntilCancelled();
+      const request = yield* Effect.forkChild(getThings().pipe(withHttp()));
+
+      yield* Effect.promise(async () => {
+        await arrived;
+      });
+      yield* Fiber.interrupt(request);
+
+      expect(yield* recordedRequests).toEqual([
+        {
+          attributes: {
+            "error.type": "cancelled",
+            "http.request.method": "GET",
+            "url.template": "/things",
+          },
+          count: 1,
+        },
+      ]);
+    }).pipe(withMetricRegistry)
+  );
+
+  it.effect("should count a request whose transport dies as _OTHER", () =>
+    Effect.gen(function* () {
+      const dyingTransport = HttpClient.make(() => Effect.die("transport bug"));
+
+      yield* Effect.exit(
+        getThings().pipe(withTransport(dyingTransport, MOCK_API_BASE_URL))
+      );
+
+      expect(yield* recordedRequests).toEqual([
+        {
+          attributes: {
+            "error.type": "_OTHER",
+            "http.request.method": "GET",
+            "url.template": "/things",
+          },
+          count: 1,
+        },
+      ]);
+    }).pipe(withMetricRegistry)
+  );
+
+  it.effect(
+    "should count a request with a relative URL that it cannot send by its route template",
+    () =>
+      Effect.gen(function* () {
+        yield* Effect.flip(
+          getPath("things/42").pipe(withHttp({ baseUrl: "/api" }))
+        );
+
+        expect(yield* recordedRequests).toEqual([
+          {
+            attributes: {
+              "error.type": "InvalidUrlError",
+              "http.request.method": "GET",
+              "url.template": "/api/things/{id}",
+            },
+            count: 1,
+          },
+        ]);
+      }).pipe(withMetricRegistry)
+  );
+
+  it.effect(
+    "should record the latency of a request with the attributes of its count",
+    () =>
+      Effect.gen(function* () {
+        respondWithStatus(404);
+
+        yield* Effect.flip(getThings().pipe(withHttp()));
+
+        expect(yield* recordedDurations).toEqual([
+          {
+            attributes: {
+              "error.type": "404",
+              "http.request.method": "GET",
+              "http.response.status_code": "404",
+              "url.template": "/things",
+            },
+            count: 1,
+          },
+        ]);
+      }).pipe(withMetricRegistry)
+  );
+
+  it.effect(
+    "should count a request by its route template, not its full URL",
+    () =>
+      Effect.gen(function* () {
+        respondToAnyThing();
+
+        yield* getPath("things/42?page=2").pipe(withHttp());
+
+        expect(yield* recordedUrlTemplates).toEqual(["/things/{id}"]);
+      }).pipe(withMetricRegistry)
   );
 
   it.effect(
@@ -397,6 +629,22 @@ describe("Http", () => {
 
         expect(counter.ended).toBe(0);
       }),
+    ioPropertyOptions()
+  );
+
+  it.effect.prop(
+    "should always count requests to one resource under one route template",
+    [resourceIdsSchema],
+    ([ids]) =>
+      Effect.gen(function* () {
+        respondToAnyThing();
+
+        for (const id of ids) {
+          yield* getPath(`things/${id}`).pipe(withHttp());
+        }
+
+        expect(yield* recordedUrlTemplates).toEqual(["/things/{id}"]);
+      }).pipe(withMetricRegistry),
     ioPropertyOptions()
   );
 });

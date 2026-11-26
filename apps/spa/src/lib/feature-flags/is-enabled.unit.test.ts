@@ -1,13 +1,17 @@
 import { fc, test } from "@fast-check/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { featureFlagStore } from "@/lib/feature-flags/feature-flag-store";
+import {
+  featureFlagStore,
+  featureFlagStoreName,
+} from "@/lib/feature-flags/feature-flag-store";
 import {
   isFeatureEnabled,
   resolveFeatureEnabled,
 } from "@/lib/feature-flags/is-enabled";
+import storedV1 from "@/lib/feature-flags/stored-v1.json" with { type: "json" };
 
-const FLAGS_KEY = "app-feature-flags";
+const FLAGS_KEY = featureFlagStoreName;
 
 const loadFresh = async () => {
   vi.resetModules();
@@ -127,6 +131,20 @@ describe("featureFlagOverridesAtom", () => {
     const fresh = await loadFresh();
 
     expect(fresh.featureFlagStore.overrides()).toEqual({});
+  });
+
+  it("should decode the committed v1 snapshot of stored overrides", async () => {
+    localStorage.clear();
+
+    for (const [key, value] of Object.entries(storedV1)) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    const fresh = await loadFresh();
+
+    expect(fresh.featureFlagStore.overrides()).toEqual(
+      storedV1["app-feature-flags.v1"]
+    );
   });
 
   it("should rehydrate persisted overrides", async () => {

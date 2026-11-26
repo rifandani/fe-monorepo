@@ -20,6 +20,22 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Error Envelope**: The `{ message }` body the API returns on a failed request. Present on most failures, absent on some — a caller may never assume it parsed. _Avoid_: error response, error body, error payload
 
+**Expected Failure**: A failure that the app knows can occur when the code is correct: the server refuses the request, the server does not answer in time, the device cannot reach the server, or the outcome is unknown. Each maps to one Translation Key. The UI shows it, and it is not sent to telemetry (ADR-0014). _Avoid_: handled error, user error
+
+**Defect**: A failure that the code did not expect (a bug, a response with a wrong shape). The UI shows only a generic message, and the app sends the cause to telemetry (ADR-0014). _Avoid_: crash, unknown error
+
+**Author Error**: An error for the author or the developer, not for the person who uses the app: an env variable that is not set or not valid, a Feature Flag with no definition, a lint finding. Its message gives the location, the rejected value and a fix (ADR-0014, "Author errors"). _Avoid_: dev error, config error
+
+**Retry Safety**: The statement that a mutation is idempotent (sending it again has the same effect as sending it once) or not. Each mutation option factory declares it in `meta.retrySafety`; a not-idempotent mutation never retries. _Avoid_: retryable, safe mutation
+
+**Unknown Outcome**: A timeout of a not-idempotent mutation. The server possibly did the work, so the UI tells the person to check the result before they try again. _Avoid_: failed, lost request
+
+### Telemetry
+
+**Golden Signals**: The latency, traffic and errors of the requests that `Http` sends, recorded as `http.client.requests` and `http.client.request.duration` (ADR-0013). _Avoid_: request stats
+
+**Route Template**: The path of a request without origin, query and hash, with each id segment replaced by `{id}` (`/users/{id}`). The `url.template` attribute of the Golden Signals. _Avoid_: route, full URL
+
 ### Session
 
 **Session**: What one successful login produces — the signed-in person together with the credentials that prove it. Each app persists exactly one, or none. _Avoid_: user, appUser, auth state, current user
@@ -28,9 +44,11 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Session Start**: The single flow that keeps the Session a successful login produced. The pair of End Session. _Avoid_: setUser, sign in (the login request itself)
 
-**Session Refresh**: The single flow that gets a new Access Token when the server rejects the current one, by exchanging the refresh token of the Session. One runs at a time: every request rejected while it runs waits for it, then sends once more with the new Access Token. When the server refuses the refresh token, End Session follows; when the refresh cannot finish, the Session stays. _Avoid_: token refresh (the request itself), re-auth, silent login
+**Session Refresh**: The single flow that gets a new Access Token when the server rejects the current one, by exchanging the refresh token of the Session. One runs at a time, also across the tabs of one browser: every request rejected while it runs waits for it, then sends once more with the new Access Token. When the server refuses the refresh token, End Session follows; when the refresh cannot finish, the Session stays. _Avoid_: token refresh (the request itself), re-auth, silent login
 
 **End Session**: The single flow that discards a Session, whether the person signed out or the server refused the refresh token. Distinct from the store setter it calls. _Avoid_: logout, sign out, log off
+
+**Session Lock**: The lock that lets one Session Refresh at a time send its request, across every Session on one store (the tabs of one browser on one `localStorage`). The SPA uses the Web Locks API; one app instance uses a memory lock. _Avoid_: mutex, refresh lock, leader tab
 
 **Session Machine**: The statechart that runs Session Start, Session Refresh and End Session in order, one at a time. It holds which of these runs now (the Session Activity); the Session itself stays in Persistence. _Avoid_: auth machine, auth state
 

@@ -1,8 +1,4 @@
-import {
-  MutationObserver,
-  QueryClient,
-  skipToken,
-} from "@tanstack/react-query";
+import { MutationObserver, skipToken } from "@tanstack/react-query";
 import { server } from "@test/msw";
 import {
   cdnFileMutationOptions,
@@ -10,6 +6,7 @@ import {
   cdnKeys,
   cdnValidKeys,
 } from "@workspace/core/cdn/queries";
+import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { ManagedRuntime } from "effect";
 import { FetchHttpClient } from "effect/http";
 import { http, HttpResponse } from "msw";
@@ -56,7 +53,7 @@ describe("cdnFileQueryOptions", () => {
     const runtime = makeRuntime();
     const options = cdnFileQueryOptions(runtime, { key, url: fileUrl });
 
-    const file = await new QueryClient().query(options);
+    const file = await makeTestQueryClient().query(options);
 
     expect(options.queryKey).toEqual(["cdn", "article", fileUrl]);
     expect(file.headers["content-type"]).toBe("image/png");
@@ -71,7 +68,7 @@ describe("cdnFileMutationOptions", () => {
     const runtime = makeRuntime();
 
     const observer = new MutationObserver(
-      new QueryClient(),
+      makeTestQueryClient(),
       cdnFileMutationOptions(runtime, { key })
     );
 

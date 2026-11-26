@@ -90,6 +90,7 @@ const NotFoundRoute = () => {
 export const router = createRouter({
   routeTree,
   defaultOnCatch: (error, errorInfo) => {
+    // oxlint-disable-next-line landmines/no-unowned-task -- appRuntime owns the fiber and interrupts it on dispose; recordException cannot fail
     appRuntime.runFork(
       recordException(
         TRACER_ROUTER_ON_ERROR,

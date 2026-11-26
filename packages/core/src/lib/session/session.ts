@@ -1,8 +1,12 @@
 import type { AuthLoginResponseSchema } from "@workspace/core/auth/schemas";
 import { makePersistence } from "@workspace/core/persistence/persistence";
-import type { Persistence } from "@workspace/core/persistence/persistence";
+import { makeMemorySessionLock } from "@workspace/core/session/session-lock";
+import type { SessionLock } from "@workspace/core/session/session-lock";
 import { provideSessionMachine } from "@workspace/core/session/session-machine";
-import type { SessionActivity } from "@workspace/core/session/session-machine";
+import type {
+  SessionActivity,
+  SessionStore,
+} from "@workspace/core/session/session-machine";
 import { SessionRefresh } from "@workspace/core/session/session-refresh";
 import { createEffectActor, sendAndAwait, waitFor } from "@xstate/effect";
 import { Context, Effect, Layer, Option } from "effect";
@@ -21,6 +25,7 @@ export const sessionActivityAtom = Atom.make<SessionActivity>("idle").pipe(
 
 export interface SessionOptions {
   readonly onEnd?: Effect.Effect<void>;
+  readonly lock?: SessionLock;
 }
 
 export class Session extends Context.Service<
@@ -35,8 +40,8 @@ export class Session extends Context.Service<
   }
 >()("@workspace/core/session/Session") {
   static readonly layer = (
-    persistence: Pick<Persistence, "registry" | "sessionAtom">,
-    { onEnd = Effect.void }: SessionOptions = {}
+    persistence: SessionStore,
+    { onEnd = Effect.void, lock = makeMemorySessionLock() }: SessionOptions = {}
   ) =>
     Layer.effect(
       Session,
@@ -44,7 +49,7 @@ export class Session extends Context.Service<
         const { registry, sessionAtom } = persistence;
 
         const actor = yield* createEffectActor(
-          provideSessionMachine(persistence, { onEnd })
+          provideSessionMachine(persistence, { onEnd, lock })
         );
 
         const publish = (activity: SessionActivity) => {

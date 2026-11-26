@@ -54,7 +54,7 @@ vi.mock("@/lib/layers/runtime", async () => {
 });
 
 vi.mock("@/lib/layers/telemetry", () => ({
-  metricReader: { forceFlush: harness.forceFlush },
+  bufferedExporters: [{ forceFlush: harness.forceFlush }],
 }));
 
 type HideEvent = "pagehide" | "visibilitychange";
@@ -115,6 +115,11 @@ const loadModule = async () => {
   resetHarness();
 
   return await import("./web-vitals");
+};
+
+const deliverTelemetryOnHide = async () => {
+  const delivery = await import("./telemetry-delivery");
+  delivery.deliverTelemetryOnHide();
 };
 
 type WebVitalsModule = Awaited<ReturnType<typeof loadModule>>;
@@ -197,6 +202,7 @@ const callbackOf = (reporter: typeof onLCP) => {
 
 const startReporting = async () => {
   const module = await loadModule();
+  await deliverTelemetryOnHide();
   module.reportWebVitals();
 
   return module;
@@ -244,7 +250,7 @@ describe("webVitalsAttributes", () => {
 });
 
 describe("reportWebVitals", () => {
-  it("should register each reporter and both hide listeners once", async () => {
+  it("should register each reporter once", async () => {
     const { reportWebVitals } = await loadModule();
 
     reportWebVitals();
@@ -253,9 +259,14 @@ describe("reportWebVitals", () => {
     for (const reporter of [onLCP, onINP, onCLS, onFCP, onTTFB]) {
       expect(reporter).toHaveBeenCalledOnce();
     }
+  });
 
-    expect(listeners.visibilitychange).toHaveLength(1);
-    expect(listeners.pagehide).toHaveLength(1);
+  it("should leave the hide listeners to telemetry delivery", async () => {
+    const { reportWebVitals } = await loadModule();
+
+    reportWebVitals();
+
+    expect(listeners).toEqual({ pagehide: [], visibilitychange: [] });
   });
 
   it("should record LCP, FCP and TTFB at once with semconv attributes", async () => {

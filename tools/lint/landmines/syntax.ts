@@ -31,7 +31,11 @@ export const isCallback = (
   node?.type === "ArrowFunctionExpression" ||
   (node?.type === "FunctionExpression" && node.body !== null);
 
-const binding = (source: SourceCode, identifier: ESTree.Node, name: string) => {
+export const binding = (
+  source: SourceCode,
+  identifier: ESTree.Node,
+  name: string
+) => {
   let scope: Scope | null = source.getScope(identifier);
 
   while (scope) {
