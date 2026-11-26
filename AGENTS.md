@@ -35,3 +35,5 @@ Multi-context — `GLOSSARY-MAP.md` at repo root points to per-context `GLOSSARY
 ### Testing
 
 When writing tests, call Skill tool with `/javascript-testing-expert`.
+
+Before you write a check, find the failure kind in [ADR-0015: The testing ladder](docs/adr/0015-the-testing-ladder.md). Put the check on its Lowest Rung.
