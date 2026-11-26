@@ -1,3 +1,5 @@
+import { authorErrorMessage } from "@workspace/core/utils/author-error";
+
 export const featureFlagIds = ["componentCatalog"] as const;
 
 export type FeatureFlagId = (typeof featureFlagIds)[number];
@@ -46,12 +48,21 @@ export const findExpiredFeatureFlags = (
 };
 
 export const getFeatureFlagDefinition = (
-  id: FeatureFlagId
+  id: FeatureFlagId,
+  flags: readonly FeatureFlagDefinition[] = featureFlagRegistry
 ): FeatureFlagDefinition => {
-  const def = featureFlagRegistry.find((flag) => flag.id === id);
+  const def = flags.find((flag) => flag.id === id);
 
   if (!def) {
-    throw new Error(`Unknown Feature Flag: ${id}`);
+    const known = flags.map((flag) => `"${flag.id}"`).join(", ") || "none";
+
+    throw new Error(
+      authorErrorMessage(
+        `getFeatureFlagDefinition got Feature Flag "${id}", which has no definition`,
+        `The registry defines ${known}`,
+        `add a definition with id "${id}" to featureFlagRegistry in apps/spa/src/lib/feature-flags/registry.ts`
+      )
+    );
   }
 
   return def;

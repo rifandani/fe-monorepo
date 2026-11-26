@@ -2,8 +2,10 @@ import { fc, test } from "@fast-check/vitest";
 import { describe, expect, it } from "vitest";
 
 import {
+  featureFlagIds,
   featureFlagRegistry,
   findExpiredFeatureFlags,
+  getFeatureFlagDefinition,
   isIsoDate,
 } from "@/lib/feature-flags/registry";
 import type {
@@ -131,5 +133,29 @@ describe("featureFlagRegistry", () => {
     const expired = findExpiredFeatureFlags(featureFlagRegistry, new Date());
 
     expect(expired, describeExpired(expired)).toEqual([]);
+  });
+});
+
+describe("getFeatureFlagDefinition", () => {
+  it("should give the definition of a flag in the registry", () => {
+    const flag = makeFlag("2026-03-31");
+
+    expect(getFeatureFlagDefinition("componentCatalog", [flag])).toBe(flag);
+  });
+
+  it("should give the location, the rejected id and the fix for a flag with no definition", () => {
+    expect(() => getFeatureFlagDefinition("componentCatalog", [])).toThrow(
+      'getFeatureFlagDefinition got Feature Flag "componentCatalog", which has no definition. ' +
+        "The registry defines none. " +
+        'Fix: add a definition with id "componentCatalog" to featureFlagRegistry in apps/spa/src/lib/feature-flags/registry.ts.'
+    );
+  });
+
+  it("should give a definition for each Feature Flag id", () => {
+    const missing = featureFlagIds.filter(
+      (id) => !featureFlagRegistry.some((flag) => flag.id === id)
+    );
+
+    expect(missing).toEqual([]);
   });
 });

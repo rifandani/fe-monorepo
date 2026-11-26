@@ -24,6 +24,8 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Defect**: A failure that the code did not expect (a bug, a response with a wrong shape). The UI shows only a generic message, and the app sends the cause to telemetry (ADR-0014). _Avoid_: crash, unknown error
 
+**Author Error**: An error for the author or the developer, not for the person who uses the app: an env variable that is not set or not valid, a Feature Flag with no definition, a lint finding. Its message gives the location, the rejected value and a fix (ADR-0014, "Author errors"). _Avoid_: dev error, config error
+
 **Retry Safety**: The statement that a mutation is idempotent (sending it again has the same effect as sending it once) or not. Each mutation option factory declares it in `meta.retrySafety`; a not-idempotent mutation never retries. _Avoid_: retryable, safe mutation
 
 **Unknown Outcome**: A timeout of a not-idempotent mutation. The server possibly did the work, so the UI tells the person to check the result before they try again. _Avoid_: failed, lost request

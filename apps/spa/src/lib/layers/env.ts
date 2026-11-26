@@ -1,5 +1,7 @@
+import { makeEnvVar } from "@workspace/core/config/env-var";
 import { urlStringSchema } from "@workspace/core/http/schemas";
-import { Config, ConfigProvider, Effect, Schema } from "effect";
+import { ConfigProvider, Effect, Schema } from "effect";
+import type { Config } from "effect";
 
 const portlessUrlEnv = import.meta.env.PORTLESS_URL;
 const portlessUrl = portlessUrlEnv === "" ? undefined : portlessUrlEnv;
@@ -32,17 +34,17 @@ const env = {
 
 export const envConfigProvider = ConfigProvider.fromUnknown(env);
 
+const envVar = makeEnvVar({
+  values: env,
+  fix: (name) =>
+    `set ${name} in apps/spa/.env.local (apps/spa/.env.example lists each variable)`,
+});
+
 export const EnvConfig = {
-  apiBaseUrl: Config.schema(urlStringSchema, "VITE_API_BASE_URL"),
-  appUrl: Config.schema(urlStringSchema, "VITE_APP_URL"),
-  otelEndpoint: Config.schema(
-    urlStringSchema,
-    "VITE_OTEL_EXPORTER_OTLP_ENDPOINT"
-  ),
-  otelLogLevel: Config.schema(
-    Schema.Literals(otelLogLevels),
-    "VITE_OTEL_LOG_LEVEL"
-  ),
+  apiBaseUrl: envVar(urlStringSchema, "VITE_API_BASE_URL"),
+  appUrl: envVar(urlStringSchema, "VITE_APP_URL"),
+  otelEndpoint: envVar(urlStringSchema, "VITE_OTEL_EXPORTER_OTLP_ENDPOINT"),
+  otelLogLevel: envVar(Schema.Literals(otelLogLevels), "VITE_OTEL_LOG_LEVEL"),
 } as const;
 
 export const readEnv = <A>(config: Config.Config<A>): A =>

@@ -10,6 +10,7 @@
     "./assets/*": "./src/shared/assets/*",
     "./auth/*": "./src/lib/auth/*.ts",
     "./cdn/*": "./src/lib/cdn/*.ts",
+    "./config/*": "./src/lib/config/*.ts",
     "./constants/*": "./src/shared/constants/*.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./http/*": "./src/lib/http/*.ts",

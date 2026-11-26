@@ -1,5 +1,6 @@
+import { makeEnvVar } from "@workspace/core/config/env-var";
 import { urlStringSchema } from "@workspace/core/http/schemas";
-import { Config, ConfigProvider } from "effect";
+import { ConfigProvider } from "effect";
 
 const env = {
   EXPO_PUBLIC_API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
@@ -7,6 +8,12 @@ const env = {
 
 export const envConfigProvider = ConfigProvider.fromUnknown(env);
 
+const envVar = makeEnvVar({
+  values: env,
+  fix: (name) =>
+    `set ${name} in the EAS project env, then run bun expo env:pull:dev (see "Environment Variables" in apps/expo/README.md)`,
+});
+
 export const EnvConfig = {
-  apiBaseUrl: Config.schema(urlStringSchema, "EXPO_PUBLIC_API_BASE_URL"),
+  apiBaseUrl: envVar(urlStringSchema, "EXPO_PUBLIC_API_BASE_URL"),
 } as const;
