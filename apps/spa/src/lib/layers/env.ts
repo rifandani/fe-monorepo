@@ -27,8 +27,9 @@ export const otelLogLevels = [
 const envValues = {
   VITE_API_BASE_URL: resolvedApiBaseUrl,
   VITE_APP_URL: portlessUrl ?? import.meta.env.VITE_APP_URL,
-  VITE_OTEL_EXPORTER_OTLP_ENDPOINT: import.meta.env
-    .VITE_OTEL_EXPORTER_OTLP_ENDPOINT,
+  VITE_OTEL_EXPORTER_OTLP_ENDPOINT: import.meta.env.DEV
+    ? globalThis.location?.origin
+    : import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT,
   VITE_OTEL_LOG_LEVEL: import.meta.env.VITE_OTEL_LOG_LEVEL,
 };
 

@@ -10,9 +10,7 @@ import { env, EnvConfig } from "@/lib/layers/env";
 import type { otelLogLevels } from "@/lib/layers/env";
 import { SERVICE_NAME, SERVICE_VERSION } from "@/shared/constants/global";
 
-const otlpEndpoint = import.meta.env.DEV
-  ? globalThis.location.origin
-  : env.otelEndpoint;
+const { otelEndpoint } = env;
 
 const logLevelMap = {
   ALL: DiagLogLevel.ALL,
@@ -26,11 +24,11 @@ const logLevelMap = {
 
 const metricReader = new PeriodicExportingMetricReader({
   exportIntervalMillis: 10_000,
-  exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
+  exporter: new OTLPMetricExporter({ url: `${otelEndpoint}/v1/metrics` }),
 });
 
 const spanProcessor = new BatchSpanProcessor(
-  new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
+  new OTLPTraceExporter({ url: `${otelEndpoint}/v1/traces` })
 );
 
 export const bufferedExporters = [spanProcessor, metricReader] as const;

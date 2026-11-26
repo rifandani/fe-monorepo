@@ -79,7 +79,7 @@ const rejectionOf = (config: Config.Config<unknown>) =>
     Config.orElse((rejection) => Config.succeed(rejection))
   );
 
-const describeRejections = (
+const summarizeRejections = (
   rejections: readonly Config.ConfigError[]
 ): string =>
   [
@@ -98,7 +98,7 @@ export const allEnvVars = <const Vars extends EnvVars>(vars: Vars) =>
         ? Config.all(vars)
         : Config.fail(
             new ConfigProvider.SourceError({
-              message: describeRejections(rejections),
+              message: summarizeRejections(rejections),
               cause: rejections,
             })
           );
