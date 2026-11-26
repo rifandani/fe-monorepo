@@ -20,6 +20,12 @@ React SPA.
 
 **Feature Flag**: A named boolean that gates a product surface for local development. Defaults ON in development and OFF otherwise; a developer may override the default via the Feature Flags Devtools panel, and that override persists across reloads until reset. Production builds never honor an ON override for gated surfaces. _Avoid_: kill switch, remote config, experiment, A/B test
 
+### Telemetry
+
+**Telemetry Delivery**: Sending the spans and metrics that the exporters keep in memory, before the browser stops the page. One module, `telemetry-delivery`, owns it ([ADR-0013](../../docs/adr/0013-browser-telemetry-delivery.md)). _Avoid_: telemetry flush (a flush is one step of the delivery)
+
+**Flush Hook**: A function that a module registers with `onBeforeTelemetryFlush`. It records the last values of the module before the exporters send them. _Avoid_: flush listener, hide handler
+
 ### Testing
 
 **Route Test**: A test that opens the whole app at one URL, the way a person arrives at it, and checks what that person sees and can do there. Every route, guard, provider and translation is the real one; only the network is faked. _Avoid_: E2E spec, component test, page test, integration test

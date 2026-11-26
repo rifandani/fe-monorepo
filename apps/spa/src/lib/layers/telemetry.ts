@@ -29,6 +29,10 @@ export const metricReader = new PeriodicExportingMetricReader({
   exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
 });
 
+export const spanProcessor = new BatchSpanProcessor(
+  new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
+);
+
 const browserAttributes = () => ({
   "browser.language": globalThis.navigator?.language ?? "unknown",
   "user_agent.original": globalThis.navigator?.userAgent ?? "unknown",
@@ -46,9 +50,7 @@ export const TelemetryLive = WebSdk.layer(
         serviceVersion: SERVICE_VERSION,
         attributes: browserAttributes(),
       },
-      spanProcessor: new BatchSpanProcessor(
-        new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
-      ),
+      spanProcessor,
       metricReader,
     };
   })

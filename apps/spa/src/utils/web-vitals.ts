@@ -3,7 +3,6 @@ import { onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import type { Metric as WebVitalsMetric } from "web-vitals";
 
 import { appRuntime } from "@/lib/layers/runtime";
-import { metricReader } from "@/lib/layers/telemetry";
 import {
   METRICS_METER_WEB_VITALS_CLS,
   METRICS_METER_WEB_VITALS_FCP,
@@ -11,6 +10,7 @@ import {
   METRICS_METER_WEB_VITALS_LCP,
   METRICS_METER_WEB_VITALS_TTFB,
 } from "@/shared/constants/global";
+import { onBeforeTelemetryFlush } from "@/utils/telemetry-delivery";
 
 export const webVitalsHistograms = {
   lcp: Metric.histogram(METRICS_METER_WEB_VITALS_LCP, {
@@ -65,13 +65,7 @@ const record = (
   );
 };
 
-const ignoreExportFailureOnHide = (): void => undefined;
-
-const drainReader = async (): Promise<void> => {
-  await metricReader.forceFlush().catch(ignoreExportFailureOnHide);
-};
-
-const flushPending = (): void => {
+const recordPending = (): void => {
   for (const [id, entry] of pending) {
     if (recordedIds.has(id)) {
       continue;
@@ -82,7 +76,6 @@ const flushPending = (): void => {
   }
 
   pending.clear();
-  void drainReader();
 };
 
 const recordImmediate =
@@ -110,12 +103,6 @@ const recordDeferred =
     });
   };
 
-const flushIfHidden = (): void => {
-  if (document.visibilityState === "hidden") {
-    flushPending();
-  }
-};
-
 let started = false;
 
 export const reportWebVitals = (): void => {
@@ -130,9 +117,5 @@ export const reportWebVitals = (): void => {
   onTTFB(recordImmediate(webVitalsHistograms.ttfb));
   onCLS(recordDeferred(webVitalsHistograms.cls));
   onINP(recordDeferred(webVitalsHistograms.inp));
-
-  document.addEventListener("visibilitychange", flushIfHidden, {
-    capture: true,
-  });
-  globalThis.addEventListener("pagehide", flushPending, { capture: true });
+  onBeforeTelemetryFlush(recordPending);
 };

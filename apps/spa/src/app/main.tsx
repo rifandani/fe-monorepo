@@ -9,9 +9,12 @@ import {
 } from "@/shared/constants/global";
 import { recordException, toReportedError } from "@/utils/telemetry";
 import type { ReportedError } from "@/utils/telemetry";
+import { deliverTelemetryOnHide } from "@/utils/telemetry-delivery";
 import { reportWebVitals } from "@/utils/web-vitals";
 
 import "@/styles/globals.css";
+
+deliverTelemetryOnHide();
 
 reportWebVitals();
 
