@@ -56,28 +56,35 @@ const reactImport = (source: SourceCode, identifier: ESTree.Node) => {
     : undefined;
 };
 
-const isUseState = (source: SourceCode, callee: ESTree.Node): boolean => {
-  if (callee.type === "MemberExpression") {
-    const specifier = reactImport(source, callee.object);
+const isUseStateName = (node: ESTree.Node): boolean =>
+  node.type === "Identifier" && node.name === "useState";
 
-    return (
-      !callee.computed &&
-      callee.property.type === "Identifier" &&
-      callee.property.name === "useState" &&
-      (specifier?.type === "ImportNamespaceSpecifier" ||
-        specifier?.type === "ImportDefaultSpecifier")
-    );
-  }
+const isReactNamespace = (specifier: ReturnType<typeof reactImport>): boolean =>
+  specifier?.type === "ImportNamespaceSpecifier" ||
+  specifier?.type === "ImportDefaultSpecifier";
 
+const isUseStateMember = (
+  source: SourceCode,
+  callee: ESTree.MemberExpression
+): boolean =>
+  !callee.computed &&
+  isUseStateName(callee.property) &&
+  isReactNamespace(reactImport(source, callee.object));
+
+const isUseStateImport = (source: SourceCode, callee: ESTree.Node): boolean => {
   const specifier = reactImport(source, callee);
 
   return (
     specifier?.type === "ImportSpecifier" &&
     specifier.importKind !== "type" &&
-    specifier.imported.type === "Identifier" &&
-    specifier.imported.name === "useState"
+    isUseStateName(specifier.imported)
   );
 };
+
+const isUseState = (source: SourceCode, callee: ESTree.Node): boolean =>
+  callee.type === "MemberExpression"
+    ? isUseStateMember(source, callee)
+    : isUseStateImport(source, callee);
 
 const isBooleanState = (node: ESTree.CallExpression): boolean => {
   const [typeArgument] = node.typeArguments?.params ?? [];

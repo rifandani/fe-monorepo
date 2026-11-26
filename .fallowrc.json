@@ -86,6 +86,7 @@
     "@opentelemetry/semantic-conventions",
     "msw",
     "@fast-check/vitest",
+    "effect",
     "postcss-load-config",
     "workbox-core",
     "@expo-google-fonts/space-grotesk",
