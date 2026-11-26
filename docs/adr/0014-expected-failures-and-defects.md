@@ -1,6 +1,6 @@
 # Expected failures and defects
 
-> Recorded on 2026-11-26. Issue #221. The "Author errors" section: issue #222. Builds on [ADR-0012](./0012-mutations-declare-their-retry-safety.md) (the UI shows the Unknown Outcome) and [ADR-0013](./0013-browser-telemetry-delivery.md) (the spa delivers spans).
+> Recorded on 2026-11-26, because a bug and a refusal from the server got the same toast. The "Author errors" section was added because some developer-facing errors did not say what to fix. Builds on [ADR-0012](./0012-mutations-declare-their-retry-safety.md) (the UI shows the Unknown Outcome) and [ADR-0013](./0013-browser-telemetry-delivery.md) (the spa delivers spans).
 
 Before this ADR, `toErrorMessage` (`packages/core/src/utils/error.ts`) changed each error into one toast string. A bug and a refusal from the server got the same path. The toast showed the text of any `Error`, also of a bug (for example `Cannot read properties of undefined`). No code sent the bug to telemetry. The text of the toast was in English only, and an error status with no Error Envelope showed `Request failed with status code 401: GET https://…`.
 

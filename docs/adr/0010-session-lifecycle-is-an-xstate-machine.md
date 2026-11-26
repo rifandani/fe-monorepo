@@ -2,7 +2,7 @@
 
 > Recorded on 2026-11-20. Builds on [ADR-0006](./0006-core-owns-the-effect-seams.md): the `Session` service keeps its seam, and gets Session Refresh.
 
-> On 2026-11-26, the section "When boolean flags become a machine" was added (#224). It gives the decision rule between an XState machine and boolean flags, and the `state/no-boolean-flag-cluster` lint rule that finds possible cases.
+> On 2026-11-26, the section "When boolean flags become a machine" was added, because some components kept a cluster of boolean flags that was an implicit state machine. It gives the decision rule between an XState machine and boolean flags, and the `state/no-boolean-flag-cluster` lint rule that finds possible cases.
 
 The Session lifecycle — Session Start, Session Refresh and End Session — runs as one XState v6 statechart, the Session Machine (`packages/core/src/lib/session/session-machine.ts`). `@xstate/effect` hosts it on the Effect runtime: `Session.layer` starts the actor with `createEffectActor`, so the actor lives as long as the app runtime, and its invoked work runs as Effects with the app's services and tracing.
 

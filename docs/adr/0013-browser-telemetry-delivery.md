@@ -1,6 +1,6 @@
 # Browser telemetry delivery
 
-> Recorded on 2026-11-26. Issue #219. Extended on 2026-11-26 by issue #220 (request metrics).
+> Recorded on 2026-11-26, because trace spans were lost when the page closed. Extended on 2026-11-26 with request metrics, because the spa had no metrics for request latency, traffic or errors.
 
 The spa exports traces through a `BatchSpanProcessor` and metrics through a `PeriodicExportingMetricReader`. Both keep data in memory and send it later. Before this ADR, only `web-vitals.ts` flushed the metric reader when the page hid. No code flushed the span processor. A span for an error just before the page closes stayed in memory and was lost. A created span is not a delivered span.
 
@@ -34,7 +34,7 @@ The spa exports traces through a `BatchSpanProcessor` and metrics through a `Per
 - `web-vitals.unit.test.ts` proves that `reportWebVitals` adds no hide listeners, and that CLS and INP are recorded when the page hides through the delivery module.
 - The flush is best effort. The browser can stop the page before `forceFlush` completes. This ADR makes the delivery start; it does not make the delivery certain.
 
-## Request metrics (issue #220)
+## Request metrics
 
 Before this section, the spa recorded web vitals only. It had no metrics for request latency, traffic or errors, so overload and outage were not visible.
 
