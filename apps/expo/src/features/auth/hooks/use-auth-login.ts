@@ -1,4 +1,3 @@
-import { useToastController } from "@tamagui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { authLoginMutationOptions } from "@workspace/core/auth/queries";
 import type { AuthLoginError } from "@workspace/core/auth/queries";
@@ -9,8 +8,8 @@ import type {
 import { withRetrySafety } from "@workspace/core/http/retry-safety";
 import type { CallerMutationOptions } from "@workspace/core/http/retry-safety";
 
+import { useFailurePresenter } from "@/hooks/use-failure-presenter";
 import { appRuntime } from "@/lib/layers/runtime";
-import type { ToastCustomData } from "@/utils/toast";
 
 export const useAuthLogin = (
   mutationOptions?: CallerMutationOptions<
@@ -19,19 +18,13 @@ export const useAuthLogin = (
     AuthLoginRequestSchema
   >
 ) => {
-  const toast = useToastController();
+  const presenter = useFailurePresenter();
 
   return useMutation(
     withRetrySafety(
       authLoginMutationOptions(appRuntime),
       mutationOptions,
-      (message) => {
-        toast.show(message, {
-          customData: {
-            preset: "error",
-          } satisfies ToastCustomData,
-        });
-      }
+      presenter
     )
   );
 };

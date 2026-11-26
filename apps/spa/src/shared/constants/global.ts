@@ -14,3 +14,5 @@ export const TRACER_REACT_ENTRY_ON_UNCAUGHT_ERROR = `${TRACER_REACT_ENTRY}.onUnc
 export const TRACER_REACT_ENTRY_ON_RECOVERABLE_ERROR = `${TRACER_REACT_ENTRY}.onRecoverableError`;
 const TRACER_ROUTER = "router";
 export const TRACER_ROUTER_ON_ERROR = `${TRACER_ROUTER}.onError`;
+const TRACER_MUTATION = "mutation";
+export const TRACER_MUTATION_ON_ERROR = `${TRACER_MUTATION}.onError`;

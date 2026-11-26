@@ -7,8 +7,8 @@ import type {
 } from "@workspace/core/auth/schemas";
 import { withRetrySafety } from "@workspace/core/http/retry-safety";
 import type { CallerMutationOptions } from "@workspace/core/http/retry-safety";
-import { toast } from "sonner";
 
+import { useFailurePresenter } from "@/hooks/use-failure-presenter";
 import { appRuntime } from "@/lib/layers/runtime";
 
 export const useAuthLogin = (
@@ -17,13 +17,14 @@ export const useAuthLogin = (
     AuthLoginError,
     AuthLoginRequestSchema
   >
-) =>
-  useMutation(
+) => {
+  const presenter = useFailurePresenter();
+
+  return useMutation(
     withRetrySafety(
       authLoginMutationOptions(appRuntime),
       mutationOptions,
-      (message) => {
-        toast.error(message);
-      }
+      presenter
     )
   );
+};

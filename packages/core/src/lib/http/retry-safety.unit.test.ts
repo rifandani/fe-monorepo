@@ -1,20 +1,28 @@
 import { fc, test } from "@fast-check/vitest";
 import { MutationObserver, QueryClient } from "@tanstack/react-query";
 import type { UseMutationOptions } from "@tanstack/react-query";
+import { Failures } from "@workspace/core/http/failure";
+import type { FailurePresenter } from "@workspace/core/http/failure";
 import { HttpResponseError } from "@workspace/core/http/http-response-error";
 import {
   idempotentMutation,
   isUnknownOutcome,
   notIdempotentMutation,
-  toMutationErrorMessage,
-  unknownOutcomeMessage,
+  toMutationFailure,
   withRetrySafety,
 } from "@workspace/core/http/retry-safety";
 import type { ErrorResponseSchema } from "@workspace/core/http/schemas";
-import { toErrorMessage } from "@workspace/core/utils/error";
 import { makeTestQueryClient } from "@workspace/core/utils/test-query-client";
 import { Cause } from "effect";
 import { describe, expect, it } from "vitest";
+
+const recordingPresenter = (shown: string[]): FailurePresenter => ({
+  translate: (key) => key,
+  showError: (message) => {
+    shown.push(message);
+  },
+  reportDefect: () => {},
+});
 
 const loginResponseError = (
   status: number,
@@ -65,31 +73,41 @@ describe("isUnknownOutcome", () => {
   );
 });
 
-describe("toMutationErrorMessage", () => {
-  it("should say the outcome is unknown for a timeout of a mutation that is not idempotent", () => {
+describe("toMutationFailure", () => {
+  it("should be an Unknown Outcome for a timeout of a mutation that is not idempotent", () => {
     const error = new Cause.TimeoutError();
 
-    const message = toMutationErrorMessage(error, notIdempotentMutation.meta);
+    const failure = toMutationFailure(error, notIdempotentMutation.meta);
 
-    expect(message).toBe(unknownOutcomeMessage);
+    expect(failure).toEqual(Failures.Expected({ key: "errorUnknownOutcome" }));
   });
 
-  it("should give the usual error message for a timeout of an idempotent mutation", () => {
+  it("should be a usual timeout for a timeout of an idempotent mutation", () => {
     const error = new Cause.TimeoutError();
 
-    const message = toMutationErrorMessage(error, idempotentMutation.meta);
+    const failure = toMutationFailure(error, idempotentMutation.meta);
 
-    expect(message).toBe(toErrorMessage(error));
+    expect(failure).toEqual(Failures.Expected({ key: "errorTimeout" }));
+  });
+
+  it("should be a defect when the mutation throws a bug", () => {
+    const error = new TypeError("Cannot read properties of undefined");
+
+    const failure = toMutationFailure(error, notIdempotentMutation.meta);
+
+    expect(failure).toEqual(Failures.Defect({ cause: error }));
   });
 
   test.prop([fc.string({ minLength: 1 })])(
-    "should always give the server message when the server answered",
+    "should always keep the server message when the server answered",
     (serverMessage) => {
       const error = loginResponseError(400, { message: serverMessage });
 
-      const message = toMutationErrorMessage(error, notIdempotentMutation.meta);
+      const failure = toMutationFailure(error, notIdempotentMutation.meta);
 
-      expect(message).toBe(serverMessage);
+      expect(failure).toEqual(
+        Failures.Expected({ key: "errorRequestRejected", serverMessage })
+      );
     }
   );
 });
@@ -126,14 +144,12 @@ describe("withRetrySafety", () => {
 
     const observer = new MutationObserver(
       makeTestQueryClient(),
-      withRetrySafety(owned, undefined, (message) => {
-        shown.push(message);
-      })
+      withRetrySafety(owned, undefined, recordingPresenter(shown))
     );
 
     await observer.mutate().catch(() => {});
 
-    expect(shown).toEqual([unknownOutcomeMessage]);
+    expect(shown).toEqual(["errorUnknownOutcome"]);
   });
 
   it("should call the caller onError after it shows the message", async () => {
@@ -149,8 +165,11 @@ describe("withRetrySafety", () => {
             calls.push("caller");
           },
         },
-        () => {
-          calls.push("show");
+        {
+          ...recordingPresenter([]),
+          showError: () => {
+            calls.push("show");
+          },
         }
       )
     );
@@ -171,15 +190,13 @@ describe("withRetrySafety", () => {
 
     const observer = new MutationObserver(
       retryingClient(),
-      withRetrySafety(owned, untypedCaller, (message) => {
-        shown.push(message);
-      })
+      withRetrySafety(owned, untypedCaller, recordingPresenter(shown))
     );
 
     await observer.mutate().catch(() => {});
 
     expect(attempts()).toBe(1);
-    expect(shown).toEqual([unknownOutcomeMessage]);
+    expect(shown).toEqual(["errorUnknownOutcome"]);
   });
 
   it("should keep the client retry policy for an idempotent mutation", async () => {
@@ -191,11 +208,43 @@ describe("withRetrySafety", () => {
 
     const observer = new MutationObserver(
       retryingClient(),
-      withRetrySafety(owned, untypedCaller, () => {})
+      withRetrySafety(owned, untypedCaller, recordingPresenter([]))
     );
 
     await observer.mutate().catch(() => {});
 
     expect(attempts()).toBe(3);
+  });
+
+  it("should report a defect and show the generic message", async () => {
+    const shown: string[] = [];
+    const reported: unknown[] = [];
+    const bug = new TypeError("Cannot read properties of undefined");
+
+    const observer = new MutationObserver(
+      makeTestQueryClient(),
+      withRetrySafety(
+        {
+          ...notIdempotentMutation,
+          mutationFn: async () => {
+            await Promise.reject(bug);
+          },
+        },
+        undefined,
+        {
+          ...recordingPresenter(shown),
+          reportDefect: (cause) => {
+            reported.push(cause);
+          },
+        }
+      )
+    );
+
+    await observer.mutate().catch(() => {});
+
+    expect({ shown, reported }).toEqual({
+      shown: ["errorGeneric"],
+      reported: [bug],
+    });
   });
 });

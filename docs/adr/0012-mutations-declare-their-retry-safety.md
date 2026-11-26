@@ -1,6 +1,6 @@
 # Mutations declare their retry safety
 
-> Recorded on 2026-11-25. Builds on [ADR-0006](./0006-core-owns-the-effect-seams.md) (core owns `Http` and the option factories).
+> Recorded on 2026-11-25. Builds on [ADR-0006](./0006-core-owns-the-effect-seams.md) (core owns `Http` and the option factories). The error message path changed with [ADR-0014](./0014-expected-failures-and-defects.md).
 
 `Http` stops waiting after 10 s. A timeout does not prove that the server did not do the work. If TanStack Query retries the mutation, or a person sends it again, the server can do the work two times. A lint rule cannot know if a server endpoint is idempotent, so each mutation states it.
 
@@ -16,8 +16,8 @@
 - **A not-idempotent mutation has `retry: 0`.** `notIdempotentMutation` sets it. A mutation that must retry sends an idempotency key that the server accepts, and then it declares `idempotentMutation`.
 - **An idempotent mutation keeps the client retry policy.** `idempotentMutation` sets only `meta`.
 - **`meta` has a type.** `retry-safety.ts` registers `RetrySafetyMeta` as the `mutationMeta` of TanStack Query's `Register`. A `meta` with a wrong `retrySafety` value does not compile.
-- **App hooks do not override `retry` or `meta`.** A hook that wraps a core factory types its options as `CallerMutationOptions`, which has no `mutationKey`, `mutationFn`, `retry` or `meta`. `withRetrySafety(owned, caller, showError)` merges the options. It removes `retry` and `meta` from the caller options also when the app runs, so an untyped caller cannot change them.
-- **The UI shows the Unknown Outcome.** `withRetrySafety` adds an `onError` that calls `showError(toMutationErrorMessage(error, context.meta))`, then the `onError` of the caller. The hook gives only `showError` (a toast). For a timeout (`Cause.TimeoutError`) of a not-idempotent mutation, the message is `unknownOutcomeMessage`, which tells the person to check the result before they try again. For all other errors, it is `toErrorMessage(error)`.
+- **App hooks do not override `retry` or `meta`.** A hook that wraps a core factory types its options as `CallerMutationOptions`, which has no `mutationKey`, `mutationFn`, `retry` or `meta`. `withRetrySafety(owned, caller, presenter)` merges the options. It removes `retry` and `meta` from the caller options also when the app runs, so an untyped caller cannot change them.
+- **The UI shows the Unknown Outcome.** `withRetrySafety` adds an `onError` that calls `presentFailure(toMutationFailure(error, context.meta), presenter)`, then the `onError` of the caller. The hook gives only the `FailurePresenter` (a toast and a defect reporter, ADR-0014). For a timeout (`Cause.TimeoutError`) of a not-idempotent mutation, the failure is `Expected` with the key `errorUnknownOutcome`, which tells the person to check the result before they try again. For all other errors, it is `toFailure(error)`.
 - **Current declarations.** `authLoginMutationOptions` is not idempotent: each login starts a new Session. `cdnFileMutationOptions` is idempotent: it is a GET.
 
 ## Considered Options
@@ -30,4 +30,4 @@
 
 - A new mutation factory with no preset is a review finding.
 - `queries.unit.test.ts` for auth proves that a client with `mutations.retry: 3` sends the login one time, and that a login timeout is an Unknown Outcome.
-- `retry-safety.unit.test.ts` proves, through a `MutationObserver`, that `withRetrySafety` gives the Unknown Outcome message to `showError`, keeps the declared retry safety against an untyped caller, and keeps the client retry policy for an idempotent mutation. A unit test does not render the toast (ADR-0001). The hook only passes the toast function as `showError`.
+- `retry-safety.unit.test.ts` proves, through a `MutationObserver`, that `withRetrySafety` presents the Unknown Outcome, keeps the declared retry safety against an untyped caller, and keeps the client retry policy for an idempotent mutation. A unit test does not render the toast (ADR-0001). The hook only passes its `FailurePresenter`.

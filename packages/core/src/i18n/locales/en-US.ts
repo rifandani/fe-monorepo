@@ -5,6 +5,14 @@ export default {
   backTo: "Back to {target} page",
   errorMinLength: "{field} must have at least {length} characters",
   error: "{module} error",
+  errorGeneric: "Something went wrong. Please try again.",
+  errorRequestRejected:
+    "The server could not complete the request. Please try again.",
+  errorTimeout: "The server did not answer in time. Please try again.",
+  errorNetwork:
+    "Could not connect to the server. Check your connection and try again.",
+  errorUnknownOutcome:
+    "The server did not answer in time. The action possibly completed. Check the result before you try again.",
   theme: "Theme",
   system: "System",
   light: "Light",

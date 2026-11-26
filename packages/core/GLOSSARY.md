@@ -20,6 +20,10 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Error Envelope**: The `{ message }` body the API returns on a failed request. Present on most failures, absent on some — a caller may never assume it parsed. _Avoid_: error response, error body, error payload
 
+**Expected Failure**: A failure that the app knows can occur when the code is correct: the server refuses the request, the server does not answer in time, the device cannot reach the server, or the outcome is unknown. Each maps to one Translation Key. The UI shows it, and it is not sent to telemetry (ADR-0014). _Avoid_: handled error, user error
+
+**Defect**: A failure that the code did not expect (a bug, a response with a wrong shape). The UI shows only a generic message, and the app sends the cause to telemetry (ADR-0014). _Avoid_: crash, unknown error
+
 **Retry Safety**: The statement that a mutation is idempotent (sending it again has the same effect as sending it once) or not. Each mutation option factory declares it in `meta.retrySafety`; a not-idempotent mutation never retries. _Avoid_: retryable, safe mutation
 
 **Unknown Outcome**: A timeout of a not-idempotent mutation. The server possibly did the work, so the UI tells the person to check the result before they try again. _Avoid_: failed, lost request

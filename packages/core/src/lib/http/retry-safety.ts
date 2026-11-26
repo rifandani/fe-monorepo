@@ -3,7 +3,12 @@ import type {
   MutationMeta,
   UseMutationOptions,
 } from "@tanstack/react-query";
-import { toErrorMessage } from "@workspace/core/utils/error";
+import {
+  Failures,
+  presentFailure,
+  toFailure,
+} from "@workspace/core/http/failure";
+import type { Failure, FailurePresenter } from "@workspace/core/http/failure";
 import { Cause } from "effect";
 
 export type RetrySafety = "idempotent" | "not-idempotent";
@@ -27,9 +32,6 @@ export const notIdempotentMutation = {
   retry: 0,
 } as const;
 
-export const unknownOutcomeMessage =
-  "The server did not answer in time. The action possibly completed. Check the result before you try again.";
-
 const isNotIdempotent = (meta: MutationMeta | undefined) =>
   meta?.retrySafety === "not-idempotent";
 
@@ -38,11 +40,13 @@ export const isUnknownOutcome = (
   meta: MutationMeta | undefined
 ): boolean => Cause.isTimeoutError(cause) && isNotIdempotent(meta);
 
-export const toMutationErrorMessage = (
+export const toMutationFailure = (
   cause: unknown,
   meta: MutationMeta | undefined
-): string =>
-  isUnknownOutcome(cause, meta) ? unknownOutcomeMessage : toErrorMessage(cause);
+): Failure =>
+  isUnknownOutcome(cause, meta)
+    ? Failures.Expected({ key: "errorUnknownOutcome" })
+    : toFailure(cause);
 
 export type CallerMutationOptions<
   TData = unknown,
@@ -64,7 +68,7 @@ export const withRetrySafety = <
   caller:
     | NoInfer<CallerMutationOptions<TData, TError, TVariables, TOnMutateResult>>
     | undefined,
-  showError: (message: string) => void
+  presenter: FailurePresenter
 ): UseMutationOptions<TData, TError, TVariables, TOnMutateResult> => {
   const {
     retry: _retry,
@@ -77,7 +81,7 @@ export const withRetrySafety = <
     ...callerOptions,
     ...owned,
     onError: async (error, variables, onMutateResult, context) => {
-      showError(toMutationErrorMessage(error, context.meta));
+      presentFailure(toMutationFailure(error, context.meta), presenter);
       await caller?.onError?.(error, variables, onMutateResult, context);
     },
   };
