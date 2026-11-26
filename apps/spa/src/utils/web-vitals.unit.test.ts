@@ -54,8 +54,7 @@ vi.mock("@/lib/layers/runtime", async () => {
 });
 
 vi.mock("@/lib/layers/telemetry", () => ({
-  metricReader: { forceFlush: harness.forceFlush },
-  spanProcessor: { forceFlush: async () => {} },
+  bufferedExporters: [{ forceFlush: harness.forceFlush }],
 }));
 
 type HideEvent = "pagehide" | "visibilitychange";

@@ -1,4 +1,6 @@
-import { metricReader, spanProcessor } from "@/lib/layers/telemetry";
+import { once } from "radashi";
+
+import { bufferedExporters } from "@/lib/layers/telemetry";
 
 type FlushHook = () => void;
 
@@ -23,10 +25,11 @@ export const flushTelemetry = async (): Promise<void> => {
     runHook(hook);
   }
 
-  await Promise.all([
-    spanProcessor.forceFlush().catch(ignoreFailure),
-    metricReader.forceFlush().catch(ignoreFailure),
-  ]);
+  await Promise.all(
+    bufferedExporters.map(async (exporter) => {
+      await exporter.forceFlush().catch(ignoreFailure);
+    })
+  );
 };
 
 const flushOnHide = (): void => {
@@ -39,17 +42,9 @@ const flushIfHidden = (): void => {
   }
 };
 
-let started = false;
-
-export const deliverTelemetryOnHide = (): void => {
-  if (started) {
-    return;
-  }
-
-  started = true;
-
+export const deliverTelemetryOnHide = once((): void => {
   document.addEventListener("visibilitychange", flushIfHidden, {
     capture: true,
   });
   globalThis.addEventListener("pagehide", flushOnHide, { capture: true });
-};
+});

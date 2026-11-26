@@ -13,11 +13,11 @@ The spa exports traces through a `BatchSpanProcessor` and metrics through a `Per
 ## Decisions
 
 - **One module owns the page-hide listeners.** `apps/spa/src/utils/telemetry-delivery.ts` adds a `visibilitychange` listener and a `pagehide` listener. No other module adds listeners to deliver telemetry.
-- **A hidden page flushes both exporters.** On `visibilitychange` to `hidden`, and on `pagehide`, `flushTelemetry` runs the Flush Hooks, then calls `forceFlush` on the span processor and on the metric reader. `visibilitychange` is the primary signal: on mobile, the browser can stop a hidden page and not send `pagehide`. `pagehide` is the backup.
+- **A hidden page flushes both exporters.** On `visibilitychange` to `hidden`, and on `pagehide`, `flushTelemetry` runs the Flush Hooks, then calls `forceFlush` on each exporter in `bufferedExporters`: the span processor and the metric reader. `visibilitychange` is the primary signal: on mobile, the browser can stop a hidden page and not send `pagehide`. `pagehide` is the backup.
 - **Flush Hooks run before the exporters flush.** A metric that a hook records is in the same export.
 - **A failure does not stop a flush.** `flushTelemetry` ignores a Flush Hook that throws and a rejected `forceFlush`, and it never rejects. A metrics hook that fails must not stop the span flush. The browser closes the page, so there is nothing to retry.
-- **`telemetry.ts` exports the span processor and the metric reader.** They are module constants, so that the delivery module flushes the same instances that `TelemetryLive` gives to the SDK.
-- **`main.tsx` starts the delivery.** It calls `deliverTelemetryOnHide()` before `reportWebVitals()`. Both functions add their listeners or hooks only one time.
+- **`telemetry.ts` exports one list, `bufferedExporters`.** It holds the span processor and the metric reader. They are module constants, so that the delivery module flushes the same instances that `TelemetryLive` gives to the SDK. `flushTelemetry` flushes each item of the list, so a new exporter changes only `telemetry.ts`.
+- **`main.tsx` starts the delivery.** It calls `deliverTelemetryOnHide()` before `reportWebVitals()`. Both functions are wrapped in `once` from `radashi`, so they add their listeners or hooks only one time.
 - **Web vitals use a Flush Hook.** `reportWebVitals` registers `recordPending` with `onBeforeTelemetryFlush`. It does not add page-hide listeners, and it does not flush the reader.
 
 ## Considered Options
@@ -28,7 +28,7 @@ The spa exports traces through a `BatchSpanProcessor` and metrics through a `Per
 
 ## Consequences
 
-- A new exporter in `telemetry.ts` also goes in `flushTelemetry`.
+- A new exporter that keeps data in memory goes in `bufferedExporters`. No other module changes.
 - A module that must record values before the page hides registers a Flush Hook. It does not add its own listeners.
 - `telemetry-delivery.unit.test.ts` proves that a hidden page and `pagehide` flush both exporters, that a visible page does not flush, that hooks run first, and that a throwing hook or a failed export does not stop a flush or make it reject.
 - `web-vitals.unit.test.ts` proves that `reportWebVitals` adds no hide listeners, and that CLS and INP are recorded when the page hides through the delivery module.

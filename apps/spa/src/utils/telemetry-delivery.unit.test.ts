@@ -8,18 +8,20 @@ const exporters = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/layers/telemetry", () => ({
-  metricReader: {
-    forceFlush: async () => {
-      exporters.flushed.push("metrics");
-      await exporters.metricReader.forceFlush();
+  bufferedExporters: [
+    {
+      forceFlush: async () => {
+        exporters.flushed.push("spans");
+        await exporters.spanProcessor.forceFlush();
+      },
     },
-  },
-  spanProcessor: {
-    forceFlush: async () => {
-      exporters.flushed.push("spans");
-      await exporters.spanProcessor.forceFlush();
+    {
+      forceFlush: async () => {
+        exporters.flushed.push("metrics");
+        await exporters.metricReader.forceFlush();
+      },
     },
-  },
+  ],
 }));
 
 type HideEvent = "pagehide" | "visibilitychange";

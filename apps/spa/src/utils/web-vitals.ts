@@ -1,4 +1,5 @@
 import { Metric } from "effect";
+import { once } from "radashi";
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 import type { Metric as WebVitalsMetric } from "web-vitals";
 
@@ -103,19 +104,11 @@ const recordDeferred =
     });
   };
 
-let started = false;
-
-export const reportWebVitals = (): void => {
-  if (started) {
-    return;
-  }
-
-  started = true;
-
+export const reportWebVitals = once((): void => {
   onLCP(recordImmediate(webVitalsHistograms.lcp));
   onFCP(recordImmediate(webVitalsHistograms.fcp));
   onTTFB(recordImmediate(webVitalsHistograms.ttfb));
   onCLS(recordDeferred(webVitalsHistograms.cls));
   onINP(recordDeferred(webVitalsHistograms.inp));
   onBeforeTelemetryFlush(recordPending);
-};
+});

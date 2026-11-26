@@ -24,14 +24,16 @@ const logLevelMap = {
   WARN: DiagLogLevel.WARN,
 } satisfies Record<(typeof otelLogLevels)[number], DiagLogLevel>;
 
-export const metricReader = new PeriodicExportingMetricReader({
+const metricReader = new PeriodicExportingMetricReader({
   exportIntervalMillis: 10_000,
   exporter: new OTLPMetricExporter({ url: `${otlpEndpoint}/v1/metrics` }),
 });
 
-export const spanProcessor = new BatchSpanProcessor(
+const spanProcessor = new BatchSpanProcessor(
   new OTLPTraceExporter({ url: `${otlpEndpoint}/v1/traces` })
 );
+
+export const bufferedExporters = [spanProcessor, metricReader] as const;
 
 const browserAttributes = () => ({
   "browser.language": globalThis.navigator?.language ?? "unknown",
