@@ -24,6 +24,7 @@ if (!(root instanceof HTMLElement)) {
 }
 
 const reportRootError = (name: string, error: ReportedError) => {
+  // oxlint-disable-next-line landmines/no-unowned-task -- appRuntime owns the fiber and interrupts it on dispose; recordException cannot fail
   appRuntime.runFork(recordException(name, error));
 };
 

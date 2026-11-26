@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
@@ -36,16 +36,24 @@ const checkForSwUpdate = async (
   }
 };
 
-const registerPeriodicSync = (swUrl: string, r: ServiceWorkerRegistration) => {
+interface PeriodicSyncOwner {
+  mounted: boolean;
+  stop: (() => void) | null;
+}
+
+const startPeriodicSync = (
+  swUrl: string,
+  r: ServiceWorkerRegistration
+): (() => void) => {
   console.log("✅ SW activated", r);
 
-  if (UPDATE_CHECK_PERIOD_MS <= 0) {
-    return;
-  }
-
-  setInterval(() => {
+  const intervalId = setInterval(() => {
     void checkForSwUpdate(swUrl, r);
   }, UPDATE_CHECK_PERIOD_MS);
+
+  return () => {
+    clearInterval(intervalId);
+  };
 };
 
 const whenActivated = (sw: ServiceWorker | null, run: () => void) => {
@@ -75,21 +83,43 @@ const onSwActivated = (
   });
 };
 
-const onRegisteredSW = (
-  swUrl: string,
-  r: ServiceWorkerRegistration | undefined
-) => {
-  onSwActivated(r, (registration) => {
-    registerPeriodicSync(swUrl, registration);
-  });
-};
-
 const onRegisterError = (cause: unknown) => {
   console.error("🛑 Service Worker registration error", cause);
 };
 
 export const ReloadPromptSw = () => {
   const { t } = useTranslation();
+
+  const periodicSync = useRef<PeriodicSyncOwner>({
+    mounted: true,
+    stop: null,
+  });
+
+  const onRegisteredSW = (
+    swUrl: string,
+    r: ServiceWorkerRegistration | undefined
+  ) => {
+    onSwActivated(r, (registration) => {
+      const owner = periodicSync.current;
+
+      owner.stop?.();
+      owner.stop = owner.mounted
+        ? startPeriodicSync(swUrl, registration)
+        : null;
+    });
+  };
+
+  useEffect(() => {
+    const owner = periodicSync.current;
+
+    owner.mounted = true;
+
+    return () => {
+      owner.mounted = false;
+      owner.stop?.();
+      owner.stop = null;
+    };
+  }, []);
 
   const {
     offlineReady: [offlineReady, setOfflineReady],

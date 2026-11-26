@@ -37,6 +37,7 @@ const rules: OxlintConfig["rules"] = {
   "landmines/no-flake-masking": "error",
   "landmines/no-flake-masking-timeout": ["warn", { check: "timeout" }],
   "landmines/no-test-doubles": "warn",
+  "landmines/no-unowned-task": "error",
   "landmines/no-unsignaled-poll": "error",
   "sort-keys": "off",
   "no-inline-comments": "off",
@@ -190,6 +191,18 @@ export default defineConfig({
       files: ["**/*.unit.test.ts", "**/*.unit.test.tsx", "**/e2e/**"],
       rules: {
         "anti-slop/no-module-mocking": "off",
+      },
+    },
+    {
+      files: [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/e2e/**",
+      ],
+      rules: {
+        "landmines/no-unowned-task": "off",
       },
     },
     {
