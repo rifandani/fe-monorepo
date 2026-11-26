@@ -2,6 +2,8 @@
 
 > Recorded on 2026-11-20. Builds on [ADR-0006](./0006-core-owns-the-effect-seams.md): the `Session` service keeps its seam, and gets Session Refresh.
 
+> On 2026-11-26, the section "When boolean flags become a machine" was added (#224). It gives the decision rule between an XState machine and boolean flags, and the `state/no-boolean-flag-cluster` lint rule that finds possible cases.
+
 The Session lifecycle — Session Start, Session Refresh and End Session — runs as one XState v6 statechart, the Session Machine (`packages/core/src/lib/session/session-machine.ts`). `@xstate/effect` hosts it on the Effect runtime: `Session.layer` starts the actor with `createEffectActor`, so the actor lives as long as the app runtime, and its invoked work runs as Effects with the app's services and tracing.
 
 The machine holds only the work that runs now (`idle`, `starting`, `refreshing`, `ending`). The Session data stays in `sessionAtom`, so Persistence, React and the route guards read it as before, and no second copy of the Session exists. Each state other than `idle` invokes its work as an Effect task, and that task is the only code that writes `sessionAtom` in that state. A `Session` method sends its event and waits for `idle`; from then on, the atom holds the result.
@@ -11,6 +13,24 @@ The machine holds only the work that runs now (`idle`, `starting`, `refreshing`,
 `Session.layer` publishes the machine state to `sessionActivityAtom`, so React reads it with `useAtomValue`. The profile menu of the SPA shows a spinner while a token refresh runs.
 
 The library roles stay separate: Effect for services, layers, errors and tracing; Effect Atom for client state and the bridge to React; TanStack Query for server state; TanStack Form for form state; XState for flows whose next step depends on the current step.
+
+## When boolean flags become a machine
+
+Some modules keep the state of a flow in separate boolean flags (for example `open`, `loading` and `done`). Nobody can list the transitions between these flags. Some combinations of the flags have no meaning.
+
+Use this decision rule:
+
+- **The next step depends on the current step**: use an XState machine. The machine names each step, and its graph lists each transition. For example, a step can start only from one step, or a new event stops the work of the current step.
+- **The next step does not depend on the current step**: keep the flags, because each flag changes independently. List their transitions in one pure function, and write unit tests for it. The function takes the flags (and the event, if there is one). It returns the next flags or the result. For example, `resolveSwPrompt` (`apps/spa/src/utils/sw.ts`) takes the `needRefresh` and `offlineReady` flags of the service worker and returns the prompt to show. `sw.unit.test.ts` tests all four combinations.
+
+The `state/no-boolean-flag-cluster` lint rule (`tools/lint/state.ts`, warn) finds possible cases:
+
+- a function (a component or a hook) with 3 or more boolean `useState` values from `react`. A value is boolean if it has the type argument `boolean`, or the initial value `true`, `false` or `!x`.
+- a module with 3 or more boolean `let` values at module level. A value is boolean if it has the type `boolean`, or the initial value `true`, `false` or `!x`.
+
+The rule does not use type information. It does not find `useState(isOpen)`, `boolean | undefined`, `useReducer`, or flags in objects and refs.
+
+If the flags change independently, keep them. Put the pure function and its tests in place. Then add `// oxlint-disable-next-line state/no-boolean-flag-cluster -- <reason>` above the first flag that the rule reports.
 
 ## What the machine guarantees
 

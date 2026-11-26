@@ -24,6 +24,7 @@ const rules: OxlintConfig["rules"] = {
   "effect-config/no-scattered-read-env": "error",
   "effect-tests/no-manual-effect-runtime-in-tests": "error",
   "persistence/versioned-kvs-key": "error",
+  "state/no-boolean-flag-cluster": "warn",
   "tanstack-query/explicit-retry": "error",
   "anti-slop-effect/no-manual-effect-error-tag": "error",
   "anti-slop-effect/no-manual-tag-comparison": "error",
@@ -153,6 +154,7 @@ export default defineConfig({
     "./tools/lint/effect-config.ts",
     "./tools/lint/effect-tests.ts",
     "./tools/lint/persistence.ts",
+    "./tools/lint/state.ts",
     "./tools/lint/tanstack-query.ts",
     {
       name: "anti-slop-effect",
