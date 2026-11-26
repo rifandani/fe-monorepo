@@ -1,6 +1,6 @@
 import { RuleTester } from "oxlint/plugins-dev";
 
-import { explicitRetry } from "./tanstack-query.ts";
+import { explicitRetry, mutationsFailOffline } from "./tanstack-query.ts";
 
 const tester = new RuleTester({
   languageOptions: { parserOptions: { lang: "ts" } },
@@ -77,5 +77,47 @@ tester.run("tanstack-query/explicit-retry", explicitRetry, {
     ),
     unverifiable(`${IMPORT} new QueryClient(options);`),
     unverifiable(`${IMPORT} new QueryClient(...args);`),
+  ],
+});
+
+const pausable = (code: string) => ({
+  code,
+  errors: [{ messageId: "pausableMutations" }],
+});
+
+tester.run("tanstack-query/mutations-fail-offline", mutationsFailOffline, {
+  valid: [
+    `${IMPORT} new QueryClient({ defaultOptions: { queries: { retry: 3 }, mutations: { networkMode: "always", retry: false } } });`,
+    `${IMPORT} new QueryClient({ defaultOptions: { "mutations": { "networkMode": "always" } } } as const);`,
+    'import * as ReactQuery from "@tanstack/react-query"; new ReactQuery.QueryClient({ defaultOptions: { mutations: { networkMode: "always" } } });',
+    "new Map();",
+    "new Other.QueryClient();",
+    `${IMPORT} new QueryClient(options);`,
+  ],
+  invalid: [
+    pausable(`${IMPORT} new QueryClient();`),
+    pausable(`${IMPORT} new QueryClient({});`),
+    pausable(`${IMPORT} new QueryClient({ defaultOptions: sharedDefaults });`),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { queries: { networkMode: "always" } } });`
+    ),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { mutations: { retry: false } } });`
+    ),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { mutations: sharedMutations } });`
+    ),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { mutations: { networkMode: "online" } } });`
+    ),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { mutations: { networkMode: "offlineFirst" } } });`
+    ),
+    pausable(
+      `${IMPORT} new QueryClient({ defaultOptions: { mutations: { networkMode: mode } } });`
+    ),
+    pausable(
+      'import { QueryClient as Client } from "@tanstack/query-core"; new Client({ defaultOptions: { mutations: {} } });'
+    ),
   ],
 });

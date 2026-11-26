@@ -4,6 +4,6 @@ export const makeTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: { retry: false },
-      mutations: { retry: false },
+      mutations: { networkMode: "always", retry: false },
     },
   });

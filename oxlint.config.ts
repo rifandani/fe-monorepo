@@ -26,6 +26,7 @@ const rules: OxlintConfig["rules"] = {
   "persistence/versioned-kvs-key": "error",
   "state/no-boolean-flag-cluster": "warn",
   "tanstack-query/explicit-retry": "error",
+  "tanstack-query/mutations-fail-offline": "error",
   "anti-slop-effect/no-manual-effect-error-tag": "error",
   "anti-slop-effect/no-manual-tag-comparison": "error",
   "anti-slop-effect/no-manual-tagged-construction": "error",

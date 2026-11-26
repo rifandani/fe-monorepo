@@ -56,3 +56,28 @@ export const moduleImportAliases = (
         specifier.type === "ImportDefaultSpecifier"
     )
     .map((specifier) => specifier.local.name);
+
+export const propertyAtPath = (
+  node: ESTree.Expression | undefined,
+  path: readonly string[]
+): ESTree.ObjectProperty | undefined => {
+  let property: ESTree.ObjectProperty | undefined;
+  let current = node;
+
+  for (const name of path) {
+    if (current === undefined) {
+      return undefined;
+    }
+
+    const object = unwrapExpression(current);
+
+    if (object.type !== "ObjectExpression") {
+      return undefined;
+    }
+
+    property = findProperty(object, name);
+    current = property?.value;
+  }
+
+  return property;
+};

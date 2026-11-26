@@ -5,6 +5,7 @@ import {
   findProperty,
   moduleImportAliases,
   namedImportAliases,
+  propertyAtPath,
   unwrapExpression,
 } from "./ast.ts";
 
@@ -162,7 +163,64 @@ export const explicitRetry = defineRule({
   },
 });
 
+const isLiteral = (node: ESTree.Expression, value: string): boolean => {
+  const expression = unwrapExpression(node);
+
+  return expression.type === "Literal" && expression.value === value;
+};
+
+export const mutationsFailOffline = defineRule({
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        'Require new QueryClient(...) to set defaultOptions.mutations.networkMode to "always". Then an offline mutation fails at once and does not pause in memory, where a reload loses it.',
+    },
+    messages: {
+      pausableMutations:
+        'QueryClient must set `defaultOptions.mutations.networkMode: "always"`. With another network mode, TanStack Query pauses a mutation while the device is offline and keeps it only in memory. A reload then loses it, and the app does not tell the person. Fix: add `networkMode: "always"` to `defaultOptions.mutations`, so the request fails with a network error that the UI shows (see ADR-0006).',
+    },
+  },
+  create(context) {
+    const queryClientNames = collectQueryClientNames(context.sourceCode.ast);
+
+    return {
+      NewExpression(node) {
+        if (!isQueryClientCallee(node.callee, queryClientNames)) {
+          return;
+        }
+
+        const [firstArgument] = node.arguments;
+
+        if (
+          firstArgument !== undefined &&
+          (firstArgument.type === "SpreadElement" ||
+            unwrapExpression(firstArgument).type !== "ObjectExpression")
+        ) {
+          return;
+        }
+
+        const networkMode = propertyAtPath(firstArgument, [
+          "defaultOptions",
+          "mutations",
+          "networkMode",
+        ]);
+
+        if (
+          networkMode === undefined ||
+          !isLiteral(networkMode.value, "always")
+        ) {
+          context.report({ messageId: "pausableMutations", node });
+        }
+      },
+    };
+  },
+});
+
 export default definePlugin({
   meta: { name: "tanstack-query" },
-  rules: { "explicit-retry": explicitRetry },
+  rules: {
+    "explicit-retry": explicitRetry,
+    "mutations-fail-offline": mutationsFailOffline,
+  },
 });

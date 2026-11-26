@@ -9,6 +9,7 @@ export const queryClient = new QueryClient({
       retry: 3,
     },
     mutations: {
+      networkMode: "always",
       retry: false,
     },
   },

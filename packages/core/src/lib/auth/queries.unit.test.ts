@@ -53,7 +53,7 @@ const retryingClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: { retry: false },
-      mutations: { retry: 3, retryDelay: 0 },
+      mutations: { networkMode: "always", retry: 3, retryDelay: 0 },
     },
   });
 

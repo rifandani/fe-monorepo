@@ -1,10 +1,12 @@
+import { onlineManager } from "@tanstack/react-query";
+import { http, HttpResponse } from "msw";
 import { describe, expect, test } from "vitest";
 import { page } from "vitest/browser";
 
 import { persistence } from "@/lib/layers/persistence";
 
 import { loginForm } from "./support/login-form";
-import { emily, emilySession } from "./support/network";
+import { api, emily, emilySession, worker } from "./support/network";
 import { currentPath, renderRoute } from "./support/render-route";
 
 const invalidUsername = "km";
@@ -101,6 +103,25 @@ describe("login route", () => {
     await submitButton.click();
 
     await expect.element(mutationError).toBeVisible();
+    expect(persistence.registry.get(persistence.sessionAtom)).toBeNull();
+  });
+
+  test("an offline login fails at once and shows the network error", async () => {
+    onlineManager.setOnline(false);
+    worker.use(http.post(api("auth/login"), () => HttpResponse.error()));
+
+    await renderRoute("/login");
+
+    const { usernameInput, passwordInput, submitButton, mutationError } =
+      loginForm();
+
+    await usernameInput.fill(emily.username);
+    await passwordInput.fill(emily.password);
+    await submitButton.click();
+
+    await expect
+      .element(mutationError.getByText(/could not connect to the server/iu))
+      .toBeVisible();
     expect(persistence.registry.get(persistence.sessionAtom)).toBeNull();
   });
 });
