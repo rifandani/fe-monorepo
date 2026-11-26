@@ -24,6 +24,12 @@ Shared libraries and cross-app vocabulary used by spa and expo.
 
 **Unknown Outcome**: A timeout of a not-idempotent mutation. The server possibly did the work, so the UI tells the person to check the result before they try again. _Avoid_: failed, lost request
 
+### Telemetry
+
+**Golden Signals**: The latency, traffic and errors of the requests that `Http` sends, recorded as `http.client.requests` and `http.client.request.duration` (ADR-0013). _Avoid_: request stats
+
+**Route Template**: The path of a request without origin, query and hash, with each id segment replaced by `{id}` (`/users/{id}`). The `url.template` attribute of the Golden Signals. _Avoid_: route, full URL
+
 ### Session
 
 **Session**: What one successful login produces — the signed-in person together with the credentials that prove it. Each app persists exactly one, or none. _Avoid_: user, appUser, auth state, current user
